@@ -542,8 +542,10 @@ switch ($_GET['step']) {
                     'use_transactions' => false
                 );
 
+                $connectiondata = $dbconnect;
+
                 // Import into Database using MDB2_Schema
-                $importer = MDB2_Schema::factory($dbconnect, $options);
+                $importer = MDB2_Schema::factory($connectiondata, $options);
 
                 // Get Database-Definition from current running Database
                 $olddefinition = $importer->getDefinitionFromDatabase();

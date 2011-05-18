@@ -3,3 +3,6 @@
 /temp/smarty/cache/*
 /temp/smarty/templates_c/*
 .project
+/config/config.cfg
+/config/dbconnect.cfg.php
+/config/dirconf.cfg.php
