@@ -1,0 +1,156 @@
+@CHARSET "UTF-8";
+/* @import "content_stdelements.css";  stdelements are already included by content_page.css */
+@import "content_page.css";
+
+/* messenger */
+.messagelist {
+    border: 1px solid #F9E9A9;
+    width: 100%;
+}
+.messagelist td a {
+    color: #F9E9A9;
+    text-decoration: none;
+}
+
+#messagetools {
+    clear: both;
+    float: right;
+}
+#messagetools .delbutton {
+    clear: both;
+    border-width:1px;
+    border-style:solid;
+    border-color: #F9A969;
+    background-color: #3F2430;
+    color: #F9E9A9;
+    text-align:center;
+}
+
+#messengernavigation {
+    clear: both;
+}
+#messengernavigation a.navbutton {
+    float: left;
+    border-width:1px;
+    border-style:solid;
+    border-color: #F9E9A9;
+    background-color: #5F5450;
+    color: #F9E9A9;
+    text-align:center;
+    width: 98px;
+    margin: 0px 4px 8px 0px;
+}
+#messengernavigation:after {
+    content: ".";
+    display: block;
+    height: 0;
+    visibility: hidden;
+    clear: both;
+}
+
+#createmessageform {
+    clear: both;
+}
+#createmessageform #sendbutton {
+    float: left;
+    clear: both;
+    border: 1px solid #F9E9A9;
+    background: #5F5450 url(images/sendmail.gif) no-repeat 15px center;
+    color: #F9E9A9;
+    text-align: center;
+    height: 58px;
+    width: 25%;
+    text-align: right;
+    margin: 0px 0px 4px 0px;
+}
+#createmessageform #receiverlist {
+    float: right;
+    border: 1px solid #F9E9A9;
+    background-color: #2F2430;
+    color: #F9E9A9;
+    height: 56px;
+    width: 74%;
+    margin: 0px 0px 4px;
+}
+#createmessageform #addressbookbutton {
+    float: left;
+    clear: both;
+    border: 1px solid #F9E9A9;
+    background-color: #5F5450;
+    color: #F9E9A9;
+    text-align:center;
+    height: 22px;
+    width: 25%;
+    margin: 0px 0px 4px;
+}
+#createmessageform #subject {
+    float: right;
+    border: 1px solid #F9E9A9;
+    background-color: #2F2430;
+    color: #F9E9A9;
+    height: 18px;
+    width: 74%;
+    margin: 0px 0px 4px;
+    vertical-align: baseline;
+}
+#createmessageform #text {
+    border-width:1px;
+    border-style:solid;
+    border-color: #F9E9A9;
+    background-color: #2F2430;
+    color: #F9E9A9;
+    width: 100%;
+    height: 242px;
+    margin: 0px;
+}
+
+#readmessageform {
+    clear: both;
+}
+#readmessageform #replybutton {
+    float: left;
+    clear: both;
+    border: 1px solid #F9E9A9;
+    background-color: #5F5450;
+    color: #F9E9A9;
+    text-align:center;
+    height: 58px;
+    width: 25%;
+    text-align: center;
+    margin: 0px 0px 4px 0px;
+}
+#readmessageform #sender, #readmessageform #subject, #readmessageform #date {
+    clear: right;
+    float: right;
+    border: 0px;
+    background-color: #2F2430;
+    color: #F9E9A9;
+    width: 74%;
+    height: 24px;
+    margin: 0px 0px 4px;
+    vertical-align: center;
+}
+#readmessageform #forwardbutton {
+    float: left;
+    clear: left;
+    border: 1px solid #F9E9A9;
+    background-color: #5F5450;
+    color: #F9E9A9;
+    text-align:center;
+    height: 22px;
+    width: 25%;
+    margin: 0px 0px 4px;
+}
+#readmessageform #text {
+    clear: both;
+    border: 0px;
+    background-color: #2F2430;
+    color: #F9E9A9;
+    width: 100%;
+    margin: 0px;
+     white-space: pre-wrap;
+     white-space: -moz-pre-wrap;
+     white-space: -pre-wrap;
+     white-space: -o-pre-wrap;
+     word-wrap: break-word;
+}

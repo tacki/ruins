@@ -1,0 +1,6362 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<database>
+
+ <name><variable>db_name</variable></name>
+ <create>true</create>
+ <overwrite>true</overwrite>
+
+ <charset>utf8</charset>
+
+ <table>
+
+  <name><variable>db_prefix</variable>armors</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>itemid</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>armorclass</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <length>4</length>
+   </field>
+
+   <index>
+    <name>itemid</name>
+    <field>
+     <name>itemid</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+  </declaration>
+
+  <initialization>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>itemid</name>
+     <value>4</value>
+    </field>
+
+    <field>
+     <name>armorclass</name>
+     <value>1</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>2</value>
+    </field>
+
+    <field>
+     <name>itemid</name>
+     <value>5</value>
+    </field>
+
+    <field>
+     <name>armorclass</name>
+     <value>2</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>itemid</name>
+     <value>6</value>
+    </field>
+
+    <field>
+     <name>armorclass</name>
+     <value>1</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>4</value>
+    </field>
+
+    <field>
+     <name>itemid</name>
+     <value>7</value>
+    </field>
+
+    <field>
+     <name>armorclass</name>
+     <value>1</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>5</value>
+    </field>
+
+    <field>
+     <name>itemid</name>
+     <value>8</value>
+    </field>
+
+    <field>
+     <name>armorclass</name>
+     <value>1</value>
+    </field>
+
+   </insert>
+
+  </initialization>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>armorsets</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>characterid</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>headid</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>chestid</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>armsid</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>legsid</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>feetid</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <index>
+    <name>characterid</name>
+    <unique>true</unique>
+    <field>
+     <name>characterid</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+  </declaration>
+
+  <initialization>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>characterid</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>headid</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>chestid</name>
+     <value>2</value>
+    </field>
+
+    <field>
+     <name>armsid</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>legsid</name>
+     <value>4</value>
+    </field>
+
+    <field>
+     <name>feetid</name>
+     <value>5</value>
+    </field>
+
+   </insert>
+
+  </initialization>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>badwords</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>badword</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>64</length>
+   </field>
+
+   <field>
+    <name>replacement</name>
+    <type>text</type>
+    <default>!%$@</default>
+    <notnull>true</notnull>
+    <length>64</length>
+   </field>
+
+   <index>
+    <name>badword</name>
+    <unique>true</unique>
+    <field>
+     <name>badword</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+  </declaration>
+
+  <initialization>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>badword</name>
+     <value>fuck</value>
+    </field>
+
+    <field>
+     <name>replacement</name>
+     <value>!%$@</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>2</value>
+    </field>
+
+    <field>
+     <name>badword</name>
+     <value>suck</value>
+    </field>
+
+    <field>
+     <name>replacement</name>
+     <value>!%$@</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>badword</name>
+     <value>dragonfantasies</value>
+    </field>
+
+    <field>
+     <name>replacement</name>
+     <value>`55Komisches Spiel mit einem gruenen Drachen`00</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>6</value>
+    </field>
+
+    <field>
+     <name>badword</name>
+     <value>bown</value>
+    </field>
+
+    <field>
+     <name>replacement</name>
+     <value>!%$@</value>
+    </field>
+
+   </insert>
+
+  </initialization>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>banking</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>bankname</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>255</length>
+   </field>
+
+   <field>
+    <name>characterid</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>balance</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <length>4</length>
+   </field>
+
+   <index>
+    <name>bankname</name>
+    <field>
+     <name>bankname</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+   <index>
+    <name>characterid</name>
+    <field>
+     <name>characterid</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+  </declaration>
+
+  <initialization>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>14</value>
+    </field>
+
+    <field>
+     <name>bankname</name>
+     <value>ironlance/citybank</value>
+    </field>
+
+    <field>
+     <name>characterid</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>balance</name>
+     <value>2614</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>15</value>
+    </field>
+
+    <field>
+     <name>bankname</name>
+     <value>ironlance/citybank</value>
+    </field>
+
+    <field>
+     <name>characterid</name>
+     <value>9</value>
+    </field>
+
+    <field>
+     <name>balance</name>
+     <value>14</value>
+    </field>
+
+   </insert>
+
+  </initialization>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>battlemembers</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>battleid</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>characterid</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>side</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>16</length>
+   </field>
+
+   <field>
+    <name>speed</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <length>2</length>
+   </field>
+
+   <field>
+    <name>actiondone</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <length>1</length>
+   </field>
+
+   <field>
+    <name>token</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <length>1</length>
+   </field>
+
+   <field>
+    <name>status</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>1</length>
+   </field>
+
+   <index>
+    <name>battleid</name>
+    <field>
+     <name>battleid</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+   <index>
+    <name>characterid</name>
+    <field>
+     <name>characterid</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+  </declaration>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>battlemessages</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>battleid</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>date</name>
+    <type>timestamp</type>
+    <default>1970-01-01 00:00:00</default>
+    <notnull>true</notnull>
+   </field>
+
+   <field>
+    <name>message</name>
+    <type>clob</type>
+    <notnull>true</notnull>
+   </field>
+
+   <index>
+    <name>battleid</name>
+    <field>
+     <name>battleid</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+  </declaration>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>battles</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>initiatorid</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>battletimer</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>64</length>
+   </field>
+
+   <field>
+    <name>round</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>active</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <length>1</length>
+   </field>
+
+   <field>
+    <name>battlemembersnapshot</name>
+    <type>clob</type>
+    <notnull>true</notnull>
+   </field>
+
+   <index>
+    <name>active</name>
+    <field>
+     <name>active</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+  </declaration>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>battletable</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>battleid</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>initiatorid</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>target</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>16</length>
+   </field>
+
+   <field>
+    <name>skill</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>255</length>
+   </field>
+
+   <index>
+    <name>target</name>
+    <field>
+     <name>target</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+   <index>
+    <name>battleid</name>
+    <field>
+     <name>battleid</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+  </declaration>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>buffs</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>armorclass_mod</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>weapondamage_min_mod</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>weapondamage_max_mod</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>weapondamage_mod</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>strength_mod</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>dexterity_mod</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>constitution_mod</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>intelligence_mod</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>wisdom_mod</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>charisma_mod</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <length>4</length>
+   </field>
+
+  </declaration>
+
+  <initialization>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>armorclass_mod</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>weapondamage_min_mod</name>
+     <value>50</value>
+    </field>
+
+    <field>
+     <name>weapondamage_max_mod</name>
+     <value>100</value>
+    </field>
+
+    <field>
+     <name>weapondamage_mod</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>strength_mod</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>dexterity_mod</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>constitution_mod</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>intelligence_mod</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>wisdom_mod</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>charisma_mod</name>
+     <value>0</value>
+    </field>
+
+   </insert>
+
+  </initialization>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>charactermapping</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>userid</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>characterid</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <index>
+    <name>userid</name>
+    <field>
+     <name>userid</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+   <index>
+    <name>characterid</name>
+    <field>
+     <name>characterid</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+  </declaration>
+
+  <initialization>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>userid</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>characterid</name>
+     <value>1</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>2</value>
+    </field>
+
+    <field>
+     <name>userid</name>
+     <value>2</value>
+    </field>
+
+    <field>
+     <name>characterid</name>
+     <value>3</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>userid</name>
+     <value>2</value>
+    </field>
+
+    <field>
+     <name>characterid</name>
+     <value>4</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>4</value>
+    </field>
+
+    <field>
+     <name>userid</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>characterid</name>
+     <value>5</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>5</value>
+    </field>
+
+    <field>
+     <name>userid</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>characterid</name>
+     <value>6</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>6</value>
+    </field>
+
+    <field>
+     <name>userid</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>characterid</name>
+     <value>7</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>7</value>
+    </field>
+
+    <field>
+     <name>userid</name>
+     <value>4</value>
+    </field>
+
+    <field>
+     <name>characterid</name>
+     <value>8</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>8</value>
+    </field>
+
+    <field>
+     <name>userid</name>
+     <value>4</value>
+    </field>
+
+    <field>
+     <name>characterid</name>
+     <value>9</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>9</value>
+    </field>
+
+    <field>
+     <name>userid</name>
+     <value>5</value>
+    </field>
+
+    <field>
+     <name>characterid</name>
+     <value>10</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>userid</name>
+     <value>5</value>
+    </field>
+
+    <field>
+     <name>characterid</name>
+     <value>11</value>
+    </field>
+
+   </insert>
+
+  </initialization>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>characters</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>name</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>255</length>
+   </field>
+
+   <field>
+    <name>displayname</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>255</length>
+   </field>
+
+   <field>
+    <name>level</name>
+    <type>integer</type>
+    <default>1</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>healthpoints</name>
+    <type>integer</type>
+    <default>10</default>
+    <notnull>true</notnull>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>lifepoints</name>
+    <type>integer</type>
+    <default>10</default>
+    <notnull>true</notnull>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>strength</name>
+    <type>integer</type>
+    <default>10</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>1</length>
+   </field>
+
+   <field>
+    <name>dexterity</name>
+    <type>integer</type>
+    <default>10</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>1</length>
+   </field>
+
+   <field>
+    <name>constitution</name>
+    <type>integer</type>
+    <default>10</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>1</length>
+   </field>
+
+   <field>
+    <name>intelligence</name>
+    <type>integer</type>
+    <default>10</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>1</length>
+   </field>
+
+   <field>
+    <name>wisdom</name>
+    <type>integer</type>
+    <default>10</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>1</length>
+   </field>
+
+   <field>
+    <name>charisma</name>
+    <type>integer</type>
+    <default>10</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>1</length>
+   </field>
+
+   <field>
+    <name>money</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>rightgroups</name>
+    <type>text</type>
+    <default>a:0:{}</default>
+    <notnull>false</notnull>
+    <length>4096</length>
+   </field>
+
+   <field>
+    <name>current_nav</name>
+    <type>clob</type>
+    <notnull>true</notnull>
+   </field>
+
+   <field>
+    <name>allowednavs</name>
+    <type>clob</type>
+    <notnull>true</notnull>
+   </field>
+
+   <field>
+    <name>allowednavs_cache</name>
+    <type>clob</type>
+    <notnull>true</notnull>
+   </field>
+
+   <field>
+    <name>template</name>
+    <type>text</type>
+    <default>test</default>
+    <notnull>true</notnull>
+    <length>32</length>
+   </field>
+
+   <field>
+    <name>type</name>
+    <type>text</type>
+    <default>gpcharacter</default>
+    <notnull>true</notnull>
+    <length>32</length>
+   </field>
+
+   <field>
+    <name>loggedin</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <length>1</length>
+   </field>
+
+   <field>
+    <name>race</name>
+    <type>text</type>
+    <default>unknown</default>
+    <notnull>true</notnull>
+    <length>32</length>
+   </field>
+
+   <field>
+    <name>profession</name>
+    <type>text</type>
+    <default>unknown</default>
+    <notnull>true</notnull>
+    <length>32</length>
+   </field>
+
+   <field>
+    <name>sex</name>
+    <type>text</type>
+    <default>unknown</default>
+    <notnull>true</notnull>
+    <length>7</length>
+   </field>
+
+   <field>
+    <name>lastpagehit</name>
+    <type>timestamp</type>
+    <default>1970-01-01 00:00:00</default>
+    <notnull>true</notnull>
+   </field>
+
+   <field>
+    <name>debugloglevel</name>
+    <type>text</type>
+    <default>default</default>
+    <notnull>true</notnull>
+    <length>11</length>
+   </field>
+
+   <index>
+    <name>displayname</name>
+    <field>
+     <name>displayname</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+   <index>
+    <name>name</name>
+    <field>
+     <name>name</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+   <index>
+    <name>loggedin</name>
+    <field>
+     <name>loggedin</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+   <index>
+    <name>lastpagehit</name>
+    <field>
+     <name>lastpagehit</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+  </declaration>
+
+  <initialization>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>SYSTEM</value>
+    </field>
+
+    <field>
+     <name>displayname</name>
+     <value>`25SYSTEM`00</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>healthpoints</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>lifepoints</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>strength</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>dexterity</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>constitution</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>intelligence</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>wisdom</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>charisma</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>money</name>
+     <value>-662591000</value>
+    </field>
+
+    <field>
+     <name>rightgroups</name>
+     <value>a:0:{}</value>
+    </field>
+
+    <field>
+     <name>current_nav</name>
+     <value>page=ironlance/citysquare</value>
+    </field>
+
+    <field>
+     <name>allowednavs</name>
+     <value>a:1:{i:0;a:4:{s:11:\"displayname\";s:11:\"Redirection\";s:3:\"url\";s:17:\"page=common/login\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}}</value>
+    </field>
+
+    <field>
+     <name>allowednavs_cache</name>
+     <value></value>
+    </field>
+
+    <field>
+     <name>template</name>
+     <value>default</value>
+    </field>
+
+    <field>
+     <name>type</name>
+     <value>npc</value>
+    </field>
+
+    <field>
+     <name>loggedin</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>race</name>
+     <value>human</value>
+    </field>
+
+    <field>
+     <name>profession</name>
+     <value>warrior</value>
+    </field>
+
+    <field>
+     <name>sex</name>
+     <value>unknown</value>
+    </field>
+
+    <field>
+     <name>lastpagehit</name>
+     <value>0000-00-00 00:00:00</value>
+    </field>
+
+    <field>
+     <name>debugloglevel</name>
+     <value>default</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Saevain</value>
+    </field>
+
+    <field>
+     <name>displayname</name>
+     <value>`75S`73ae`71v`67a`66i`65n`00</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>healthpoints</name>
+     <value>6</value>
+    </field>
+
+    <field>
+     <name>lifepoints</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>strength</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>dexterity</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>constitution</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>intelligence</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>wisdom</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>charisma</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>money</name>
+     <value>13</value>
+    </field>
+
+    <field>
+     <name>rightgroups</name>
+     <value>a:0:{}</value>
+    </field>
+
+    <field>
+     <name>current_nav</name>
+     <value>page=dunsplee/pond</value>
+    </field>
+
+    <field>
+     <name>allowednavs</name>
+     <value>a:4:{i:0;a:4:{s:11:\"displayname\";s:10:\"Navigation\";s:3:\"url\";b:0;s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:1;a:4:{s:11:\"displayname\";s:7:\"Fischen\";s:3:\"url\";s:29:\"page=dunsplee/pond&amp;op=fishask\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:2;a:4:{s:11:\"displayname\";s:7:\"Zur&#195;&#188;ck\";s:3:\"url\";s:19:\"page=dunsplee/trail\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:3;a:4:{s:11:\"displayname\";s:0:\"\";s:3:\"url\";s:18:\"page=dunsplee/pond\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}}</value>
+    </field>
+
+    <field>
+     <name>allowednavs_cache</name>
+     <value>a:4:{i:0;a:4:{s:11:\"displayname\";s:10:\"Navigation\";s:3:\"url\";b:0;s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:1;a:4:{s:11:\"displayname\";s:7:\"Fischen\";s:3:\"url\";s:29:\"page=dunsplee/pond&amp;op=fishask\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:2;a:4:{s:11:\"displayname\";s:7:\"Zur&#195;&#188;ck\";s:3:\"url\";s:19:\"page=dunsplee/trail\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:3;a:4:{s:11:\"displayname\";s:0:\"\";s:3:\"url\";s:18:\"page=dunsplee/pond\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}}</value>
+    </field>
+
+    <field>
+     <name>template</name>
+     <value>default</value>
+    </field>
+
+    <field>
+     <name>type</name>
+     <value>gpcharacter</value>
+    </field>
+
+    <field>
+     <name>loggedin</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>race</name>
+     <value>elf</value>
+    </field>
+
+    <field>
+     <name>profession</name>
+     <value>ranger</value>
+    </field>
+
+    <field>
+     <name>sex</name>
+     <value>male</value>
+    </field>
+
+    <field>
+     <name>lastpagehit</name>
+     <value>2009-11-17 13:41:55</value>
+    </field>
+
+    <field>
+     <name>debugloglevel</name>
+     <value>veryverbose</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>4</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Schnorkel</value>
+    </field>
+
+    <field>
+     <name>displayname</name>
+     <value>Schnorkel</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>healthpoints</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>lifepoints</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>strength</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>dexterity</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>constitution</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>intelligence</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>wisdom</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>charisma</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>money</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>rightgroups</name>
+     <value>a:0:{}</value>
+    </field>
+
+    <field>
+     <name>current_nav</name>
+     <value>page=derashok/tribalcenter</value>
+    </field>
+
+    <field>
+     <name>allowednavs</name>
+     <value>a:4:{i:0;a:4:{s:11:\"displayname\";s:9:\"Allgemein\";s:3:\"url\";b:0;s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:1;a:4:{s:11:\"displayname\";s:13:\"Aktualisieren\";s:3:\"url\";O:3:\"URL\":1:{s:9:\"\0URL\0_url\";s:18:\"page=common/portal\";}s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:2;a:4:{s:11:\"displayname\";s:6:\"Logout\";s:3:\"url\";s:18:\"page=common/logout\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:3;a:4:{s:11:\"displayname\";s:0:\"\";s:3:\"url\";s:29:\"page=common/portal&amp;op=forward\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}}</value>
+    </field>
+
+    <field>
+     <name>allowednavs_cache</name>
+     <value>a:7:{i:0;a:4:{s:11:\"displayname\";s:10:\"Navigation\";s:3:\"url\";b:0;s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:1;a:4:{s:11:\"displayname\";s:6:\"Reisen\";s:3:\"url\";s:47:\"page=common/travel&amp;return=derashok/tribalcenter\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:2;a:4:{s:11:\"displayname\";s:17:\"Thagigdash Bogoob\";s:3:\"url\";s:20:\"page=derashok/bogoob\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:3;a:4:{s:11:\"displayname\";s:12:\"Spielerliste\";s:3:\"url\";s:49:\"page=common/charlist&amp;return=derashok/tribalcenter\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:4;a:4:{s:11:\"displayname\";s:9:\"Allgemein\";s:3:\"url\";b:0;s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:5;a:4:{s:11:\"displayname\";s:6:\"Logout\";s:3:\"url\";s:18:\"page=common/logout\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:6;a:4:{s:11:\"displayname\";s:0:\"\";s:3:\"url\";O:3:\"URL\":1:{s:9:\"\0URL\0_url\";s:26:\"page=derashok/tribalcenter\";}s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}}</value>
+    </field>
+
+    <field>
+     <name>template</name>
+     <value>default</value>
+    </field>
+
+    <field>
+     <name>type</name>
+     <value>gpcharacter</value>
+    </field>
+
+    <field>
+     <name>loggedin</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>race</name>
+     <value>halforc</value>
+    </field>
+
+    <field>
+     <name>profession</name>
+     <value>fighter</value>
+    </field>
+
+    <field>
+     <name>sex</name>
+     <value>male</value>
+    </field>
+
+    <field>
+     <name>lastpagehit</name>
+     <value>2009-10-12 14:53:43</value>
+    </field>
+
+    <field>
+     <name>debugloglevel</name>
+     <value>default</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>5</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Hastur</value>
+    </field>
+
+    <field>
+     <name>displayname</name>
+     <value>Hastur</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>healthpoints</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>lifepoints</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>strength</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>dexterity</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>constitution</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>intelligence</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>wisdom</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>charisma</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>money</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>rightgroups</name>
+     <value>a:0:{}</value>
+    </field>
+
+    <field>
+     <name>current_nav</name>
+     <value>page=ironlance/citysquare</value>
+    </field>
+
+    <field>
+     <name>allowednavs</name>
+     <value>a:4:{i:0;a:3:{s:11:\"displayname\";s:9:\"Allgemein\";s:3:\"url\";b:0;s:8:\"position\";s:4:\"left\";}i:1;a:3:{s:11:\"displayname\";s:13:\"Aktualisieren\";s:3:\"url\";s:18:\"page=common/portal\";s:8:\"position\";s:4:\"left\";}i:2;a:3:{s:11:\"displayname\";s:6:\"Logout\";s:3:\"url\";s:18:\"page=common/logout\";s:8:\"position\";s:4:\"left\";}i:3;a:3:{s:11:\"displayname\";s:0:\"\";s:3:\"url\";s:29:\"page=common/portal&amp;op=forward\";s:8:\"position\";s:4:\"left\";}}</value>
+    </field>
+
+    <field>
+     <name>allowednavs_cache</name>
+     <value></value>
+    </field>
+
+    <field>
+     <name>template</name>
+     <value>default</value>
+    </field>
+
+    <field>
+     <name>type</name>
+     <value>gpcharacter</value>
+    </field>
+
+    <field>
+     <name>loggedin</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>race</name>
+     <value>human</value>
+    </field>
+
+    <field>
+     <name>profession</name>
+     <value>paladin</value>
+    </field>
+
+    <field>
+     <name>sex</name>
+     <value>male</value>
+    </field>
+
+    <field>
+     <name>lastpagehit</name>
+     <value>2009-09-01 09:45:13</value>
+    </field>
+
+    <field>
+     <name>debugloglevel</name>
+     <value>default</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>6</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Rajesta</value>
+    </field>
+
+    <field>
+     <name>displayname</name>
+     <value>Rajesta</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>healthpoints</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>lifepoints</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>strength</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>dexterity</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>constitution</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>intelligence</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>wisdom</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>charisma</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>money</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>rightgroups</name>
+     <value>a:0:{}</value>
+    </field>
+
+    <field>
+     <name>current_nav</name>
+     <value>page=ironlance/citysquare</value>
+    </field>
+
+    <field>
+     <name>allowednavs</name>
+     <value>a:6:{i:0;a:3:{s:11:\"displayname\";s:10:\"Navigation\";s:3:\"url\";b:0;s:8:\"position\";s:4:\"left\";}i:1;a:3:{s:11:\"displayname\";s:9:\"Stadtbank\";s:3:\"url\";s:23:\"page=ironlance/citybank\";s:8:\"position\";s:4:\"left\";}i:2;a:3:{s:11:\"displayname\";s:9:\"Messenger\";s:3:\"url\";s:21:\"popup=popup/messenger\";s:8:\"position\";s:3:\"top\";}i:3;a:3:{s:11:\"displayname\";s:9:\"Allgemein\";s:3:\"url\";b:0;s:8:\"position\";s:4:\"left\";}i:4;a:3:{s:11:\"displayname\";s:6:\"Logout\";s:3:\"url\";s:18:\"page=common/logout\";s:8:\"position\";s:4:\"left\";}i:5;a:3:{s:11:\"displayname\";s:0:\"\";s:3:\"url\";s:25:\"page=ironlance/citysquare\";s:8:\"position\";s:4:\"left\";}}</value>
+    </field>
+
+    <field>
+     <name>allowednavs_cache</name>
+     <value></value>
+    </field>
+
+    <field>
+     <name>template</name>
+     <value>default</value>
+    </field>
+
+    <field>
+     <name>type</name>
+     <value>gpcharacter</value>
+    </field>
+
+    <field>
+     <name>loggedin</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>race</name>
+     <value>elf</value>
+    </field>
+
+    <field>
+     <name>profession</name>
+     <value>ranger</value>
+    </field>
+
+    <field>
+     <name>sex</name>
+     <value>female</value>
+    </field>
+
+    <field>
+     <name>lastpagehit</name>
+     <value>2009-09-01 09:45:14</value>
+    </field>
+
+    <field>
+     <name>debugloglevel</name>
+     <value>default</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>7</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Gunnar</value>
+    </field>
+
+    <field>
+     <name>displayname</name>
+     <value>Gunnar</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>healthpoints</name>
+     <value>5</value>
+    </field>
+
+    <field>
+     <name>lifepoints</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>strength</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>dexterity</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>constitution</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>intelligence</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>wisdom</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>charisma</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>money</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>rightgroups</name>
+     <value></value>
+    </field>
+
+    <field>
+     <name>current_nav</name>
+     <value>page=ironlance/citysquare</value>
+    </field>
+
+    <field>
+     <name>allowednavs</name>
+     <value></value>
+    </field>
+
+    <field>
+     <name>allowednavs_cache</name>
+     <value></value>
+    </field>
+
+    <field>
+     <name>template</name>
+     <value>default</value>
+    </field>
+
+    <field>
+     <name>type</name>
+     <value>gpcharacter</value>
+    </field>
+
+    <field>
+     <name>loggedin</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>race</name>
+     <value>halforc</value>
+    </field>
+
+    <field>
+     <name>profession</name>
+     <value>barbarian</value>
+    </field>
+
+    <field>
+     <name>sex</name>
+     <value>male</value>
+    </field>
+
+    <field>
+     <name>lastpagehit</name>
+     <value>0000-00-00 00:00:00</value>
+    </field>
+
+    <field>
+     <name>debugloglevel</name>
+     <value>default</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>8</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Leruk</value>
+    </field>
+
+    <field>
+     <name>displayname</name>
+     <value>Leruk</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>healthpoints</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>lifepoints</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>strength</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>dexterity</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>constitution</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>intelligence</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>wisdom</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>charisma</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>money</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>rightgroups</name>
+     <value>a:0:{}</value>
+    </field>
+
+    <field>
+     <name>current_nav</name>
+     <value>page=dunsplee/trail</value>
+    </field>
+
+    <field>
+     <name>allowednavs</name>
+     <value>a:4:{i:0;a:4:{s:11:\"displayname\";s:9:\"Allgemein\";s:3:\"url\";b:0;s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:1;a:4:{s:11:\"displayname\";s:13:\"Aktualisieren\";s:3:\"url\";O:3:\"URL\":3:{s:9:\"\0URL\0_url\";s:18:\"page=common/portal\";s:4:\"base\";s:18:\"page=common/portal\";s:5:\"short\";s:13:\"common/portal\";}s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:2;a:4:{s:11:\"displayname\";s:6:\"Logout\";s:3:\"url\";s:18:\"page=common/logout\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:3;a:4:{s:11:\"displayname\";s:0:\"\";s:3:\"url\";s:29:\"page=common/portal&amp;op=forward\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}}</value>
+    </field>
+
+    <field>
+     <name>allowednavs_cache</name>
+     <value>a:7:{i:0;a:4:{s:11:\"displayname\";s:10:\"Navigation\";s:3:\"url\";b:0;s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:1;a:4:{s:11:\"displayname\";s:6:\"Reisen\";s:3:\"url\";s:40:\"page=common/travel&amp;return=dunsplee/trail\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:2;a:4:{s:11:\"displayname\";s:6:\"Weiher\";s:3:\"url\";s:18:\"page=dunsplee/pond\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:3;a:4:{s:11:\"displayname\";s:12:\"Spielerliste\";s:3:\"url\";s:42:\"page=common/charlist&amp;return=dunsplee/trail\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:4;a:4:{s:11:\"displayname\";s:9:\"Allgemein\";s:3:\"url\";b:0;s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:5;a:4:{s:11:\"displayname\";s:6:\"Logout\";s:3:\"url\";s:18:\"page=common/logout\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:6;a:4:{s:11:\"displayname\";s:0:\"\";s:3:\"url\";O:3:\"URL\":3:{s:9:\"\0URL\0_url\";s:19:\"page=dunsplee/trail\";s:4:\"base\";N;s:5:\"short\";N;}s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}}</value>
+    </field>
+
+    <field>
+     <name>template</name>
+     <value>default</value>
+    </field>
+
+    <field>
+     <name>type</name>
+     <value>gpcharacter</value>
+    </field>
+
+    <field>
+     <name>loggedin</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>race</name>
+     <value>elf</value>
+    </field>
+
+    <field>
+     <name>profession</name>
+     <value>druid</value>
+    </field>
+
+    <field>
+     <name>sex</name>
+     <value>male</value>
+    </field>
+
+    <field>
+     <name>lastpagehit</name>
+     <value>2009-10-20 08:36:03</value>
+    </field>
+
+    <field>
+     <name>debugloglevel</name>
+     <value>default</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>9</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Rutek</value>
+    </field>
+
+    <field>
+     <name>displayname</name>
+     <value>`74R`72u`12t`51e`55k`00</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>healthpoints</name>
+     <value>-1</value>
+    </field>
+
+    <field>
+     <name>lifepoints</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>strength</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>dexterity</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>constitution</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>intelligence</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>wisdom</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>charisma</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>money</name>
+     <value>12</value>
+    </field>
+
+    <field>
+     <name>rightgroups</name>
+     <value>a:0:{}</value>
+    </field>
+
+    <field>
+     <name>current_nav</name>
+     <value>page=dunsplee/trail</value>
+    </field>
+
+    <field>
+     <name>allowednavs</name>
+     <value>a:7:{i:0;a:4:{s:11:\"displayname\";s:10:\"Navigation\";s:3:\"url\";b:0;s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:1;a:4:{s:11:\"displayname\";s:6:\"Reisen\";s:3:\"url\";s:40:\"page=common/travel&amp;return=dunsplee/trail\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:2;a:4:{s:11:\"displayname\";s:6:\"Weiher\";s:3:\"url\";s:18:\"page=dunsplee/pond\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:3;a:4:{s:11:\"displayname\";s:12:\"Spielerliste\";s:3:\"url\";s:42:\"page=common/charlist&amp;return=dunsplee/trail\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:4;a:4:{s:11:\"displayname\";s:9:\"Allgemein\";s:3:\"url\";b:0;s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:5;a:4:{s:11:\"displayname\";s:6:\"Logout\";s:3:\"url\";s:18:\"page=common/logout\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:6;a:4:{s:11:\"displayname\";s:0:\"\";s:3:\"url\";s:19:\"page=dunsplee/trail\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}}</value>
+    </field>
+
+    <field>
+     <name>allowednavs_cache</name>
+     <value>a:7:{i:0;a:4:{s:11:\"displayname\";s:10:\"Navigation\";s:3:\"url\";b:0;s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:1;a:4:{s:11:\"displayname\";s:6:\"Reisen\";s:3:\"url\";s:40:\"page=common/travel&amp;return=dunsplee/trail\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:2;a:4:{s:11:\"displayname\";s:6:\"Weiher\";s:3:\"url\";s:18:\"page=dunsplee/pond\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:3;a:4:{s:11:\"displayname\";s:12:\"Spielerliste\";s:3:\"url\";s:42:\"page=common/charlist&amp;return=dunsplee/trail\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:4;a:4:{s:11:\"displayname\";s:9:\"Allgemein\";s:3:\"url\";b:0;s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:5;a:4:{s:11:\"displayname\";s:6:\"Logout\";s:3:\"url\";s:18:\"page=common/logout\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}i:6;a:4:{s:11:\"displayname\";s:0:\"\";s:3:\"url\";s:19:\"page=dunsplee/trail\";s:8:\"position\";s:4:\"main\";s:11:\"description\";s:0:\"\";}}</value>
+    </field>
+
+    <field>
+     <name>template</name>
+     <value>default</value>
+    </field>
+
+    <field>
+     <name>type</name>
+     <value>gpcharacter</value>
+    </field>
+
+    <field>
+     <name>loggedin</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>race</name>
+     <value>human</value>
+    </field>
+
+    <field>
+     <name>profession</name>
+     <value>fighter</value>
+    </field>
+
+    <field>
+     <name>sex</name>
+     <value>male</value>
+    </field>
+
+    <field>
+     <name>lastpagehit</name>
+     <value>2010-02-28 02:41:40</value>
+    </field>
+
+    <field>
+     <name>debugloglevel</name>
+     <value>default</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Bown</value>
+    </field>
+
+    <field>
+     <name>displayname</name>
+     <value>`96B`95o`92w`81n`00</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>healthpoints</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>lifepoints</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>strength</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>dexterity</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>constitution</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>intelligence</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>wisdom</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>charisma</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>money</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>rightgroups</name>
+     <value></value>
+    </field>
+
+    <field>
+     <name>current_nav</name>
+     <value>page=ironlance/citysquare</value>
+    </field>
+
+    <field>
+     <name>allowednavs</name>
+     <value></value>
+    </field>
+
+    <field>
+     <name>allowednavs_cache</name>
+     <value></value>
+    </field>
+
+    <field>
+     <name>template</name>
+     <value>default</value>
+    </field>
+
+    <field>
+     <name>type</name>
+     <value>gpcharacter</value>
+    </field>
+
+    <field>
+     <name>loggedin</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>race</name>
+     <value>elf</value>
+    </field>
+
+    <field>
+     <name>profession</name>
+     <value>ranger</value>
+    </field>
+
+    <field>
+     <name>sex</name>
+     <value>male</value>
+    </field>
+
+    <field>
+     <name>lastpagehit</name>
+     <value>0000-00-00 00:00:00</value>
+    </field>
+
+    <field>
+     <name>debugloglevel</name>
+     <value>default</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>11</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Dagdamor</value>
+    </field>
+
+    <field>
+     <name>displayname</name>
+     <value>Dagdamor</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>healthpoints</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>lifepoints</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>strength</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>dexterity</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>constitution</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>intelligence</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>wisdom</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>charisma</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>money</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>rightgroups</name>
+     <value></value>
+    </field>
+
+    <field>
+     <name>current_nav</name>
+     <value>page=ironlance/citysquare</value>
+    </field>
+
+    <field>
+     <name>allowednavs</name>
+     <value></value>
+    </field>
+
+    <field>
+     <name>allowednavs_cache</name>
+     <value></value>
+    </field>
+
+    <field>
+     <name>template</name>
+     <value>default</value>
+    </field>
+
+    <field>
+     <name>type</name>
+     <value>gpcharacter</value>
+    </field>
+
+    <field>
+     <name>loggedin</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>race</name>
+     <value>human</value>
+    </field>
+
+    <field>
+     <name>profession</name>
+     <value>wizard</value>
+    </field>
+
+    <field>
+     <name>sex</name>
+     <value>male</value>
+    </field>
+
+    <field>
+     <name>lastpagehit</name>
+     <value>1970-01-01 00:00:00</value>
+    </field>
+
+    <field>
+     <name>debugloglevel</name>
+     <value>default</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>12</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Rualaril</value>
+    </field>
+
+    <field>
+     <name>displayname</name>
+     <value>`97R`96u`93a`41l`42a`51r`53i`66l`00</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>healthpoints</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>lifepoints</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>strength</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>dexterity</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>constitution</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>intelligence</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>wisdom</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>charisma</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>money</name>
+     <value>100</value>
+    </field>
+
+    <field>
+     <name>rightgroups</name>
+     <value>a:0:{}</value>
+    </field>
+
+    <field>
+     <name>current_nav</name>
+     <value></value>
+    </field>
+
+    <field>
+     <name>allowednavs</name>
+     <value></value>
+    </field>
+
+    <field>
+     <name>allowednavs_cache</name>
+     <value></value>
+    </field>
+
+    <field>
+     <name>template</name>
+     <value>default</value>
+    </field>
+
+    <field>
+     <name>type</name>
+     <value>gpcharacter</value>
+    </field>
+
+    <field>
+     <name>loggedin</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>race</name>
+     <value>human</value>
+    </field>
+
+    <field>
+     <name>profession</name>
+     <value>mage</value>
+    </field>
+
+    <field>
+     <name>sex</name>
+     <value>female</value>
+    </field>
+
+    <field>
+     <name>lastpagehit</name>
+     <value>2009-09-08 00:00:00</value>
+    </field>
+
+    <field>
+     <name>debugloglevel</name>
+     <value>default</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>13</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Thagigdash Bogoob</value>
+    </field>
+
+    <field>
+     <name>displayname</name>
+     <value>Thagigdash Bogoob</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>healthpoints</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>lifepoints</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>strength</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>dexterity</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>constitution</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>intelligence</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>wisdom</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>charisma</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>money</name>
+     <value>-45</value>
+    </field>
+
+    <field>
+     <name>rightgroups</name>
+     <value>a:0:{}</value>
+    </field>
+
+    <field>
+     <name>current_nav</name>
+     <value></value>
+    </field>
+
+    <field>
+     <name>allowednavs</name>
+     <value></value>
+    </field>
+
+    <field>
+     <name>allowednavs_cache</name>
+     <value></value>
+    </field>
+
+    <field>
+     <name>template</name>
+     <value>default</value>
+    </field>
+
+    <field>
+     <name>type</name>
+     <value>npc</value>
+    </field>
+
+    <field>
+     <name>loggedin</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>race</name>
+     <value>halforc</value>
+    </field>
+
+    <field>
+     <name>profession</name>
+     <value>fighter</value>
+    </field>
+
+    <field>
+     <name>sex</name>
+     <value>male</value>
+    </field>
+
+    <field>
+     <name>lastpagehit</name>
+     <value>1970-01-01 00:00:00</value>
+    </field>
+
+    <field>
+     <name>debugloglevel</name>
+     <value>default</value>
+    </field>
+
+   </insert>
+
+  </initialization>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>charactersettings</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>characterid</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>settingname</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>256</length>
+   </field>
+
+   <field>
+    <name>value</name>
+    <type>clob</type>
+    <notnull>true</notnull>
+   </field>
+
+   <index>
+    <name>characterid</name>
+    <field>
+     <name>characterid</name>
+     <sorting>ascending</sorting>
+    </field>
+    <field>
+     <name>settingname</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+  </declaration>
+
+  <initialization>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>characterid</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>settingname</name>
+     <value>chat_dunsplee_trail_visibility</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>1</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>2</value>
+    </field>
+
+    <field>
+     <name>characterid</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>settingname</name>
+     <value>chat_derashok_tribalcenter_visibility</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>1</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>characterid</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>settingname</name>
+     <value>chat_bogoob_visibility</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>1</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>4</value>
+    </field>
+
+    <field>
+     <name>characterid</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>settingname</name>
+     <value>chat_ironlance_citysquare_visibility</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>1</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>5</value>
+    </field>
+
+    <field>
+     <name>characterid</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>settingname</name>
+     <value>chat_dunsplee_pond_visibility</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>1</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>6</value>
+    </field>
+
+    <field>
+     <name>characterid</name>
+     <value>9</value>
+    </field>
+
+    <field>
+     <name>settingname</name>
+     <value>chat_derashok_tribalcenter_visibility</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>1</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>7</value>
+    </field>
+
+    <field>
+     <name>characterid</name>
+     <value>9</value>
+    </field>
+
+    <field>
+     <name>settingname</name>
+     <value>chat_ironlance_citysquare_visibility</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>1</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>8</value>
+    </field>
+
+    <field>
+     <name>characterid</name>
+     <value>9</value>
+    </field>
+
+    <field>
+     <name>settingname</name>
+     <value>chat_dunsplee_trail_visibility</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>1</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>9</value>
+    </field>
+
+    <field>
+     <name>characterid</name>
+     <value>9</value>
+    </field>
+
+    <field>
+     <name>settingname</name>
+     <value>chat_dunsplee_pond_visibility</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>1</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>characterid</name>
+     <value>9</value>
+    </field>
+
+    <field>
+     <name>settingname</name>
+     <value>chat_bogoob_visibility</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>1</value>
+    </field>
+
+   </insert>
+
+  </initialization>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>chat</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>section</name>
+    <type>text</type>
+    <default>none</default>
+    <notnull>true</notnull>
+    <length>256</length>
+   </field>
+
+   <field>
+    <name>authorid</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>chatline</name>
+    <type>text</type>
+    <default>default</default>
+    <notnull>true</notnull>
+    <length>4096</length>
+   </field>
+
+   <field>
+    <name>date</name>
+    <type>timestamp</type>
+    <default>1970-01-01 00:00:00</default>
+    <notnull>true</notnull>
+   </field>
+
+   <field>
+    <name>status</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>1</length>
+   </field>
+
+   <index>
+    <name>authorid</name>
+    <field>
+     <name>authorid</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+   <index>
+    <name>section</name>
+    <field>
+     <name>section</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+   <index>
+    <name>status</name>
+    <field>
+     <name>status</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+  </declaration>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>items</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>buffid</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>name</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>255</length>
+   </field>
+
+   <field>
+    <name>class</name>
+    <type>text</type>
+    <default>default</default>
+    <notnull>true</notnull>
+    <length>64</length>
+   </field>
+
+   <field>
+    <name>level</name>
+    <type>integer</type>
+    <default>1</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>requirement</name>
+    <type>integer</type>
+    <default>1</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>weight</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>value</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>location</name>
+    <type>text</type>
+    <default>backpack</default>
+    <notnull>true</notnull>
+    <length>9</length>
+   </field>
+
+   <field>
+    <name>owner</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <index>
+    <name>owner</name>
+    <field>
+     <name>owner</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+   <index>
+    <name>location</name>
+    <field>
+     <name>location</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+   <index>
+    <name>class</name>
+    <field>
+     <name>class</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+  </declaration>
+
+  <initialization>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>buffid</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Excalibur</value>
+    </field>
+
+    <field>
+     <name>class</name>
+     <value>weapon_blade</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>95</value>
+    </field>
+
+    <field>
+     <name>requirement</name>
+     <value>100</value>
+    </field>
+
+    <field>
+     <name>weight</name>
+     <value>4</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>105000</value>
+    </field>
+
+    <field>
+     <name>location</name>
+     <value>equipment</value>
+    </field>
+
+    <field>
+     <name>owner</name>
+     <value>9</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>2</value>
+    </field>
+
+    <field>
+     <name>buffid</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Stein des Anstosses</value>
+    </field>
+
+    <field>
+     <name>class</name>
+     <value>default</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>requirement</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>weight</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>5</value>
+    </field>
+
+    <field>
+     <name>location</name>
+     <value>backpack</value>
+    </field>
+
+    <field>
+     <name>owner</name>
+     <value>9</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>buffid</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Eichholzkeule</value>
+    </field>
+
+    <field>
+     <name>class</name>
+     <value>weapon_blunt</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>requirement</name>
+     <value>2</value>
+    </field>
+
+    <field>
+     <name>weight</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>25</value>
+    </field>
+
+    <field>
+     <name>location</name>
+     <value>backpack</value>
+    </field>
+
+    <field>
+     <name>owner</name>
+     <value>9</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>4</value>
+    </field>
+
+    <field>
+     <name>buffid</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Schwarze M&#195;&#188;tze</value>
+    </field>
+
+    <field>
+     <name>class</name>
+     <value>armor_head</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>requirement</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>weight</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>5</value>
+    </field>
+
+    <field>
+     <name>location</name>
+     <value>equipment</value>
+    </field>
+
+    <field>
+     <name>owner</name>
+     <value>9</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>5</value>
+    </field>
+
+    <field>
+     <name>buffid</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Wei&#195;&#159;es Leinenhemd</value>
+    </field>
+
+    <field>
+     <name>class</name>
+     <value>armor_chest</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>requirement</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>weight</name>
+     <value>2</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>location</name>
+     <value>equipment</value>
+    </field>
+
+    <field>
+     <name>owner</name>
+     <value>9</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>6</value>
+    </field>
+
+    <field>
+     <name>buffid</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Billige Lederhandschuhe</value>
+    </field>
+
+    <field>
+     <name>class</name>
+     <value>armor_arms</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>requirement</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>weight</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>location</name>
+     <value>equipment</value>
+    </field>
+
+    <field>
+     <name>owner</name>
+     <value>3</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>7</value>
+    </field>
+
+    <field>
+     <name>buffid</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Zerschlissene blaue Jeans</value>
+    </field>
+
+    <field>
+     <name>class</name>
+     <value>armor_legs</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>requirement</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>weight</name>
+     <value>5</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>7</value>
+    </field>
+
+    <field>
+     <name>location</name>
+     <value>equipment</value>
+    </field>
+
+    <field>
+     <name>owner</name>
+     <value>3</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>8</value>
+    </field>
+
+    <field>
+     <name>buffid</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Zerschlissene Sneakers</value>
+    </field>
+
+    <field>
+     <name>class</name>
+     <value>armor_feet</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>2</value>
+    </field>
+
+    <field>
+     <name>requirement</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>weight</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>6</value>
+    </field>
+
+    <field>
+     <name>location</name>
+     <value>equipment</value>
+    </field>
+
+    <field>
+     <name>owner</name>
+     <value>3</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>16</value>
+    </field>
+
+    <field>
+     <name>buffid</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Einfacher Holzbogen</value>
+    </field>
+
+    <field>
+     <name>class</name>
+     <value>weapon_ranged</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>requirement</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>weight</name>
+     <value>2</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>location</name>
+     <value>equipment</value>
+    </field>
+
+    <field>
+     <name>owner</name>
+     <value>3</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>17</value>
+    </field>
+
+    <field>
+     <name>buffid</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Zinnfisch</value>
+    </field>
+
+    <field>
+     <name>class</name>
+     <value>fish</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>requirement</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>weight</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>location</name>
+     <value>backpack</value>
+    </field>
+
+    <field>
+     <name>owner</name>
+     <value>3</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>18</value>
+    </field>
+
+    <field>
+     <name>buffid</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Aland</value>
+    </field>
+
+    <field>
+     <name>class</name>
+     <value>fish</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>requirement</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>weight</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>4</value>
+    </field>
+
+    <field>
+     <name>location</name>
+     <value>backpack</value>
+    </field>
+
+    <field>
+     <name>owner</name>
+     <value>13</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>19</value>
+    </field>
+
+    <field>
+     <name>buffid</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Karpfen</value>
+    </field>
+
+    <field>
+     <name>class</name>
+     <value>fish</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>requirement</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>weight</name>
+     <value>6</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>location</name>
+     <value>backpack</value>
+    </field>
+
+    <field>
+     <name>owner</name>
+     <value>13</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>20</value>
+    </field>
+
+    <field>
+     <name>buffid</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Aland</value>
+    </field>
+
+    <field>
+     <name>class</name>
+     <value>fish</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>requirement</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>weight</name>
+     <value>4</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>6</value>
+    </field>
+
+    <field>
+     <name>location</name>
+     <value>backpack</value>
+    </field>
+
+    <field>
+     <name>owner</name>
+     <value>13</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>21</value>
+    </field>
+
+    <field>
+     <name>buffid</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>D&#195;&#182;bel</value>
+    </field>
+
+    <field>
+     <name>class</name>
+     <value>fish</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>requirement</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>weight</name>
+     <value>4</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>6</value>
+    </field>
+
+    <field>
+     <name>location</name>
+     <value>backpack</value>
+    </field>
+
+    <field>
+     <name>owner</name>
+     <value>13</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>22</value>
+    </field>
+
+    <field>
+     <name>buffid</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Graskarpfen</value>
+    </field>
+
+    <field>
+     <name>class</name>
+     <value>fish</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>requirement</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>weight</name>
+     <value>6</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>location</name>
+     <value>backpack</value>
+    </field>
+
+    <field>
+     <name>owner</name>
+     <value>9</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>23</value>
+    </field>
+
+    <field>
+     <name>buffid</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>name</name>
+     <value>Brasse</value>
+    </field>
+
+    <field>
+     <name>class</name>
+     <value>fish</value>
+    </field>
+
+    <field>
+     <name>level</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>requirement</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>weight</name>
+     <value>4</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>7</value>
+    </field>
+
+    <field>
+     <name>location</name>
+     <value>backpack</value>
+    </field>
+
+    <field>
+     <name>owner</name>
+     <value>9</value>
+    </field>
+
+   </insert>
+
+  </initialization>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>messages</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>sender</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>subject</name>
+    <type>text</type>
+    <default>default</default>
+    <notnull>true</notnull>
+    <length>255</length>
+   </field>
+
+   <field>
+    <name>text</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>4096</length>
+   </field>
+
+   <field>
+    <name>date</name>
+    <type>timestamp</type>
+    <default>1970-01-01 00:00:00</default>
+    <notnull>true</notnull>
+   </field>
+
+   <index>
+    <name>sender</name>
+    <field>
+     <name>sender</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+  </declaration>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>messages_references</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>messageid</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>receiver</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>status</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <length>1</length>
+   </field>
+
+   <index>
+    <name>messageid</name>
+    <field>
+     <name>messageid</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+   <index>
+    <name>receiver</name>
+    <field>
+     <name>receiver</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+   <index>
+    <name>status</name>
+    <field>
+     <name>status</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+  </declaration>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>modules</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>name</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>255</length>
+   </field>
+
+   <field>
+    <name>description</name>
+    <type>clob</type>
+    <notnull>true</notnull>
+   </field>
+
+   <field>
+    <name>filesystemname</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>255</length>
+   </field>
+
+   <field>
+    <name>type</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>255</length>
+   </field>
+
+   <field>
+    <name>enabled</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <length>1</length>
+   </field>
+
+   <index>
+    <name>enabled</name>
+    <field>
+     <name>enabled</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+   <index>
+    <name>type</name>
+    <field>
+     <name>type</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+  </declaration>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>news</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>author</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>title</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>50</length>
+   </field>
+
+   <field>
+    <name>body</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>4096</length>
+   </field>
+
+   <field>
+    <name>area</name>
+    <type>integer</type>
+    <default>1</default>
+    <notnull>true</notnull>
+    <length>2</length>
+   </field>
+
+   <field>
+    <name>date</name>
+    <type>timestamp</type>
+    <default>1970-01-01 00:00:00</default>
+    <notnull>true</notnull>
+   </field>
+
+   <index>
+    <name>author</name>
+    <field>
+     <name>author</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+   <index>
+    <name>area</name>
+    <field>
+     <name>area</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+  </declaration>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>openids</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>userid</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>openid_url</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>255</length>
+   </field>
+
+   <index>
+    <name>userid</name>
+    <field>
+     <name>userid</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+   <index>
+    <name>openid_url</name>
+    <unique>true</unique>
+    <field>
+     <name>openid_url</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+  </declaration>
+
+  <initialization>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>userid</name>
+     <value>2</value>
+    </field>
+
+    <field>
+     <name>openid_url</name>
+     <value>https://tacki.myopenid.com/</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>2</value>
+    </field>
+
+    <field>
+     <name>userid</name>
+     <value>2</value>
+    </field>
+
+    <field>
+     <name>openid_url</name>
+     <value>http://tacki.myopenid.com/</value>
+    </field>
+
+   </insert>
+
+  </initialization>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>supportrequests</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>date</name>
+    <type>timestamp</type>
+    <default>1970-01-01 00:00:00</default>
+    <notnull>true</notnull>
+   </field>
+
+   <field>
+    <name>userlogin</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>255</length>
+   </field>
+
+   <field>
+    <name>email</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>128</length>
+   </field>
+
+   <field>
+    <name>supporttext</name>
+    <type>clob</type>
+    <notnull>true</notnull>
+   </field>
+
+   <field>
+    <name>pagedump</name>
+    <type>clob</type>
+    <notnull>true</notnull>
+   </field>
+
+  </declaration>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>systranslations</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>system</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>255</length>
+   </field>
+
+   <field>
+    <name>humanreadable</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>255</length>
+   </field>
+
+   <index>
+    <name>system</name>
+    <unique>true</unique>
+    <field>
+     <name>system</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+  </declaration>
+
+  <initialization>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value>page=derashok/tribalcenter</value>
+    </field>
+
+    <field>
+     <name>humanreadable</name>
+     <value>Derashok Stammeszentrum</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>2</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value>page=ironlance/citysquare</value>
+    </field>
+
+    <field>
+     <name>humanreadable</name>
+     <value>Ironlance Stadtzentrum</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value>page=dunsplee/pond</value>
+    </field>
+
+    <field>
+     <name>humanreadable</name>
+     <value>Dunsplee Weiher</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>4</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value>page=dunsplee/trail</value>
+    </field>
+
+    <field>
+     <name>humanreadable</name>
+     <value>Dunsplee Waldweg</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>5</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value>page=common/charlist</value>
+    </field>
+
+    <field>
+     <name>humanreadable</name>
+     <value>Userliste</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>6</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value>page=common/portal</value>
+    </field>
+
+    <field>
+     <name>humanreadable</name>
+     <value>Portal</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>7</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value>page=common/travel</value>
+    </field>
+
+    <field>
+     <name>humanreadable</name>
+     <value>Reise</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>8</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value>page=ironlance/citybank</value>
+    </field>
+
+    <field>
+     <name>humanreadable</name>
+     <value>Ironlance Stadtbank</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>9</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value>weapon_blade</value>
+    </field>
+
+    <field>
+     <name>humanreadable</name>
+     <value>Klingenwaffe</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value>weapon_blunt</value>
+    </field>
+
+    <field>
+     <name>humanreadable</name>
+     <value>Stumpfe Waffe</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>11</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value>weapon_ranged</value>
+    </field>
+
+    <field>
+     <name>humanreadable</name>
+     <value>Fernkampfwaffe</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>12</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value>weapon_staff</value>
+    </field>
+
+    <field>
+     <name>humanreadable</name>
+     <value>Stangenwaffe</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>13</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value>armor_head</value>
+    </field>
+
+    <field>
+     <name>humanreadable</name>
+     <value>Kopf</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>14</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value>armor_chest</value>
+    </field>
+
+    <field>
+     <name>humanreadable</name>
+     <value>Oberk&#195;&#182;rper</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>15</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value>armor_arms</value>
+    </field>
+
+    <field>
+     <name>humanreadable</name>
+     <value>Arme/H&#195;&#164;nde</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>16</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value>armor_legs</value>
+    </field>
+
+    <field>
+     <name>humanreadable</name>
+     <value>Beine</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>17</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value>armor_feet</value>
+    </field>
+
+    <field>
+     <name>humanreadable</name>
+     <value>Schuhe</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>18</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value>weapon</value>
+    </field>
+
+    <field>
+     <name>humanreadable</name>
+     <value>Waffe</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>19</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value>armor</value>
+    </field>
+
+    <field>
+     <name>humanreadable</name>
+     <value>R&#195;&#188;stung/Bekleidung</value>
+    </field>
+
+   </insert>
+
+  </initialization>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>timers</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>name</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>64</length>
+   </field>
+
+   <field>
+    <name>completiontime</name>
+    <type>timestamp</type>
+    <default>1970-01-01 00:00:00</default>
+    <notnull>true</notnull>
+   </field>
+
+   <field>
+    <name>backupttc</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <length>4</length>
+   </field>
+
+   <index>
+    <name>name</name>
+    <unique>true</unique>
+    <field>
+     <name>name</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+  </declaration>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>users</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>login</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>32</length>
+   </field>
+
+   <field>
+    <name>password</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>32</length>
+   </field>
+
+   <field>
+    <name>email</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>128</length>
+   </field>
+
+   <field>
+    <name>current_character</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>lastlogin</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>iplist</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>4096</length>
+   </field>
+
+   <field>
+    <name>uniqueid</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>4096</length>
+   </field>
+
+   <field>
+    <name>loggedin</name>
+    <type>integer</type>
+    <default>1</default>
+    <notnull>true</notnull>
+    <length>1</length>
+   </field>
+
+   <index>
+    <name>current_character</name>
+    <field>
+     <name>current_character</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+  </declaration>
+
+  <initialization>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>login</name>
+     <value>anonymous</value>
+    </field>
+
+    <field>
+     <name>password</name>
+     <value>disabled</value>
+    </field>
+
+    <field>
+     <name>email</name>
+     <value>example@example.net</value>
+    </field>
+
+    <field>
+     <name>current_character</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>lastlogin</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>iplist</name>
+     <value></value>
+    </field>
+
+    <field>
+     <name>uniqueid</name>
+     <value></value>
+    </field>
+
+    <field>
+     <name>loggedin</name>
+     <value>0</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>2</value>
+    </field>
+
+    <field>
+     <name>login</name>
+     <value>tacki</value>
+    </field>
+
+    <field>
+     <name>password</name>
+     <value>419def0ad0ba9beb09d47c21c57b0336</value>
+    </field>
+
+    <field>
+     <name>email</name>
+     <value>example@example.net</value>
+    </field>
+
+    <field>
+     <name>current_character</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>lastlogin</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>iplist</name>
+     <value>O:7:\"IPStack\":3:{s:12:\"\0*\0datestack\";a:8:{i:0;i:1209465016;i:1;i:1250755559;i:2;i:1255591860;i:3;i:1255592031;i:4;i:1255696237;i:5;i:1255952155;i:6;i:1256128872;i:7;i:1256128929;}s:8:\"\0*\0stack\";a:8:{i:0;s:9:\"127.0.0.1\";i:1;s:3:\"::1\";i:2;s:13:\"145.253.78.58\";i:3;s:3:\"::1\";i:4;s:13:\"192.168.1.239\";i:5;s:3:\"::1\";i:6;s:13:\"145.253.78.58\";i:7;s:3:\"::1\";}s:10:\"\0*\0maxsize\";s:2:\"10\";}</value>
+    </field>
+
+    <field>
+     <name>uniqueid</name>
+     <value>O:13:\"UniqueIDStack\":3:{s:12:\"\0*\0datestack\";a:14:{i:0;i:1209465016;i:1;i:1217932280;i:2;i:1218463470;i:3;i:1227258990;i:4;i:1227861785;i:5;i:1228288898;i:6;i:1250755559;i:7;i:1255591860;i:8;i:1255592031;i:9;i:1255696237;i:10;i:1255952155;i:11;i:1256128872;i:12;i:1256128929;i:13;i:1256198874;}s:8:\"\0*\0stack\";a:10:{i:0;s:32:\"cb4c5a2a2f1fe6a6d6c4f68f3ec9a201\";i:1;s:32:\"906d3f2482eeb27e68ac387c16f63420\";i:2;s:32:\"8d4bcbe508b8a34289e777ace6dbc83f\";i:3;s:32:\"19eb7a4830cf99b65498fdf655941614\";i:4;s:32:\"8d4bcbe508b8a34289e777ace6dbc83f\";i:5;s:32:\"35f36b94104cf2bb6a3a519df3a15f66\";i:6;s:32:\"8d4bcbe508b8a34289e777ace6dbc83f\";i:7;s:32:\"24f0e5c2940c8849b3c61791e36fa926\";i:8;s:32:\"8d4bcbe508b8a34289e777ace6dbc83f\";i:9;s:32:\"847baf95a7ae8911cbddee199c75359b\";}s:10:\"\0*\0maxsize\";s:2:\"10\";}</value>
+    </field>
+
+    <field>
+     <name>loggedin</name>
+     <value>1</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>login</name>
+     <value>hasturion</value>
+    </field>
+
+    <field>
+     <name>password</name>
+     <value>c9f3186fbcf6b15e51ab7a0cdb2a9aaa</value>
+    </field>
+
+    <field>
+     <name>email</name>
+     <value>example@example.net</value>
+    </field>
+
+    <field>
+     <name>current_character</name>
+     <value>6</value>
+    </field>
+
+    <field>
+     <name>lastlogin</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>iplist</name>
+     <value>O:7:\"IPStack\":3:{s:12:\"\0*\0datestack\";a:2:{i:0;i:1209465053;i:1;i:1251791106;}s:8:\"\0*\0stack\";a:2:{i:0;s:9:\"127.0.0.1\";i:1;s:3:\"::1\";}s:10:\"\0*\0maxsize\";s:2:\"10\";}</value>
+    </field>
+
+    <field>
+     <name>uniqueid</name>
+     <value>O:13:\"UniqueIDStack\":3:{s:12:\"\0*\0datestack\";a:2:{i:0;i:1209465053;i:1;i:1251791106;}s:8:\"\0*\0stack\";a:2:{i:0;s:32:\"906d3f2482eeb27e68ac387c16f63420\";i:1;s:32:\"8d4bcbe508b8a34289e777ace6dbc83f\";}s:10:\"\0*\0maxsize\";s:2:\"10\";}</value>
+    </field>
+
+    <field>
+     <name>loggedin</name>
+     <value>0</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>4</value>
+    </field>
+
+    <field>
+     <name>login</name>
+     <value>teruk</value>
+    </field>
+
+    <field>
+     <name>password</name>
+     <value>a583b9f1ed8acf5186687cf820a87a2b</value>
+    </field>
+
+    <field>
+     <name>email</name>
+     <value>example@example.net</value>
+    </field>
+
+    <field>
+     <name>current_character</name>
+     <value>9</value>
+    </field>
+
+    <field>
+     <name>lastlogin</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>iplist</name>
+     <value>O:7:\"IPStack\":3:{s:12:\"\0*\0datestack\";a:10:{i:0;i:1234518206;i:1;i:1254827125;i:2;i:1256020557;i:3;i:1256128944;i:4;i:1256198996;i:5;i:1256202426;i:6;i:1256284118;i:7;i:1256653518;i:8;i:1258103059;i:9;i:1265317364;}s:8:\"\0*\0stack\";a:10:{i:0;s:9:\"127.0.0.1\";i:1;s:3:\"::1\";i:2;s:13:\"192.168.1.239\";i:3;s:13:\"145.253.78.58\";i:4;s:3:\"::1\";i:5;s:13:\"192.168.1.239\";i:6;s:13:\"145.253.78.58\";i:7;s:13:\"192.168.1.249\";i:8;s:13:\"192.168.1.207\";i:9;s:3:\"::1\";}s:10:\"\0*\0maxsize\";s:2:\"10\";}</value>
+    </field>
+
+    <field>
+     <name>uniqueid</name>
+     <value>O:13:\"UniqueIDStack\":3:{s:12:\"\0*\0datestack\";a:11:{i:0;i:1234518205;i:1;i:1254827125;i:2;i:1256020557;i:3;i:1256109605;i:4;i:1256117390;i:5;i:1256128944;i:6;i:1256198996;i:7;i:1256202426;i:8;i:1256284118;i:9;i:1258103059;i:10;i:1265317364;}s:8:\"\0*\0stack\";a:10:{i:0;s:32:\"8d4bcbe508b8a34289e777ace6dbc83f\";i:1;s:32:\"fbd577c0fd96b7fc74f3c3926f5bc10c\";i:2;s:32:\"110ee65a21da59c678883aa3b891621f\";i:3;s:32:\"bec35006a803cbe700bbd9fae762af69\";i:4;s:32:\"24f0e5c2940c8849b3c61791e36fa926\";i:5;s:32:\"847baf95a7ae8911cbddee199c75359b\";i:6;s:32:\"581fc3eb23a23da989a43d264d0620ab\";i:7;s:32:\"766ec702ee6b6c474d6c8083ef52b767\";i:8;s:32:\"c01d1620c25cb633308b65e4a8e32e9c\";i:9;s:32:\"30d1c625d62485453080ae3fb65975b0\";}s:10:\"\0*\0maxsize\";s:2:\"10\";}</value>
+    </field>
+
+    <field>
+     <name>loggedin</name>
+     <value>0</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>5</value>
+    </field>
+
+    <field>
+     <name>login</name>
+     <value>bown</value>
+    </field>
+
+    <field>
+     <name>password</name>
+     <value>bf4f88c8bdf2856296975944486a2b62</value>
+    </field>
+
+    <field>
+     <name>email</name>
+     <value>example@example.net</value>
+    </field>
+
+    <field>
+     <name>current_character</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>lastlogin</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>iplist</name>
+     <value>O:7:\"IPStack\":3:{s:12:\"\0*\0datestack\";a:1:{i:0;i:1234515948;}s:8:\"\0*\0stack\";a:1:{i:0;s:9:\"127.0.0.1\";}s:10:\"\0*\0maxsize\";s:2:\"10\";}</value>
+    </field>
+
+    <field>
+     <name>uniqueid</name>
+     <value>O:13:\"UniqueIDStack\":3:{s:12:\"\0*\0datestack\";a:1:{i:0;i:1234515948;}s:8:\"\0*\0stack\";a:1:{i:0;s:32:\"906d3f2482eeb27e68ac387c16f63420\";}s:10:\"\0*\0maxsize\";s:2:\"10\";}</value>
+    </field>
+
+    <field>
+     <name>loggedin</name>
+     <value>1</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>7</value>
+    </field>
+
+    <field>
+     <name>login</name>
+     <value>coolrabbit</value>
+    </field>
+
+    <field>
+     <name>password</name>
+     <value>a3ddec2521990d4fdfcb5822a7baa64e</value>
+    </field>
+
+    <field>
+     <name>email</name>
+     <value>example@example.net</value>
+    </field>
+
+    <field>
+     <name>current_character</name>
+     <value>12</value>
+    </field>
+
+    <field>
+     <name>lastlogin</name>
+     <value>0</value>
+    </field>
+
+    <field>
+     <name>iplist</name>
+     <value></value>
+    </field>
+
+    <field>
+     <name>uniqueid</name>
+     <value></value>
+    </field>
+
+    <field>
+     <name>loggedin</name>
+     <value>1</value>
+    </field>
+
+   </insert>
+
+  </initialization>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>usersettings</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>userid</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>settingname</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>256</length>
+   </field>
+
+   <field>
+    <name>value</name>
+    <type>clob</type>
+    <notnull>true</notnull>
+   </field>
+
+   <index>
+    <name>userid</name>
+    <field>
+     <name>userid</name>
+     <sorting>ascending</sorting>
+    </field>
+    <field>
+     <name>settingname</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+  </declaration>
+
+  <initialization>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>userid</name>
+     <value>2</value>
+    </field>
+
+    <field>
+     <name>settingname</name>
+     <value>default_character</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>3</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>2</value>
+    </field>
+
+    <field>
+     <name>userid</name>
+     <value>2</value>
+    </field>
+
+    <field>
+     <name>settingname</name>
+     <value>chatcensorship</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>1</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>userid</name>
+     <value>2</value>
+    </field>
+
+    <field>
+     <name>settingname</name>
+     <value>chatdateformat</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>[H:i:s]</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>4</value>
+    </field>
+
+    <field>
+     <name>userid</name>
+     <value>4</value>
+    </field>
+
+    <field>
+     <name>settingname</name>
+     <value>chatdateformat</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>[H:i:s]</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>5</value>
+    </field>
+
+    <field>
+     <name>userid</name>
+     <value>4</value>
+    </field>
+
+    <field>
+     <name>settingname</name>
+     <value>chatcensorship</value>
+    </field>
+
+    <field>
+     <name>value</name>
+     <value>1</value>
+    </field>
+
+   </insert>
+
+  </initialization>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>waypoints</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <length>2</length>
+   </field>
+
+   <field>
+    <name>x</name>
+    <type>integer</type>
+    <notnull>true</notnull>
+    <length>2</length>
+   </field>
+
+   <field>
+    <name>y</name>
+    <type>integer</type>
+    <notnull>true</notnull>
+    <length>2</length>
+   </field>
+
+   <field>
+    <name>z</name>
+    <type>integer</type>
+    <notnull>true</notnull>
+    <length>1</length>
+   </field>
+
+   <field>
+    <name>system</name>
+    <type>text</type>
+    <notnull>true</notnull>
+    <length>255</length>
+   </field>
+
+  </declaration>
+
+  <initialization>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>x</name>
+     <value>135</value>
+    </field>
+
+    <field>
+     <name>y</name>
+     <value>170</value>
+    </field>
+
+    <field>
+     <name>z</name>
+     <value>25</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value>page=derashok/tribalcenter</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>2</value>
+    </field>
+
+    <field>
+     <name>x</name>
+     <value>20</value>
+    </field>
+
+    <field>
+     <name>y</name>
+     <value>180</value>
+    </field>
+
+    <field>
+     <name>z</name>
+     <value>40</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value>page=ironlance/citysquare</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>x</name>
+     <value>55</value>
+    </field>
+
+    <field>
+     <name>y</name>
+     <value>45</value>
+    </field>
+
+    <field>
+     <name>z</name>
+     <value>30</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value>page=dunsplee/trail</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>4</value>
+    </field>
+
+    <field>
+     <name>x</name>
+     <value>73</value>
+    </field>
+
+    <field>
+     <name>y</name>
+     <value>175</value>
+    </field>
+
+    <field>
+     <name>z</name>
+     <value>40</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value></value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>5</value>
+    </field>
+
+    <field>
+     <name>x</name>
+     <value>116</value>
+    </field>
+
+    <field>
+     <name>y</name>
+     <value>178</value>
+    </field>
+
+    <field>
+     <name>z</name>
+     <value>30</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value></value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>6</value>
+    </field>
+
+    <field>
+     <name>x</name>
+     <value>89</value>
+    </field>
+
+    <field>
+     <name>y</name>
+     <value>160</value>
+    </field>
+
+    <field>
+     <name>z</name>
+     <value>26</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value></value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>7</value>
+    </field>
+
+    <field>
+     <name>x</name>
+     <value>65</value>
+    </field>
+
+    <field>
+     <name>y</name>
+     <value>101</value>
+    </field>
+
+    <field>
+     <name>z</name>
+     <value>28</value>
+    </field>
+
+    <field>
+     <name>system</name>
+     <value></value>
+    </field>
+
+   </insert>
+
+  </initialization>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>waypoints_connection</name>
+
+  <declaration>
+
+   <field>
+    <name>start</name>
+    <type>integer</type>
+    <notnull>true</notnull>
+    <length>2</length>
+   </field>
+
+   <field>
+    <name>end</name>
+    <type>integer</type>
+    <notnull>true</notnull>
+    <length>2</length>
+   </field>
+
+   <field>
+    <name>difficulty</name>
+    <type>float</type>
+    <notnull>true</notnull>
+   </field>
+
+   <index>
+    <name>waypoints_connection_pKey</name>
+    <primary>true</primary>
+    <field>
+     <name>start</name>
+     <sorting>ascending</sorting>
+    </field>
+    <field>
+     <name>end</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+  </declaration>
+
+  <initialization>
+
+   <insert>
+
+    <field>
+     <name>start</name>
+     <value>2</value>
+    </field>
+
+    <field>
+     <name>end</name>
+     <value>5</value>
+    </field>
+
+    <field>
+     <name>difficulty</name>
+     <value>0</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>start</name>
+     <value>2</value>
+    </field>
+
+    <field>
+     <name>end</name>
+     <value>6</value>
+    </field>
+
+    <field>
+     <name>difficulty</name>
+     <value>0</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>start</name>
+     <value>4</value>
+    </field>
+
+    <field>
+     <name>end</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>difficulty</name>
+     <value>0</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>start</name>
+     <value>5</value>
+    </field>
+
+    <field>
+     <name>end</name>
+     <value>4</value>
+    </field>
+
+    <field>
+     <name>difficulty</name>
+     <value>0</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>start</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>end</name>
+     <value>4</value>
+    </field>
+
+    <field>
+     <name>difficulty</name>
+     <value>0</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>start</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>end</name>
+     <value>7</value>
+    </field>
+
+    <field>
+     <name>difficulty</name>
+     <value>0</value>
+    </field>
+
+   </insert>
+
+  </initialization>
+
+ </table>
+
+ <table>
+
+  <name><variable>db_prefix</variable>weapons</name>
+
+  <declaration>
+
+   <field>
+    <name>id</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <autoincrement>1</autoincrement>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>itemid</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>weapondamage_min</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <field>
+    <name>weapondamage_max</name>
+    <type>integer</type>
+    <default>0</default>
+    <notnull>true</notnull>
+    <unsigned>true</unsigned>
+    <length>4</length>
+   </field>
+
+   <index>
+    <name>itemid</name>
+    <field>
+     <name>itemid</name>
+     <sorting>ascending</sorting>
+    </field>
+   </index>
+
+  </declaration>
+
+  <initialization>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>itemid</name>
+     <value>1</value>
+    </field>
+
+    <field>
+     <name>weapondamage_min</name>
+     <value>120</value>
+    </field>
+
+    <field>
+     <name>weapondamage_max</name>
+     <value>180</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>2</value>
+    </field>
+
+    <field>
+     <name>itemid</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>weapondamage_min</name>
+     <value>10</value>
+    </field>
+
+    <field>
+     <name>weapondamage_max</name>
+     <value>15</value>
+    </field>
+
+   </insert>
+
+   <insert>
+
+    <field>
+     <name>id</name>
+     <value>3</value>
+    </field>
+
+    <field>
+     <name>itemid</name>
+     <value>16</value>
+    </field>
+
+    <field>
+     <name>weapondamage_min</name>
+     <value>4</value>
+    </field>
+
+    <field>
+     <name>weapondamage_max</name>
+     <value>8</value>
+    </field>
+
+   </insert>
+
+  </initialization>
+
+ </table>
+
+</database>

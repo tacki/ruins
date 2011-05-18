@@ -1,0 +1,91 @@
+@CHARSET "UTF-8";
+
+/* body */
+body {
+    font-size: 12px;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    color: #F9E9A9;
+    background: #000000;
+    margin: 0px;
+    padding: 0px;
+}
+
+/* popup navigation */
+ul.popupnav {
+    text-align: left;
+    margin: 8px 0 0 0; /* set margins as desired */
+    font-weight: bold;
+    font-size: 110%;
+    color: #F9E9A9;
+    border-bottom: 1px solid #F9E9A9;
+    list-style-type: none;
+    padding: 4px 4px 1px 4px; /* THIRD number must change with respect to padding-top (X) below */
+}
+
+ul.popupnav li {
+    display: inline;
+}
+
+ul.popupnav li a {
+    padding: 1px 4px; /* set padding (tab size) as desired; FIRST number must change with respect to padding-top (X) above */
+    border: 1px solid #F9E9A9; /* set border COLOR as desired; usually matches border color specified in #tabnav */
+    background-color: #1A1723; /* set unselected tab background color as desired */
+    color: #666; /* set unselected tab link color as desired */
+    margin-right: 2px; /* set additional spacing between tabs as desired */
+    text-decoration: none;
+    border-bottom: none;
+}
+
+ul.popupnav li a:hover {
+    color: #222222;
+    text-decoration: none;
+    background: #F9E9A9;
+}
+
+#navidsel_0 li.navid_0 a,
+#navidsel_1 li.navid_1 a,
+#navidsel_2 li.navid_2 a,
+#navidsel_3 li.navid_3 a { /* settings for selected tab link */
+    background-color: #31353a; /* set selected tab background color as desired */
+    color: #F9E9A9; /* set selected tab link color as desired */
+    position: relative;
+    top: 0px;
+    padding-top: 6px; /* must change with respect to padding (X) above and below */
+    padding-bottom: 2px;
+}
+
+
+/* main-body preferences */
+#main-body {
+    margin: 0px;
+    padding: 0px;
+    background: #1A1723;
+    width: 100%;
+}
+
+/* content preferences */
+#content {
+    background: #1A1723;
+    padding: 4px;
+}
+
+/* footer preferences */
+#footer {
+    clear: both;
+    background: #592836;
+    height: 22px;
+    width: 100%;
+}
+#pagegen {
+    float: right;
+    color: #FAE7A3;
+    padding: 3px 5px;
+    text-align: right;
+    width: 33%;
+}
+
+#time {
+    color: #FAE7A3;
+    float: left;
+    padding: 3px 5px;
+}

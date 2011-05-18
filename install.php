@@ -1,0 +1,683 @@
+<?php
+/**
+ * Installation
+ *
+ * Installation and Configuration of 'Ruins'
+ * @author Markus Schlegel <g42@gmx.net>
+ * @copyright Copyright (C) 2006 Markus Schlegel
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @version $Id: install.php 327 2011-04-20 10:07:21Z tacki $
+ * @package Ruins
+ */
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en">
+<head>
+    <title>Ruins Installation Script</title>
+    <meta http-equiv="content-type" content="application/xhtml+xml;charset=utf-8" />
+    <style type="text/css">
+    <!--
+        body {
+            background-color:#FFFFFF;
+            font-family: Verdana, Arial, Helvetica, sans-serif;
+            font-size: 11px;
+            color: black;
+        }
+
+        h4 {
+            color: black;
+            text-decoration: underline;
+        }
+
+        div.checkfor {
+            color: black;
+            text-align: center;
+            border-bottom: #BE9272 1px solid;
+        }
+
+        div.ok {
+            font-weight: bold;
+            text-align: center;
+            color: green;
+        }
+
+        div.notok {
+            font-weight: bold;
+            text-align: center;
+            color: red;
+
+        }
+
+        div.ask {
+            font-weight: bold;
+            text-align: center;
+            color: #ffae00;
+
+        }
+
+        div.continue {
+            font-weight: bold;
+            color: #2d5b00;
+        }
+
+        input.continue {
+            font-weight: bold;
+            text-align: center;
+            color: green;
+            border-left: #BE9272 1px solid;
+            border-right: #BE9272 1px solid;
+            border-top: #BE9272 1px solid;
+            border-bottom: #BE9272 1px solid;
+        }
+
+        input.retry {
+            font-weight: bold;
+            text-align: center;
+            color: #ffae00;
+            border-left: #BE9272 1px solid;
+            border-right: #BE9272 1px solid;
+            border-top: #BE9272 1px solid;
+            border-bottom: #BE9272 1px solid;
+        }
+
+        input.restart {
+            font-weight: bold;
+            text-align: center;
+            color: red;
+            border-left: #BE9272 1px solid;
+            border-right: #BE9272 1px solid;
+            border-top: #BE9272 1px solid;
+            border-bottom: #BE9272 1px solid;
+        }
+
+        td.description {
+            font-size: 8px;
+            border-left: #BE9272 1px solid;
+            border-right: #BE9272 1px solid;
+            border-top: #BE9272 1px solid;
+            border-bottom: #BE9272 1px solid;
+        }
+    -->
+    </style>
+
+</head>
+<body>
+
+<?php
+if (!isset($_GET['step'])) {
+    $_GET['step'] = 1;
+}
+
+switch ($_GET['step']) {
+
+    default:
+        echo "<h2>Invalid Action</h2>";
+        echo "<br /><b>Restart from Step 1</b><br />";
+        echo "<form action='install.php?step=1' method='post'>
+                <input type='submit' value='Restart' class='restart'></form>";
+        break;
+
+    case 1:
+        echo "<h2>Step " . $_GET['step'] .  " of 4 - Create and Verify Environment</h2>";
+        echo "<h4>Checking for write Permissions</h4>";
+
+        $writeaccess = array();
+
+        $writeaccess["Configuration Directory"] = "config";
+        $writeaccess["Database Dump Directory"]	= "db dump";
+        $writeaccess["Log Folder"]				= "logs";
+        $writeaccess["Temp Folder"]				= "temp";
+
+        // To add more Directories, just keep this syntax
+        // $writeaccess['directorydescription']	= "pathname/pathname";
+
+        // Do the voodoo
+        foreach ($writeaccess as $description => $dirname) {
+            echo "<div class='checkfor'>" . $description . " ... </div>";
+
+            if (is_writable($dirname)) {
+                echo "<div class='ok'>OK!</div>";
+            } else {
+                echo "<div class='notok'>Not OK! Directory " . $dirname . " is not writeable!
+                        Please make sure that this Directory is writeable by the Webserver.</div><br />";
+                echo "<form action='install.php?step=" . ($_GET['step']) .  "' method='post'>
+                            <input type='submit' value='Retry'></form>";
+                break 2;
+            }
+
+            echo "<br />";
+        }
+
+        // ***************************************************************************************** //
+
+        echo "<h4>Creating necessary Systemfolders</h4>";
+
+        $createdirs = array();
+
+        // dirconfig-file
+        $createdirs['Smarty Temp Base Dir'] 	= "temp/smarty";
+        $createdirs['Smarty Temp Cache Dir']	= "temp/smarty/cache";
+        $createdirs['Smarty Temp Compile Dir']	= "temp/smarty/templates_c";
+        $createdirs['OpenID Temp Base Dir']		= "temp/openid";
+
+        // To add more Directories, just keep this syntax
+        // $createdirs['directorydescription']	= "pathname";
+
+        // Do the Voodoo
+        foreach ($createdirs as $description => $dirname) {
+            echo "<div class='checkfor'>" . $description . " ... </div>";
+
+            if (is_dir($dirname) && is_writable($dirname)) {
+                echo "<div class='ok'>OK!</div>";
+            } elseif (!(file_exists($dirname))) {
+                echo "<div class='ok'>Creating! </div>";
+                if (mkdir($dirname)) {
+                    echo "<div class='ok'>OK!</div>";
+                } else {
+                    echo "<div class='notok'>Not OK! Directory " . $dirname . " cannot be created!
+                            Please make sure that the Directory is writeable by the Webserver.</div><br />";
+                    echo "<form action='install.php?step=" . ($_GET['step']) .  "' method='post'>
+                                <input type='submit' value='Retry'></form>";
+                    break 2;
+                }
+            } else {
+                echo "<div class='notok'>Not OK! Directory " . $dirname . " is not writeable!
+                        Please make sure that this Directory is writeable by the Webserver.</div><br />";
+                echo "<form action='install.php?step=" . ($_GET['step']) .  "' method='post'>
+                            <input type='submit' value='Retry'></form>";
+                break 2;
+            }
+        }
+
+        // ***************************************************************************************** //
+
+        echo "<h4>Creating necessary Systemfiles</h4>";
+
+        $conffiles 	= array();
+
+        // dirconfig-file
+        $conffiles['dirconfig'] = array();
+        $conffiles['dirconfig']['path']			= dirname(__FILE__)."/config/dirconf.cfg.php";
+        $conffiles['dirconfig']['content'] 		=	"<?php"."\n" .
+                                                    "	define(\"DIR_BASE\", ".
+                                                        "\"".str_replace('\\', '/', dirname(__FILE__)).
+                                                        "/".
+                                                        "\");"."\n" .
+                                                    "	define(\"DIR_AREA\", ".
+                                                        "\"".str_replace('\\', '/', dirname(__FILE__)).
+                                                        "/area/".
+                                                        "\");"."\n" .
+                                                    "	define(\"DIR_CONFIG\", ".
+                                                        "\"".str_replace('\\', '/', dirname(__FILE__)).
+                                                        "/config/".
+                                                        "\");"."\n" .
+                                                    "	define(\"DIR_INCLUDES\", ".
+                                                        "\"".str_replace('\\', '/', dirname(__FILE__)).
+                                                        "/includes/".
+                                                        "\");"."\n" .
+                                                    "	define(\"DIR_INCLUDES_PEAR\", ".
+                                                        "\"".str_replace('\\', '/', dirname(__FILE__)).
+                                                        "/includes/external/pear/".
+                                                        "\");"."\n" .
+                                                    "	define(\"DIR_INCLUDES_SMARTY\", ".
+                                                        "\"".str_replace('\\', '/', dirname(__FILE__)).
+                                                        "/includes/external/smarty/".
+                                                        "\");"."\n" .
+                                                    "	define(\"DIR_IMAGES\", ".
+                                                        "\"".str_replace('\\', '/', dirname(__FILE__)).
+                                                        "/images/".
+                                                        "\");"."\n" .
+                                                    "	define(\"DIR_LOG\", ".
+                                                        "\"".str_replace('\\', '/', dirname(__FILE__)).
+                                                        "/logs/".
+                                                        "\");"."\n" .
+                                                    "	define(\"DIR_TEMPLATES\", ".
+                                                        "\"".str_replace('\\', '/', dirname(__FILE__)).
+                                                        "/templates/".
+                                                        "\");"."\n" .
+                                                    "	define(\"DIR_TEMP\", ".
+                                                        "\"".str_replace('\\', '/', dirname(__FILE__)).
+                                                        "/temp/".
+                                                        "\");"."\n" .
+                                                    "	define(\"DIR_MODULES\", ".
+                                                        "\"".str_replace('\\', '/', dirname(__FILE__)).
+                                                        "/modules/".
+                                                        "\");"."\n" .
+                                                    "	\n" .
+                                                    " 	set_include_path(DIR_INCLUDES_PEAR.PATH_SEPARATOR.get_include_path());"."\n" .
+                                                    "?>";
+
+        // To add more Files, just keep this syntax
+        // $conffiles['configname']['path']		= dirname(__FILE__)."/config/configname.cfg.php";
+        // $conffiles['configname']['content'] 	= "content";
+
+        // Do the voodoo
+        foreach ($conffiles as $confname=>$conffile) {
+            echo "<div class='checkfor'>" . $conffile['path'] . " ... </div>";
+
+            if (!file_exists($conffile['path']) || (isset($_GET['overwrite']) && $_GET['overwrite'] == $confname)) {
+                if ($filehandle = fopen($conffile['path'], "w")) {
+                    if (fwrite($filehandle, $conffile['content']) !== false) {
+                        echo "<div class='ok'>OK!</div>";
+                    } else {
+                        echo "<div class='notok'>Not OK! File " . $conffile['path'] ." exists and is not writeable!
+                                Please make this File writeable by the Webserver.</div>";
+                        echo "<form action='install.php?step=" . ($_GET['step']) .  "' method='post'>
+                                <input type='submit' value='Retry' class='retry'></form>";
+                        break 2;
+                    }
+                } else {
+                    echo "<div class='notok'>Not OK! Cannot open " . $conffile['path'] . "!
+                            Please make sure this File is readable by the Webserver.</div>";
+                    echo "<form action='install.php?step=" . ($_GET['step']) .  "' method='post'>
+                            <input type='submit' value='Retry' class='retry'></form>";
+                    break 2;
+                }
+            } elseif (file_exists($conffile['path'])) {
+                $filecontent = file_get_contents($conffile['path']);
+
+                if ($filecontent === $conffile['content']) {
+                    // File has already the same content
+                    echo "<div class='ok'>OK!</div>";
+                    continue;
+                }
+                echo "<div class='ask'>File already exists. Overwrite?</div>";
+                echo "<form action='install.php?step=" . ($_GET['step']) . "&overwrite=" . $confname . "' method='post'>
+                        <input type='submit' value='Overwrite' class='retry'></form>";
+                break;
+            }
+        }
+
+        // ***************************************************************************************** //
+
+        echo "<h4>Checking for required PHP-Extensions</h4>";
+
+        $extensions = array();
+
+        $extensions["JSON"] 					= "json";
+        $extensions["Sessions"] 				= "Session";
+        $extensions["XML"]						= "XML";
+        $extensions["LibXML"]					= "libxml";
+        $extensions["DomXML"]					= "dom";
+        $extensions["GD"]						= "gd";
+
+        // To add more Extensions, just keep this syntax
+        // $extensions['featuredescription']	= "Extensionname";
+
+        // Do the voodoo
+        foreach ($extensions as $description => $extension) {
+            echo "<div class='checkfor'>" . $description . " ... </div>";
+
+            if (extension_loaded($extension)) {
+                echo "<div class='ok'>OK!</div>";
+            } else {
+                echo "<div class='notok'>Not OK! Cannot find Extension '" . $description . "'!
+                        Please make sure this Feature is enabled by PHP.</div>";
+                echo "<form action='install.php?step=" . ($_GET['step']) .  "' method='post'>
+                        <input type='submit' value='Retry' class='retry'></form>";
+                break 2;
+            }
+
+        }
+
+        // ***************************************************************************************** //
+
+        echo "<h4>Checking for required Libraries</h4>";
+
+        // Load the Config generated in Step 2
+        require_once("config/dirconf.cfg.php");
+
+        $libraries = array();
+
+        $libraries["PEAR Basic Package"] 					= "PEAR.php";
+        $libraries["PEAR MDB2 Database Abstraction Layer"] 	= "MDB2.php";
+        $libraries["PEAR MDB2 Database Schema Manager"] 	= "MDB2/Schema.php";
+        $libraries["PEAR Log"]								= "Log.php";
+
+        // To add more Libraries, just keep this syntax
+        // $libraries['librarydescription']					= "libraryfile.php";
+
+        // Do the voodoo
+        foreach ($libraries as $description => $filename) {
+            echo "<div class='checkfor'>" . $description . " ... </div>";
+
+            $moduleok = false;
+            $includepaths = explode(PATH_SEPARATOR, get_include_path());
+
+            foreach ($includepaths as $include) {
+                if (file_exists($include . "/" . $filename)) {
+                    if (is_readable($include . "/" . $filename)) {
+                        echo "<div class='ok'>OK!</div>";
+                        $moduleok = true;
+                        break;
+                    } else {
+                        echo "<div class='notok'>Not OK! Library found, but not readable!
+                                Please make sure " . $filename .  " is readable by the Webserver.</div>";
+                        echo "<form action='install.php?step=" . ($_GET['step']) .  "' method='post'>
+                                <input type='submit' value='Retry' class='retry'></form>";
+                        break 2;
+                    }
+                }
+            }
+
+            if (!$moduleok) {
+                echo "<div class='notok'>Not OK! Library not found!
+                            Please install '" . $description .  "'.</div>";
+                echo "<form action='install.php?step=" . ($_GET['step']) .  "' method='post'>
+                        <input type='submit' value='Retry' class='retry'></form>";
+                break 2;
+            }
+        }
+
+        echo "<div class='continue'>Continue to the next Step</div>";
+        echo "<form action='install.php?step=" . ($_GET['step']+1) .  "' method='post'>
+                <input type='submit' value='Continue' class='continue'></form>";
+        break;
+
+    case 2:
+        echo "<h2>Step " . $_GET['step'] .  " of 4 - Database Settings</h2>";
+        echo "<h4>Checking for Database Information</h4>";
+
+        // Include dirconf and global function library
+        require_once("config/dirconf.cfg.php");
+        require_once(DIR_INCLUDES."functions/global.func.php");
+        require_once(DIR_INCLUDES."functions/database.func.php");
+
+        // Set Autoloader
+        spl_autoload_register("ruinsAutoload");
+
+        if (isset($_GET['updateDBinfo'])) {
+            echo "<div class='checkfor'>Updating Database Settings ... </div>";
+
+            $dbconnect_content	=	"<?php"."\n" .
+                                        "// created by installscript\n" .
+                                        "\$dbconnect = array(\n" .
+                                        "'phptype' => '" . $_POST['phptype'] . "',\n" .
+                                        "'hostspec' => '" . $_POST['hostspec'] . "',\n" .
+                                        "'username' => '" . $_POST['username'] . "',\n" .
+                                        "'password' => '" . $_POST['password'] . "',\n" .
+                                        "'database' => '" . $_POST['database'] . "',\n" .
+                                        "'prefix' => '" . $_POST['prefix'] . "');\n" .
+                                    "?>";
+
+            if ($filehandle = fopen(DIR_CONFIG."dbconnect.cfg.php", "w")) {
+                    if (fwrite($filehandle, $dbconnect_content) !== false) {
+                        echo "<div class='ok'>New Database Settings written!</div>";
+                    } else {
+                        echo "<div class='notok'>Not OK! File " . DIR_CONFIG."dbconnect.cfg.php" ." exists and is not writeable!
+                                Please make this File writeable by the Webserver.</div>";
+                        echo "<form action='install.php?step=" . ($_GET['step']) .  "' method='post'>
+                                <input type='submit' value='Retry' class='retry'></form>";
+                        break 2;
+                    }
+                } else {
+                    echo "<div class='notok'>Not OK! Cannot open " . DIR_CONFIG."dbconnect.cfg.php" . "!
+                            Please make sure this File is readable by the Webserver.</div>";
+                    echo "<form action='install.php?step=" . ($_GET['step']) .  "' method='post'>
+                            <input type='submit' value='Retry' class='retry'></form>";
+                    break 2;
+                }
+        }
+
+        if (file_exists("config/dbconnect.cfg.php")) {
+            echo "<div class='checkfor'>Try to connect using the existing Configuration File ... </div>";
+
+            require_once(DIR_CONFIG."dbconnect.cfg.php");
+            $needDBinfo = false;
+
+            // Try to connect using the given Data (be silent)
+            $database = getDBInstance(true);
+
+            if (MDB2::isConnection($database)) {
+                echo "<div class='ok'>OK!</div>";
+            } else {
+                echo "<div class='notok'>Database Settings invalid! Please enter the correct Database Information:</div>";
+                $needDBinfo = true;
+            }
+        } else {
+            echo "<div class='ask'>Database Settings don't exist. Please enter the Database Information:</div>";
+            $needDBinfo = true;
+        }
+
+        if ($needDBinfo) {
+            echo "<form action='install.php?step=" . ($_GET['step']) .  "&updateDBinfo' method='post'>
+                    <table border='0'>
+                    <tr>
+                        <td>Databasetype:</td>
+                        <td><select name='phptype'>
+                                <option value='mysql'>MySQL (InnoDB)</option>
+                                <option value='mysqli'>MySQLi (InnoDB)</option>
+                                <option value='pgsql'>PostgreSQL</option>
+                            </select>
+                        </td>
+                    </tr><tr>
+                        <td colspan='2' class='description'>
+                            Type of Database Server (only MySQL and MySQLi are supportet atm)
+                        </td>
+                    </tr><tr>
+                        <td>Hostname:</td>
+                        <td><input type='text' name='hostspec'></td>
+                    </tr><tr>
+                        <td colspan='2' class='description'>
+                            Hostname of the Database Server. For example 'localhost', 'database.example.com' or '192.168.1.5'
+                        </td>
+                    </tr><tr>
+                        <td>Username:</td>
+                        <td><input type='text' name='username'></td>
+                    </tr><tr>
+                        <td colspan='2' class='description'>
+                            Username to connect to the Database Server
+                        </td>
+                    </tr><tr>
+                        <td>Password:</td>
+                        <td><input type='password' name='password'></td>
+                    </tr><tr>
+                        <td colspan='2' class='description'>
+                            Password to connect to the Database Server
+                        </td>
+                    </tr><tr>
+                        <td>Database:</td>
+                        <td><input type='text' name='database'></td>
+                    </tr><tr>
+                        <td colspan='2' class='description'>
+                            Database to use on the Database Server
+                        </td>
+                    </tr><tr>
+                        <td>Database Table Prefix:</td>
+                        <td><input type='text' name='prefix'></td>
+                    </tr><tr>
+                        <td colspan='2' class='description'>
+                            Prefix of the Tables for this Project (Keep empty if not used). Examples: ruins__, ruinstest__, etc.
+                        </td>
+                    </tr>
+                    </table>
+                    <input type='submit' value='Update' class='retry'></form>";
+        } else {
+            echo "<div class='continue'>Continue to the next Step</div>";
+            echo "<form action='install.php?step=" . ($_GET['step']+1) .  "' method='post'>
+                    <input type='submit' value='Continue' class='continue'></form>";
+        }
+        break;
+
+    case 3:
+        echo "<h2>Step " . $_GET['step'] .  " of 4 - Prepare Database</h2>";
+        echo "<h4>Import initial Database</h4>";
+
+        // Include dirconf, global function library and database information
+        require_once("config/dirconf.cfg.php");
+        require_once(DIR_INCLUDES."includes.inc.php");
+
+        // Set Autoloader
+        spl_autoload_register("ruinsAutoload");
+
+        $database = getDBInstance();
+
+        if (isset($_GET['import'])) {
+            echo "<div class='checkfor'>Import Initial Database ... </div>";
+
+            $erroraccured = false;
+
+            // force to InnoDB if mysql(i) is used
+            if (strtolower($dbconnect['phptype']) == 'mysql'
+                || strtolower($dbconnect['phptype']) == 'mysqli'
+                ) {
+                $result = $database->exec("SET storage_engine=INNODB");
+
+                if (PEAR::isError($result)) {
+                    echo "<div class='notok'>NOT OK! InnoDB is not supported! (" . $result->getUserInfo() .")</div>";
+                    echo "<form action='install.php?step=" . ($_GET['step']) . "&import=true' method='post'>
+                            <input type='submit' value='Retry' class='retry'></form>";
+                    break;
+                }
+            }
+
+            if (file_exists(DIR_BASE."db dump/initial.xml")) {
+                $options = array(
+                    'log_line_break' => '<br>',
+                    'idxname_format' => '%s',
+                    'debug' => true,
+                    'quote_identifier' => true,
+                    'force_defaults' => true,
+                    'portability' => true,
+                    'use_transactions' => false
+                );
+
+                // Import into Database using MDB2_Schema
+                $importer = MDB2_Schema::factory($dbconnect, $options);
+
+                // Get Database-Definition from current running Database
+                $olddefinition = $importer->getDefinitionFromDatabase();
+
+                // Update Database with initial.xml
+                $importstatus = $importer->updateDatabase(DIR_BASE."db dump/initial.xml",
+                                                            $olddefinition,
+                                                            array('db_prefix' => $dbconnect['prefix'], 'db_name' => $dbconnect['database']));
+
+                if (PEAR::isError($importstatus)) {
+                    $erroraccured = $importstatus->getUserInfo();
+                }
+
+
+                if ($erroraccured) {
+                    echo "<div class='notok'>NOT OK! Can't import the XML-Schema! (" . $erroraccured . ")</div>";
+                    echo "<form action='install.php?step=" . ($_GET['step']) . "&import=true' method='post'>
+                            <input type='submit' value='Retry' class='retry'></form>";
+                } else {
+                    echo "<div class='ok'>OK!</div>";
+                    echo "<div class='continue'>Continue to the next Step</div>";
+                    echo "<form action='install.php?step=" . ($_GET['step']+1) .  "' method='post'>
+                        <input type='submit' value='Continue' class='continue'></form>";
+                }
+            } else {
+                echo "<div class='notok'>NOT OK! Initial Database Information file not found!
+                        Please make sure you have the whole package.</div>";
+                echo "<form action='install.php?step=" . ($_GET['step']) . "&import=true' method='post'>
+                        <input type='submit' value='Retry' class='retry'></form>";
+            }
+
+            break;
+        }
+
+        echo "<div class='checkfor'>Check for already existing Tables ... </div>";
+
+        $oldtablesfound = false;
+
+        // Try to connect using the given Data
+        $database = getDBInstance();
+
+        $database->loadModule('Manager');
+        $tablelist = $database->listTables();
+
+        if (PEAR::isError($tablelist)) {
+            // No Tables found, Database doesn't exist or
+            // can't connect (bad, but shouldn't happen - we
+            // checked this a half step before)
+            $oldtablesfound = false;
+        } else {
+            foreach ($tablelist as $tablename) {
+                if ( (strlen($dbconnect['prefix']) && strpos($tablename, $dbconnect['prefix']) === 0) ||
+                     strlen($dbconnect['prefix']) === 0 ) {
+                    echo "<div class='notok'>Already existing Table found: " . $tablename . "</div>";
+                    $oldtablesfound = true;
+                }
+            }
+        }
+
+        if ($oldtablesfound) {
+            echo "<div class='ask'>More than 1 already existing Table found! I will try to update these Tables.</div>";
+            echo "<form action='install.php?step=" . ($_GET['step']) . "&import=true' method='post'>
+                    <input type='submit' value='Start Import' class='continue'></form>";
+        } else {
+            echo "<div class='ok'>No existing Tables found. Please press 'Start Import' to import the initial Database</div>";
+            echo "<form action='install.php?step=" . ($_GET['step']) . "&import=true' method='post'>
+                    <input type='submit' value='Start Import' class='continue'></form>";
+        }
+        break;
+
+    case 4:
+        echo "<h2>Step " . $_GET['step'] .  " of 4 - Initialize Modules</h2>";
+        echo "<h4>Initialize Modules</h4>";
+
+        // Include dirconf, global function library and database information
+        require_once("config/dirconf.cfg.php");
+        require_once(DIR_INCLUDES."includes.inc.php");
+
+        // Set Autoloader
+        spl_autoload_register("ruinsAutoload");
+
+        echo "<div class='checkfor'>Sync ModuleList to Database ... </div>";
+
+        // Generate Module List
+        if (ModuleSystem::syncModuleListToDatabase()) {
+            echo "<div class='ok'>OK!</div>";
+        } else {
+            echo "<div class='notok'>NOT OK! Failure during initial ModuleList Sync!</div>";
+            echo "<form action='install.php?step=" . ($_GET['step']) . "&import=true' method='post'>
+                    <input type='submit' value='Retry' class='retry'></form>";
+            break;
+        }
+
+        echo "<div class='checkfor'>Initialize Modules ... </div>";
+
+        // Initialize Modules
+        if ($moduleList = ModuleSystem::getModuleListFromDatabase()) {
+            if (is_array($moduleList)) {
+                foreach ($moduleList as $module) {
+                    if (ModuleSystem::installModule($module['type'], $module['filesystemname'])) {
+                        echo "<div class='ok'>" . $module['name'] . " ... OK!</div>";
+                    } else {
+                        echo "<div class='notok'>Module Initialization Error: " . $module['name'] . "</div>";
+                    }
+                }
+            }
+            echo "<div class='continue'>Continue to the next Step</div>";
+            echo "<form action='install.php?step=" . ($_GET['step']+1) .  "' method='post'>
+                    <input type='submit' value='Continue' class='continue'></form>";
+        } else {
+            echo "<div class='ask'>No Modules found! Continue?</div>";
+            echo "<form action='install.php?step=" . ($_GET['step']) . "&import=true' method='post'>
+                    <input type='submit' value='Retry' class='retry'></form>";
+            echo "<form action='install.php?step=" . ($_GET['step']+1) .  "' method='post'>
+                    <input type='submit' value='Continue' class='continue'></form>";
+            break;
+        }
+
+        break;
+
+
+
+    case 5:
+        echo "<h2>Installation complete</h2>";
+        echo "<h4>Congratulations, the Installation is complete! Press 'Continue' to load the Frontpage of Ruins.</h4>";
+
+        echo "<form action='index.php' method='post'>
+                <input type='submit' value='Continue' class='continue'></form>";
+        break;
+
+}
+
+
+?>
+
+</body>
+</html>

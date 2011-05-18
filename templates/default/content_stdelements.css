@@ -1,0 +1,74 @@
+@CHARSET "UTF-8";
+a {
+    color: #79f0a3;
+    text-decoration: none;
+}
+a:hover {
+    color: #e7f329;
+    text-decoration: none;
+}
+input, .input {
+    border-width:1px;
+    border-style:solid;
+    border-color: #F9E9A9;
+    background-color: #2F2430;
+    color: #F9E9A9;
+}
+.inputr {
+    border-width:1px;
+    border-style:solid;
+    border-color: #F9E9A9;
+    background-color: #2F2430;
+    color: #F9E9A9;
+    text-align: right;
+}
+.textarea {
+    border-width:1px;
+    border-style:solid;
+    border-color: #F9E9A9;
+    background-color: #2F2430;
+    color: #F9E9A9;
+}
+.select {
+    border-width:1px;
+    border-style:solid;
+    border-color: #F9E9A9;
+    background-color: #2F2430;
+    color: #F9E9A9;
+}
+.button {
+    border-width:1px;
+    border-style:solid;
+    border-color: #F9E9A9;
+    background-color: #2F2430;
+    color: #F9E9A9;
+    text-align:center;
+}
+th {
+    background: #31353a;
+    font-weight: bold;
+    font-size: 125%;
+}
+tr.firstrow {
+    background: #2F2430;
+}
+tr.secondrow {
+    background: #4F4450;
+}
+.floatclear {
+    clear: both;
+}
+.floatleft {
+    float: left;
+}
+.floatright {
+    float: right;
+}
+.center {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+.hidden {
+    display: none;
+}
