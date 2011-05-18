@@ -299,7 +299,8 @@ switch ($_GET['step']) {
         $extensions["XML"]						= "XML";
         $extensions["LibXML"]					= "libxml";
         $extensions["DomXML"]					= "dom";
-        $extensions["GD"]						= "gd";
+        $extensions["GD Lib"]        			= "gd";
+        $extensions["Multibyte String"]        = "mbstring";
 
         // To add more Extensions, just keep this syntax
         // $extensions['featuredescription']	= "Extensionname";

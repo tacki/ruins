@@ -6,7 +6,6 @@
  * @author Markus Schlegel <g42@gmx.net>
  * @copyright Copyright (C) 2006 Markus Schlegel
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version SVN: $Id: btcode.class.php 326 2011-04-19 20:19:34Z tacki $
  * @package Ruins
  */
 
@@ -24,19 +23,24 @@ require_once(DIR_INCLUDES."includes.inc.php");
 class btCode2
 {
 
-    const BTID          = "`";
-    const BTID_CLOSER   = ":";
+    const BTID              = "`";
+    const BTID_CLOSER       = ":";
 
-    const EXCLUDESUBID  = "x";
+    const EXCLUDESUBID      = "x";
 
-    const CONTROLTAG           = "CONTROLTAG";
-    const CONTROLTAG_LENGTH    = 1;
+    const CONTROLTAG        = "CONTROLTAG";
+    const CONTROLTAG_LENGTH = 1;
 
     const COLORTAG          = "COLORTAG";
     const COLORTAG_LENGTH   = 2;
     const COLORSUBID        = "#";
     const COLORBACKSUBID    = "~";
 
+    /**
+     * Convert btcode-Tags into HTML-Elements
+     * @param string $decodestring String to convert
+     * @return string Returns HTML-Code with converted btcode-Tags
+     */
     public static function decode($decodestring)
     {
         $opentags = array();
@@ -56,12 +60,8 @@ class btCode2
         }
 
         // Handle Normal Tags
-        while ( (($position = strpos($decodestring, self::BTID, $offset)) !== false) ) {
-            self::_translateControlTags($decodestring, $opentags);
-            self::_translateColorTags($decodestring, $opentags);
-
-            $offset = $position+1;
-        }
+        self::_translateControlTags($decodestring, $opentags);
+        self::_translateColorTags($decodestring, $opentags);
 
         // Close still open tags
         self::_closeOpenTags($decodestring, $opentags);
@@ -69,6 +69,11 @@ class btCode2
         return ($decodestring);
     }
 
+    /**
+     * Convert btcode-Tags into CSS-Classnames
+     * @param string $decodestring String to convert
+     * @return string Returns CSS-Classnames in place of the Tags
+     */
     public static function decodeToCSSColorClass($decodestring)
     {
         $offset = 0;
@@ -131,6 +136,12 @@ class btCode2
         return $decodestring;
     }
 
+    /**
+     * Get the corresponding HTML-Code for a given btcode-Tag
+     * @param string $tagid btcode-Tag without BTID
+     * @param string $state open, close or class
+     * @return string HTML-Code or false if non-existing btcode-Tag
+     */
     private static function _getTag($tagid, $state)
     {
         $tags = array (
@@ -158,6 +169,13 @@ class btCode2
         }
     }
 
+    /**
+     * Generate btCode-Detection Regex-String
+     * @param string $type Name of the regex to Generate
+     * @param bool $forceCloseTag Force an OpenClose-Tag-Regex (else optional)
+     * @param bool $addNextWord Include the next Word to the Regex
+     * @return string Regex-String
+     */
     private static function _getRegex($type, $forceCloseTag=false, $addNextWord=false)
     {
         $regex = array (
@@ -184,7 +202,10 @@ class btCode2
             }
 
             if ($addNextWord) {
-                $regexres .= "\s*\w+";
+                // delimiting characters for the 'word'
+                $limitchar = array ('<', self::BTID, self::COLORSUBID, self::COLORBACKSUBID);
+
+                $regexres .= "\s*".self::_getRegexWordDefinition();
             }
 
             $regexres .= "/";
@@ -194,17 +215,29 @@ class btCode2
         }
     }
 
-    private static function _identifyTagType($tagid)
+    /**
+     * Generate Word-Definition ([[:word:]] replacement to allow more chars than only Numbers and Letters]
+     * @return string Regex-Snippet
+     */
+    private static function _getRegexWordDefinition()
     {
-        if ($tagid == self::COLORSUBID || $tagid == self::COLORBACKSUBID) {
-            return self::COLORTAG;
-        } elseif (preg_match("/^[[:alpha:]]{".self::CONTROLTAG_LENGTH."}$/", $tagid)) {
-            return self::CONTROLTAG;
-        } else {
-            return false;
+        // delimiting characters for the 'word'
+        $limitchars = array ("<", ">", self::BTID, self::COLORSUBID, self::COLORBACKSUBID);
+
+        $limitstring = "[^\p{Z}";
+        foreach ($limitchars as $character) {
+            $limitstring .= "|" . preg_quote($character);
         }
+        $limitstring .= "]+";
+
+        return $limitstring;
     }
 
+    /**
+     * Translate all Control Tags (bold, newline, center, etc)
+     * @param string $decodestring The String including the btcode Tags
+     * @param array $opentags Tags that are already open
+     */
     private static function _translateControlTags(&$decodestring, array &$opentags)
     {
         // OPENCLOSE CONTROL TAGS WHICH RELATE ONLY TO THE NEXT WORD (example: `b:word)
@@ -268,9 +301,13 @@ class btCode2
 
     }
 
+    /**
+     * Translate all Color Tags
+     * @param string $decodestring The String including the btcode Tags
+     * @param array $opentags Tags that are already open
+     */
     private static function _translateColorTags(&$decodestring, array &$opentags)
     {
-
         // COLOR GRADIENT FOR THE NEXT WORD (example: `#50-5f:word)
         if (preg_match_all(self::_getRegex("color-gradient", true, true), $decodestring, $matches)) {
             // Result is in $matches (2-dimensional array)
@@ -284,7 +321,7 @@ class btCode2
                 $colorcode2 = substr($result, 2+self::COLORTAG_LENGTH+1, self::COLORTAG_LENGTH);
 
                 // fetch the Word
-                preg_match("/".preg_quote(self::BTID_CLOSER)."\s*\w+/", $result, $word);
+                preg_match("/".preg_quote(self::BTID_CLOSER)."\s*".self::_getRegexWordDefinition()."/", $result, $word);
                 $word = substr($word[0], 1); // strip leading Closer
 
                 // Replace the Tag inside $decodestring
@@ -293,7 +330,7 @@ class btCode2
                                              $decodestring);
 
                 // Translate the new tags
-                self::_translateColorTag($decodestring, $tagid, $opentags);
+                self::_translateColorTags($decodestring, $opentags);
             }
 
         // OPENCLOSE COLOR TAGS WHICH RELATES ONLY TO THE NEXT WORD (example: `#2f:word)
@@ -362,6 +399,13 @@ class btCode2
         }
     }
 
+    /**
+     * Create a Color Gradient for a given Word
+     * @param string $word The Word to use
+     * @param int $color1 Gradient From-Color
+     * @param int $color2 Gradient To-Color
+     * @return string Color Gradient (ColorCode+Letter+ColorCode+Letter...)
+     */
     private static function _createColorGradient($word, $color1, $color2)
     {
         if (!ctype_xdigit($color1) || !ctype_xdigit($color2)) {
@@ -369,7 +413,9 @@ class btCode2
         }
 
         $colordiff  = hexdec($color2) - hexdec($color1);
-        $wordlength = strlen($word);
+        $colordiff>0?$colordiff++:$colordiff--;
+
+        $wordlength = mb_strlen($word);
 
         // calculate stepsize
         $stepsize = $colordiff / $wordlength;
@@ -378,14 +424,19 @@ class btCode2
         $curcol = hexdec($color1);
         for ($i = 0; $i<$wordlength; $i++) {
             // Generate Gradient (colorcode before every letter)
-            $result .= self::BTID . self::COLORSUBID . dechex(round($curcol)) . substr($word, $i, 1);
+            $result .= self::BTID . self::COLORSUBID . sprintf("%02x", round($curcol)) . mb_substr($word, $i, 1);
             $curcol = $curcol + $stepsize;
         }
 
         return $result;
     }
 
-    private static function _closeOpenTags(&$decodestring, &$opentags)
+    /**
+     * Close all unclosed Tags
+     * @param string $decodestring The String including the btcode Tags
+     * @param array $opentags Tags that are already open
+     */
+    private static function _closeOpenTags(&$decodestring, array &$opentags)
     {
         foreach ($opentags as $key => $opentag) {
             $decodestring = $decodestring . self::_getTag($opentag, "close");
