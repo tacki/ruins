@@ -1,0 +1,5 @@
+/logs/*
+/temp/openid/*
+/temp/smarty/cache/*
+/temp/smarty/templates_c/*
+.project
