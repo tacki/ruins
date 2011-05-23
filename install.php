@@ -426,6 +426,9 @@ switch ($_GET['step']) {
             require_once(DIR_CONFIG."dbconnect.cfg.php");
             $needDBinfo = false;
 
+            // CLEAR PREVIOUS CACHE
+            SessionStore::pruneCache();
+
             // Try to connect using the given Data (be silent)
             $database = getDBInstance(true);
 

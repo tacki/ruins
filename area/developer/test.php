@@ -16,6 +16,9 @@
 require_once("config/dirconf.cfg.php");
 require_once(DIR_INCLUDES."includes.inc.php");
 
+// CLEAR CACHE
+SessionStore::pruneCache();
+
 $page->set("headtitle", "Ruins Testpage");
 $page->set("pagetitle", "This is the Ruins Testpage");
 
