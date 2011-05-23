@@ -18,7 +18,7 @@ $page->nav->add(new Link("Navigation"));
 if (isset($_GET['return'])) {
     $page->nav->add(new Link("Zurück", "page=" . $_GET['return']));
 } else {
-    $page->output("`b`g`25This Page needs a return-Parameter! Please fix this!");
+    $page->output("`b`g`#25This Page needs a return-Parameter! Please fix this!");
 }
 $page->nav->add(new Link("Aktualisieren", $page->url));
 

@@ -25,13 +25,13 @@ switch ($_GET['op']) {
 
         // Check if a logoutreason exists (show only once)
         if ($logoutreason = SessionStore::get("logoutreason")) {
-            $page->output("`c`b`25" . $logoutreason . "`b`c");
+            $page->output("`c`b`#25" . $logoutreason . "`b`c");
             SessionStore::remove("logoutreason");
         }
 
         // Check if a openiderror exists (show only once)
         if ($openiderror = SessionStore::get("openiderror")) {
-            $page->output("`c`b`25" . $openiderror . "`b`c");
+            $page->output("`c`b`#25" . $openiderror . "`b`c");
             SessionStore::remove("openiderror");
         }
 

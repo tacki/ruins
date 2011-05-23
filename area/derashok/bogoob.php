@@ -28,8 +28,8 @@ switch ($_GET['op']) {
 
         $page->output("Vor dir steht ein riesiger Ork mit Pranken, die locker Bäume ausreissen könnten. Und doch
                         wirken seine Augen neugierig und keinesfalls aggressiv`n`n
-                        `52Du habe Fisch für Bogoob?`00 hörst du es aus seinem stinkenden Maul`n`n
-                        `52Du mir gebe Fisch, dann ich dir gebe Glänzende, ok?`00`n`n
+                        `#52Du habe Fisch für Bogoob?`#00 hörst du es aus seinem stinkenden Maul`n`n
+                        `#52Du mir gebe Fisch, dann ich dir gebe Glänzende, ok?`#00`n`n
                         Meint er damit vielleicht Geld?");
 
         $page->output("`n`n`n");
@@ -65,12 +65,12 @@ switch ($_GET['op']) {
         if (empty($wanttobuy)) {
             $page->nav->add(new Link("Etwas anderes zeigen", "page=common/inventorychooser&return={$page->url->short}&callop=sellask"));
 
-            $page->output("`52Neee, du nix haben was ich wolle... du verschwinden mit deine Krimskrams!`00`n`n
+            $page->output("`#52Neee, du nix haben was ich wolle... du verschwinden mit deine Krimskrams!`#00`n`n
                             Unhöflich dreht sich der Ork von dir weg... scheinbar will er wirklich etwas anderes
                             von dir?");
         } else {
             $page->output("Neugierig und mit großen Augen sieht er auf das, was du ihm anbietest.`n`n
-                            `52Oh oh, da, das isch habe wolle! Dafür ich dir {$price->fullDetailedWithPic()} gebe!`00
+                            `#52Oh oh, da, das isch habe wolle! Dafür ich dir {$price->fullDetailedWithPic()} gebe!`#00
                             ruft er auf einmal aus und zeigt auf ", true);
             if (count($wanttobuy) > 1) {
                 $page->output("die Fische vor ihm. Willst du sie ihm verkaufen?`n`n`n
@@ -109,7 +109,7 @@ switch ($_GET['op']) {
 
         $page->nav->add(new Link("Ihm etwas zeigen", "page=common/inventorychooser&return={$page->url->short}&callop=sellask"));
 
-        $page->output("`52Ohhooo, heute isse schöne Tag!`00`n`n
+        $page->output("`#52Ohhooo, heute isse schöne Tag!`#00`n`n
                         Mit diesen Worten widmet er sich ganz seiner neu erstandenen Ware und lässt dich einfach
                         links liegen.");
 

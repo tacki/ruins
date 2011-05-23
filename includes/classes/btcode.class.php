@@ -1,12 +1,11 @@
 <?php
 /**
- * Backtick Code Class
+ * btCode2 Class
  *
- * Backtick Code Class to decode the color+special character code of ruins
+ * btCode2 Code Class to decode the color+special character code of ruins
  * @author Markus Schlegel <g42@gmx.net>
  * @copyright Copyright (C) 2006 Markus Schlegel
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version SVN: $Id: btcode.class.php 326 2011-04-19 20:19:34Z tacki $
  * @package Ruins
  */
 
@@ -16,50 +15,99 @@
 require_once(DIR_INCLUDES."includes.inc.php");
 
 /**
- * Class Defines
- */
-define("BTCODE_NUMERIC_LENGTH", 2);
-define("BTCODE_ALPHA_LENGTH", 	1);
-
-define("BTCODE_NUMERIC_VALID",	10);
-define("BTCODE_NUMERIC_INVALID",11);
-define("BTCODE_ALPHA_VALID",	20);
-define("BTCODE_ALPHA_INVALID",	21);
-define("BTCODE_UNKNOWN_INVALID",99);
-
-define("BTCODE_LAYER_IDENTIFIER", "~");
-define("BTCODE_LAYER_FOREGROUND", 10);
-define("BTCODE_LAYER_BACKGROUND", 20);
-define("BTCODE_LAYER_BACKGROUND_SUFFIX", "_bg");
-
-define("BTCODE_EXCLUDE_TAG", "x");
-
-/**
- * Backtick Code Class
+ * btCode2 Class
  *
- * Backtick Code Class to decode the color+special character code of ruins
+ * btCode2 Code Class to decode the color+special character code of ruins
  * @package Ruins
  */
 class btCode
 {
+
+    const BTID              = "`";
+    const BTID_CLOSER       = ":";
+
+    const EXCLUDESUBID      = "x";
+
+    const CONTROLTAG_LENGTH = 1;
+
+    const COLORTAG_LENGTH   = 2;
+    const COLORSUBID        = "#";
+    const COLORBACKSUBID    = "~";
+
     /**
-     * Convert Backtick-Tags into <span>-Elements
+     * Convert btcode-Tags into HTML-Elements
      * @param string $decodestring String to convert
-     * @return string Returns HTML-Code with converted Backtick-Tags
+     * @return string Returns HTML-Code with converted btcode-Tags
      */
     public static function decode($decodestring)
     {
-        return self::_decodebtCode($decodestring);
+        $opentags = array();
+        $offset = 0;
+
+        // Handle Exclude-Tags
+        if (strpos($decodestring, self::BTID.self::EXCLUDESUBID) !== false) {
+            // exclude-tag present
+            $result = explode("`x", $decodestring);
+            $res = "";
+            for ($i=0; $i<=count($result); $i=$i+2) {
+                $res .= self::decode($result[$i]);
+                $res .= $result[$i+1];
+            }
+
+            return $res;
+        }
+
+        // Handle Normal Tags
+        self::_translateControlTags($decodestring, $opentags);
+        self::_translateColorTags($decodestring, $opentags);
+
+        // Close still open tags
+        self::_closeOpenTags($decodestring, $opentags);
+
+        return ($decodestring);
     }
 
     /**
-     * Convert Backtick-Tags into CSS-Classnames
+     * Convert btcode-Tags into CSS-Classnames
      * @param string $decodestring String to convert
-     * @return string Returns CSS-Classnames
+     * @return string Returns CSS-Classnames in place of the Tags
      */
-    public static function decoderaw($decodestring)
+    public static function decodeToCSSColorClass($decodestring)
     {
-        return self::_decodebtCode($decodestring, false);
+        // Search for Colors
+        if (preg_match_all(self::_getRegex("color"), $decodestring, $matches)) {
+            // Result is in $matches (2-dimensional array)
+
+            foreach (array_unique($matches[0]) as $result) {
+                // fetch tagid
+                $tagid = substr($result, 1, 1);
+
+                // fetch Colorcode
+                $colorcode = substr($result, 2, self::COLORTAG_LENGTH);
+
+                // Replace the Tag
+                $decodestring = preg_replace("/".preg_quote($result)."/",
+                                             str_replace("XXX", $colorcode, self::_getTag($tagid, "class")) . " ",
+                                             $decodestring);
+            }
+        }
+
+        // Search for Controlcodes
+        if (preg_match_all(self::_getRegex("control"), $decodestring, $matches)) {
+            // Result is in $matches (2-dimensional array)
+
+            foreach (array_unique($matches[0]) as $result) {
+                // fetch tagid
+                $tagid = substr($result, 1, 1);
+
+                // Replace the Tag
+                $decodestring = preg_replace("/".preg_quote($result)."/",
+                                             self::_getTag($tagid, "class") . " ",
+                                             $decodestring);
+            }
+        }
+
+        return ($decodestring);
     }
 
     /**
@@ -69,7 +117,7 @@ class btCode
      */
     public static function exclude($nodecodestring)
     {
-        return "`".BTCODE_EXCLUDE_TAG . $nodecodestring . "`".BTCODE_EXCLUDE_TAG;
+        return self::BTID.self::EXCLUDESUBID . $nodecodestring . self::BTID.self::EXCLUDESUBID;
     }
 
     /**
@@ -79,385 +127,340 @@ class btCode
      */
     public static function purgeTags($decodestring)
     {
-        $digits = "";
-        for ($i=0; $i<BTCODE_NUMERIC_LENGTH; $i++) {
-            $digits .= "[[:digit:]]";
-        }
+        $searches = array (
+                    // THE ORDER IS IMPORTANT!
+                    // Color-Gradient
+                    self::_getRegex("color-gradient"),
+                    // Colors
+                    self::_getRegex("color"),
+                    // Control
+                    self::_getRegex("control"),
+        );
 
-        $alphas = "";
-            for ($i=0; $i<BTCODE_ALPHA_LENGTH; $i++) {
-            $alphas .= "[[:alpha:]]";
-        }
-
-        // remove numeric tags (colors)
-        $decodestring = preg_replace("'[`]$digits'", "", $decodestring);
-
-        // remove alpha tags (bold, center, big, ...)
-        $decodestring = preg_replace("'[`]$alphas'", "", $decodestring);
+        // Remove Control-Tags
+        $decodestring = preg_replace($searches, "", $decodestring);
 
         return $decodestring;
     }
 
     /**
-     * Convert Backtick-Tags
-     * @access private
-     * @param string $decodestring String to convert
-     * @param bool $spantags Include span-tags for colors
-     * @return string Returns HTML-Code or simply the css-classes with converted Backtick-Tags
+     * Get the corresponding HTML-Code for a given btcode-Tag
+     * @param string $tagid btcode-Tag without BTID
+     * @param string $state open, close or class
+     * @return string HTML-Code or false if non-existing btcode-Tag
      */
-    private static function _decodebtCode($decodestring, $spantags=true)
+    private static function _getTag($tagid, $state)
     {
-        $tag 		= array("length"=>0,
-                            "element"=>"",
-                            "layer"=>BTCODE_LAYER_FOREGROUND);
-        $tagsopen 	= array();
-        $result 	= "";
-        $excludetmp = "";
+        $tags = array (
+                            // bold
+                            "b" => array ( "open" => "<strong>", 				"close" => "</strong>", "class" => "btcode_b" ),
+                            // center
+                            "c" => array ( "open" => "<div class='btcode_c'>",  "close" => "</div>", 	"class" => "btcode_c" ),
+                            // big
+                            "g" => array ( "open" => "<big>", 					"close" => "</big>" ),
+                            // italic
+                            "i" => array ( "open" => "<em>", 					"close" => "</em>", 	"class" => "btcode_i" ),
+                            // newline
+                            "n" => array ( "open" => "<br />", 					),
+                            // Sup
+                            "p" => array ( "open" => "<sup>",    				"close" => "</sup>" ),
+                            // Small
+                               "s" => array ( "open" => "<small>",    			"close" => "</small>" ),
+                            // Sub
+                            "u" => array ( "open" => "<sub>",    				"close" => "</sub>" ),
 
-        while (!(($tag['position'] = strpos($decodestring,"`")) === false)) {
 
-            switch (self::_identifyTag($decodestring, $tag)) {
-                case BTCODE_NUMERIC_VALID:
-                    if ($tag['layer'] == BTCODE_LAYER_FOREGROUND) {
-                        $tag['element'] = substr($decodestring, $tag['position']+1, BTCODE_NUMERIC_LENGTH);
-                        $append 		= substr($decodestring, 0, $tag['position']);
-                        $newposition	= $tag['position'] + BTCODE_NUMERIC_LENGTH-1;
-                    } else {
-                        $tag['element'] = substr($decodestring, $tag['position']+1, BTCODE_NUMERIC_LENGTH) . BTCODE_LAYER_BACKGROUND_SUFFIX;
-                        $append 		= substr($decodestring, 0, $tag['position']);
-                        $newposition	= $tag['position'] + BTCODE_NUMERIC_LENGTH;
-                    }
-                    break;
+                            // normal color
+                            self::COLORSUBID     => array ( "open" => "<span class='btcode_XXX'>", 	"close" => "</span>", "class" => 'btcode_XXX'),
+                            // background color
+                            self::COLORBACKSUBID => array ( "open" => "<span class='btcode_XXX_bg'>", "close" => "</span>" , "class" => 'btcode_XXX_bg'),
+                        );
 
-                case BTCODE_ALPHA_VALID:
-                    $tag['element']	= substr($decodestring, $tag['position']+1, BTCODE_ALPHA_LENGTH);
-                    $append 		= substr($decodestring, 0, $tag['position']);
-                    $newposition	= $tag['position'];
-                    break;
+        if (isset($tags[$tagid][$state])) {
+            return ($tags[$tagid][$state]);
+        } else {
+            return false;
+        }
+    }
 
-                case BTCODE_NUMERIC_INVALID:
-                    $tag['element']	= "invalid";
-                    $append			= substr($decodestring, 0, $tag['position']);
-                    $newposition	= $tag['position'] + $tag['length']-1;
-                    break;
+    /**
+     * Generate btCode-Detection Regex-String
+     * @param string $type Name of the regex to Generate
+     * @param bool $forceCloseTag Force an OpenClose-Tag-Regex (else optional)
+     * @param bool $addNextWord Include the next Word to the Regex
+     * @return string Regex-String
+     */
+    private static function _getRegex($type, $forceCloseTag=false, $addNextWord=false)
+    {
+        $regex = array (
+                    // Color-Gradient
+                    "color-gradient"         => "/".preg_quote(self::BTID) . "(".self::COLORSUBID."|".self::COLORBACKSUBID.")" .
+                                                "[[:xdigit:]]{".self::COLORTAG_LENGTH."}-[[:xdigit:]]{".self::COLORTAG_LENGTH."}",
 
-                case BTCODE_ALPHA_INVALID:
-                    $tag['element']	= "invalid";
-                    $append 		= substr($decodestring, 0, $tag['position']);
-                    $newposition	= $tag['position'] + $tag['length']-1;
-                    break;
 
-                case BTCODE_UNKNOWN_INVALID:
-                    $tag['element']	= "invalid";
-                    $append 		= substr($decodestring, 0, $tag['position']);
-                    $newposition	= $tag['position'];
-                    break;
-            }
+                    // Colors - closetag optional
+                    "color"                  => "/".preg_quote(self::BTID) . "(".self::COLORSUBID."|".self::COLORBACKSUBID.")" .
+                                                "[[:xdigit:]]{".self::COLORTAG_LENGTH."}",
 
-            // Exclude code
-            if (isset($tagsopen[BTCODE_EXCLUDE_TAG])) {
-                if ($excludetmp == "") {
-                    // starttag
-                    $excludetmp = $decodestring;
-                }
+                    // Control - closetag optional
+                    "control"                => "/".preg_quote(self::BTID) .
+                                                "[[:alpha:]]{".self::CONTROLTAG_LENGTH."}",
+        );
 
-                if ($tag['element'] === BTCODE_EXCLUDE_TAG) {
-                    // endtag - get everything between the starttag and
-                    // the position of the endtag
-                    $substr = substr($decodestring, $tag['position']);
-                    $excludetmp = substr($excludetmp, 0, strpos($excludetmp, $substr));
-
-                    $result .= $excludetmp;
-                    $result .= self::_closeHTMLTag($tag, $tagsopen);
-                } else {
-                    // continue to search for tags
-                    $decodestring = substr($decodestring,$newposition+2);
-                    continue;
-                }
+        if (isset($regex[$type])) {
+            $regexres = $regex[$type];
+            if ($forceCloseTag) {
+                $regexres .= preg_quote(self::BTID_CLOSER);
             } else {
-                $result .= $append;
+                $regexres .= "(".preg_quote(self::BTID_CLOSER).")?";
+            }
 
-                if (!isset($tagsopen[$tag['element']])) {
-                    if ($spantags) {
-                        $result .= self::_openHTMLTag($tag, $tagsopen);
-                    } else {
-                        if (substr($result, -1, 1) !== " ") {
-                            $result .= "btcode_". $tag['element'] . " ";
-                        } else {
-                            $result .= "btcode_". $tag['element'];
-                        }
-                    }
+            if ($addNextWord) {
+                // delimiting characters for the 'word'
+                $limitchar = array ('<', self::BTID, self::COLORSUBID, self::COLORBACKSUBID);
+
+                $regexres .= "\s*".self::_getRegexWordDefinition();
+            }
+
+            $regexres .= "/";
+            return ($regexres);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Generate Word-Definition ([[:word:]] replacement to allow more chars than only Numbers and Letters]
+     * @return string Regex-Snippet
+     */
+    private static function _getRegexWordDefinition()
+    {
+        // delimiting characters for the 'word'
+        $limitchars = array ("<", ">", self::BTID, self::COLORSUBID, self::COLORBACKSUBID);
+
+        $limitstring = "[^\p{Z}";
+        foreach ($limitchars as $character) {
+            $limitstring .= "|" . preg_quote($character);
+        }
+        $limitstring .= "]+";
+
+        return $limitstring;
+    }
+
+    /**
+     * Translate all Control Tags (bold, newline, center, etc)
+     * @param string $decodestring The String including the btcode Tags
+     * @param array $opentags Tags that are already open
+     */
+    private static function _translateControlTags(&$decodestring, array &$opentags)
+    {
+        // OPENCLOSE CONTROL TAGS WHICH RELATE ONLY TO THE NEXT WORD (example: `b:word)
+        if (preg_match_all(self::_getRegex("control", true, true), $decodestring, $matches)) {
+            // Result is in $matches (2-dimensional array)
+
+            foreach ($matches[0] as $result) {
+                 // Get TagID
+                $tagid = substr($result, 1, 1);
+
+                // Replace the Tag
+                $replacement = preg_replace(self::_getRegex("control", true),
+                                            self::_getTag($tagid, "open"),
+                                            $result,
+                                            1);
+
+                // Add Closing Tag after the Word
+                $replacement = $replacement . self::_getTag($tagid, "close");
+
+                // Replace it inside $decodestring
+                $decodestring = preg_replace("/".preg_quote($result)."/",
+                                             $replacement,
+                                             $decodestring,
+                                             1);
+            }
+
+        // OPENING/CLOSING CONTROL TAG (example: `b) - same tag closes
+        } elseif (preg_match_all(self::_getRegex("control"), $decodestring, $matches)) {
+            // Result is in $matches (2-dimensional array)
+
+            foreach ($matches[0] as $result) {
+                 // Get TagID
+                $tagid = substr($result, 1, 1);
+
+                if (($found = array_search($tagid, $opentags)) !== false) {
+                    // Close already opened Tag
+                    $replacetag = self::_getTag($tagid, "close");
+                    unset($opentags[$found]);
                 } else {
-                    if ($spantags) {
-                        $result .= self::_closeHTMLTag($tag, $tagsopen);
+                    // Opener Tag
+                    $replacetag = self::_getTag($tagid, "open");
+
+                    // Add to $opentags if a close-Tag exists
+                    if (self::_getTag($tagid, "close")) {
+                        $opentags[] = $tagid;
                     }
                 }
+
+                // Replace the Tag
+                $replacement = preg_replace(self::_getRegex("control"),
+                                            $replacetag,
+                                            $result,
+                                            1);
+
+                // Replace the Tag inside $decodestring
+                $decodestring = preg_replace("/".preg_quote($result)."/",
+                                             $replacement,
+                                             $decodestring,
+                                             1);
             }
-            $decodestring = substr($decodestring,$newposition+2);
+
         }
 
-        $result .= $decodestring;
+    }
 
-        // close all open tags (normally only the last one)
-        foreach ($tagsopen as $opentag) {
-            $result .= self::_closeHTMLTag($opentag, $tagsopen);
+    /**
+     * Translate all Color Tags
+     * @param string $decodestring The String including the btcode Tags
+     * @param array $opentags Tags that are already open
+     */
+    private static function _translateColorTags(&$decodestring, array &$opentags)
+    {
+        // COLOR GRADIENT FOR THE NEXT WORD (example: `#50-5f:word)
+        if (preg_match_all(self::_getRegex("color-gradient", true, true), $decodestring, $matches)) {
+            // Result is in $matches (2-dimensional array)
+
+            foreach ($matches[0] as $result) {
+                // Get TagID
+                $tagid = substr($result, 1, 1);
+
+                // fetch Colorcodes
+                $colorcode1 = substr($result, 2, self::COLORTAG_LENGTH);
+                $colorcode2 = substr($result, 2+self::COLORTAG_LENGTH+1, self::COLORTAG_LENGTH);
+
+                // fetch the Word
+                preg_match("/".preg_quote(self::BTID_CLOSER)."\s*".self::_getRegexWordDefinition()."/", $result, $word);
+                $word = substr($word[0], 1); // strip leading Closer
+
+                // Replace the Tag inside $decodestring
+                $decodestring = preg_replace(self::_getRegex("color-gradient", true, true),
+                                             self::_createColorGradient($word, $colorcode1, $colorcode2),
+                                             $decodestring,
+                                             1);
+
+                // Translate the new tags
+                self::_translateColorTags($decodestring, $opentags);
+            }
+
+        // OPENCLOSE COLOR TAGS WHICH RELATES ONLY TO THE NEXT WORD (example: `#2f:word)
+        } elseif (preg_match_all(self::_getRegex("color", true, true), $decodestring, $matches)) {
+            // Result is in $matches (2-dimensional array)
+
+            foreach ($matches[0] as $result) {
+                // Get TagID
+                $tagid = substr($result, 1, 1);
+
+                // fetch Colorcode
+                $colorcode = substr($result, 2, self::COLORTAG_LENGTH);
+
+                // Replace the Tag
+                $replacement = preg_replace(self::_getRegex("color", true),
+                                            str_replace("XXX", $colorcode, self::_getTag($tagid, "open")),
+                                            $result,
+                                            1);
+
+                // Add Closing Tag after the Word
+                $replacement = $replacement . self::_getTag($tagid, "close");
+
+                // Replace it inside $decodestring
+                $decodestring = preg_replace("/".preg_quote($result)."/",
+                                             $replacement,
+                                             $decodestring,
+                                             1);
+            }
+
+        // OPENING/CLOSING COLOR TAG (example: `#a9) - same tag closes and reopens
+        } elseif (preg_match_all(self::_getRegex("color"), $decodestring, $matches)) {
+            // Result is in $matches (2-dimensional array)
+
+            foreach ($matches[0] as $result) {
+                // Get TagID
+                $tagid = substr($result, 1, 1);
+
+                $replacetag = "";
+                if (($found = array_search($tagid, $opentags)) !== false) {
+                    // Close already opened Tag
+                    $replacetag .= self::_getTag($tagid, "close");
+                    unset($opentags[$found]);
+                }
+
+                // Opener Tag
+                $replacetag .= self::_getTag($tagid, "open");
+
+                // Add to $opentags if an close-Tag exists
+                if (self::_getTag($tagid, "close")) {
+                    $opentags[] = $tagid;
+                }
+
+                // fetch Colorcode
+                $colorcode = substr($result, 2, self::COLORTAG_LENGTH);
+
+                // Replace the Tag
+                $replacement = preg_replace(self::_getRegex("color"),
+                                            str_replace("XXX", $colorcode, $replacetag),
+                                            $result,
+                                            1);
+
+                // Replace the Tag inside $decodestring
+                $decodestring = preg_replace("/".preg_quote($result)."/",
+                                             $replacement,
+                                             $decodestring,
+                                             1);
+            }
+        }
+    }
+
+    /**
+     * Create a Color Gradient for a given Word
+     * @param string $word The Word to use
+     * @param int $color1 Gradient From-Color
+     * @param int $color2 Gradient To-Color
+     * @return string Color Gradient (ColorCode+Letter+ColorCode+Letter...)
+     */
+    private static function _createColorGradient($word, $color1, $color2)
+    {
+        if (!ctype_xdigit($color1) || !ctype_xdigit($color2)) {
+            return $word;
+        }
+
+        $colordiff  = hexdec($color2) - hexdec($color1);
+        $colordiff>0?$colordiff++:$colordiff--;
+
+        $wordlength = mb_strlen($word);
+
+        // calculate stepsize
+        $stepsize = $colordiff / $wordlength;
+
+        $result = "";
+        $curcol = hexdec($color1);
+        for ($i = 0; $i<$wordlength; $i++) {
+            // Generate Gradient (colorcode before every letter)
+            $result .= self::BTID . self::COLORSUBID . sprintf("%02x", round($curcol)) . mb_substr($word, $i, 1);
+            $curcol = $curcol + $stepsize;
         }
 
         return $result;
     }
 
     /**
-     * Identify Backtick-Tag
-     * @access private
-     * @param string $decodestring String with the tag in it
-     * @param array $tag Tag-Element to identify
-     * @return int Returns BTCODE_NUMERIC* or BTCODE_ALPHA* or BTCODE_UNKNOWN_INVALID
+     * Close all unclosed Tags
+     * @param string $decodestring The String including the btcode Tags
+     * @param array $opentags Tags that are already open
      */
-    private static function _identifyTag($decodestring, &$tag)
+    private static function _closeOpenTags(&$decodestring, array &$opentags)
     {
-        if (is_numeric(substr($decodestring, $tag['position']+1, BTCODE_NUMERIC_LENGTH))) {
-            // the codetag after the backtick is numeric
-            $tag['length'] 	= BTCODE_NUMERIC_LENGTH;
-
-               if (substr($decodestring, $tag['position']+1+BTCODE_NUMERIC_LENGTH, 1) == BTCODE_LAYER_IDENTIFIER) {
-                   $tag['layer'] = BTCODE_LAYER_BACKGROUND;
-               } else {
-                   $tag['layer'] = BTCODE_LAYER_FOREGROUND;
-               }
-
-               return BTCODE_NUMERIC_VALID;
-        } elseif (is_numeric(substr($decodestring, $tag['position']+1, 1))) {
-            $tag['length'] = 1;
-            for ($i=2; $i<=BTCODE_NUMERIC_LENGTH; $i++) {
-                if (is_numeric(substr($decodestring, $tag['position']+1, $i))) {
-                    $tag['length']++;
-                }
-            }
-
-            // this is meant to be a numeric code, but the lenght doesn't match
-            return BTCODE_NUMERIC_INVALID;
-        } elseif (is_alpha(substr($decodestring, $tag['position']+1, BTCODE_ALPHA_LENGTH))) {
-            // the codetag after the backtick is alpha
-            $tag['length'] 	= BTCODE_ALPHA_LENGTH;
-
-            return BTCODE_ALPHA_VALID;
-        } elseif (is_alpha(substr($decodestring, $tag['position']+1, 1))) {
-            $tag['length'] = 1;
-            for ($i=2; $i<=BTCODE_ALPHA_LENGTH; $i++) {
-                if (is_alpha(substr($decodestring, $tag['position']+1, $i))) {
-                    $tag['length']++;
-                }
-            }
-
-            // this is meant to be an alpha code, but the lenght doesn't match
-            return BTCODE_ALPHA_INVALID;
-        } else {
-            return BTCODE_UNKNOWN_INVALID;
+        foreach ($opentags as $key => $opentag) {
+            $decodestring = $decodestring . self::_getTag($opentag, "close");
+            unset ($opentags[$key]);
         }
-
     }
-
-    /**
-     * Resolves the correct opening HTML-Tag for the tag-element
-     * @access private
-     * @param array &$tag Tag-Element to use
-     * @param array &$tagsopen Array of open Tags
-     * @return int Returns translated HTML-Code with an opening Tag
-     */
-    private static function _openHTMLTag(&$tag, &$tagsopen)
-    {
-        $htmltag = "";
-
-        switch ($tag['element']) {
-            case "b": // special handling for bold
-                // Set elementtype
-                $tag['elementtype']			= "bold";
-
-                if (isset($tagsopen[$tag['element']])) {
-                    $htmltag .= self::_closeHTMLTag($tag, $tagsopen);
-                }
-
-                $tagsopen[$tag['element']] 	= $tag;
-                $htmltag 					.= "<strong>";
-                break;
-
-            case "c": // special handling for center
-                // Set elementtype
-                $tag['elementtype']			= "center";
-
-                if (isset($tagsopen[$tag['element']])) {
-                    $htmltag .= self::_closeHTMLTag($tag, $tagsopen);
-                }
-
-                $tagsopen[$tag['element']] 	= $tag;
-                $htmltag 					.= "<div class='btcode_c'>";
-                break;
-
-            case "g": //special handling for big
-                // Set elementtype
-                $tag['elementtype']			= "big";
-
-                if (isset($tagsopen[$tag['element']])) {
-                    $htmltag .= self::_closeHTMLTag($tag, $tagsopen);
-                }
-
-                $tagsopen[$tag['element']] 	= $tag;
-                $htmltag 					.= "<big>";
-                break;
-
-            case "i": // special handling for italic
-                // Set elementtype
-                $tag['elementtype']			= "italic";
-
-                if (isset($tagsopen[$tag['element']])) {
-                    $htmltag .= self::_closeHTMLTag($tag, $tagsopen);
-                }
-
-                $tagsopen[$tag['element']] 	= $tag;
-                $htmltag 					.= "<em>";
-                break;
-
-            case "n": // special handling for newline
-                // Set elementtype
-                $tag['elementtype']			= "newline";
-
-                $htmltag 					.= "<br />";
-                break;
-
-            case "p": //special handling for sup
-                // Set elementtype
-                $tag['elementtype']			= "sup";
-
-                if (isset($tagsopen[$tag['element']])) {
-                    $htmltag .= self::_closeHTMLTag($tag, $tagsopen);
-                }
-
-                $tagsopen[$tag['element']] 	= $tag;
-                $htmltag 					.= "<sup>";
-                break;
-
-            case "s": //special handling for small
-                // Set elementtype
-                $tag['elementtype']			= "small";
-
-                if (isset($tagsopen[$tag['element']])) {
-                    $htmltag .= self::_closeHTMLTag($tag, $tagsopen);
-                }
-
-                $tagsopen[$tag['element']] 	= $tag;
-                $htmltag 					.= "<small>";
-                break;
-
-            case "u": //special handling for sub
-                // Set elementtype
-                $tag['elementtype']			= "sub";
-
-                if (isset($tagsopen[$tag['element']])) {
-                    $htmltag .= self::_closeHTMLTag($tag, $tagsopen);
-                }
-
-                $tagsopen[$tag['element']] 	= $tag;
-                $htmltag 					.= "<sub>";
-                break;
-
-            case "x": //special handling for nodecode
-                // Set elementtype
-                $tag['elementtype']			= "nodecode";
-
-                if (isset($tagsopen[$tag['element']])) {
-                    $htmltag .= self::_closeHTMLTag($tag, $tagsopen);
-                }
-
-                $tagsopen[$tag['element']] 	= $tag;
-                $htmltag 					.= "";
-                break;
-
-            default: // color codes
-                // Set elementtype
-                if (strstr($tag['element'], BTCODE_LAYER_BACKGROUND_SUFFIX) !== false) {
-                    $tag['elementtype']			= "bgcolor";
-                } else {
-                    $tag['elementtype']			= "color";
-                }
-
-                // test if any color-code is opened
-                foreach ($tagsopen as $opentag) {
-                    if ($opentag['elementtype'] == $tag['elementtype']) {
-                        //echo "closing ". $opentag['element'] ."<br>";
-                        $htmltag .= self::_closeHTMLTag($opentag, $tagsopen);
-                    }
-                }
-
-                $tagsopen[$tag['element']] 	= $tag;
-                $htmltag 					.= "<span class='btcode_". $tag['element'] ."'>";
-                break;
-        }
-
-        return $htmltag;
-    }
-
-    /**
-     * Resolves the correct closing HTML-Tag for the tag-element
-     * @access private
-     * @param array &$tag Tag-Element to use
-     * @param array &$tagsopen Array of open Tags
-     * @return int Returns translated HTML-Code with an closing Tags
-     */
-    private static function _closeHTMLTag($tag, &$tagsopen)
-    {
-        switch ($tag['element']) {
-            case "b": // special handling for bold
-                unset ($tagsopen[$tag['element']]);
-                $htmltag = "</strong>";
-                break;
-
-            case "c": // special handling for center
-                unset ($tagsopen[$tag['element']]);
-                $htmltag = "</div>";
-                break;
-
-            case "g": //special handling for big
-                unset ($tagsopen[$tag['element']]);
-                $htmltag = "</big>";
-                break;
-
-            case "i": //special handling for italic
-                unset ($tagsopen[$tag['element']]);
-                $htmltag = "</em>";
-                break;
-
-            case "n": // special handling for newline
-                $htmltag = "";
-                break;
-
-            case "p": //special handling for sup
-                unset ($tagsopen[$tag['element']]);
-                $htmltag = "</sup>";
-                break;
-
-             case "s": //special handling for small
-                unset ($tagsopen[$tag['element']]);
-                $htmltag = "</small>";
-                break;
-
-            case "u": //special handling for sub
-                unset ($tagsopen[$tag['element']]);
-                $htmltag = "</sub>";
-                break;
-
-            case "x": //special handling for nodecode
-                unset ($tagsopen[$tag['element']]);
-                $htmltag = "";
-                break;
-
-            default: // color codes
-                unset ($tagsopen[$tag['element']]);
-                $htmltag = "</span>";
-                break;
-        }
-
-        return $htmltag;
-    }
-
 }
 ?>

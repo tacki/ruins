@@ -151,7 +151,7 @@ foreach ($colors as $colorname => $maxcount) {
         $outputbuffer_bg .= "`~" . sprintf("%02x", $counter) . "### ";
     }
 
-    $page->output(btCode2::decode($outputbuffer_fg . $outputbuffer_bg . "`n"), true);
+    $page->output($outputbuffer_fg . $outputbuffer_bg . "`n");
 }
 
 $page->output("Invalid: `n `5Invalid Colorcode`n");
@@ -167,7 +167,7 @@ $page->output("Sub (u): `n Normal Text `uSub Text`u `n");
 $page->output("Sup (p): `n Normal Text `pSup Text`p `n");
 $page->output("`n");
 
-$textsample = "`54Das `35i`36s`37t `19ja `99ein `bdi`55c`56k`57e`58r `85`iHund`i`b!";
+$textsample = "`#54Das `#35i`#36s`#37t `#19ja `#99ein `bdi`#55c`#56k`#57e`#58r `#85`iHund`i`b!";
 
 $page->output("Zusammen: `n". $textsample ."`n");
 
@@ -223,13 +223,13 @@ $result = $dbqt	->select("displayname, id, money, lifepoints, healthpoints")
                 ->fetchAll();
 
 $thetable = new Table;
-//$thetable->setCSS("`35~");
-$thetable->setSecondRowCSS("`25~");
+//$thetable->setCSS("`~35");
+$thetable->setSecondRowCSS("`~25");
 $thetable->setTabAttributes(false,2);
 $thetable->addTabHeader(array("Name","ID","Gold","LP","HP"),false,array("`b","`b`c","`b`c","`b`c","`b`c"));
 // This following addTabRow will put the array in the first position of the table behind the header
 $thetable->addTabRow(array("teruk","7","2300","34","12"));
-$thetable->addListArray($result, false, "`35~");
+$thetable->addListArray($result, false, "`~35");
 $page->output($thetable->load(),true);
 
 $page->output("`nGeordnet nach HP:`n");
@@ -239,7 +239,7 @@ $result = $dbqt	->clear("order")
                 ->fetchAll();
 
 $newtab = new Table;
-//$newtab->setCSS("`35~");
+//$newtab->setCSS("`~35");
 $newtab->setTabAttributes(false,2);
 $newtab->addTabHeader(array("Name","ID","Gold","LP","HP"),false,array("`b","`b`c","`b`c","`b`c","`b`c"));
 $newtab->addListArray($result);
@@ -248,7 +248,7 @@ $page->output($newtab->load(),true);
 // Case 3:
 $page->output("`n`n");
 $design = new Table;
-//$design->setCSS("`35~");
+//$design->setCSS("`~35");
 $design->setTabAttributes("80%",2);
 $design->addTabSize(20,7);
 $design->addFieldContent(1,1,"Dunkelelf");
@@ -297,10 +297,10 @@ $page->output($design->load(),true);
 $page->output("`n`n");
 //$page->addform(true,"head","name","test.php","post");
 $design1 = new Table;
-//$design1->setCSS("`35~");
+//$design1->setCSS("`~35");
 $design1->setTabAttributes("40%",2);
 $design1->addTabSize(4,4);
-$design1->addFieldContent(1,1,"Oben links",false,"`25~",1,1);
+$design1->addFieldContent(1,1,"Oben links",false,"`~25",1,1);
 $design1->addFieldContent(2,1,"Oben unten links",false,false,1,1);
 $design1->addFieldContent(1,2,"Oben halb links",false,false,1,1);
 $design1->addFieldContent(1,3,"Oben halb rechts",false,false,1,1);
@@ -317,10 +317,10 @@ $page->output($design1->load(),true);
 // Neue Tabellenform:
 $page->output("`n`n");
 $page->addTable("testtabelle");
-//$page->testtabelle->setCSS("`35~");
+//$page->testtabelle->setCSS("`~35");
 $page->testtabelle->setTabAttributes("40%",2);
 $page->testtabelle->addTabSize(4,4);
-$page->testtabelle->addFieldContent(1,1,"Oben links",false,"`25~",1,1);
+$page->testtabelle->addFieldContent(1,1,"Oben links",false,"`~25",1,1);
 $page->testtabelle->addFieldContent(2,1,"Oben unten links",false,false,1,1);
 $page->testtabelle->addFieldContent(1,2,"Oben halb links",false,false,1,1);
 $page->testtabelle->addFieldContent(1,3,"Oben halb rechts",false,false,1,1);
@@ -474,7 +474,7 @@ $mt = getMicroTime();
 $position = "newstest";
 
 $news = new News;
-$news->setNewsAttributes(3,"80%","`35~","`35~","`35~");
+$news->setNewsAttributes(3,"80%","`~35","`~35","`~35");
 $page->output($news->load(),true);
 
 // News Test End
@@ -566,7 +566,7 @@ $page->output("`n");
 $page->testformular->submitButton("Absenden");
 $page->testformular->close();
 
-if (isset($_POST['textareaform'])) $page->output("Wenn Formular 1 ausgeführt wurde, steht im folgenden die Begründung:`n`25".$_POST['textareaform']."`n",true);
+if (isset($_POST['textareaform'])) $page->output("Wenn Formular 1 ausgeführt wurde, steht im folgenden die Begründung:`n`#25".$_POST['textareaform']."`n",true);
 
 
 // Form Test End
@@ -594,7 +594,7 @@ $page->output("`bInbox of anonymous(1):`b`n");
 $character->load(1);
 $messagelist = MessageSystem::getInbox($character);
 $newtab = new Table;
-$newtab->setCSS("`35~");
+$newtab->setCSS("`~35");
 $newtab->setTabAttributes(false,2);
 $newtab->addTabHeader(array("id","sender","receiver","subject","text","date","status"),false,array("`b","`b`c","`b`c","`b`c","`b`c","`b`c","`b`c","`b`c"));
 $newtab->addListArray($messagelist);
@@ -609,7 +609,7 @@ $page->output("`bInbox of anonymous(1):`b`n");
 $character->load(1);
 $messagelist = MessageSystem::getInbox($character);
 $newtab = new Table;
-$newtab->setCSS("`35~");
+$newtab->setCSS("`~35");
 $newtab->setTabAttributes(false,2);
 $newtab->addTabHeader(array("id","sender","receiver","subject","text","date","status"),false,array("`b","`b`c","`b`c","`b`c","`b`c","`b`c","`b`c","`b`c"));
 $newtab->addListArray($messagelist);
@@ -772,7 +772,7 @@ $result = $dbqt	->select("id, displayname")
                 ->fetchAll();
 
 $table = new Table();
-//$table->setCSS("`35~");
+//$table->setCSS("`~35");
 $table->setTabAttributes(false,2);
 $table->addTabHeader(array("id","displayname"),false,array("`b","`b`c"));
 $table->addListArray($result);

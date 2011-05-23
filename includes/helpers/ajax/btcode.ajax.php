@@ -23,7 +23,7 @@ switch ($_GET['action']) {
         echo json_encode( btCode::decode($decodestring) );
         break;
     case "decoderaw":
-        echo json_encode( btCode::decoderaw($decodestring) );
+        echo json_encode( btCode::decodeToCSSColorClass($decodestring) );
         break;
 }
 

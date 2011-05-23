@@ -567,7 +567,7 @@ class Table extends BaseHTML
         // Last Step: End of table
         $this->showing .= "</tbody>\n";
         $this->showing .= "</table>\n";
-        $this->showing = btCode::decoderaw($this->showing);
+        $this->showing = btCode::decodeToCSSColorClass($this->showing);
         return $this->generateOutput($this->showing);
 
     } // End load();

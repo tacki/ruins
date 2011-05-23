@@ -120,7 +120,7 @@ switch ($_GET['op']) {
             $fishsize = Dice::rollD12(6)+50;
         } else {
             $prefix		= "den";
-            $fishname 	= "`44mutierten Goldfisch (!)`00";
+            $fishname 	= "`#44mutierten Goldfisch (!)`#00";
             // 50 - 140
             $fishsize = Dice::rollD10(10)+40;
         }

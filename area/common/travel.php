@@ -24,7 +24,7 @@ switch ($_GET['op']) {
         if (isset($_GET['return'])) {
             $page->nav->add(new Link("Zurück", "page=" . $_GET['return']));
         } else {
-            $page->output("`b`g`25This Page needs a return-Parameter! Please fix this!`n");
+            $page->output("`b`g`#25This Page needs a return-Parameter! Please fix this!`n");
             $page->nav->add(new Link("Zurück", "page=ironlance/citysquare"));
         }
 
