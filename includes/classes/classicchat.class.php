@@ -96,8 +96,8 @@ class ClassicChat
 
         }
 
-        if (isset($_GET[$chatform.'_page'])) {
-            $this->_setPage($_GET[$chatform.'_page']);
+        if (isset($_GET[$this->_section.'_page'])) {
+            $this->_setPage($_GET[$this->_section.'_page']);
         }
     }
 
