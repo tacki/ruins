@@ -12,7 +12,7 @@
 /**
  * Global Includes
  */
-require_once(DIR_INCLUDES."includes.inc.php");
+//require_once(DIR_INCLUDES."includes.inc.php");
 
 /**
  * btCode2 Class
@@ -57,7 +57,7 @@ class btCode
             return $res;
         }
 
-        // Handle Normal Tags
+        // Handle Normal Tags (Control + Color Tags)
         self::_translateControlTags($decodestring, $opentags);
         self::_translateColorTags($decodestring, $opentags);
 
@@ -274,9 +274,10 @@ class btCode
                                              $decodestring,
                                              1);
             }
+        }
 
         // OPENING/CLOSING CONTROL TAG (example: `b) - same tag closes
-        } elseif (preg_match_all(self::_getRegex("control"), $decodestring, $matches)) {
+        if (preg_match_all(self::_getRegex("control"), $decodestring, $matches)) {
             // Result is in $matches (2-dimensional array)
 
             foreach ($matches[0] as $result) {
@@ -337,18 +338,22 @@ class btCode
                 preg_match("/".preg_quote(self::BTID_CLOSER)."\s*".self::_getRegexWordDefinition()."/", $result, $word);
                 $word = substr($word[0], 1); // strip leading Closer
 
+                 // Add Closing Tag after the Word
+                $replacement = self::_createColorGradient($word, $colorcode1, $colorcode2) . self::_getTag($tagid, "close");
+
                 // Replace the Tag inside $decodestring
                 $decodestring = preg_replace(self::_getRegex("color-gradient", true, true),
-                                             self::_createColorGradient($word, $colorcode1, $colorcode2),
+                                             $replacement,
                                              $decodestring,
                                              1);
 
                 // Translate the new tags
                 self::_translateColorTags($decodestring, $opentags);
             }
+        }
 
         // OPENCLOSE COLOR TAGS WHICH RELATES ONLY TO THE NEXT WORD (example: `#2f:word)
-        } elseif (preg_match_all(self::_getRegex("color", true, true), $decodestring, $matches)) {
+        if (preg_match_all(self::_getRegex("color", true, true), $decodestring, $matches)) {
             // Result is in $matches (2-dimensional array)
 
             foreach ($matches[0] as $result) {
@@ -373,9 +378,10 @@ class btCode
                                              $decodestring,
                                              1);
             }
+        }
 
         // OPENING/CLOSING COLOR TAG (example: `#a9) - same tag closes and reopens
-        } elseif (preg_match_all(self::_getRegex("color"), $decodestring, $matches)) {
+        if (preg_match_all(self::_getRegex("color"), $decodestring, $matches)) {
             // Result is in $matches (2-dimensional array)
 
             foreach ($matches[0] as $result) {

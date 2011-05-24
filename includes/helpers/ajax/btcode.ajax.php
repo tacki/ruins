@@ -13,8 +13,7 @@
 /**
  * Global Includes
  */
-require_once("../../../config/dirconf.cfg.php");
-require_once(DIR_INCLUDES."includes.inc.php");
+require_once("../../../includes/classes/btcode.class.php");
 
 $decodestring = rawurldecode($_GET['decodestring']);
 

@@ -1,12 +1,23 @@
 function setColorPreview(input_id, preview_id)
 {
-    btCode = new btCode();
-    var cpInputId = "#" + input_id;
-    var cpPreviewId = "#" + preview_id;
+    var callURL			= "includes/helpers/ajax/btcode.ajax.php";
+
+    var cpInputId 		= "#" + input_id;
+    var cpPreviewId 		= "#" + preview_id;
+
+    var search_timeout = undefined;
 
     $(cpInputId).keyup(function() {
-        var str = $(cpInputId).val();
+        if(search_timeout != undefined) {
+            clearTimeout(search_timeout);
+        }
 
-        $(cpPreviewId).html( btCode.decode(str) );
+        search_timeout = setTimeout(function() {
+            search_timeout = undefined;
+
+            $.getJSON(callURL+"?action=decode&decodestring="+Url.encode($(cpInputId).val()), {}, function(json) {
+                $(cpPreviewId).html ( json );
+            });
+        }, 500);
     });
 }
