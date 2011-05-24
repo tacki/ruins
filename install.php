@@ -138,7 +138,7 @@ switch ($_GET['step']) {
             if (!file_exists($dirname) && is_writable(dirname(__FILE__))) {
                echo "<div class='ask'>Creating Directory " . $dirname . "</div>";
                mkdir ($dirname);
-            } else {
+            } elseif (!is_writable(dirname(__FILE__))) {
                 echo "<div class='notok'>Not OK! Directory " . $dirname . " doesn't exist and can't be created automatically!
                         Please create this Directory manually and make sure that it is writeable by the Webserver.</div><br />";
             }

@@ -33,7 +33,7 @@ class btCode
     const COLORTAG_LENGTH   = 2;
     const COLORSUBID        = "#";
     const COLORBACKSUBID    = "~";
-    const COLORNULLIFY      = 0x00;
+    const COLORNULLIFY      = "00";
 
     /**
      * Convert btcode-Tags into HTML-Elements
@@ -43,7 +43,6 @@ class btCode
     public static function decode($decodestring)
     {
         $opentags = array();
-        $offset = 0;
 
         // Handle Exclude-Tags
         if (strpos($decodestring, self::BTID.self::EXCLUDESUBID) !== false) {
