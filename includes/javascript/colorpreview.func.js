@@ -5,9 +5,11 @@ function setColorPreview(input_id, preview_id)
     var cpInputId 		= "#" + input_id;
     var cpPreviewId 		= "#" + preview_id;
 
-    var search_timeout = undefined;
+    var delay			= 500;
 
-    $(cpInputId).keyup(function() {
+    var search_timeout 		= undefined;
+
+    $(cpInputId).keypress(function() {
         if(search_timeout != undefined) {
             clearTimeout(search_timeout);
         }
@@ -15,9 +17,9 @@ function setColorPreview(input_id, preview_id)
         search_timeout = setTimeout(function() {
             search_timeout = undefined;
 
-            $.getJSON(callURL+"?action=decode&decodestring="+Url.encode($(cpInputId).val()), {}, function(json) {
-                $(cpPreviewId).html ( json );
+            $.post(callURL+"?action=decode", {decodestring: "" + Url.encode($(cpInputId).val()) + ""}, function(data) {
+                $(cpPreviewId).html ( data );
             });
-        }, 500);
+        }, delay);
     });
 }

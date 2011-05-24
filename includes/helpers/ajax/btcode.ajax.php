@@ -15,14 +15,14 @@
  */
 require_once("../../../includes/classes/btcode.class.php");
 
-$decodestring = rawurldecode($_GET['decodestring']);
+$decodestring = rawurldecode($_POST['decodestring']);
 
 switch ($_GET['action']) {
     case "decode":
-        echo json_encode( btCode::decode($decodestring) );
+        echo btCode::decode($decodestring);
         break;
     case "decoderaw":
-        echo json_encode( btCode::decodeToCSSColorClass($decodestring) );
+        echo btCode::decodeToCSSColorClass($decodestring);
         break;
 }
 

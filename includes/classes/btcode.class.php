@@ -10,11 +10,6 @@
  */
 
 /**
- * Global Includes
- */
-//require_once(DIR_INCLUDES."includes.inc.php");
-
-/**
  * btCode2 Class
  *
  * btCode2 Code Class to decode the color+special character code of ruins
@@ -47,7 +42,7 @@ class btCode
         // Handle Exclude-Tags
         if (strpos($decodestring, self::BTID.self::EXCLUDESUBID) !== false) {
             // exclude-tag present
-            $result = explode("`x", $decodestring);
+            $result = explode(self::BTID.self::EXCLUDESUBID, $decodestring);
             $res = "";
             for ($i=0; $i<=count($result); $i=$i+2) {
                 $res .= self::decode($result[$i]);
