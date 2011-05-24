@@ -135,6 +135,14 @@ switch ($_GET['step']) {
         foreach ($writeaccess as $description => $dirname) {
             echo "<div class='checkfor'>" . $description . " ... </div>";
 
+            if (!file_exists($dirname) && is_writable(dirname(__FILE__))) {
+               echo "<div class='ask'>Creating Directory " . $dirname . "</div>";
+               mkdir ($dirname);
+            } else {
+                echo "<div class='notok'>Not OK! Directory " . $dirname . " doesn't exist and can't be created automatically!
+                        Please create this Directory manually and make sure that it is writeable by the Webserver.</div><br />";
+            }
+
             if (is_writable($dirname)) {
                 echo "<div class='ok'>OK!</div>";
             } else {

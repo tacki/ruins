@@ -33,6 +33,7 @@ class btCode
     const COLORTAG_LENGTH   = 2;
     const COLORSUBID        = "#";
     const COLORBACKSUBID    = "~";
+    const COLORNULLIFY      = 0x00;
 
     /**
      * Convert btcode-Tags into HTML-Elements
@@ -165,7 +166,7 @@ class btCode
                             // Sup
                             "p" => array ( "open" => "<sup>",    				"close" => "</sup>" ),
                             // Small
-                               "s" => array ( "open" => "<small>",    			"close" => "</small>" ),
+                            "s" => array ( "open" => "<small>",    				"close" => "</small>" ),
                             // Sub
                             "u" => array ( "open" => "<sub>",    				"close" => "</sub>" ),
 
@@ -216,9 +217,6 @@ class btCode
             }
 
             if ($addNextWord) {
-                // delimiting characters for the 'word'
-                $limitchar = array ('<', self::BTID, self::COLORSUBID, self::COLORBACKSUBID);
-
                 $regexres .= "\s*".self::_getRegexWordDefinition();
             }
 
@@ -385,6 +383,9 @@ class btCode
                 // Get TagID
                 $tagid = substr($result, 1, 1);
 
+                // fetch Colorcode
+                $colorcode = substr($result, 2, self::COLORTAG_LENGTH);
+
                 $replacetag = "";
                 if (($found = array_search($tagid, $opentags)) !== false) {
                     // Close already opened Tag
@@ -392,16 +393,16 @@ class btCode
                     unset($opentags[$found]);
                 }
 
-                // Opener Tag
-                $replacetag .= self::_getTag($tagid, "open");
+                // Check for Closer-Tag
+                if ($colorcode != self::COLORNULLIFY) {
+                    // Opener Tag
+                    $replacetag .= self::_getTag($tagid, "open");
 
-                // Add to $opentags if an close-Tag exists
-                if (self::_getTag($tagid, "close")) {
-                    $opentags[] = $tagid;
+                    // Add to $opentags if an close-Tag exists
+                    if (self::_getTag($tagid, "close")) {
+                        $opentags[] = $tagid;
+                    }
                 }
-
-                // fetch Colorcode
-                $colorcode = substr($result, 2, self::COLORTAG_LENGTH);
 
                 // Replace the Tag
                 $replacement = preg_replace(self::_getRegex("color"),

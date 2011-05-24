@@ -1,7 +1,6 @@
-/logs/*
+/logs/*.log
 /temp/openid/*
-/temp/smarty/cache/*
-/temp/smarty/templates_c/*
+/temp/smarty/*
 .project
 /config/config.cfg
 /config/dbconnect.cfg.php
