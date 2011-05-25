@@ -1,0 +1,3 @@
+[submodule "includes/external/doctrine2"]
+	path = includes/external/doctrine2
+	url = git://github.com/doctrine/doctrine2.git
