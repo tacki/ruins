@@ -16,8 +16,9 @@
  */
 // save the user - every change to $user below this line will be doomed :P
 if ($popup->nav instanceof Nav && $popup->nav->isloaded) $popup->nav->save();
-if ($user->char instanceof Character && $user->char->isloaded) $user->char->save();
-if ($user instanceof User && $user->isloaded) $user->save();
+
+global $em;
+$em->flush();
 
 // compile the page
 $popup->show();

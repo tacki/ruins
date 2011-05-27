@@ -23,6 +23,36 @@ require_once(DIR_INCLUDES."includes.inc.php");
  */
 class EnvironmentSystem
 {
+    public static function addNews($title, $body, $area=false)
+    {
+        global $em;
+        global $user;
+
+        $newnews = new Entities\News;
+        $newnews->title   = $title;
+        $newnews->body    = $body;
+        $newnews->author  = $user->character;
+
+        if($area) $newnews->area = $area;
+
+        $em->persist($newnews);
+    }
+
+    public static function getNews($area="GLOBAL", $orderDir="DESC")
+    {
+        $qb = getQueryBuilder();
+
+        $qb ->select("news")
+            ->from("Entities\News", "news")
+            ->orderBy("news.date", $orderDir);
+
+        if($area) $qb->where("news.area = ?1")->setParameter(1, $area);
+
+        $result = $qb->getQuery()->getResult();
+
+        return $result;
+    }
+
     /**
      * Translate Systemname to human readable
      * @param string $name The Systemname to translate

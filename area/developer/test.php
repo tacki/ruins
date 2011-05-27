@@ -52,14 +52,11 @@ $mt = getMicroTime();
 $page->output("Starting User Test: `n");
 $position = "usertest";
 
-$user = new User;
+$user = new User(1);
 
-$user->load(1);
 if ($user->login == "anonymous") {
     $page->output("Usertest successful `n");
 }
-
-$user->unload();
 
 // User-Test END
 
@@ -206,21 +203,22 @@ $page->output("`n`n*************************************`n`n");
 $mt = getMicroTime();
 // *************************************
 
-// QueryTool && Table Test Start
+// QueryBuilder && Table Test Start
 $position = "tabletest";
 
 $page->output("Starting Lists Test:`n`n");
 $page->output("Geordnet nach Gold:`n");
 
-$dbqt = new QueryTool();
-$result = $dbqt	->select("displayname, id, money, lifepoints, healthpoints")
-                ->from("characters")
-                ->where("money >= 0")
-                ->order("money", true)
-                ->order("lifepoints")
-                ->limit(10,0)
-                ->exec()
-                ->fetchAll();
+$qb = getQueryBuilder();
+
+$result = $qb   ->select("char.displayname, char.id, char.money, char.lifepoints, char.healthpoints")
+                ->from("Entities\Character", "char")
+                ->where("char.money >= 0")
+                ->orderBy("char.money", "DESC")
+                ->addorderBy("char.lifepoints", "ASC")
+                ->setMaxResults(10)
+                ->getQuery()
+                ->getResult();
 
 $thetable = new Table;
 //$thetable->setCSS("`~35");
@@ -233,10 +231,9 @@ $thetable->addListArray($result, false, "`~35");
 $page->output($thetable->load(),true);
 
 $page->output("`nGeordnet nach HP:`n");
-$result = $dbqt	->clear("order")
-                ->order("healthpoints")
-                ->exec()
-                ->fetchAll();
+$result = $qb	->orderBy("char.healthpoints")
+                ->getQuery()
+                ->getResult();
 
 $newtab = new Table;
 //$newtab->setCSS("`~35");
@@ -343,6 +340,7 @@ $mt = getMicroTime();
 $position = "link&rightstest";
 $page->output("Starting Links+Rights Test:`n");
 
+/*
 $char = new GPCharacter;
 $char->load(1);
 
@@ -380,7 +378,7 @@ if (!$link1->isAllowedBy($char->rightgroups) && !$link2->isAllowedBy($char->righ
 
 unset($char);
 unset($link1, $link2, $link3);
-
+*/
 // Link-Class + Rights-Class Test end
 
 // *************************************
@@ -419,7 +417,7 @@ $mt = getMicroTime();
 // Money Test start
 $position = "moneytest";
 $page->output("Starting Money+Manager-Module Test:`n");
-
+/*
 $char = new GPCharacter;
 $char->load(1);
 
@@ -459,7 +457,7 @@ $page->output("Silver: ". $char->money->detailed("silver") ."`n");
 $page->output("Copper: ". $char->money->detailed("copper") ."`n");
 
 $char->save();
-
+*/
 // Money Test end
 
 // *************************************
@@ -473,10 +471,22 @@ $mt = getMicroTime();
 
 $position = "newstest";
 
+$newstab = new Table;
+//$newtab->setCSS("`~35");
+$newstab->setTabAttributes(false,2);
+$newstab->addTabHeader(array("ID","Datum","Author","Titel","HP", "Inhalt", "Ort"));
+
+if (!($newslist = EnvironmentSystem::getNews())) {
+    EnvironmentSystem::addNews("Skandal!", "Heute wieder kein Weltuntergang");
+} else {
+    $newstab->addListArray($newslist);
+}
+$page->output($newstab->load(),true);
+/*
 $news = new News;
 $news->setNewsAttributes(3,"80%","`~35","`~35","`~35");
 $page->output($news->load(),true);
-
+*/
 // News Test End
 
 // *************************************
@@ -581,7 +591,7 @@ $mt = getMicroTime();
 // Message Test Start
 $page->output("Starting Message Test: `n");
 $position = "messagetest";
-
+/*
 $character = new RPGCharacter;
 
 $page->output("Sending Message from anonymous(1) to anonymous(1)`n");
@@ -614,7 +624,7 @@ $newtab->setTabAttributes(false,2);
 $newtab->addTabHeader(array("id","sender","receiver","subject","text","date","status"),false,array("`b","`b`c","`b`c","`b`c","`b`c","`b`c","`b`c","`b`c"));
 $newtab->addListArray($messagelist);
 $page->output($newtab->load(),true);
-
+*/
 // Message Test End
 
 // *************************************
@@ -758,7 +768,7 @@ $mt = getMicroTime();
 // *************************************
 
 // QueryTool Start
-
+/*
 $page->output("QueryTool Start: `n");
 $position = "QueryTooltest";
 
@@ -777,7 +787,7 @@ $table->setTabAttributes(false,2);
 $table->addTabHeader(array("id","displayname"),false,array("`b","`b`c"));
 $table->addListArray($result);
 $page->output($table->load(),true);
-
+*/
 // QueryTool End
 
 // *************************************
@@ -843,7 +853,7 @@ $mt = getMicroTime();
 // *************************************
 
 // Race Module Start
-
+/*
 $page->output("Race Definition Start: `n");
 $position = "racedefinitiontest";
 
@@ -858,7 +868,7 @@ $page->output("Height: " . $user->char->race->generateHeight() . "cm `n");
 $page->output("Weight: " . $user->char->race->generateWeight() . "kg `n");
 $page->output("Age: " . $user->char->race->generateAge() . " years old `n");
 $page->output("Max. Age " . $user->char->race->generateMaxAge() . " years `n");
-
+*/
 // Race Module End
 
 // *************************************
@@ -872,7 +882,7 @@ $mt = getMicroTime();
 
 $page->output("Item Handling Start: `n");
 $position = "itemhandling";
-
+/*
 $item = new Item;
 $item->load(2);
 
@@ -919,7 +929,7 @@ $page->output("Füße: " . $armorset->feet->name . " - RK: " . $armorset->feet->
 $page->output("Wert: " . $armorset->feet->value->fullDetailedWithPic() . "`n", true);
 $page->output("Gesamt RK: " . $armorset->getTotalArmorClass());
 $armorset->unload();
-
+*/
 // Itemhandling End
 
 // *************************************

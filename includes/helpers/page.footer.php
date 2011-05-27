@@ -16,8 +16,9 @@
  */
 // save the user - every change to $user below this line will be doomed :P
 if ($page->nav instanceof Nav && $page->nav->isloaded) $page->nav->save();
-if ($user->char instanceof Character && $user->char->isloaded) $user->char->save();
-if ($user instanceof User && $user->isloaded) $user->save();
+
+global $em;
+$em->flush();
 
 // compile the page
 $page->show();

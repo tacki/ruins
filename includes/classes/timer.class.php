@@ -56,25 +56,25 @@ require_once(DIR_INCLUDES."includes.inc.php");
  *
  * @package Ruins
  */
-class Timer extends DBObject
+class Timer
 {
     /**
      * Set this to replace the Timer with HTML instead of reload the page
      * @var string HTML-Element
      */
-    private $_replacement;
+    private $_replacement = false;
 
     /**
      * Replace imediatelly
      * @var bool
      */
-    private $_replacenow;
+    private $_replacenow = false;
 
     /**
-     * Name of the Timer
-     * @var string
+     * Timer Object
+     * @var Entities\Timer
      */
-    private $_timername;
+    private $_timer;
 
     /**
      * constructor - load the default values and initialize the attributes
@@ -83,41 +83,37 @@ class Timer extends DBObject
      */
     function __construct($timername, $character = false)
     {
-        // Call Constructor of the Parent-Class
-        parent::__construct();
-
-        $this->_replacement = false;
-        $this->_replacenow	= false;
-
         // Set Timername
-        if ($character instanceof Character) {
-            $this->_timername = "_".$character->id."_".$timername;
-        } elseif (substr($timername, 0, 1) != "_") {
-            $this->_timername = $timername;
-        } else {
-            throw new Error("Timers with a Name, starting with '_' are not allowed");
+        if ($character) {
+            $timername = "_".$character->id."_".$timername;
+        } elseif (substr($timername, 0, 1) == "_") {
+            throw new Error("Timers with a Name starting with '_' are not allowed");
         }
 
-        // Load Timer
-        if ($timerid = $this->_getTimerID($this->_timername)) {
-            $this->load($timerid);
-
+        // Load or create the Timer
+        if ($this->_timer = $this->_getTimer($timername)) {
             // Make sure a stopped Timer is also stopped after loading
             if (!$this->isRunning()) {
                 $this->stop();
             }
         } else {
-            $this->create();
+            $this->create($timername);
         }
 
     }
 
     /**
-     * Save this Object before destroying
+     * Create a new Timer
      */
-    function __destruct()
+    public function create($timername)
     {
-        $this->save();
+        global $em;
+
+        $newtimer = new Entities\Timer;
+        $newtimer->name = $timername;
+        $em->persist($newtimer);
+
+        $this->_timer = $newtimer;
     }
 
     /**
@@ -156,13 +152,33 @@ class Timer extends DBObject
      */
     public function set($seconds, $minutes=0, $hours=0, $force=false)
     {
-        $totaltime 	= $seconds + $minutes*60 + $hours*3600;
-
         if (!$this->get() || $force) {
-            // new timer or forced to overwrite
-            $this->name = $this->_timername;
-            $this->completiontime = date("Y-m-d H:i:s", time() + $totaltime);
-            $this->backupttc = 0;
+            $totaltime 	= $seconds + $minutes*60 + $hours*3600;
+            $datetime = new DateTime("+".$totaltime." seconds");
+
+            // set new time or force to overwrite
+            $this->_timer->completiontime = $datetime;
+            $this->_timer->backup_ttc = 0;
+        } else {
+            // timer exists and force isn't enabled -> do nothing
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Set a Timer
+     * @param DateTime $datetime Set with DateTime Object
+     * @param bool $force Force to set a new Timer (overwrite existing ones)
+     * @return bool true if successful, else false
+     */
+    public function setWithDateTime(DateTime $datetime, $force=false)
+    {
+        if (!$this->get() || $force) {
+            // set new time or force to overwrite
+            $this->_timer->completiontime = $datetime;
+            $this->_timer->backup_ttc = 0;
         } else {
             // timer exists and force isn't enabled -> do nothing
             return false;
@@ -177,11 +193,15 @@ class Timer extends DBObject
      */
     public function get()
     {
-        $timetocomplete = $this->_getTTC();
+        if (!($completiontime = $this->_getTTC())) {
+            return false;
+        }
 
-        if ($timetocomplete > 0 || $this->_replacenow) {
+        $timediff = $this->_getTimeDiff($completiontime);
+
+        if ($timediff > 0 || $this->_replacenow) {
             $html 	= "";
-            $clock 	= date("H:i:s", mktime(0, 0, $timetocomplete));
+            $clock = date("H:i:s", mktime(0, 0, $timediff));
 
             if ($this->_replacenow) {
                 $html .= $this->_replacement;
@@ -202,8 +222,8 @@ class Timer extends DBObject
      */
     public function start()
     {
-        if ($this->backupttc) {
-            $this->set($this->backupttc, 0, 0, true);
+        if ($backup_ttc = $this->_getTTC()) {
+            $this->setWithDateTime($backup_ttc, true);
 
             $this->_replacenow = false;
             $this->_replacement = false;
@@ -215,10 +235,10 @@ class Timer extends DBObject
      */
     public function stop()
     {
-        $this->backupttc = $this->_getTTC();
+        $this->_timer->backup_ttc = $this->_getTimeDiff($this->_getTTC());
 
         $this->_replacenow = true;
-        $this->useReplacementText("<span class='timer_stop'>".date("H:i:s", mktime(0, 0, $this->backupttc)) ."</span>");
+        $this->useReplacementText("<span class='timer_stop'>".date("H:i:s", mktime(0, 0, $this->_timer->backup_ttc)) ."</span>");
     }
 
     /**
@@ -227,7 +247,7 @@ class Timer extends DBObject
      */
     public function isRunning()
     {
-        if ($this->backupttc) {
+        if ($this->_timer->backupttc) {
             return false;
         } else {
             return true;
@@ -236,43 +256,43 @@ class Timer extends DBObject
 
      /**
      * Get the current ttc or the backup ttc if exists
-     * @return int Time to complete
+     * @return DateTime Time to complete
      */
     private function _getTTC()
     {
         // Get timetocomplete from BackupTTC or calculate from completiontime
-        if (!$timetocomplete = (int)$this->backupttc) {
-            $timetocomplete = (int)strtotime($this->completiontime) - time();
+        if ($seconds = $this->_timer->backup_ttc) {
+            return new DateTime("+".$seconds." seconds");
+        } else {
+            return $this->_timer->completiontime;
         }
-
-        return $timetocomplete;
     }
 
     /**
-     * Return the Timer ID (result is cached)
+     * Get Timediff (in seconds) to now()
+     * @param DateTime $datetime
+     */
+    private function _getTimeDiff(DateTime $datetime)
+    {
+        $now = new DateTime();
+
+        return $datetime->getTimestamp() - $now->getTimestamp();
+    }
+
+    /**
+     * Return the Timer
      * @param string $name Name of the Timer
      * @return int ID of the Timer or false if non-existing
      */
-    private function _getTimerID($name)
+    private function _getTimer($name)
     {
-        if (!$result = SessionStore::readCache("timerID_".$name))
-        {
-            $dbqt = new Querytool();
+        $qb = getQueryBuilder();
 
-            $qResult = $dbqt->select("id")
-                            ->from("timers")
-                            ->where("name=".$dbqt->quote($name))
-                            ->exec()
-                            ->fetchOne();
-
-            if ($qResult) {
-                $result = $qResult;
-            } else {
-                $result = false;
-            }
-
-            SessionStore::writeCache("timerid_".$name, $result);
-        }
+        $result = $qb   ->select("timer")
+                        ->from("Entities\Timer", "timer")
+                        ->where("timer.name = ?1")->setParameter(1, $name)
+                        ->getQuery()
+                        ->getOneOrNullResult();
 
         return $result;
     }

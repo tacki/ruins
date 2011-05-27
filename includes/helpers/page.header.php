@@ -19,15 +19,60 @@ require_once(DIR_INCLUDES."includes.inc.php");
  * Page Content
  */
 
-// Initialize User-Object
-$user = new User;
+use Doctrine\ORM\Tools\SchemaValidator;
+
+$validator = new SchemaValidator($em);
+$errors = $validator->validateMapping();
+if (count($errors)) {
+    var_dump("Schemavalidation:", $errors);
+    die;
+} else {
+    $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($em);
+    $metadata = $em->getMetadataFactory()->getAllMetadata();
+    //$schemaTool->dropSchema($metadata);
+    $schemaTool->updateSchema($metadata);
+
+    if (!$em->find("Entities\User", 1)) {
+        $install_char = new Entities\Character;
+        $install_char->name = "Saevain";
+        $install_char->displayname = "Saevain";
+        $install_char->level = 1;
+        $install_char->healthpoints = 10;
+        $install_char->lifepoints = 10;
+        $install_char->strength = 5;
+        $install_char->dexterity = 6;
+        $install_char->constitution = 7;
+        $install_char->intelligence = 6;
+        $install_char->charisma = 5;
+        $install_char->money = 1000;
+        $install_char->loggedin = false;
+        $install_char->lastpagehit = new DateTime();
+        $em->persist($install_char);
+
+        $install_user = new Entities\User;
+        $install_user->login = "tacki";
+        $install_user->password = md5("tacki");
+        $install_user->character = $install_char;
+        $install_user->lastlogin = new DateTime();
+        $install_user->loggedin = false;
+        $em->persist($install_user);
+
+        $install_settings = new Entities\UserSetting;
+        $install_settings->userid = $install_user;
+        $install_settings->default_character = $install_char;
+        $em->persist($install_settings);
+
+        $em->flush();
+    }
+}
+
+
 // Initialize Config-Class
 $config = new Config();
 
 // Load User if in Session
 if ($userid = SessionStore::get('userid')) {
-    $user->load($userid);
-    $user->loadCharacter();
+    $user = new User($userid);
 }
 
 // Page preparation
@@ -45,16 +90,17 @@ if (array_search($_GET['page'], $config->get("publicpages")) !== false) {
 
     // Create the Page
     $page->create();
-} elseif ($user->isloaded) {
+} elseif (isset($user)) {
     // this is a private page and a user is loaded
-    $page = new Page($user->char);
+    $page = new Page($user->character);
 
     if (array_search($_GET['page'], $config->get("nocachepages")) !== false) {
         $page->disableCaching();
     }
 
+
     // Check for Connection Timeout
-    if ($user->char->hasConnectionTimeout()) {
+    if ($user->hasConnectionTimeout()) {
         // Connection Timeout occurred
         // Redirect to logoutpage
         SessionStore::set("logoutreason", "Automatischer Logout: Verbindungs Timeout!");
@@ -64,11 +110,13 @@ if (array_search($_GET['page'], $config->get("publicpages")) !== false) {
         $page->create();
 
         // Update lastpagehit
-        $user->char->lastpagehit = date("Y-m-d H:i:s");
+        $user->character->lastpagehit = new DateTime();
 
         // Set current_nav if this is not the portal
         if (strpos($page->url, "page=common/portal") === false) {
-            $user->char->current_nav = (string)$page->url;
+            $user->character->current_nav = (string)$page->url;
+        } elseif (!$user->character->current_nav) {
+            $user->character->current_nav = "page=ironlance/citysquare";
         }
     }
 } else {

@@ -11,6 +11,7 @@
 /**
  * Page Content
  */
+use Entities\DebugLogEntity;
 $page->set("pagetitle", "Login Page");
 $page->set("headtitle", "Login Page");
 
@@ -94,13 +95,10 @@ switch ($_GET['op']) {
     case "checkpw":
         $page->output("`cChecking Password!`c`n");
         if ($userid = UserSystem::checkPassword($_POST['username'], $_POST['password'])) {
-            $user->load($userid);
+            $user = new User($userid);
             $user->login();
-            // load the current character
-            $user->loadCharacter();
-            $user->char->login();
 
-            $user->debuglog->add("Login via User/Pass");
+            $user->addDebugLog("Login via User/Pass");
             $page->nav->redirect("page=common/portal");
         } else {
             SessionStore::set("logoutreason", "Username oder Passwort falsch!");

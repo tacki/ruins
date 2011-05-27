@@ -731,7 +731,7 @@ class Page extends BaseObject implements OutputObject
         // to initialize the new class
         $snippet = $this->createTemplateSnippet();
 
-        if ($this->_char instanceof Character && $this->_char->isloaded) {
+        if ($this->_char) {
             // We need to activate the Money-Module again, cause
             // the Modules are already deactivated by $char->save() which is
             // called before Page::show() (page.footer.php)
@@ -750,7 +750,9 @@ class Page extends BaseObject implements OutputObject
                     case "copper":
                     case "silver":
                     case "gold":
-                        $snippet->assign($value, $this->_char->money->detailed($value));
+                        // FIXME
+                        $snippet->assign($value, $this->_char->money);
+                        //$snippet->assign($value, $this->_char->money->detailed($value));
                         break;
 
                     case "weaponname":

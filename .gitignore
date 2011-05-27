@@ -5,3 +5,5 @@
 /config/config.cfg
 /config/dbconnect.cfg.php
 /config/dirconf.cfg.php
+/.settings
+/.buildpath

@@ -4,9 +4,8 @@
  *
  * Global Includes File - should be included on every page!
  * @author Markus Schlegel <g42@gmx.net>
- * @copyright Copyright (C) 2006 Markus Schlegel
+ * @copyright Copyright (C) 2006-2011 Markus Schlegel
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version SVN: $Id: includes.inc.php 326 2011-04-19 20:19:34Z tacki $
  * @package Ruins
  */
 
@@ -14,6 +13,32 @@
  * Database-Connection Information
  */
 require_once(DIR_CONFIG."dbconnect.cfg.php");
+
+/**
+ * Doctrine ClassLoaders
+ */
+require_once(DIR_INCLUDES_DOCTRINE."vendor/doctrine-common/lib/Doctrine/Common/ClassLoader.php");
+
+$classLoader = new \Doctrine\Common\ClassLoader('Doctrine\Common', DIR_INCLUDES_DOCTRINE . 'vendor/doctrine-common/lib');
+$classLoader->register();
+
+$classLoader = new \Doctrine\Common\ClassLoader('Doctrine\DBAL', DIR_INCLUDES_DOCTRINE . 'vendor/doctrine-dbal/lib');
+$classLoader->register();
+
+$classLoader = new \Doctrine\Common\ClassLoader('Doctrine\ORM', DIR_INCLUDES_DOCTRINE);
+$classLoader->register();
+
+$classLoader = new \Doctrine\Common\ClassLoader('Entities', DIR_INCLUDES . 'entities');
+$classLoader->register();
+
+$classloader = new \Doctrine\Common\ClassLoader('Symfony', DIR_INCLUDES_DOCTRINE . 'vendor/');
+$classloader->register();
+
+/**
+ * Doctrine Initialization
+ */
+require_once(DIR_INCLUDES."doctrine_init.inc.php");
+
 /**
  * Global Functions
  */

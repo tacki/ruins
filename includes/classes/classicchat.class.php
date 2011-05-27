@@ -118,6 +118,19 @@ class ClassicChat
      */
     private function _getPage($linesperpage, $pagenr=0)
     {
+
+        $qb = getQueryBuilder();
+
+        $result = $qb   ->select("chat")
+                        ->from("Entities\Chat", "chat")
+                        ->where("chat.section = ?1")->setParameter(1, $this->_section)
+                        ->andWhere("chat.status = ?2")->setParameter(2, CHATMESSAGE_STATUS_NORMAL)
+                        ->orderBy("chat.date")
+                        ->setFirstResult( $pagenr*$linesperpage )
+                        ->setMaxResults( $linesperpage )
+                        ->getQuery()
+                        ->getResult();
+/*
         $dbqt = new QueryTool();
 
         $result = $dbqt	->select("date, authorid, displayname, chatline")
@@ -129,6 +142,7 @@ class ClassicChat
                         ->limit($linesperpage, $pagenr*$linesperpage)
                         ->exec()
                         ->fetchAll();
+*/
 
         if ($result) {
             return $result;
@@ -144,6 +158,7 @@ class ClassicChat
      */
     private function _getLastLine($char)
     {
+/*
         $charid = 0;
 
         if ($char instanceof Character) {
@@ -151,7 +166,19 @@ class ClassicChat
         } else {
             $charid = (int)$char;
         }
+*/
+        $qb = getQueryBuilder();
 
+        $result = $qb   ->select("chat")
+                        ->from("Entities\Chat", "chat")
+                        ->where("chat.section = ?1")->setParameter(1, $this->_section)
+                        ->andWhere("chat.status = ?2")->setParameter(2, CHATMESSAGE_STATUS_NORMAL)
+                        ->andWhere("chat.author = ?3")->setParameter(3, $char)
+                        ->orderBy("chat.date", "DESC")
+                        ->setMaxResults(1)
+                        ->getQuery()
+                        ->getSingleResult();
+/*
         $dbqt = new QueryTool();
 
         $result = $dbqt ->select("id, chatline")
@@ -163,7 +190,7 @@ class ClassicChat
                         ->limit(1, 0)
                         ->exec()
                         ->fetchRow();
-
+*/
         if ($result) {
             return $result;
         } else {
@@ -178,6 +205,15 @@ class ClassicChat
      */
     private function _getNumberOfPages($linesperpage)
     {
+        $qb = getQueryBuilder();
+
+        $chatlines = $qb->select('COUNT(chat.id)')
+                        ->from("Entities\Chat", "chat")
+                        ->where('chat.section = ?1')
+                        ->setParameter(1, $this->_section)
+                        ->getQuery()
+                        ->getSingleScalarResult();
+/*
         $dbqt = new QueryTool();
 
         $chatlines = $dbqt	->select("id")
@@ -185,7 +221,7 @@ class ClassicChat
                             ->where("section=".$dbqt->quote($this->_section))
                             ->exec()
                             ->numRows();
-
+*/
         $result = $chatlines/$linesperpage;
 
         if ($chatlines%$linesperpage) {
@@ -203,13 +239,21 @@ class ClassicChat
     private function _addLine($text)
     {
         global $user;
-        global $dbconnect;
+        global $em;
 
         if (!strlen($text)) {
             return false;
         }
 
-        if (isset($user->char) && $user->char instanceof Character) {
+        if (isset($user->character)) {
+            // Add new line
+            $newline = new Entities\Chat;
+            $newline->section  = $this->_section;
+            $newline->author   = $user->character;
+            $newline->chatline = $text;
+            $newline->date     = new DateTime();
+            $em->persist($newline);
+/*
             $chatentry = new DBObject(array("tablename" => $dbconnect['prefix'] . "chat"));
 
             $chatentry->create();
@@ -219,9 +263,9 @@ class ClassicChat
             $chatentry->date		= date("Y-m-d H:i:s");
 
             $chatentry->save();
-
+*/
             // Add DebugLogEntry
-            $user->char->debuglog->add("Wrote at Chat $this->_section", "veryverbose");
+            $user->addDebuglog("Wrote at Chat $this->_section", "veryverbose");
 
             return true;
         } else  {
@@ -236,6 +280,17 @@ class ClassicChat
      */
     private function _updateLine($id, $text)
     {
+        global $em;
+
+        $qb = getQueryBuilder();
+
+        // Get Data from oldline
+        $oldline = $qb  ->select("chat")
+                        ->from("Entities\Chat", "chat")
+                        ->where("chat.id = ?1")->setParameter(1, $id)
+                        ->getQuery()
+                        ->getSingleResult();
+/*
         $dbqt = new QueryTool();
 
         // Get Data from oldline
@@ -244,13 +299,22 @@ class ClassicChat
                             ->where("id=".$id)
                             ->exec()
                             ->fetchRow();
+*/
 
-        // Create a new line
+        // Add new line
+        $newline = new Entities\Chat;
+        $newline->section  = $oldline->section;
+        $newline->author   = $oldline->author;
+        $newline->chatline = $text;
+        $newline->date     = $oldline->date;
+        $em->persist($newline);
+/*
+         // Create a new line
         $newline = array(
-                            "section" => $oldline['section'],
-                            "authorid" => $oldline['authorid'],
+                            "section" => $oldline[0]['section'],
+                            "authorid" => $oldline[0]['authorid'],
                             "chatline" => $text,
-                            "date" => $oldline['date'],
+                            "date" => $oldline[0]['date'],
                         );
 
         $dbqt->clear();
@@ -259,7 +323,7 @@ class ClassicChat
         $dbqt	->insertinto("chat")
                 ->data($newline)
                 ->exec();
-
+*/
         // Hide old Message from Chat
         $this->_updateMessageStatus($id, CHATMESSAGE_STATUS_OLDEDIT);
     }
@@ -271,12 +335,22 @@ class ClassicChat
      */
     private function _updateMessageStatus($id, $status)
     {
+        $qb = getQueryBuilder();
+
+        $qb    ->update("Entities\Chat", "chat")
+               ->set("chat.status", (int)$status)
+               ->where("chat.id = ?1")->setParameter(1, $id)
+               ->getQuery()
+               ->execute();
+
+/*
         $dbqt = new QueryTool();
 
         $dbqt	->update("chat")
                 ->set(array("status" => (int)$status))
                 ->where("id=".(int)$id)
                 ->exec();
+*/
     }
 
     /**
@@ -291,13 +365,20 @@ class ClassicChat
 
         // Get List of bad words (use SessionStore to avoid unneeded dbtraffic)
         if (!$badwords = SessionStore::readCache("badwords")) {
+            $qb = getQueryBuilder();
+
+            $badwords = $qb->select("bw")
+                           ->from("Entities\Badword", "bw")
+                           ->getQuery()
+                           ->getResult();
+ /*
             $dbqt = new QueryTool();
 
             $badwords = $dbqt	->select("badword, replacement")
                                 ->from("badwords")
                                 ->exec()
                                 ->fetchAll();
-
+*/
              SessionStore::writeCache("badwords", $badwords);
         }
 
@@ -307,7 +388,7 @@ class ClassicChat
             foreach ($badwords as $badword) {
                 if (array_search($purgedword, $badword) !== false) {
                     // this is the replacement
-                    $words[$key] = $badword['replacement'];
+                    $words[$key] = $badword->replacement;
                 }
             }
         }
@@ -332,45 +413,46 @@ class ClassicChat
             return false;
         }
 
+        $resultpage = array();
+
         for ($i=0; $i<sizeof($page); $i++) {
             // Format Date to userdefined chatdateformat
-            $page[$i]['date'] = date($user->settings->get("chatdateformat", "[H:i:s]"), strtotime($page[$i]['date']));
-            $page[$i]['displayname'] = "" . trim($page[$i]['displayname']);
+            $resultpage[$i]['date'] = $page[$i]->date->format($user->settings->chatdateformat);
 
-            // authorid is not needed anymore
-            unset($page[$i]['authorid']);
+            // Get Displayname
+            $resultpage[$i]['displayname'] = $page[$i]->author->displayname;
 
             // Apply Censorship
-            if ($user->settings->get("chatcensorship", 1)) {
-                $page[$i]['chatline'] = $this->_chatlineCensorship($page[$i]['chatline']);
+            if ($user->settings->chat_censorship) {
+                $resultpage[$i]['chatline'] = $this->_chatlineCensorship($page[$i]->chatline);
             }
 
             // Check for special Commands
-            $firstword 	= substr($page[$i]['chatline'], 0, strpos($page[$i]['chatline'], " "));
-            $rest		= strstr($page[$i]['chatline'], " ");
+            $firstword 	= substr($resultpage[$i]['chatline'], 0, strpos($resultpage[$i]['chatline'], " "));
+            $rest		= strstr($resultpage[$i]['chatline'], " ");
 
             if ($firstword == "/me" || $firstword == ":") {
                 // Actions
-                $page[$i]['specialline'] = "`b* `b" . $page[$i]['displayname'] . " " . $rest;
+                $resultpage[$i]['specialline'] = "`b* `b" . $resultpage[$i]['displayname'] . " " . $rest;
 
-                unset($page[$i]['displayname']);
-                unset($page[$i]['chatline']);
+                unset($resultpage[$i]['displayname']);
+                unset($resultpage[$i]['chatline']);
             } elseif ($firstword == "/mes") {
                 // Actions with "'s"
-                $page[$i]['specialline'] = "`b* `b" . $page[$i]['displayname'] . "'s " . $rest;
+                $resultpage[$i]['specialline'] = "`b* `b" . $resultpage[$i]['displayname'] . "'s " . $rest;
 
-                unset($page[$i]['displayname']);
-                unset($page[$i]['chatline']);
+                unset($resultpage[$i]['displayname']);
+                unset($resultpage[$i]['chatline']);
             } elseif ($firstword == "/em" || $firstword == "/X") {
                 // Emotes
-                $page[$i]['specialline'] = $rest;
+                $resultpage[$i]['specialline'] = $rest;
 
-                unset($page[$i]['displayname']);
-                unset($page[$i]['chatline']);
+                unset($resultpage[$i]['displayname']);
+                unset($resultpage[$i]['chatline']);
             }
         }
 
-        $page = array_reverse($page);
+        $page = array_reverse($resultpage);
 
         return $page;
     }

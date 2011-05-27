@@ -13,38 +13,29 @@
 
 /**
  * Create a DB Instance and return the Object
- * @return MDB2 MDB2 Object
+ * @return \Doctrine\DBAL\Connection Doctrine DBAL Object
  */
-function getDBInstance($silent=false)
+function getDBInstance()
 {
     global $dbconnect;
 
-    $mdb2 = MDB2::singleton($dbconnect);
+    $connection = \Doctrine\DBAL\DriverManager::getConnection($dbconnect);
+    $connection->connect();
 
-    if (PEAR::isError($mdb2)) {
-        if ($silent) {
-            return $mdb2;
-        }
-        throw new Error("Can't create MDB2-Object (" . $mdb2->getUserInfo() .")", $connection->code);
+    return $connection;
+}
+
+/**
+ * Create and return a fresh QueryBuilder
+ * @return \Doctrine\ORM\EntityManager Doctrine QueryBuilder
+ */
+function getQueryBuilder()
+{
+    global $em;
+
+    if ($em instanceof \Doctrine\ORM\EntityManager) {
+        return $em->createQueryBuilder();
     }
-
-    $connection = $mdb2->connect();
-
-    if (PEAR::isError($connection)) {
-        if ($silent) {
-            return $connection;
-        }
-        throw new Error("Can't connect to the Database (" . $connection->getUserInfo() . ")", $connection->code);
-    }
-
-    // we use utf-8 only
-    $setcharset = $mdb2->setCharset("utf8");
-
-    if (PEAR::isError($setcharset)) {
-        throw new Error("Characterset 'utf8' is not supported by this DBMS!");
-    }
-
-    return $mdb2;
 }
 
 /**

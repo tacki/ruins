@@ -31,14 +31,14 @@ class UserSystem
      */
     public static function checkPassword($username, $password)
     {
-        $dbqt = new QueryTool();
+        $qb = getQueryBuilder();
 
-        $result = $dbqt	->select("id")
-                        ->from("users")
-                        ->where("login=".$dbqt->quote($username))
-                        ->where("password=".$dbqt->quote(md5($password)))
-                        ->exec()
-                        ->fetchOne();
+        $result = $qb    ->select("user.id")
+                         ->from("Entities\User', 'user")
+                         ->where("user.login = ?1")->setParameter(1, $username)
+                         ->andWhere("user.password = ?2")->setParameter(2, md5($password))
+                         ->getQuery()
+                         ->getOneOrNullResult();
 
          if ($result) {
              return $result;
@@ -57,18 +57,17 @@ class UserSystem
     public static function getCharacterName($charid, $btCode=true)
     {
         if (!$result = SessionStore::readCache($charid . "_CharacterName_".$btCode)) {
-            $dbqt = new QueryTool();
+            $qb = getQueryBuilder();
 
             if ($btCode) {
-                $dbqt->select("displayname");
+                $result = $qb->select("char.displayname");
             } else {
-                $dbqt->select("name");
+                $result = $qb->select("char.name");
             }
 
-            $dbqt	->from("characters")
-                    ->where("id=".$charid);
-
-            $result = $dbqt->exec()->fetchOne();
+            $result = $qb   ->from("Entities\Character", "char")
+                            ->where("char.id = ?1")->setParameter($charid)
+                            ->getOneOrNullResult();
 
             if ($result) {
                 SessionStore::writeCache($charid . "_CharacterName_".$btCode, $result);
@@ -91,13 +90,12 @@ class UserSystem
         $charactername = btCode::purgeTags($charactername);
 
         if (!$result = SessionStore::readCache($charactername . "_CharacterID ")) {
-            $dbqt = new QueryTool();
+            $qb = getQueryBuilder();
 
-            $result = $dbqt	->select("id")
-                            ->from("characters")
-                            ->where("name=".$dbqt->quote($charactername))
-                            ->exec()
-                            ->fetchOne();
+            $result = $qb   ->select("char.id")
+                            ->from("Entities\Character", "char")
+                            ->where("char.name = ?1")->setParameter($charactername)
+                            ->getOneOrNullResult();
 
             if ($result) {
                 SessionStore::writeCache($charactername . "_CharacterID", $result);
@@ -118,13 +116,12 @@ class UserSystem
     {
         // check type of character
         if (!$result = SessionStore::readCache($charid . "_CharacterType")) {
-            $dbqt = new QueryTool();
+            $qb = getQueryBuilder();
 
-            $result = $dbqt	->select("type")
-                            ->from("characters")
-                            ->where("id=".$charid)
-                            ->exec()
-                            ->fetchOne();
+            $result = $qb   ->select("char.type")
+                            ->from("Entities\Character", "char")
+                            ->where("char.id = ?1")->setParameter($charid)
+                            ->getOneOrNullResult();
 
             if ($result) {
                 SessionStore::writeCache($charid . "_CharacterType", $result);
@@ -145,13 +142,12 @@ class UserSystem
     {
         // check type of character
         if (!$result = SessionStore::readCache($charid . "_CharacterRace")) {
-            $dbqt = new QueryTool();
+            $qb = getQueryBuilder();
 
-            $result = $dbqt	->select("race")
-                            ->from("characters")
-                            ->where("id=".$charid)
-                            ->exec()
-                            ->fetchOne();
+            $result = $qb   ->select("char.race")
+                            ->from("Entities\Character", "char")
+                            ->where("char.id = ?1")->setParameter($charid)
+                            ->getOneOrNullResult();
 
             if ($result) {
                 SessionStore::writeCache($charid . "_CharacterRace", $result);
@@ -171,13 +167,13 @@ class UserSystem
     public static function getUserCharactersList($userid)
     {
         if (!$result = SessionStore::readCache($userid . "_CharacterList")) {
-            $dbqt = new QueryTool();
 
-            $result = $dbqt	->select("characterid")
-                            ->from("charactermapping")
-                            ->where("userid=".$userid)
-                            ->exec()
-                            ->fetchCol("characterid");
+            $qb = getQueryBuilder();
+
+            $result = $qb   ->select("char.id")
+                            ->from("Entities\Character", "char")
+                            ->where("char.user = ?1")->setParameter($userid)
+                            ->getResult();
 
             if ($result) {
                 SessionStore::writeCache($userid . "_CharacterList", $result);
@@ -193,12 +189,37 @@ class UserSystem
      * Get Complete List of Characters
      * @param array $fields Characterdata to include in the Result
      * @param string $order Order by Database Column
-     * @param bool $orderDESC Set to true for descending Order
+     * @param string $orderDir "ASC" for ascending, "DESC" for descending
      * @return array 2-dimensional Array
      */
-    public static function getCharacterList($fields=false, $order="id", $orderDesc=false, $onlineonly=false)
+    public static function getCharacterList($fields=false, $order="id", $orderDir="ASC", $onlineonly=false)
     {
         if (!$result = SessionStore::readCache("CharacterList_".serialize($fields)."_".$order."_".$orderDesc."_".$onlineonly)) {
+            $qb = getQueryBuilder();
+
+            if (is_array($fields)) {
+                foreach($fields as $key=>$column) {
+                    $fields[$key] = "char." . $column;
+                }
+                $qb->select($fields);
+            }
+
+            $qb    ->from("Entities\Character", "char")
+                   ->where("char.type != ?1")->setParameter(1, "npc");
+
+            if ($onlineonly) {
+                global $config;
+
+                $qb ->andWhere("char.loggedin = 1")
+                    ->andWhere("char.lastpagehit < ?2")
+                    ->setParameter(2, new DateTime("-".$config->get("connectiontimeout", 15)." minutes"));
+            }
+
+            $qb    ->orderBy("char.".$order, $orderDir);
+
+            $result = $qb->getQuery()->getResult();
+
+/*
             $dbqt = new QueryTool();
 
             if (is_array($fields)) {
@@ -233,7 +254,7 @@ class UserSystem
             $dbqt->order($order, $orderDesc);
 
             $result = $dbqt->exec()->fetchAll();
-
+*/
 
             if ($result) {
                 // CharacterLists-Cache is valid for 1 minute
@@ -252,12 +273,12 @@ class UserSystem
      */
     public static function getCharactersOnline()
     {
-        $characters = self::getCharacterList(array("displayname"), "id", false, true);
+        $characters = self::getCharacterList(array("displayname"), "id", "ASC", true);
 
         $result = array();
 
         foreach ($characters as $character) {
-            $result[] = $character['displayname'];
+            $result[] = $character->displayname;
         }
 
         return $result;
@@ -273,6 +294,19 @@ class UserSystem
         if (!$result = SessionStore::readCache("CharactersAt_".$place)) {
             global $config;
 
+            $qb = getQueryBuilder();
+
+            $result = $qb    ->select("char.displayname")
+                             ->from("Entities\Character", "char")
+                             ->where("char.loggedin = 1")
+                             ->andWhere("char.current_nav LIKE ?1")->setParameter(1, $place)
+                             ->andWhere("char.lastpagehit < ?2")
+                             ->setParameter(2, new DateTime("-".$config->get("connectiontimeout", 15)." minutes"))
+                             ->getQuery()
+                             ->getResult();
+/*
+            global $config;
+
             $dbqt = new QueryTool();
 
             $result = $dbqt	->select("displayname")
@@ -286,7 +320,7 @@ class UserSystem
                                                      ))
                             ->exec()
                             ->fetchCol("displayname");
-
+*/
             if ($result) {
                 // CharactersAt-Cache is valid for 30 Seconds
                 SessionStore::writeCache("CharactersAt_".$place, $result, 30);

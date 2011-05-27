@@ -95,7 +95,6 @@ class Nav extends BaseObject
             return true;
         }
 
-        // Check if the Char is allowed to use this link
         if (!$this->validationEnabled()
             || (	ModuleSystem::isModule($this->_char->rightgroups)
                     && $link->isAllowedBy($this->_char->rightgroups) )) {
@@ -116,7 +115,10 @@ class Nav extends BaseObject
             $this->isloaded = true;
             return true;
         } else {
-            return false;
+        // Check if the Char is allowed to use this link
+        // FIXME
+        return true;
+            //return false;
         }
     }
 
@@ -250,7 +252,7 @@ class Nav extends BaseObject
 
         if ($this->_exists(false, $url)) {
             // Add DebugLogEntry
-            $user->char->debuglog->add("Open $url", "verbose");
+            $user->addDebugLog("Open $url", "verbose");
 
             if (!$noclear) {
                 // URL is valid, so we clear the old linklist
@@ -269,6 +271,10 @@ class Nav extends BaseObject
      */
     public function redirect($url)
     {
+        global $em;
+
+        $em->flush();
+/*
         global $user, $config;
 
         // Set Character Object of $this->_char if it isn't already set
@@ -297,10 +303,10 @@ class Nav extends BaseObject
         if ($user instanceof User && $user->isloaded) {
             $user->save();
         }
-
+*/
         // Check Transactions
         $database = getDBInstance();
-        if ($database->inTransaction()) {
+        if ($database->isTransactionActive()) {
             // Commit Database-Changes
             $database->commit();
         }

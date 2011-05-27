@@ -134,7 +134,7 @@ class ItemSystem
      * @param string $class Itemclass to get (defaults to equipped weapon)
      * @return Item The equipped Item as an object
      */
-    public function getEquippedItem(Character $char, $class=ITEMSYSTEM_CLASS_WEAPON)
+    public function getEquippedItem($char, $class=ITEMSYSTEM_CLASS_WEAPON)
     {
         if ($tempresult	= self::getInventoryList($char, ITEMSYSTEM_LOCATION_EQUIPMENT, $class)) {
             // Get the first Item found (should be only one)
@@ -154,9 +154,29 @@ class ItemSystem
      * @param string $class Filter by the itemclass
      * @return array 2-dimensional Array
      */
-    public function getInventoryList(Character $char, $location=false, $class=false, $order="id", $orderDesc=false)
+    public function getInventoryList($char, $location=false, $class=false, $order="id", $orderDir="ASC")
     {
         if (!$result = SessionStore::readCache("inventory_".$char->id."_".$location."_".$class."_".$order."_".$orderDesc)) {
+
+            $qb = getQueryBuilder();
+
+            $qb    ->select("item")
+                   ->from("Entities\Item", "item")
+                   ->where("item.owner = ?1")->setParameter(1, $char);
+
+            if ($location) {
+                $qb->andWhere("item.location LIKE ?2")->setParameter(2, $location);
+            }
+
+            if ($class) {
+                $qb->andWhere("item.class LIKE ?3")->setParameter(3, $class);
+            }
+
+            $qb->orderBy("item.".$order, $orderDir);
+
+            $result =  $qb->getQuery()->getResult();
+
+/*
             $dbqt = new QueryTool();
 
             $dbqt	->select("*")
@@ -179,7 +199,7 @@ class ItemSystem
             } else {
                 $result = array();
             }
-
+*/
             SessionStore::writeCache("inventory_".$char->id."_".$location."_".$class."_".$order."_".$orderDesc, $result);
         }
 

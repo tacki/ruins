@@ -56,9 +56,8 @@ try {
              */
             $database = getDBInstance();
 
-            if ($config->get("useTransactions", 1) && $database->supports("transactions")) {
+            if ($config->get("useTransactions", 1) && $database->getDatabasePlatform()->supportsTransactions()) {
                 $database->beginTransaction();
-                $database->setTransactionIsolation("READ COMMITTED");
             }
 
             /**
@@ -81,24 +80,24 @@ try {
              */
             $database = getDBInstance();
 
-            if ($database->inTransaction()) {
+            if ($database->isTransactionActive()) {
                 // Commit Database-Changes
                 $database->commit();
             }
             break;
     }
 
-} catch (Error $e) {
-    if (isset($database) && $database->inTransaction()) {
+} catch (Exception $e) {
+    if (isset($database) && $database->isTransactionActive()) {
         // Rollback Database-Changes
         $database->rollback();
     }
 
     echo "<fieldset style='color: #000; border-color: #FF0000; background-color: #ffd0c0; border-width:thin; border-style:solid'>";
     echo "<legend style='padding:2px 5px'><strong>Exception</strong></legend>";
-    echo nl2br($e);
+    echo nl2br($e->getMessage());
     echo "</fieldset>";
-
+var_dump($e);
     if (isset($config) && $config instanceof Config && $config->get("debugException", 0)) {
         echo "<fieldset style='color: #000; border-color: #880000; background-color: #ffeab0; border-width:thin; border-style:solid'>";
         echo "<legend style='padding:2px 5px'><strong>Debug</strong></legend>";

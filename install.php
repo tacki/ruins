@@ -4,9 +4,8 @@
  *
  * Installation and Configuration of 'Ruins'
  * @author Markus Schlegel <g42@gmx.net>
- * @copyright Copyright (C) 2006 Markus Schlegel
+ * @copyright Copyright (C) 2006-2011 Markus Schlegel
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version $Id: install.php 327 2011-04-20 10:07:21Z tacki $
  * @package Ruins
  */
 ?>
@@ -227,6 +226,10 @@ switch ($_GET['step']) {
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
                                                         "/includes/external/pear/".
                                                         "\");"."\n" .
+                                                    "	define(\"DIR_INCLUDES_DOCTRINE\", ".
+                                                        "\"".str_replace('\\', '/', dirname(__FILE__)).
+                                                        "/includes/external/doctrine2-orm/lib/".
+                                                        "\");"."\n" .
                                                     "	define(\"DIR_INCLUDES_SMARTY\", ".
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
                                                         "/includes/external/smarty/".
@@ -398,15 +401,19 @@ switch ($_GET['step']) {
         if (isset($_GET['updateDBinfo'])) {
             echo "<div class='checkfor'>Updating Database Settings ... </div>";
 
-            $dbconnect_content	=	"<?php"."\n" .
-                                        "// created by installscript\n" .
-                                        "\$dbconnect = array(\n" .
-                                        "'phptype' => '" . $_POST['phptype'] . "',\n" .
-                                        "'hostspec' => '" . $_POST['hostspec'] . "',\n" .
-                                        "'username' => '" . $_POST['username'] . "',\n" .
-                                        "'password' => '" . $_POST['password'] . "',\n" .
-                                        "'database' => '" . $_POST['database'] . "',\n" .
-                                        "'prefix' => '" . $_POST['prefix'] . "');\n" .
+            $dbconnect_content	=	"<?php" . "\n" .  "// created by installscript\n" .
+                                    "\$dbconnect = array(\n" .
+                                    "'driver' => '" . $_POST['driver'] . "',\n" .
+                                    "'host' => '" . $_POST['host'] . "',\n";
+
+            if (strlen($_POST['port'])) { // port is optional
+                $dbconnect_content .= "'port' => '" . $_POST['port'] . "',\n";
+            }
+
+            $dbconnect_content .=   "'user' => '" . $_POST['user'] . "',\n" .
+                                    "'password' => '" . $_POST['password'] . "',\n" .
+                                    "'dbname' => '" . $_POST['dbname'] . "',\n" .
+                                    "'prefix' => '" . $_POST['prefix'] . "');\n" .
                                     "?>";
 
             if ($filehandle = fopen(DIR_CONFIG."dbconnect.cfg.php", "w")) {
@@ -437,13 +444,24 @@ switch ($_GET['step']) {
             // CLEAR PREVIOUS CACHE
             SessionStore::pruneCache();
 
-            // Try to connect using the given Data (be silent)
-            $database = getDBInstance(true);
+            // Try to connect using the given Data
+            try {
+                $database = getDBInstance();
+            } catch (Doctrine\DBAL\DBALException $e) {
+                $database = $e;
+            } catch (PDOException $e) {
+                $database = $e;
+            }
 
-            if (MDB2::isConnection($database)) {
+            if ($database instanceof Doctrine\DBAL\Connection) {
                 echo "<div class='ok'>OK!</div>";
             } else {
-                echo "<div class='notok'>Database Settings invalid! Please enter the correct Database Information:</div>";
+                // $database holds Exception Object
+                echo "<div class='notok'>
+                        Database Settings invalid!<br />
+                        ErrorMessage: {$database->getMessage()}<br />
+                        Please enter the correct Database Information:
+                      </div>";
                 $needDBinfo = true;
             }
         } else {
@@ -456,26 +474,33 @@ switch ($_GET['step']) {
                     <table border='0'>
                     <tr>
                         <td>Databasetype:</td>
-                        <td><select name='phptype'>
-                                <option value='mysql'>MySQL (InnoDB)</option>
-                                <option value='mysqli'>MySQLi (InnoDB)</option>
-                                <option value='pgsql'>PostgreSQL</option>
+                        <td><select name='driver'>
+                                <option value='pdo_mysql'>MySQL</option>
+                                <option value='pdo_pgsql'>PostgreSQL</option>
+                                <option value='pdo_sqlite'>SQLite</option>
                             </select>
                         </td>
                     </tr><tr>
                         <td colspan='2' class='description'>
-                            Type of Database Server (only MySQL and MySQLi are supportet atm)
+                            Type of Database Server
                         </td>
                     </tr><tr>
                         <td>Hostname:</td>
-                        <td><input type='text' name='hostspec'></td>
+                        <td><input type='text' name='host'></td>
                     </tr><tr>
                         <td colspan='2' class='description'>
                             Hostname of the Database Server. For example 'localhost', 'database.example.com' or '192.168.1.5'
                         </td>
                     </tr><tr>
+                        <td>Port:</td>
+                        <td><input type='text' name='port'></td>
+                    </tr><tr>
+                        <td colspan='2' class='description'>
+                            Keep empty for default
+                        </td>
+                    </tr><tr>
                         <td>Username:</td>
-                        <td><input type='text' name='username'></td>
+                        <td><input type='text' name='user'></td>
                     </tr><tr>
                         <td colspan='2' class='description'>
                             Username to connect to the Database Server
@@ -489,7 +514,7 @@ switch ($_GET['step']) {
                         </td>
                     </tr><tr>
                         <td>Database:</td>
-                        <td><input type='text' name='database'></td>
+                        <td><input type='text' name='dbname'></td>
                     </tr><tr>
                         <td colspan='2' class='description'>
                             Database to use on the Database Server
@@ -529,18 +554,9 @@ switch ($_GET['step']) {
 
             $erroraccured = false;
 
-            // force to InnoDB if mysql(i) is used
-            if (strtolower($dbconnect['phptype']) == 'mysql'
-                || strtolower($dbconnect['phptype']) == 'mysqli'
-                ) {
+            // force to InnoDB if mysql is used
+            if ($database->getDriver()->getName() == "pdo_mysql" ) {
                 $result = $database->exec("SET storage_engine=INNODB");
-
-                if (PEAR::isError($result)) {
-                    echo "<div class='notok'>NOT OK! InnoDB is not supported! (" . $result->getUserInfo() .")</div>";
-                    echo "<form action='install.php?step=" . ($_GET['step']) . "&import=true' method='post'>
-                            <input type='submit' value='Retry' class='retry'></form>";
-                    break;
-                }
             }
 
             if (file_exists(DIR_BASE."db dump/initial.xml")) {
@@ -552,12 +568,23 @@ switch ($_GET['step']) {
                     'force_defaults' => true,
                     'portability' => true,
                     'use_transactions' => false
-                );
-
-                $connectiondata = $dbconnect;
+            );
 
                 // Import into Database using MDB2_Schema
-                $importer = MDB2_Schema::factory($connectiondata, $options);
+                global $dbconnect;
+
+                $mdbconnect = array (
+                                        'phptype' => substr($dbconnect['driver'], 4), // cut 'pdo_'
+                                        'hostspec' => $dbconnect['host'],
+                                        'username' => $dbconnect['user'],
+                                        'password' => $dbconnect['password'],
+                                        'database' => $dbconnect['dbname'],
+                                        'prefix' => $dbconnect['prefix'],
+                                    );
+
+                $mdbdbdata  = $mdbconnect;
+
+                $importer = MDB2_Schema::factory($mdbconnect, $options);
 
                 // Get Database-Definition from current running Database
                 $olddefinition = $importer->getDefinitionFromDatabase();
@@ -565,7 +592,7 @@ switch ($_GET['step']) {
                 // Update Database with initial.xml
                 $importstatus = $importer->updateDatabase(DIR_BASE."db dump/initial.xml",
                                                             $olddefinition,
-                                                            array('db_prefix' => $dbconnect['prefix'], 'db_name' => $dbconnect['database']));
+                                                            array('db_prefix' => $mdbdbdata['prefix'], 'db_name' => $mdbdbdata['database']));
 
                 if (PEAR::isError($importstatus)) {
                     $erroraccured = $importstatus->getUserInfo();
@@ -599,21 +626,13 @@ switch ($_GET['step']) {
         // Try to connect using the given Data
         $database = getDBInstance();
 
-        $database->loadModule('Manager');
-        $tablelist = $database->listTables();
+        $tablelist = $database->getSchemaManager()->listTables();
 
-        if (PEAR::isError($tablelist)) {
-            // No Tables found, Database doesn't exist or
-            // can't connect (bad, but shouldn't happen - we
-            // checked this a half step before)
-            $oldtablesfound = false;
-        } else {
-            foreach ($tablelist as $tablename) {
-                if ( (strlen($dbconnect['prefix']) && strpos($tablename, $dbconnect['prefix']) === 0) ||
-                     strlen($dbconnect['prefix']) === 0 ) {
-                    echo "<div class='notok'>Already existing Table found: " . $tablename . "</div>";
-                    $oldtablesfound = true;
-                }
+        foreach ($tablelist as $table) {
+            if ( (strlen($dbconnect['prefix']) && strpos($table->getName(), $dbconnect['prefix']) === 0) ||
+                  strlen($dbconnect['prefix']) === 0 ) {
+                echo "<div class='notok'>Already existing Table found: " . $table->getName() . "</div>";
+                $oldtablesfound = true;
             }
         }
 

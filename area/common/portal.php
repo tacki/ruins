@@ -21,7 +21,7 @@ $page->nav->add(new Link("Logout", "page=common/logout"));
 switch ($_GET['op']) {
 
     default:
-        if ($user->settings->default_character > 0) {
+        if ($user->settings->default_character->id > 0) {
             $page->nav->redirect("page=common/portal&op=forward");
         }
 
@@ -71,24 +71,23 @@ switch ($_GET['op']) {
         break;
 
     case "forward":
-        // unload current character
-        $user->unloadCharacter();
         // set new current character
         if (isset($_POST['chooser'])) {
             $user->current_character = $_POST['chooser'];
         } else {
-            $user->current_character = $user->settings->default_character;
+            $user->character = $user->settings->default_character;
         }
         // load the new character
-        $user->loadCharacter();
+        //$user->loadCharacter();
         // we need to let the system know, that this user is now the loggedin one
-        $user->char->login();
+        //$user->char->login();
+        $user->character->loggedin = true;
         // Write to Debuglog
-        $user->debuglog->add("Character choosen: ". $user->char->name);
+        $user->addDebugLog("Character choosen: ". $user->character->name);
 
         // Create new Page for the new Character
         // (updates page-class to use correct allowednavs, etc)
-        $page = new Page($user->char);
+        $page = new Page($user->character);
 
         if ($page->cacheExists()) {
             $page->nav->loadFromCache();
@@ -103,7 +102,7 @@ switch ($_GET['op']) {
             $user->save();
         } else {
             // redirect to the last place visited
-            $page->nav->redirect($user->char->current_nav);
+            $page->nav->redirect($user->character->current_nav);
         }
 
         break;

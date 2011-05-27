@@ -6,7 +6,7 @@
  * @author Markus Schlegel <g42@gmx.net>
  * @copyright Copyright (C) 2009 Markus Schlegel
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version SVN: $Id: querytool.class.php 326 2011-04-19 20:19:34Z tacki $
+ * @version SVN: $Id: querytool.class.php 331 2011-04-23 08:11:58Z tacki $
  * @package Ruins
  */
 
@@ -31,13 +31,13 @@ class QueryTool extends QueryBuilder
 
     /**
      * Database Object
-     * @var MDB2
+     * @var Doctrine\DBAL\Connection Doctrine DBAL Object
      */
     private $_database;
 
     /**
      * Constructor
-     * @var MDB2 $database MDB2 Database Object
+     * @var Doctrine\DBAL\Connection Doctrine DBAL Object
      */
     public function __construct($database=false)
     {
@@ -47,20 +47,21 @@ class QueryTool extends QueryBuilder
             $database = getDBInstance();
         }
 
-        if ($database instanceof MDB2_Driver_Common) {
-            $database->setFetchMode(MDB2_FETCHMODE_ASSOC);
+        if ($database instanceof Doctrine\DBAL\Connection) {
             $this->_database = $database;
 
-            if ($this->_database->dsn['prefix']) {
-                $this->_tableprefix = $this->_database->dsn['prefix'];
+            $connectionParams = $this->_database->getParams();
+
+            if ($connectionParams['prefix']) {
+                $this->_tableprefix = $connectionParams['prefix'];
             }
         } else {
-            throw new Error("QueryTool needs a valid Instance of MDB2 to work!");
+            throw new Error("QueryTool needs a valid Instance of Doctrine DBAL Connection to work!");
         }
     }
 
     /**
-     * Quote Values with Data from MDB2-Object
+     * Quote Values
      * @param string|array $values Value or array of Values to quote
      * @return string|array The same type as $values, but quoted
      */
@@ -79,10 +80,9 @@ class QueryTool extends QueryBuilder
 
     /**
      * Execute the current Query
-     * @param bool $returnerrorobject Return the Error Object on failure
-     * @return MDB2_Result|MDB2_Error|false Query Result or Error Object if $returnerrorobject is set, else false
+     * @return Doctrine\DBAL\Driver\PDOStatement
      */
-    public function exec($returnerrorobject=false)
+    public function exec()
     {
         if ($this->isManipulating()) {
             $result = $this->_database->exec($this->_build());
@@ -90,18 +90,43 @@ class QueryTool extends QueryBuilder
             $result = $this->_database->query($this->_build());
         }
 
-        if (PEAR::isError($result)) {
-            if ($returnerrorobject) {
-                // return Error Object
-                return $result;
-            } else {
-                // throw Exception
-                throw new Error($result->getUserInfo());
-            }
-        } else {
-            // return Result
-            return $result;
-        }
+        return $result;
+    }
+
+    /**
+     * Fetch all results
+     * @see Doctrine\DBAL\Connection::fetchAll
+     */
+    public function fetchAll()
+    {
+        return $this->_database->fetchAll($this->_build());
+    }
+
+    /**
+     * Fetch all results
+     * @see Doctrine\DBAL\Connection::fetchArray
+     */
+    public function fetchArray()
+    {
+        return $this->_database->fetchArray($this->_build());
+    }
+
+    /**
+     * Fetch all results
+     * @see Doctrine\DBAL\Connection::fetchColumn
+     */
+    public function fetchColumn()
+    {
+        return $this->_database->fetchColumn($this->_build());
+    }
+
+    /**
+     * Fetch all results
+     * @see Doctrine\DBAL\Connection::fetchAssoc
+     */
+    public function fetchAssoc()
+    {
+        return $this->_database->fetchAssoc($this->_build());
     }
 
     /**
@@ -126,7 +151,7 @@ class QueryTool extends QueryBuilder
     {
         $sqlstring = parent::_build();
 
-        $this->_applyLimit();
+        $sqlstring = $this->_applyLimit($sqlstring);
 
         return $sqlstring;
     }
@@ -134,11 +159,13 @@ class QueryTool extends QueryBuilder
     /**
      * Apply Limit
      */
-    private function _applyLimit()
+    private function _applyLimit($sqlstring)
     {
         if (count($this->_limit) > 0) {
-            $this->_database->setLimit(	$this->_limit['count'],
-                                        $this->_limit['offset']);
+            return $this->_database ->getDatabasePlatform()
+                                    ->modifyLimitQuery($sqlstring, $this->_limit['count'], $this->_limit['offset']);
+        } else {
+            return $sqlstring;
         }
     }
 }

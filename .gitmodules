@@ -1,9 +1,3 @@
-[submodule "includes/external/doctrine2-dbal"]
-	path = includes/external/doctrine2-dbal
-	url = git://github.com/doctrine/dbal.git
-[submodule "includes/external/doctrine2-common"]
-	path = includes/external/doctrine2-common
-	url = git://github.com/doctrine/common.git
 [submodule "includes/external/doctrine2-orm"]
 	path = includes/external/doctrine2-orm
 	url = git://github.com/doctrine/doctrine2.git
