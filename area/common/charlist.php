@@ -65,7 +65,7 @@ switch ($_GET['op']) {
 
 foreach ($charlist as &$character) {
     $curnav						= explode("&", $character['current_nav']);
-    $character['current_nav'] 	= EnvironmentSystem::translate($curnav[0], true);
+    $character['current_nav'] 	= Manager\System::translate($curnav[0], true);
     // We don't need the Character ID here
     unset ($character['id']);
 }

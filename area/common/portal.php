@@ -56,7 +56,7 @@ switch ($_GET['op']) {
             $page->output("Geschlecht: " . $character->sex . "`n");
             $page->output("Level: " . $character->level . "`n");
             $curnav = explode("&", $character->current_nav);
-            $page->output("Ort: " . EnvironmentSystem::translate($curnav[0]) . "`n");
+            $page->output("Ort: " . Manager\System::translate($curnav[0]) . "`n");
 
             $page->output("`n");
 

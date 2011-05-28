@@ -1,14 +1,18 @@
 <?php
 /**
- * Environment Class
+ * System Class
  *
  * Class to manage Cities and other Environmentals
  * @author Markus Schlegel <g42@gmx.net>
  * @copyright Copyright (C) 2008 Markus Schlegel
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version SVN: $Id: environmentsystem.class.php 326 2011-04-19 20:19:34Z tacki $
  * @package Ruins
  */
+
+/**
+ * Namespaces
+ */
+namespace Manager;
 
 /**
  * Global Includes
@@ -16,12 +20,12 @@
 require_once(DIR_INCLUDES."includes.inc.php");
 
 /**
- * Environment Class
+ * System Class
  *
  * Class to manage Cities and other Environmentals
  * @package Ruins
  */
-class EnvironmentSystem
+class System
 {
     public static function addNews($title, $body, $area=false)
     {

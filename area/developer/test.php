@@ -498,8 +498,8 @@ $newstab = new Table;
 $newstab->setTabAttributes(false,2);
 $newstab->addTabHeader(array("ID","Datum","Author","Titel","HP", "Inhalt", "Ort"));
 
-if (!($newslist = EnvironmentSystem::getNews())) {
-    EnvironmentSystem::addNews("Skandal!", "Heute wieder kein Weltuntergang");
+if (!($newslist = Manager\System::getNews())) {
+    Manager\System::addNews("Skandal!", "Heute wieder kein Weltuntergang");
 } else {
     $newstab->addListArray($newslist);
 }

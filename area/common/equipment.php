@@ -146,13 +146,13 @@ foreach ($itemclasses as $itemclass) {
 
     $page->output("<div id='{$itemclass}'>", true);
 
-    $page->output("`b`g`c".EnvironmentSystem::translate($itemclass) . "`g`b");
+    $page->output("`b`g`c".Manager\System::translate($itemclass) . "`g`b");
 
     $page->output("<div class='equippedbox'>", true);
     if (isset($equipped)) {
         $page->output("<p class='itemid hidden'>".$equipped->itemid."</p>", true);
         $page->output("<p class='itemname'>".$equipped->name."</p>", true);
-        $page->output("<p class='itemdata'>".EnvironmentSystem::translate($equipped->class)."</p>", true);
+        $page->output("<p class='itemdata'>".Manager\System::translate($equipped->class)."</p>", true);
         if ($itemclass == "weapon") {
             $page->output("<p class='itemdata'>Schaden: ".$equipped->showDamage(false)."</p>", true);
         } else {
@@ -169,7 +169,7 @@ foreach ($itemclasses as $itemclass) {
         $page->output("<div class='backpackbox'>", true);
         $page->output("<p class='itemid hidden'>".$backpackitem->itemid."</p>", true);
         $page->output("<p class='itemname'>".$backpackitem->name."</p>", true);
-        $page->output("<p class='itemdata'>".EnvironmentSystem::translate($backpackitem->class)."</p>", true);
+        $page->output("<p class='itemdata'>".Manager\System::translate($backpackitem->class)."</p>", true);
         if ($itemclass == "weapon") {
             $page->output("<p class='itemdata'>Schaden: ".$backpackitem->showDamage(false)."</p>", true);
         } else {
