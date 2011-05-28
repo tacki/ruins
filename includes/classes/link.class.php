@@ -101,12 +101,12 @@ class Link
 
     /**
      * Check if the given Right-Object is allowed to access this Page
-     * @param Rights $char Rights Object
+     * @param $char Character Object
      * @return bool true if access is granted, else false
      */
-    public function isAllowedBy(Rights $rights)
+    public function isAllowedBy($char)
     {
-        if (count( array_intersect($this->_rights, $rights->get()) )) {
+        if (count( array_intersect($this->_rights, $char->groups->toArray()) )) {
             // Needed rights for this link are also in the rights-object
             return true;
         } elseif (!count($this->_rights)) {

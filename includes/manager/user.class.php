@@ -38,7 +38,7 @@ class User
         $qb = getQueryBuilder();
 
         $result = $qb    ->select("user.id")
-                         ->from("Entities\User', 'user")
+                         ->from("Entities\User", "user")
                          ->where("user.login = ?1")->setParameter(1, $username)
                          ->andWhere("user.password = ?2")->setParameter(2, md5($password))
                          ->getQuery()
@@ -60,7 +60,7 @@ class User
      */
     public static function getCharacterName($charid, $btCode=true)
     {
-        if (!$result = SessionStore::readCache($charid . "_CharacterName_".$btCode)) {
+        if (!$result = \SessionStore::readCache($charid . "_CharacterName_".$btCode)) {
             $qb = getQueryBuilder();
 
             if ($btCode) {
@@ -74,7 +74,7 @@ class User
                             ->getOneOrNullResult();
 
             if ($result) {
-                SessionStore::writeCache($charid . "_CharacterName_".$btCode, $result);
+                \SessionStore::writeCache($charid . "_CharacterName_".$btCode, $result);
             } else {
                 return false;
             }
@@ -93,7 +93,7 @@ class User
         // purge existing btCode-Tags
         $charactername = btCode::purgeTags($charactername);
 
-        if (!$result = SessionStore::readCache($charactername . "_CharacterID ")) {
+        if (!$result = \SessionStore::readCache($charactername . "_CharacterID ")) {
             $qb = getQueryBuilder();
 
             $result = $qb   ->select("char.id")
@@ -102,7 +102,7 @@ class User
                             ->getOneOrNullResult();
 
             if ($result) {
-                SessionStore::writeCache($charactername . "_CharacterID", $result);
+                \SessionStore::writeCache($charactername . "_CharacterID", $result);
             } else {
                 return false;
             }
@@ -119,7 +119,7 @@ class User
     public static function getCharacterType($charid)
     {
         // check type of character
-        if (!$result = SessionStore::readCache($charid . "_CharacterType")) {
+        if (!$result = \SessionStore::readCache($charid . "_CharacterType")) {
             $qb = getQueryBuilder();
 
             $result = $qb   ->select("char.type")
@@ -128,7 +128,7 @@ class User
                             ->getOneOrNullResult();
 
             if ($result) {
-                SessionStore::writeCache($charid . "_CharacterType", $result);
+                \SessionStore::writeCache($charid . "_CharacterType", $result);
             } else {
                 return false;
             }
@@ -145,7 +145,7 @@ class User
     public static function getCharacterRace($charid)
     {
         // check type of character
-        if (!$result = SessionStore::readCache($charid . "_CharacterRace")) {
+        if (!$result = \SessionStore::readCache($charid . "_CharacterRace")) {
             $qb = getQueryBuilder();
 
             $result = $qb   ->select("char.race")
@@ -154,7 +154,7 @@ class User
                             ->getOneOrNullResult();
 
             if ($result) {
-                SessionStore::writeCache($charid . "_CharacterRace", $result);
+                \SessionStore::writeCache($charid . "_CharacterRace", $result);
             } else {
                 return false;
             }
@@ -170,7 +170,7 @@ class User
      */
     public static function getUserCharactersList($userid)
     {
-        if (!$result = SessionStore::readCache($userid . "_CharacterList")) {
+        if (!$result = \SessionStore::readCache($userid . "_CharacterList")) {
 
             $qb = getQueryBuilder();
 
@@ -180,7 +180,7 @@ class User
                             ->getResult();
 
             if ($result) {
-                SessionStore::writeCache($userid . "_CharacterList", $result);
+                \SessionStore::writeCache($userid . "_CharacterList", $result);
             } else {
                 return false;
             }
@@ -198,7 +198,7 @@ class User
      */
     public static function getCharacterList($fields=false, $order="id", $orderDir="ASC", $onlineonly=false)
     {
-        //if (!$result = SessionStore::readCache("CharacterList_".serialize($fields)."_".$order."_".$orderDesc."_".$onlineonly)) {
+        if (!$result = \SessionStore::readCache("CharacterList_".serialize($fields)."_".$order."_".$orderDesc."_".$onlineonly)) {
             $qb = getQueryBuilder();
 
             if (is_array($fields)) {
@@ -262,11 +262,11 @@ class User
 
             if ($result) {
                 // CharacterLists-Cache is valid for 1 minute
-                SessionStore::writeCache("CharacterList_".serialize($fields)."_".$order."_".$orderDesc."_".$onlineonly, $result, 60);
+                \SessionStore::writeCache("CharacterList_".serialize($fields)."_".$order."_".$orderDesc."_".$onlineonly, $result, 60);
             } else {
                 $result = array();
             }
-        //}
+        }
 
         return $result;
     }
@@ -295,7 +295,7 @@ class User
      */
     public static function getCharactersAt($place)
     {
-        if (!$result = SessionStore::readCache("CharactersAt_".$place)) {
+        if (!$result = \SessionStore::readCache("CharactersAt_".$place)) {
             global $config;
 
             $qb = getQueryBuilder();
@@ -327,7 +327,7 @@ class User
 */
             if ($result) {
                 // CharactersAt-Cache is valid for 30 Seconds
-                SessionStore::writeCache("CharactersAt_".$place, $result, 30);
+                \SessionStore::writeCache("CharactersAt_".$place, $result, 30);
             } else {
                 $result = array();
             }

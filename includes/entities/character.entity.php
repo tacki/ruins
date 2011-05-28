@@ -66,10 +66,10 @@ class Character extends \EntityBase
     /** @Column(type="text", nullable=true) */
     protected $current_nav;
 
-    /** @Column(type="object", nullable=true) */
+    /** @Column(type="array", nullable=true) */
     protected $allowednavs;
 
-    /** @Column(type="object", nullable=true) */
+    /** @Column(type="array", nullable=true) */
     protected $allowednavs_cache;
 
     /** @Column(length=32, nullable=true) */

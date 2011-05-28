@@ -97,9 +97,6 @@ switch ($_GET['op']) {
                 // Redirect to current_nav to fetch a new version of the Page
                 $page->nav->redirect($user->char->current_nav);
             }
-
-            $user->char->save(true);
-            $user->save();
         } else {
             // redirect to the last place visited
             $page->nav->redirect($user->character->current_nav);

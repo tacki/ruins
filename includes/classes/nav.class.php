@@ -95,9 +95,8 @@ class Nav extends BaseObject
             return true;
         }
 
-        if (!$this->validationEnabled()
-            || (	ModuleSystem::isModule($this->_char->rightgroups)
-                    && $link->isAllowedBy($this->_char->rightgroups) )) {
+
+        if (!$this->validationEnabled() || $link->isAllowedBy($this->_char) ) {
 
             $linkdescription = array(	"displayname"=>$link->displayname,
                                         "url"=>$link->url,
@@ -115,10 +114,7 @@ class Nav extends BaseObject
             $this->isloaded = true;
             return true;
         } else {
-        // Check if the Char is allowed to use this link
-        // FIXME
-        return true;
-            //return false;
+            return false;
         }
     }
 
@@ -273,37 +269,15 @@ class Nav extends BaseObject
     {
         global $em;
 
-        $em->flush();
-/*
-        global $user, $config;
-
-        // Set Character Object of $this->_char if it isn't already set
-        // and a valid Character is loaded. This is needed to redirect
-        // from a public to a private page (for example during login)
-        if (!($this->_char instanceof Character) && $user->char instanceof Character) {
-            $this->_char = $user->char;
-        }
-
         // Add Link to Navigation
         $this->add(new Link("Redirection", $url));
 
         // Write current Navigation to Characters allowedNavs
         $this->save();
 
-        // Save Character
-        if ($this->_char instanceof Character &&  $this->_char->isloaded) {
-            // Add DebugLogEntry
-            $user->char->debuglog->add("Redirect to $url", "verbose");
+        // Flush EntityManager
+        $em->flush();
 
-            // Now save
-            $this->_char->save();
-        }
-
-        // Save User
-        if ($user instanceof User && $user->isloaded) {
-            $user->save();
-        }
-*/
         // Check Transactions
         $database = getDBInstance();
         if ($database->isTransactionActive()) {
