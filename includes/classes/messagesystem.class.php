@@ -89,7 +89,7 @@ class MessageSystem
 
             foreach ($characternames as $receivername) {
                 // Add Messageref
-                $message->addReceiver($messageid, UserSystem::getCharacterID(trim($receivername)));
+                $message->addReceiver($messageid, Manager\User::getCharacterID(trim($receivername)));
             }
         } elseif (is_string($receivers) && strtolower($receivers) == "all") {
             // "all"

@@ -597,7 +597,7 @@ class Battle extends DBObject
         foreach ($qResult as $battlemember) {
             if ($battlemember['healthpoints'] <= 0) {
                 if ($names) {
-                    $result[] = UserSystem::getCharacterName($battlemember['characterid']);
+                    $result[] = Manager\User::getCharacterName($battlemember['characterid']);
                 } else {
                     $result[] = $battlemember['characterid'];
                 }
@@ -632,7 +632,7 @@ class Battle extends DBObject
 
         foreach ($this->_dbqt->getAll() as $battlemember) {
             if ($names) {
-                $result[] = UserSystem::getCharacterName($battlemember['characterid']);
+                $result[] = Manager\User::getCharacterName($battlemember['characterid']);
             } else {
                 $result[] = $battlemember['characterid'];
             }
@@ -759,7 +759,7 @@ class Battle extends DBObject
 
             $temparray = array();
             foreach ($this->getMemberList($sysname) as $memberid) {
-                $chartype = UserSystem::getCharacterType($memberid);
+                $chartype = Manager\User::getCharacterType($memberid);
                 $member = new $chartype;
                 $member->load($memberid);
                 if ($member->madeBattleAction($this->id)) {
@@ -797,7 +797,7 @@ class Battle extends DBObject
         }
 
         foreach ($beforeSS['data'] as $memberid => $memberdata) {
-            $output .= UserSystem::getCharacterName($memberid, true) . ": `n";
+            $output .= Manager\User::getCharacterName($memberid, true) . ": `n";
 
             $bminfo	= $this->getMemberEntry($memberid);
             $status = "";
@@ -911,7 +911,7 @@ class Battle extends DBObject
             if ($names) {
                 $tempres = array();
                 foreach ($result as $id) {
-                    $tempres[] = UserSystem::getCharacterName($id);
+                    $tempres[] = Manager\User::getCharacterName($id);
                 }
                 $result = $tempres;
             }
@@ -976,7 +976,7 @@ class Battle extends DBObject
         $beatenlist = $this->getBeatenList();
 
         foreach ($beatenlist as $member) {
-            $displayname = UserSystem::getCharacterName($member['characterid']);
+            $displayname = Manager\User::getCharacterName($member['characterid']);
 
             // Member is beaten
             $this->addResultMessage($displayname . " wurde besiegt!");
@@ -1203,7 +1203,7 @@ class Battle extends DBObject
         if ($characterdata) {
             // Set the default action for the rest of the users
             foreach ($characterdata as $entry) {
-                $chartype = UserSystem::getCharacterType($entry['characterid']);
+                $chartype = Manager\User::getCharacterType($entry['characterid']);
 
                 $tempchar = new $chartype;
                 $tempchar->load($entry['characterid']);
@@ -1249,7 +1249,7 @@ class Battle extends DBObject
         $ssdata['description']	= $ssfields;
 
         foreach ($this->getMemberList() as $memberid) {
-            $chartype = UserSystem::getCharacterType($memberid);
+            $chartype = Manager\User::getCharacterType($memberid);
 
             $tempchar = new $chartype;
             $tempchar->load($memberid);

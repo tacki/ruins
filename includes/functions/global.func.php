@@ -222,12 +222,28 @@ function ruinsAutoload($classname) {
     $classname_elements		= explode("_", $classname);
     $classname_elements_lc	= explode("_", strtolower($classname));
 
+    // Namespaces
+    $namespaces		= explode("\\", strtolower($classname));
+
     // Initialize SessionCache
     // Makes autoloading a lot faster, cause we don't have to check the filesystem everytime
     require_once(DIR_INCLUDES."classes/sessionstore.class.php");
     if ($fromcache = SessionStore::readCache("__autoload_".$classname)) {
         require_once($fromcache);
         return true;
+    }
+
+    // Namespaces Autoloading
+    if (count($namespaces) == 2) {
+        if(file_exists(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".class.php")) {
+            require_once(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".class.php");
+        } elseif (file_exists(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".interface.php")) {
+            require_once(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".interface.php");
+        }
+    } elseif (count($namespaces) == 3) {
+        if(file_exists(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1]."/".$namespaces[2]."/".".class.php")) {
+            require_once(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1]."/".$namespaces[2]."/".".class.php");
+        }
     }
 
     if (file_exists(DIR_INCLUDES."classes/".$classname_lc.".class.php")) {

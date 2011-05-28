@@ -103,6 +103,8 @@
 <body>
 
 <?php
+use Doctrine\ORM\Tools\SchemaValidator;
+
 if (!isset($_GET['step'])) {
     $_GET['step'] = 1;
 }
@@ -543,78 +545,78 @@ switch ($_GET['step']) {
         // Include dirconf, global function library and database information
         require_once("config/dirconf.cfg.php");
         require_once(DIR_INCLUDES."includes.inc.php");
+        require_once(DIR_INCLUDES."doctrine_init.inc.php");
+/*
+        $validator = new SchemaValidator($em);
+        $errors = $validator->validateMapping();
+        if (count($errors)) {
+            var_dump("Schemavalidation:", $errors);
+            die;
+        } else {
+            $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($em);
+            $metadata = $em->getMetadataFactory()->getAllMetadata();
+            //$schemaTool->dropSchema($metadata);
+            $schemaTool->updateSchema($metadata);
 
+            if (!$em->find("Entities\User", 1)) {
+                $install_char = new Entities\Character;
+                $install_char->name = "SYSTEM";
+                $install_char->displayname = "`#35SYSTEM`#00";
+                $install_char->level = 1;
+                $install_char->healthpoints = 10;
+                $install_char->lifepoints = 10;
+                $install_char->strength = 5;
+                $install_char->dexterity = 6;
+                $install_char->constitution = 7;
+                $install_char->intelligence = 6;
+                $install_char->charisma = 5;
+                $install_char->money = 1000;
+                $install_char->loggedin = false;
+                $install_char->lastpagehit = new DateTime();
+                $em->persist($install_char);
+
+                $install_user = new Entities\User;
+                $install_user->login = "anonymous";
+                $install_user->password = md5("test");
+                $install_user->character = $install_char;
+                $install_user->lastlogin = new DateTime();
+                $install_user->loggedin = false;
+                $em->persist($install_user);
+
+                $install_settings = new Entities\UserSetting;
+                $install_settings->userid = $install_user;
+                $install_settings->default_character = $install_char;
+                $em->persist($install_settings);
+
+                $em->flush();
+            }
+        }
+*/
         // Set Autoloader
         spl_autoload_register("ruinsAutoload");
-
-        $database = getDBInstance();
 
         if (isset($_GET['import'])) {
             echo "<div class='checkfor'>Import Initial Database ... </div>";
 
             $erroraccured = false;
 
-            // force to InnoDB if mysql is used
-            if ($database->getDriver()->getName() == "pdo_mysql" ) {
-                $result = $database->exec("SET storage_engine=INNODB");
+            try {
+                $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($em);
+                $metadata = $em->getMetadataFactory()->getAllMetadata();
+                if (isset($_GET['force'])) $schemaTool->dropSchema($metadata);
+                $schemaTool->updateSchema($metadata);
+            } catch (Exception $e) {
+                echo "<div class='notok'>Update failed! (" . $e->getMessage() . ") Force Overwrite (Destroy all Data and install clean Database!)?</div>";
+                echo "<form action='install.php?step=" . ($_GET['step']) . "&import=true&force=true' method='post'>
+                        <input type='submit' value='Force overwrite' class='retry'></form>";
+
+                break;
             }
 
-            if (file_exists(DIR_BASE."db dump/initial.xml")) {
-                $options = array(
-                    'log_line_break' => '<br>',
-                    'idxname_format' => '%s',
-                    'debug' => true,
-                    'quote_identifier' => true,
-                    'force_defaults' => true,
-                    'portability' => true,
-                    'use_transactions' => false
-            );
-
-                // Import into Database using MDB2_Schema
-                global $dbconnect;
-
-                $mdbconnect = array (
-                                        'phptype' => substr($dbconnect['driver'], 4), // cut 'pdo_'
-                                        'hostspec' => $dbconnect['host'],
-                                        'username' => $dbconnect['user'],
-                                        'password' => $dbconnect['password'],
-                                        'database' => $dbconnect['dbname'],
-                                        'prefix' => $dbconnect['prefix'],
-                                    );
-
-                $mdbdbdata  = $mdbconnect;
-
-                $importer = MDB2_Schema::factory($mdbconnect, $options);
-
-                // Get Database-Definition from current running Database
-                $olddefinition = $importer->getDefinitionFromDatabase();
-
-                // Update Database with initial.xml
-                $importstatus = $importer->updateDatabase(DIR_BASE."db dump/initial.xml",
-                                                            $olddefinition,
-                                                            array('db_prefix' => $mdbdbdata['prefix'], 'db_name' => $mdbdbdata['database']));
-
-                if (PEAR::isError($importstatus)) {
-                    $erroraccured = $importstatus->getUserInfo();
-                }
-
-
-                if ($erroraccured) {
-                    echo "<div class='notok'>NOT OK! Can't import the XML-Schema! (" . $erroraccured . ")</div>";
-                    echo "<form action='install.php?step=" . ($_GET['step']) . "&import=true' method='post'>
-                            <input type='submit' value='Retry' class='retry'></form>";
-                } else {
-                    echo "<div class='ok'>OK!</div>";
-                    echo "<div class='continue'>Continue to the next Step</div>";
-                    echo "<form action='install.php?step=" . ($_GET['step']+1) .  "' method='post'>
-                        <input type='submit' value='Continue' class='continue'></form>";
-                }
-            } else {
-                echo "<div class='notok'>NOT OK! Initial Database Information file not found!
-                        Please make sure you have the whole package.</div>";
-                echo "<form action='install.php?step=" . ($_GET['step']) . "&import=true' method='post'>
-                        <input type='submit' value='Retry' class='retry'></form>";
-            }
+            echo "<div class='ok'>OK!</div>";
+            echo "<div class='continue'>Continue to the next Step</div>";
+            echo "<form action='install.php?step=" . ($_GET['step']+1) .  "' method='post'>
+                <input type='submit' value='Continue' class='continue'></form>";
 
             break;
         }

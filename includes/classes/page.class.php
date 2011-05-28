@@ -146,7 +146,7 @@ class Page extends BaseObject implements OutputObject
         $this->shortname = $this->url->getParameter("page");
 
         // Initialize the Smarty-Class
-        $this->_smarty = new Smarty();
+        $this->_smarty = new \Smarty();
 
         // Enable Caching with endless lifetime
         $this->_smarty->caching = 1;
@@ -774,7 +774,7 @@ class Page extends BaseObject implements OutputObject
             }
 
             // get users currently here
-            $userlist = implode(", ", UserSystem::getCharactersAt($this->shortname));
+            $userlist = implode(", ", Manager\User::getCharactersAt($this->shortname));
             $snippet->assign("characters_here", BtCode::decode($userlist));
 
             // generate the result
@@ -792,7 +792,7 @@ class Page extends BaseObject implements OutputObject
      */
     protected function _generateUserList()
     {
-        $userlist = UserSystem::getCharactersOnline();
+        $userlist = Manager\User::getCharactersOnline();
         $usercount = count($userlist);
 
         $output = "<div class=\"userbox\">";

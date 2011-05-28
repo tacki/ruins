@@ -10,7 +10,7 @@
  * @package Ruins
  */
 
- /**
+/**
  * Global Includes
  */
 require_once(DIR_INCLUDES."includes.inc.php");
@@ -21,7 +21,7 @@ require_once(DIR_INCLUDES."includes.inc.php");
  * Class to create/call/print Errors
  * @package Ruins
  */
-class Error extends Exception
+class Error extends \Exception
 {
 
     /**

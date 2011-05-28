@@ -19,7 +19,7 @@ $page->nav->add(new Link("Zum Zentrum", "page=derashok/tribalcenter"));
 $page->nav->add(new Link("Bogoob"));
 
 $npc = new NPC;
-$npc->load(UserSystem::getCharacterID("Thagigdash Bogoob"));
+$npc->load(Manager\User::getCharacterID("Thagigdash Bogoob"));
 
 switch ($_GET['op']) {
 

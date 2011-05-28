@@ -27,7 +27,7 @@ switch ($_GET['op']) {
 
         $page->output("Deine Charaktere:`n`n");
 
-        $characters = UserSystem::getUserCharactersList($user->id);
+        $characters = Manager\User::getUserCharactersList($user->id);
 
         if (!$characters) {
             $page->output("Keinen Charakter gefunden!");
@@ -46,7 +46,7 @@ switch ($_GET['op']) {
 
             $page->chartable->startData();
 
-            $chartype = UserSystem::getCharacterType($charid);
+            $chartype = Manager\User::getCharacterType($charid);
             $character = new $chartype;
             $character->load($charid);
 

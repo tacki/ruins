@@ -1,7 +1,6 @@
 <?php
 namespace Entities;
 use Doctrine\Common\Collections\ArrayCollection;
-
 require_once 'entitybase.php';
 
 /**

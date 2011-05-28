@@ -73,7 +73,7 @@ if (isset($battleid) && isset($charid) && isset($skillname)) {
 
             default:
                 // We target ourself
-                $result[$charid] = UserSystem::getCharacterName($charid, false);
+                $result[$charid] = Manager\User::getCharacterName($charid, false);
                 break;
 
             case "single":
@@ -87,7 +87,7 @@ if (isset($battleid) && isset($charid) && isset($skillname)) {
                     $memberids = $battle->getMemberList($side);
                 }
                 foreach ($memberids as $id) {
-                    $result[$id] = UserSystem::getCharacterName($id, false);
+                    $result[$id] = Manager\User::getCharacterName($id, false);
                 }
                 break;
 

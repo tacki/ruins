@@ -47,7 +47,7 @@ class QueryTool extends QueryBuilder
             $database = getDBInstance();
         }
 
-        if ($database instanceof Doctrine\DBAL\Connection) {
+        if ($database instanceof \Doctrine\DBAL\Connection) {
             $this->_database = $database;
 
             $connectionParams = $this->_database->getParams();

@@ -31,7 +31,7 @@ $config->setMetadataCacheImpl($cache);
 $config->setQueryCacheImpl($cache);
 //$config->setSQLLogger($logger);
 $config->setProxyDir(DIR_INCLUDES."proxies");
-$config->setProxyNamespace('Ruins\Proxies');
+$config->setProxyNamespace('Proxies');
 
 if ($applicationMode == "development") {
     $config->setAutoGenerateProxyClasses(true);

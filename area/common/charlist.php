@@ -40,10 +40,10 @@ switch ($_GET['op']) {
     default:
     case "online":
         if (isset($_GET['order']) && isset($_GET['orderDesc'])) {
-            $charlist = UserSystem::getCharacterList($fields, $_GET['order'], $_GET['orderDesc'], true);
+            $charlist = Manager\User::getCharacterList($fields, $_GET['order'], $_GET['orderDesc'], true);
         } else {
             // Default to: sort by name, ascending
-            $charlist = UserSystem::getCharacterList($fields, "name", false, true);
+            $charlist = Manager\User::getCharacterList($fields, "name", false, true);
         }
         $newURL = clone $page->url;
         $newURL->setParameter("op", "all");
@@ -52,10 +52,10 @@ switch ($_GET['op']) {
 
     case "all":
         if (isset($_GET['order']) && isset($_GET['orderDesc'])) {
-            $charlist = UserSystem::getCharacterList($fields, $_GET['order'], $_GET['orderDesc']);
+            $charlist = Manager\User::getCharacterList($fields, $_GET['order'], $_GET['orderDesc']);
         } else {
             // Default to: sort by name, ascending
-            $charlist = UserSystem::getCharacterList($fields, "name");
+            $charlist = Manager\User::getCharacterList($fields, "name");
         }
         $newURL = clone $page->url;
         $newURL->setParameter("op", "online");

@@ -50,7 +50,7 @@ switch ($_GET['op']) {
         $snippet->assign("target", "popup=popup/messenger&op=send&reply=1");
         if (isset($_GET['replyto'])) {
             $message = MessageSystem::getMessage($_GET['replyto']);
-            $snippet->assign("receiver", UserSystem::getCharacterName($message['sender'], false));
+            $snippet->assign("receiver", Manager\User::getCharacterName($message['sender'], false));
             if (substr($message['subject'], 0, 4) != "RE: ") {
                 // Add 'RE: ' if there isn't already one
                 $snippet->assign("subject", "RE: " . $message['subject']);
@@ -75,7 +75,7 @@ switch ($_GET['op']) {
                 case 1: $message['status'] = "<img src='".$popup->template['mytemplatedir']."/images/message_read.gif' />"; break;
                 case 2: $message['status'] = "<img src='".$popup->template['mytemplatedir']."/images/message_replied.gif' />"; break;
             }
-            $message['sender']		= "<a href='?popup=popup/messenger&op=read&messageid=".$message['_messages_id']."'>".UserSystem::getCharacterName($message['sender'])."</a>";
+            $message['sender']		= "<a href='?popup=popup/messenger&op=read&messageid=".$message['_messages_id']."'>".Manager\User::getCharacterName($message['sender'])."</a>";
             $message['subject'] 	= "<a href='?popup=popup/messenger&op=read&messageid=".$message['_messages_id']."'>".$message['subject']."</a>";
             $message['date']		= date("H:i:s d.m.y", strtotime($message['date']));
             $message['action']		= "<input type='checkbox' name='chooser[]' value='".$message['_messages_id']."'>";
@@ -103,7 +103,7 @@ switch ($_GET['op']) {
             $message = MessageSystem::getMessage($_GET['messageid']);
             $snippet = $popup->createTemplateSnippet();
             $snippet->assign("target", "popup=popup/messenger&op=reply&replyto=".$message['id']);
-            $snippet->assign("sender", UserSystem::getCharacterName($message['sender']));
+            $snippet->assign("sender", Manager\User::getCharacterName($message['sender']));
             $snippet->assign("date", date("H:i:s d.m.y", strtotime($message['date'])));
             $snippet->assign("subject", $message['subject']);
             $snippet->assign("text", $message['text']);
@@ -138,7 +138,7 @@ switch ($_GET['op']) {
         $messagelist = MessageSystem::getOutbox($user->char, array("messages.id", "receiver", "subject", "date"));
 
         foreach ($messagelist as &$message) {
-            $message['receiver']	= "<a href='?popup=popup/messenger&op=read&messageid=".$message['_messages_id']."'>".UserSystem::getCharacterName($message['receiver'])."</a>";
+            $message['receiver']	= "<a href='?popup=popup/messenger&op=read&messageid=".$message['_messages_id']."'>".Manager\User::getCharacterName($message['receiver'])."</a>";
             $message['subject'] 	= "<a href='?popup=popup/messenger&op=read&messageid=".$message['_messages_id']."'>".$message['subject']."</a>";
             $message['date']		= date("H:i:s d.m.y", strtotime($message['date']));
             unset ($message['_messages_id']);

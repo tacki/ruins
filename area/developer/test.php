@@ -340,6 +340,28 @@ $mt = getMicroTime();
 $position = "link&rightstest";
 $page->output("Starting Links+Rights Test:`n");
 
+$user = new User(1);
+
+// Adding Group
+Manager\Rights::createGroup("TempGroup");
+
+// Adding User to Group
+Manager\Rights::addToGroup("TempGroup", $user->character);
+
+foreach($user->character->groups as $group) {
+    $page->output("Character ".$user->character->name." is in Group:" . $group->name . "`n");
+}
+
+// Removing User from Group
+Manager\Rights::removeFromGroup("TempGroup", $user->character);
+
+// Remove Group
+Manager\Rights::removeGroup("TempGroup", $user->character);
+/*
+foreach($user->character->groups as $group) {
+    var_dump($group->name);
+}
+*/
 /*
 $char = new GPCharacter;
 $char->load(1);

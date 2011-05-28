@@ -127,7 +127,7 @@ class User extends DBObject
         }
 
         // Detect CharacterType
-        $classname = UserSystem::getCharacterType($id);
+        $classname = Manager\User::getCharacterType($id);
 
         // Load Character
         if (class_exists($classname)) {

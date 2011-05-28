@@ -56,7 +56,7 @@ switch ($_GET['op']) {
 
         // Default Character
         $defaultchar 	= $user->settings->default_character;
-        $charlist		= UserSystem::getUserCharactersList($user->id);
+        $charlist		= Manager\User::getUserCharactersList($user->id);
         $popup->output("<div class='floatclear floatleft'>", true);
         $popup->output("Standard Charakter: ");
         $popup->output("</div><div class='floatright'>", true);
@@ -64,9 +64,9 @@ switch ($_GET['op']) {
         $popup->settingsform->selectOption("Keiner", 0);
         foreach ($charlist as $charid) {
             if ($charid == $defaultchar) {
-                $popup->settingsform->selectOption(UserSystem::getCharacterName($charid, false), $charid, true);
+                $popup->settingsform->selectOption(Manager\User::getCharacterName($charid, false), $charid, true);
             } else {
-                $popup->settingsform->selectOption(UserSystem::getCharacterName($charid, false), $charid);
+                $popup->settingsform->selectOption(Manager\User::getCharacterName($charid, false), $charid);
             }
         }
         $popup->settingsform->selectEnd();

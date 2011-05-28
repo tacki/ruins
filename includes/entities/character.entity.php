@@ -1,5 +1,7 @@
 <?php
 namespace Entities;
+use Doctrine\Common\Collections\ArrayCollection;
+
 require_once 'entitybase.php';
 
 /**
@@ -52,8 +54,14 @@ class Character extends \EntityBase
     /** @Column(type="integer") */
     protected $money;
 
-    /** @Column(type="object", nullable=true) */
-    protected $rightgroups;
+    /**
+     * @ManyToMany(targetEntity="Group", inversedBy="character")
+     * @JoinTable(name="character_groups",
+     *      joinColumns={@JoinColumn(name="character_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@JoinColumn(name="group_id", referencedColumnName="id")}
+     *      )
+     */
+    protected $groups;
 
     /** @Column(type="text", nullable=true) */
     protected $current_nav;
@@ -87,5 +95,20 @@ class Character extends \EntityBase
 
     /** @Column(type="integer", nullable=true) */
     protected $debugloglevel;
+
+    public function __construct()
+    {
+        $this->level         = 1;
+        $this->healthpoints  = 10;
+        $this->lifepoints    = 10;
+        $this->strength      = 7;
+        $this->dexterity     = 7;
+        $this->constitution  = 7;
+        $this->intelligence  = 7;
+        $this->charisma      = 7;
+        $this->money         = 1000;
+        $this->groups        = new ArrayCollection();
+
+    }
 }
 ?>

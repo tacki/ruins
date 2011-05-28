@@ -94,7 +94,7 @@ switch ($_GET['op']) {
 
     case "checkpw":
         $page->output("`cChecking Password!`c`n");
-        if ($userid = UserSystem::checkPassword($_POST['username'], $_POST['password'])) {
+        if ($userid = Manager\User::checkPassword($_POST['username'], $_POST['password'])) {
             $user = new User($userid);
             $user->login();
 

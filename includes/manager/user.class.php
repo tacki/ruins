@@ -1,14 +1,18 @@
 <?php
 /**
- * UserSystem Class
+ * User Manager Class
  *
  * Class to manage User- and Characteraccounts
  * @author Markus Schlegel <g42@gmx.net>
  * @copyright Copyright (C) 2008 Markus Schlegel
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version SVN: $Id: usersystem.class.php 326 2011-04-19 20:19:34Z tacki $
  * @package Ruins
  */
+
+/**
+ * Namespaces
+ */
+namespace Manager;
 
 /**
  * Global Includes
@@ -16,12 +20,12 @@
 require_once(DIR_INCLUDES."includes.inc.php");
 
 /**
- * UserSystem Class
+ * User Manager Class
  *
  * Class to manage User- and Characteraccounts
  * @package Ruins
  */
-class UserSystem
+class User
 {
     /**
      * Check User+Password
@@ -194,7 +198,7 @@ class UserSystem
      */
     public static function getCharacterList($fields=false, $order="id", $orderDir="ASC", $onlineonly=false)
     {
-        if (!$result = SessionStore::readCache("CharacterList_".serialize($fields)."_".$order."_".$orderDesc."_".$onlineonly)) {
+        //if (!$result = SessionStore::readCache("CharacterList_".serialize($fields)."_".$order."_".$orderDesc."_".$onlineonly)) {
             $qb = getQueryBuilder();
 
             if (is_array($fields)) {
@@ -212,7 +216,7 @@ class UserSystem
 
                 $qb ->andWhere("char.loggedin = 1")
                     ->andWhere("char.lastpagehit < ?2")
-                    ->setParameter(2, new DateTime("-".$config->get("connectiontimeout", 15)." minutes"));
+                    ->setParameter(2, new \DateTime("-".$config->get("connectiontimeout", 15)." minutes"));
             }
 
             $qb    ->orderBy("char.".$order, $orderDir);
@@ -262,7 +266,7 @@ class UserSystem
             } else {
                 $result = array();
             }
-        }
+        //}
 
         return $result;
     }
@@ -301,7 +305,7 @@ class UserSystem
                              ->where("char.loggedin = 1")
                              ->andWhere("char.current_nav LIKE ?1")->setParameter(1, $place)
                              ->andWhere("char.lastpagehit < ?2")
-                             ->setParameter(2, new DateTime("-".$config->get("connectiontimeout", 15)." minutes"))
+                             ->setParameter(2, new \DateTime("-".$config->get("connectiontimeout", 15)." minutes"))
                              ->getQuery()
                              ->getResult();
 /*

@@ -28,11 +28,11 @@ $classLoader->register();
 $classLoader = new \Doctrine\Common\ClassLoader('Doctrine\ORM', DIR_INCLUDES_DOCTRINE);
 $classLoader->register();
 
-$classLoader = new \Doctrine\Common\ClassLoader('Entities', DIR_INCLUDES . 'entities');
-$classLoader->register();
-
 $classloader = new \Doctrine\Common\ClassLoader('Symfony', DIR_INCLUDES_DOCTRINE . 'vendor/');
 $classloader->register();
+
+$classLoader = new \Doctrine\Common\ClassLoader('Entities', DIR_INCLUDES . 'entities');
+$classLoader->register();
 
 /**
  * Doctrine Initialization
