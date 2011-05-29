@@ -25,5 +25,6 @@ class Timer extends \EntityBase
 
     public function __construct() {
         $this->backup_ttc = 0;
+        $this->completiontime = new \DateTime;
     }
 }

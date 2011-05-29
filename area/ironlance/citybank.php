@@ -16,7 +16,12 @@ $page->set("headtitle", "Ironlance Stadtbank");
 
 $page->nav->add(new Link("Navigation"));
 
-$timer = new Timer("ironlance/citybank_interest", $user->char);
+$timer = new Timer("ironlance/citybank_interest", $user->character);
+
+if(!($user->character->money instanceof MoneyLayer)) {
+    $user->character->money = new MoneyLayer;
+    $user->character->money->receive(1000);
+}
 
 if (!isset($_GET['op'])) $_GET['op']="";
 switch ($_GET['op']) {
@@ -24,20 +29,19 @@ switch ($_GET['op']) {
     case "":
     default:
         $page->output("Ein kleiner Mann in einem makellosen Anzug mit Lesebrille grüßt dich.`n`n");
-        $page->output("\"Hallo guter Mann, mein Name ist ". $user->char->displayname .".\" grüßt du zurück, \"Kann ich meinen Kontostand an diesem wunderschönen Tag einsehen?\"`n`n");
-        $page->output("Der Bankier murmelt \"Hmm, ".$user->char->displayname.", mal sehen.....\" während er die Seiten in seinem Buch ");
+        $page->output("\"Hallo guter Mann, mein Name ist ". $user->character->displayname .".\" grüßt du zurück, \"Kann ich meinen Kontostand an diesem wunderschönen Tag einsehen?\"`n`n");
+        $page->output("Der Bankier murmelt \"Hmm, ".$user->character->displayname.", mal sehen.....\" während er die Seiten in seinem Buch ");
         $page->output("sorgfältig überfliegt.`n");
 
-        if (BankingSystem::accountExists($user->char, "ironlance/citybank")) {
+        if ($bankaccount = Manager\Banking::accountExists($user->character, "ironlance/citybank")) {
             $page->output("\"Jaa, hier steht es ja...\"`n`n");
 
-            $balance = BankingSystem::getBalance($user->char, "ironlance/citybank");
-            ModuleSystem::enableManagerModule($balance, "Money");
-
-            if ($balance->detailed() >= 0) {
-                $page->output("Du hast ein Guthaben von `b".$balance->fullDetailedWithPic()."`b", true);
+            if ($bankaccount->getDetailed() > 0) {
+                $page->output("Du hast ein Guthaben von `b".$bankaccount->fullDetailedWithPic()."`b", true);
+            } elseif ($bankaccount->getDetailed() == 0) {
+                $page->output("Du hast leider kein Guthaben auf deinem Konto... es ist absolut leer");
             } else {
-                $page->output("Du schuldest der Citybank `b".$balance."`b");
+                $page->output("Du schuldest der Citybank `b".$bankaccount->fullDetailedWithPic()."`b", true);
             }
 
             $page->nav->add(new Link("Einzahlen", "page=ironlance/citybank&op=deposit"));
@@ -62,10 +66,10 @@ switch ($_GET['op']) {
         break;
 
     case "openaccount2":
-        if ($user->char->money->detailed() >= 10) {
-            $user->char->money->pay(10, "copper");
-            BankingSystem::createAccount($user->char, "ironlance/citybank");
-            BankingSystem::deposit($user->char, "ironlance/citybank", 10);
+        if ($user->character->money->detailed() >= 10) {
+            $user->character->money->pay(10, "copper");
+            Manager\Banking::createAccount($user->character, "ironlance/citybank");
+            Manager\Banking::deposit($user->character, "ironlance/citybank", 10);
             // Set initial Interest Cycle
             $timer->set($config->get("ironlance/citybank_interestcycle", 86400));
             $page->output("Vielen Dank, das Geld ist bei uns natürlich seeehr sicher *hust* ;)");
@@ -99,16 +103,15 @@ switch ($_GET['op']) {
         break;
 
     case "deposit2":
-        $temp_wallet = 0;
-        ModuleSystem::enableManagerModule($temp_wallet, "Money");
+        $temp_wallet = new MoneyLayer();
 
         $temp_wallet->receive(abs($_POST['gold']), "gold");
         $temp_wallet->receive(abs($_POST['silver']), "silver");
         $temp_wallet->receive(abs($_POST['copper']), "copper");
 
-        if ($user->char->money->detailed() >= $temp_wallet->detailed()) {
-            $user->char->money->pay($temp_wallet);
-            BankingSystem::deposit($user->char, "ironlance/citybank", $temp_wallet);
+        if ($user->character->money->detailed() >= $temp_wallet->detailed()) {
+            $user->character->money->pay($temp_wallet);
+            Manager\Banking::deposit($user->character, "ironlance/citybank", $temp_wallet);
             $page->output("`b".$temp_wallet->fullDetailedWithPic()."`b eingezahlt", true);
         } else {
             $page->output("So viel Geld hast du nicht");
@@ -141,16 +144,15 @@ switch ($_GET['op']) {
         break;
 
     case "withdraw2":
-        $temp_wallet = 0;
-        ModuleSystem::enableManagerModule($temp_wallet, "Money");
+        $temp_wallet = new MoneyLayer();
 
         $temp_wallet->receive(abs($_POST['gold']), "gold");
         $temp_wallet->receive(abs($_POST['silver']), "silver");
         $temp_wallet->receive(abs($_POST['copper']), "copper");
 
-        if (BankingSystem::getBalance($user->char, "ironlance/citybank") >= $temp_wallet->detailed()) {
-            $user->char->money->receive($temp_wallet);
-            BankingSystem::withdraw($user->char, "ironlance/citybank", $temp_wallet);
+        if (Manager\Banking::getBalance($user->char, "ironlance/citybank") >= $temp_wallet->detailed()) {
+            $user->character->money->receive($temp_wallet);
+            Manager\Banking::withdraw($user->char, "ironlance/citybank", $temp_wallet);
             $page->output("`b".$temp_wallet->fullDetailedWithPic()."`b abgehoben", true);
         } else {
             $page->output("So viel Geld hast du nicht");
@@ -161,7 +163,7 @@ switch ($_GET['op']) {
         break;
 
     case "get_interest":
-        $interest = BankingSystem::chargeInterest($user->char, "ironlance/citybank");
+        $interest = Manager\Banking::chargeInterest($user->character, "ironlance/citybank");
         // set new interest cycle (defaults to 24h)
         $timer->set($config->get("ironlance/citybank_interestcycle", 86400));
 

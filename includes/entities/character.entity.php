@@ -106,7 +106,7 @@ class Character extends \EntityBase
         $this->constitution  = 7;
         $this->intelligence  = 7;
         $this->charisma      = 7;
-        $this->money         = 1000;
+        $this->money         = new MoneyLayer;
         $this->groups        = new ArrayCollection();
 
     }

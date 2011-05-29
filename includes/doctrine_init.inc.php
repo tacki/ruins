@@ -10,7 +10,8 @@
  */
 
 use Doctrine\ORM\EntityManager,
-    Doctrine\ORM\Configuration;
+    Doctrine\ORM\Configuration,
+    Doctrine\DBAL\Types\Type;
 
 $applicationMode = "development";
 
