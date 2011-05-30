@@ -4,9 +4,9 @@ require_once 'entitybase.php';
 
 /**
  * @Entity
- * @Table(name="usersettings")
+ * @Table(name="users_settings")
  */
-class UserSetting extends \EntityBase
+class UserSetting extends EntityBase
 {
     /**
      * @Id @Column(type="integer")

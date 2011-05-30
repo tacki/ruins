@@ -19,7 +19,7 @@ require_once(DIR_INCLUDES."includes.inc.php");
  * Page Content
  */
 $validator = new \Doctrine\ORM\Tools\SchemaValidator($em);
-$errors = $validator->validateMapping();
+$validator->validateMapping();
 
 // Initialize Config-Class
 $config = new Config();

@@ -6,7 +6,7 @@ require_once 'entitybase.php';
  * @Entity
  * @Table(name="chat")
  */
-class Chat extends \EntityBase
+class Chat extends EntityBase
 {
     /**
      * @Id @Column(type="integer")
@@ -30,4 +30,11 @@ class Chat extends \EntityBase
 
     /** @Column(type="integer") */
     protected $status;
+
+    public function __construct()
+    {
+        // Default Values
+        $this->date = new \DateTime;
+        $this->status = 0;
+    }
 }

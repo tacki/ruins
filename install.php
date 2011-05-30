@@ -418,8 +418,9 @@ switch ($_GET['step']) {
             $dbconnect_content .=   "'user' => '" . $_POST['user'] . "',\n" .
                                     "'password' => '" . $_POST['password'] . "',\n" .
                                     "'dbname' => '" . $_POST['dbname'] . "',\n" .
-                                    "'prefix' => '" . $_POST['prefix'] . "');\n" .
-                                    "?>";
+                                    "'prefix' => '" . $_POST['prefix'] . "',\n" .
+                                    "'charset' => 'utf8',\n" .
+                                    ");?>";
 
             if ($filehandle = fopen(DIR_CONFIG."dbconnect.cfg.php", "w")) {
                     if (fwrite($filehandle, $dbconnect_content) !== false) {
@@ -559,6 +560,10 @@ switch ($_GET['step']) {
             $erroraccured = false;
 
             try {
+                $validator = new \Doctrine\ORM\Tools\SchemaValidator($em);
+                $error = $validator->validateMapping();
+                if($error) var_dump($error);
+
                 $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($em);
                 $metadata = $em->getMetadataFactory()->getAllMetadata();
                 if (isset($_GET['force'])) {

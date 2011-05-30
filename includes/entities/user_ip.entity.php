@@ -4,9 +4,9 @@ require_once 'entitybase.php';
 
 /**
  * @Entity
- * @Table(name="users_iplist")
+ * @Table(name="users_ips")
  */
-class UserIPList extends EntityBase
+class UserIP extends EntityBase
 {
     /**
      * @Id @Column(type="integer")
@@ -15,11 +15,11 @@ class UserIPList extends EntityBase
     protected $id;
 
     /**
-     * @ManyToOne(targetEntity="User")
+     * @ManyToOne(targetEntity="User", inversedBy="iplist")
      */
     protected $user;
 
-    /** @Column(type="DateTime") */
+    /** @Column(type="datetime") */
     protected $date;
 
     /** @Column(length=32) */

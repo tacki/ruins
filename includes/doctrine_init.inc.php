@@ -44,5 +44,6 @@ global $dbconnect;
 $connectionOptions = $dbconnect;
 
 $em = EntityManager::create($connectionOptions, $config);
+$em->getConnection()->setCharset('utf8');
 
 ?>

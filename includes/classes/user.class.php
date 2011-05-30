@@ -40,54 +40,64 @@ class User extends EntityHandler
         // Check and update UniqueID-List if needed
         $this->checkUniqueID();
 
-        // Check and update IPAddress-List if needed
-        $this->checkIPAddress();
+        // Add IP Address to the List
+        $this->addIPAddress();
 
         // set loggedin-flag
         $this->loggedin = 1;
     }
 
-    public function checkIPAddress()
+    /**
+     * Add the IP Address to the List
+     */
+    public function addIPAddress()
     {
-        global $config;
+        global $em;
 
-        if (!($this->iplist instanceof IPStack)) {
-            $this->iplist = new IPStack($config->get("userIPListSize", 10));
+        $lastIP     = $this->iplist->last()->ip;
+        $requestIP  = getRequestTrueIP();
+
+        if (is_null($lastIP) || ($lastIP != $requestIP) ) {
+            // Add if IP has changed
+           $newIP = new Entities\UserIP;
+           $newIP->user = $this->getEntity();
+           $newIP->ip = $requestIP;
+           $em->persist($newIP);
         }
-
-        $this->iplist->addIP();
     }
 
     /**
-     * Check the current UniqueID
+     * Add a new UniqueID to the List
      */
     public function checkUniqueID()
     {
-        global $config;
+        global $em;
 
-        if (!($this->uniqueid instanceof UniqueIDStack)) {
-            $this->uniqueid = new UniqueIDStack($config->get("userUniqueIDSize", 10));
-        }
+        $lastID = $this->uniqueidlist->last()->uniqueid;
 
-        if (!isset($_COOKIE['ruins_uniqueid']) && strlen($_COOKIE['ruins_uniqueid']) != 32) { // 32=Size of MD5Hash
-            // No Cookie set
-            if ($this->uniqueid->getLast("data") !== $_COOKIE['ruins_uniqueid']) {
+        if (!isset($_COOKIE['ruins_uniqueid']) || strlen($_COOKIE['ruins_uniqueid']) != 32) { // 32=Size of MD5Hash
+            // No Cookie or invalid Cookie is set
+            if ($lastID !== $_COOKIE['ruins_uniqueid']) {
                 // Generate a new Unique ID and add it to the List. Also set
                 // a new Cookie
-                $this->uniqueid->setNewUniqueID();
+               $newID = new Entities\UserUniqueID;
+               $newID->user = $this->getEntity();
+               $newID->uniqueid = generateUniqueID();
+               $em->persist($newID);
 
                 // Add Logentry
-                $this->log("New UniqueID generated!");
+                $this->addDebugLog("New UniqueID generated!");
             } else {
                 // Update Cookie with UniqueID from Database
-                $_COOKIE['ruins_uniqueid'] = $this->uniqueid->getLast("data");
+                // Used for special tracking-ids, shorter than 32 chars
+                $_COOKIE['ruins_uniqueid'] = $lastID;
             }
-        } else {
-            // Cookie set, update DB?
-            if ($this->uniqueid->getLast("data") !== $_COOKIE['ruins_uniqueid']) {
-                // Add UniqueID in Cookie to the List
-                $this->uniqueid->add($_COOKIE['ruins_uniqueid']);
-            }
+        } elseif ($lastID !== $_COOKIE['ruins_uniqueid']) {
+            // A Cookie is set, add to DB because it has changed
+            $newID = new Entities\UserUniqueID;
+            $newID->user = $this->getEntity();
+            $newID->uniqueid = $_COOKIE['ruins_uniqueid'];
+            $em->persist($newID);
         }
     }
 

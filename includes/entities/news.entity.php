@@ -6,7 +6,7 @@ require_once 'entitybase.php';
  * @Entity
  * @Table(name="news")
  */
-class News extends \EntityBase
+class News extends EntityBase
 {
     /**
      * @Id @Column(type="integer")

@@ -6,7 +6,7 @@ require_once 'entitybase.php';
  * @Entity
  * @Table(name="timers")
  */
-class Timer extends \EntityBase
+class Timer extends EntityBase
 {
     /**
      * @Id @Column(type="integer")

@@ -7,7 +7,7 @@ require_once 'entitybase.php';
  * @Entity
  * @Table(name="users")
  */
-class User extends \EntityBase
+class User extends EntityBase
 {
     /**
      * @Id @Column(type="integer")
@@ -39,11 +39,15 @@ class User extends \EntityBase
     /** @Column(type="datetime") */
     protected $lastlogin;
 
-    /** @Column(type="object") */
+    /**
+     * @OneToMany(targetEntity="UserIP", mappedBy="user")
+     */
     protected $iplist;
 
-    /** @Column(type="object") */
-    protected $uniqueid;
+    /**
+     * @OneToMany(targetEntity="UserUniqueID", mappedBy="user")
+     */
+    protected $uniqueidlist;
 
     /** @Column(type="boolean") */
     protected $loggedin;
@@ -52,8 +56,6 @@ class User extends \EntityBase
     {
         // Default Values
         $this->lastlogin    = new \DateTime();
-        $this->iplist       = new \IPStack;
-        $this->uniqueid     = new \UniqueIDStack();
         $this->loggedin     = false;
     }
 }

@@ -15,7 +15,7 @@ class UserUniqueID extends EntityBase
     protected $id;
 
     /**
-     * @ManyToOne(targetEntity="User")
+     * @ManyToOne(targetEntity="User", inversedBy="uniqueidlist")
      */
     protected $user;
 
