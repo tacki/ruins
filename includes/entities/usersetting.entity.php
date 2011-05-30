@@ -17,7 +17,7 @@ class UserSetting extends \EntityBase
     /**
      * @OneToOne(targetEntity="User")
      */
-    protected $userid;
+    protected $user;
 
     /**
      * @OneToOne(targetEntity="Character")

@@ -63,16 +63,16 @@ class Character extends \EntityBase
      */
     protected $groups;
 
-    /** @Column(type="text", nullable=true) */
+    /** @Column(type="text") */
     protected $current_nav;
 
-    /** @Column(type="array", nullable=true) */
+    /** @Column(type="array") */
     protected $allowednavs;
 
-    /** @Column(type="array", nullable=true) */
+    /** @Column(type="array") */
     protected $allowednavs_cache;
 
-    /** @Column(length=32, nullable=true) */
+    /** @Column(length=32) */
     protected $template;
 
     /** @Column(length=32, nullable=true) */
@@ -98,17 +98,27 @@ class Character extends \EntityBase
 
     public function __construct()
     {
-        $this->level         = 1;
-        $this->healthpoints  = 10;
-        $this->lifepoints    = 10;
-        $this->strength      = 7;
-        $this->dexterity     = 7;
-        $this->constitution  = 7;
-        $this->intelligence  = 7;
-        $this->charisma      = 7;
-        $this->money         = new MoneyLayer;
-        $this->groups        = new ArrayCollection();
-
+        // Default Values
+        $this->level             = 1;
+        $this->healthpoints      = 10;
+        $this->lifepoints        = 10;
+        $this->strength          = 7;
+        $this->dexterity         = 7;
+        $this->constitution      = 7;
+        $this->intelligence      = 7;
+        $this->charisma          = 7;
+        $this->money             = 100;
+        $this->current_nav       = "page=ironlance/citysquare";
+        $this->allowednavs       = array();
+        $this->allowednavs_cache = array();
+        $this->template          = "default";
+        $this->type              = NULL;
+        $this->loggedin          = false;
+        $this->race              = NULL;
+        $this->profession        = NULL;
+        $this->sex               = NULL;
+        $this->lastpagehit       = new \DateTime();
+        $this->debugloglevel     = 0;
     }
 }
 ?>

@@ -105,6 +105,9 @@
 <?php
 use Doctrine\ORM\Tools\SchemaValidator;
 
+// Set timezone
+date_default_timezone_set('Europe/Berlin');
+
 if (!isset($_GET['step'])) {
     $_GET['step'] = 1;
 }
@@ -546,52 +549,7 @@ switch ($_GET['step']) {
         require_once("config/dirconf.cfg.php");
         require_once(DIR_INCLUDES."includes.inc.php");
         require_once(DIR_INCLUDES."doctrine_init.inc.php");
-/*
-        $validator = new SchemaValidator($em);
-        $errors = $validator->validateMapping();
-        if (count($errors)) {
-            var_dump("Schemavalidation:", $errors);
-            die;
-        } else {
-            $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($em);
-            $metadata = $em->getMetadataFactory()->getAllMetadata();
-            //$schemaTool->dropSchema($metadata);
-            $schemaTool->updateSchema($metadata);
 
-            if (!$em->find("Entities\User", 1)) {
-                $install_char = new Entities\Character;
-                $install_char->name = "SYSTEM";
-                $install_char->displayname = "`#35SYSTEM`#00";
-                $install_char->level = 1;
-                $install_char->healthpoints = 10;
-                $install_char->lifepoints = 10;
-                $install_char->strength = 5;
-                $install_char->dexterity = 6;
-                $install_char->constitution = 7;
-                $install_char->intelligence = 6;
-                $install_char->charisma = 5;
-                $install_char->money = 1000;
-                $install_char->loggedin = false;
-                $install_char->lastpagehit = new DateTime();
-                $em->persist($install_char);
-
-                $install_user = new Entities\User;
-                $install_user->login = "anonymous";
-                $install_user->password = md5("test");
-                $install_user->character = $install_char;
-                $install_user->lastlogin = new DateTime();
-                $install_user->loggedin = false;
-                $em->persist($install_user);
-
-                $install_settings = new Entities\UserSetting;
-                $install_settings->userid = $install_user;
-                $install_settings->default_character = $install_char;
-                $em->persist($install_settings);
-
-                $em->flush();
-            }
-        }
-*/
         // Set Autoloader
         spl_autoload_register("ruinsAutoload");
 
@@ -603,8 +561,32 @@ switch ($_GET['step']) {
             try {
                 $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($em);
                 $metadata = $em->getMetadataFactory()->getAllMetadata();
-                if (isset($_GET['force'])) $schemaTool->dropSchema($metadata);
+                if (isset($_GET['force'])) {
+                    $schemaTool->dropSchema($metadata);
+
+                    $install_char = new Entities\Character;
+                    $install_char->name = "Testuser";
+                    $install_char->displayname = "`#35Testuser`#00";
+                    $em->persist($install_char);
+
+                    $install_settings = new Entities\UserSetting;
+                    $install_settings->default_character = $install_char;
+                    $em->persist($install_settings);
+
+                    $install_user = new Entities\User;
+                    $install_user->login = "test";
+                    $install_user->password = md5("test");
+                    $install_user->character = $install_char;
+                    $install_user->settings  = $install_settings;
+                    $em->persist($install_user);
+
+                    // Reverse Mappings
+                    $install_char->user     = $install_user;
+                    $install_settings->user = $install_user;
+                }
                 $schemaTool->updateSchema($metadata);
+
+                $em->flush();
             } catch (Exception $e) {
                 echo "<div class='notok'>Update failed! (" . $e->getMessage() . ") Force Overwrite (Destroy all Data and install clean Database!)?</div>";
                 echo "<form action='install.php?step=" . ($_GET['step']) . "&import=true&force=true' method='post'>
@@ -644,7 +626,7 @@ switch ($_GET['step']) {
                     <input type='submit' value='Start Import' class='continue'></form>";
         } else {
             echo "<div class='ok'>No existing Tables found. Please press 'Start Import' to import the initial Database</div>";
-            echo "<form action='install.php?step=" . ($_GET['step']) . "&import=true' method='post'>
+            echo "<form action='install.php?step=" . ($_GET['step']) . "&import=true&force=true' method='post'>
                     <input type='submit' value='Start Import' class='continue'></form>";
         }
         break;

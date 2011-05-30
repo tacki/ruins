@@ -39,10 +39,10 @@ class User extends \EntityBase
     /** @Column(type="datetime") */
     protected $lastlogin;
 
-    /** @Column(type="object", nullable=true) */
+    /** @Column(type="object") */
     protected $iplist;
 
-    /** @Column(type="object", nullable=true) */
+    /** @Column(type="object") */
     protected $uniqueid;
 
     /** @Column(type="boolean") */
@@ -50,7 +50,11 @@ class User extends \EntityBase
 
     public function __construct()
     {
-        $debuglog    = new ArrayCollection();
+        // Default Values
+        $this->lastlogin    = new \DateTime();
+        $this->iplist       = new \IPStack;
+        $this->uniqueid     = new \UniqueIDStack();
+        $this->loggedin     = false;
     }
 }
 ?>
