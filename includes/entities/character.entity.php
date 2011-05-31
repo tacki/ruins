@@ -6,9 +6,10 @@ require_once 'entitybase.php';
 
 /**
  * @Entity
+ * @HasLifecycleCallbacks
  * @Table(name="characters")
  */
-class Character extends \EntityBase
+class Character extends EntityBase
 {
     /**
      * @Id @Column(type="integer")
@@ -51,7 +52,10 @@ class Character extends \EntityBase
     /** @Column(type="integer") */
     protected $charisma;
 
-    /** @Column(type="integer") */
+    /**
+     * Layer (\Layers\Money)
+     * @Column(type="integer")
+     */
     protected $money;
 
     /**
@@ -119,6 +123,20 @@ class Character extends \EntityBase
         $this->sex               = NULL;
         $this->lastpagehit       = new \DateTime();
         $this->debugloglevel     = 0;
+    }
+
+    /** @PostLoad @PostUpdate @PostPersist */
+    public function initLayers()
+    {
+        if (!($this->money instanceof \Layers\Money))
+            $this->money = new \Layers\Money($this->money);
+    }
+
+    /** @PreUpdate @PrePersist */
+    public function endLayers()
+    {
+        if ($this->money instanceof \Layers\Money)
+            $this->money = $this->money->endLayer();
     }
 }
 ?>

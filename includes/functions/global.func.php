@@ -418,6 +418,8 @@ function ruinsAutoload($classname) {
             require_once(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".interface.php");
         } elseif (file_exists(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".manager.php")) {
             require_once(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".manager.php");
+        } elseif (file_exists(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".layer.php")) {
+            require_once(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".layer.php");
         }
     } elseif (count($namespaces) == 3) {
         if(file_exists(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1]."/".$namespaces[2]."/".".class.php")) {

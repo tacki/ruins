@@ -18,11 +18,6 @@ $page->nav->add(new Link("Navigation"));
 
 $timer = new Timer("ironlance/citybank_interest", $user->character);
 
-if(!($user->character->money instanceof MoneyLayer)) {
-    $user->character->money = new MoneyLayer;
-    $user->character->money->receive(1000);
-}
-
 if (!isset($_GET['op'])) $_GET['op']="";
 switch ($_GET['op']) {
 
@@ -36,12 +31,12 @@ switch ($_GET['op']) {
         if ($bankaccount = Manager\Banking::accountExists($user->character, "ironlance/citybank")) {
             $page->output("\"Jaa, hier steht es ja...\"`n`n");
 
-            if ($bankaccount->getDetailed() > 0) {
-                $page->output("Du hast ein Guthaben von `b".$bankaccount->fullDetailedWithPic()."`b", true);
-            } elseif ($bankaccount->getDetailed() == 0) {
+            if ($bankaccount->balance->getPlain() > 0) {
+                $page->output("Du hast ein Guthaben von `b".$bankaccount->balance->getAllCurrenciesWithPic()."`b", true);
+            } elseif ($bankaccount->balance->getPlain() == 0) {
                 $page->output("Du hast leider kein Guthaben auf deinem Konto... es ist absolut leer");
             } else {
-                $page->output("Du schuldest der Citybank `b".$bankaccount->fullDetailedWithPic()."`b", true);
+                $page->output("Du schuldest der Citybank `b".$bankaccount->balance->getAllCurrenciesWithPic()."`b", true);
             }
 
             $page->nav->add(new Link("Einzahlen", "page=ironlance/citybank&op=deposit"));
@@ -66,7 +61,7 @@ switch ($_GET['op']) {
         break;
 
     case "openaccount2":
-        if ($user->character->money->detailed() >= 10) {
+        if ($user->character->money->getPlain() >= 10) {
             $user->character->money->pay(10, "copper");
             Manager\Banking::createAccount($user->character, "ironlance/citybank");
             Manager\Banking::deposit($user->character, "ironlance/citybank", 10);
@@ -103,21 +98,22 @@ switch ($_GET['op']) {
         break;
 
     case "deposit2":
-        $temp_wallet = new MoneyLayer();
+        $temp_wallet = new \Layers\Money();
 
         $temp_wallet->receive(abs($_POST['gold']), "gold");
         $temp_wallet->receive(abs($_POST['silver']), "silver");
         $temp_wallet->receive(abs($_POST['copper']), "copper");
 
-        if ($user->character->money->detailed() >= $temp_wallet->detailed()) {
+        if ($user->character->money->getPlain() >= $temp_wallet->getPlain()) {
             $user->character->money->pay($temp_wallet);
             Manager\Banking::deposit($user->character, "ironlance/citybank", $temp_wallet);
-            $page->output("`b".$temp_wallet->fullDetailedWithPic()."`b eingezahlt", true);
+            $page->output("`b".$temp_wallet->getAllCurrenciesWithPic()."`b eingezahlt", true);
         } else {
             $page->output("So viel Geld hast du nicht");
             $page->nav->add(new Link("Zurück", "page=ironlance/citybank&op=deposit"));
             break;
         }
+        unset($temp_wallet);
         $page->nav->add(new Link("Zurück", "page=ironlance/citybank"));
         break;
 
@@ -144,18 +140,18 @@ switch ($_GET['op']) {
         break;
 
     case "withdraw2":
-        $temp_wallet = new MoneyLayer();
+        $temp_wallet = new \Layers\Money();
 
         $temp_wallet->receive(abs($_POST['gold']), "gold");
         $temp_wallet->receive(abs($_POST['silver']), "silver");
         $temp_wallet->receive(abs($_POST['copper']), "copper");
 
-        if (Manager\Banking::getBalance($user->char, "ironlance/citybank") >= $temp_wallet->detailed()) {
+        if (Manager\Banking::getBalance($user->character, "ironlance/citybank")->getPlain() >= $temp_wallet->getPlain()) {
             $user->character->money->receive($temp_wallet);
-            Manager\Banking::withdraw($user->char, "ironlance/citybank", $temp_wallet);
-            $page->output("`b".$temp_wallet->fullDetailedWithPic()."`b abgehoben", true);
+            Manager\Banking::withdraw($user->character, "ironlance/citybank", $temp_wallet);
+            $page->output("`b".$temp_wallet->getAllCurrenciesWithPic()."`b abgehoben", true);
         } else {
-            $page->output("So viel Geld hast du nicht");
+            $page->output("So viel Geld hast du nicht auf deinem Konto");
             $page->nav->add(new Link("Zurück", "page=ironlance/citybank&op=withdraw"));
             break;
         }
@@ -167,7 +163,7 @@ switch ($_GET['op']) {
         // set new interest cycle (defaults to 24h)
         $timer->set($config->get("ironlance/citybank_interestcycle", 86400));
 
-        $page->output($interest->fullDetailedWithPic() . " an Zinsen erhalten", true);
+        $page->output($interest->getAllCurrenciesWithPic() . " an Zinsen erhalten", true);
         $page->nav->add(new Link("Zurück", "page=ironlance/citybank"));
         break;
 }

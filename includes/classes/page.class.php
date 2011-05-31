@@ -732,13 +732,6 @@ class Page extends BaseObject implements OutputObject
         $snippet = $this->createTemplateSnippet();
 
         if ($this->_char) {
-            // We need to activate the Money-Module again, cause
-            // the Modules are already deactivated by $char->save() which is
-            // called before Page::show() (page.footer.php)
-            if ( !($this->_char->money instanceof Manager) ) {
-                ModuleSystem::enableManagerModule($this->_char->money, "Money");
-            }
-
             foreach ($statitems as $value) {
                 // assign the values inside the snippet
                 switch ($value) {
@@ -750,9 +743,7 @@ class Page extends BaseObject implements OutputObject
                     case "copper":
                     case "silver":
                     case "gold":
-                        // FIXME
-                        $snippet->assign($value, $this->_char->money);
-                        //$snippet->assign($value, $this->_char->money->detailed($value));
+                        $snippet->assign($value, $this->_char->money->getCurrency($value));
                         break;
 
                     case "weaponname":
