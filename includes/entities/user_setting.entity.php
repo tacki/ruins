@@ -32,11 +32,15 @@ class UserSetting extends EntityBase
     /** @Column(type="boolean") */
     protected $chat_censorship;
 
+    /** @Column(type="array") */
+    protected $chat_hide;
+
     public function __construct()
     {
         // Default Values
         $this->chat_dateformat = "[H:i:s]";
         $this->chat_censorship = true;
+        $this->chat_hide = array();
     }
 }
 ?>

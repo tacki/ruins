@@ -17,12 +17,6 @@ require_once("config/dirconf.cfg.php");
 require_once(DIR_INCLUDES."includes.inc.php");
 
 try {
-    // Set Autoloader
-    spl_autoload_register("ruinsAutoload");
-
-    // Set timezone
-    date_default_timezone_set('Europe/Berlin');
-
     // set op-value if it's not set
     if (!isset($_GET['op'])) {
         $_GET['op'] = NULL;

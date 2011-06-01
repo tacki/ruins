@@ -9,6 +9,7 @@ namespace Entities;
  */
 class EntityBase
 {
+    /*
     public function __isset($name)
     {
         if (isset($this->$name)) {
@@ -16,7 +17,7 @@ class EntityBase
         } else {
             return false;
         }
-    }
+    }*/
 
     public function __get($name)
     {

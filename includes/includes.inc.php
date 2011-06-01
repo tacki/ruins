@@ -10,9 +10,34 @@
  */
 
 /**
+ * Set timezone
+ */
+date_default_timezone_set('Europe/Berlin');
+
+/**
  * Database-Connection Information
  */
 require_once(DIR_CONFIG."dbconnect.cfg.php");
+
+/**
+ * Global Functions
+ */
+require_once(DIR_INCLUDES."functions/global.func.php");
+
+/**
+ * File Functions
+ */
+require_once(DIR_INCLUDES."functions/file.func.php");
+
+/**
+ * Database Functions
+ */
+require_once(DIR_INCLUDES."functions/database.func.php");
+
+/**
+ * Set Autoloader
+ */
+spl_autoload_register("ruinsAutoload");
 
 /**
  * Doctrine ClassLoaders
@@ -36,17 +61,5 @@ $classloader->register();
  */
 require_once(DIR_INCLUDES."doctrine_init.inc.php");
 
-/**
- * Global Functions
- */
-require_once(DIR_INCLUDES."functions/global.func.php");
-/**
- * File Functions
- */
-require_once(DIR_INCLUDES."functions/file.func.php");
-/**
- * Database Functions
- */
-require_once(DIR_INCLUDES."functions/database.func.php");
 
 ?>

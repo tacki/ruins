@@ -125,24 +125,11 @@ class ClassicChat
                         ->from("Entities\Chat", "chat")
                         ->where("chat.section = ?1")->setParameter(1, $this->_section)
                         ->andWhere("chat.status = ?2")->setParameter(2, CHATMESSAGE_STATUS_NORMAL)
-                        ->orderBy("chat.date")
+                        ->orderBy("chat.date", "DESC")
                         ->setFirstResult( $pagenr*$linesperpage )
                         ->setMaxResults( $linesperpage )
                         ->getQuery()
                         ->getResult();
-/*
-        $dbqt = new QueryTool();
-
-        $result = $dbqt	->select("date, authorid, displayname, chatline")
-                        ->from("chat")
-                        ->join("characters", "characters.id = chat.authorid")
-                        ->where("section=".$dbqt->quote($this->_section))
-                        ->where("status=".CHATMESSAGE_STATUS_NORMAL)
-                        ->order("date", true)
-                        ->limit($linesperpage, $pagenr*$linesperpage)
-                        ->exec()
-                        ->fetchAll();
-*/
 
         if ($result) {
             return $result;
@@ -153,44 +140,23 @@ class ClassicChat
 
     /**
      * Get the last written line at this Chat
-     * @param Character|int $char Character Object or Character ID
+     * @param Character|int $character Character Object or Character ID
      * @return array|bool The chatline (including it's id) or false if none is given
      */
-    private function _getLastLine($char)
+    private function _getLastLine($character)
     {
-/*
-        $charid = 0;
-
-        if ($char instanceof Character) {
-            $charid = $char->id;
-        } else {
-            $charid = (int)$char;
-        }
-*/
         $qb = getQueryBuilder();
 
         $result = $qb   ->select("chat")
                         ->from("Entities\Chat", "chat")
                         ->where("chat.section = ?1")->setParameter(1, $this->_section)
                         ->andWhere("chat.status = ?2")->setParameter(2, CHATMESSAGE_STATUS_NORMAL)
-                        ->andWhere("chat.author = ?3")->setParameter(3, $char)
+                        ->andWhere("chat.author = ?3")->setParameter(3, $character)
                         ->orderBy("chat.date", "DESC")
                         ->setMaxResults(1)
                         ->getQuery()
-                        ->getSingleResult();
-/*
-        $dbqt = new QueryTool();
+                        ->getOneOrNullResult();
 
-        $result = $dbqt ->select("id, chatline")
-                        ->from("chat")
-                        ->where("section=".$dbqt->quote($this->_section))
-                        ->where("authorid=".$charid)
-                        ->where("status=".CHATMESSAGE_STATUS_NORMAL)
-                        ->order("date", true)
-                        ->limit(1, 0)
-                        ->exec()
-                        ->fetchRow();
-*/
         if ($result) {
             return $result;
         } else {
@@ -209,19 +175,11 @@ class ClassicChat
 
         $chatlines = $qb->select('COUNT(chat.id)')
                         ->from("Entities\Chat", "chat")
-                        ->where('chat.section = ?1')
-                        ->setParameter(1, $this->_section)
+                        ->where('chat.section = ?1')->setParameter(1, $this->_section)
+                        ->andWhere("chat.status = ?2")->setParameter(2, CHATMESSAGE_STATUS_NORMAL)
                         ->getQuery()
                         ->getSingleScalarResult();
-/*
-        $dbqt = new QueryTool();
 
-        $chatlines = $dbqt	->select("id")
-                            ->from("chat")
-                            ->where("section=".$dbqt->quote($this->_section))
-                            ->exec()
-                            ->numRows();
-*/
         $result = $chatlines/$linesperpage;
 
         if ($chatlines%$linesperpage) {
@@ -245,7 +203,7 @@ class ClassicChat
             return false;
         }
 
-        if (isset($user->character)) {
+        if ($user->character instanceof Entities\Character) {
             // Add new line
             $newline = new Entities\Chat;
             $newline->section  = $this->_section;
@@ -253,17 +211,8 @@ class ClassicChat
             $newline->chatline = $text;
             $newline->date     = new DateTime();
             $em->persist($newline);
-/*
-            $chatentry = new DBObject(array("tablename" => $dbconnect['prefix'] . "chat"));
+            $em->flush();
 
-            $chatentry->create();
-            $chatentry->authorid 	= $user->char->id;
-            $chatentry->section 	= $this->_section;
-            $chatentry->chatline 	= $text;
-            $chatentry->date		= date("Y-m-d H:i:s");
-
-            $chatentry->save();
-*/
             // Add DebugLogEntry
             $user->addDebuglog("Wrote at Chat $this->_section", "veryverbose");
 
@@ -285,21 +234,7 @@ class ClassicChat
         $qb = getQueryBuilder();
 
         // Get Data from oldline
-        $oldline = $qb  ->select("chat")
-                        ->from("Entities\Chat", "chat")
-                        ->where("chat.id = ?1")->setParameter(1, $id)
-                        ->getQuery()
-                        ->getSingleResult();
-/*
-        $dbqt = new QueryTool();
-
-        // Get Data from oldline
-        $oldline = $dbqt	->select("*")
-                            ->from("chat")
-                            ->where("id=".$id)
-                            ->exec()
-                            ->fetchRow();
-*/
+        $oldline = $em->find("Entities\Chat", $id);
 
         // Add new line
         $newline = new Entities\Chat;
@@ -308,22 +243,8 @@ class ClassicChat
         $newline->chatline = $text;
         $newline->date     = $oldline->date;
         $em->persist($newline);
-/*
-         // Create a new line
-        $newline = array(
-                            "section" => $oldline[0]['section'],
-                            "authorid" => $oldline[0]['authorid'],
-                            "chatline" => $text,
-                            "date" => $oldline[0]['date'],
-                        );
+        $em->flush();
 
-        $dbqt->clear();
-
-        // Add new line
-        $dbqt	->insertinto("chat")
-                ->data($newline)
-                ->exec();
-*/
         // Hide old Message from Chat
         $this->_updateMessageStatus($id, CHATMESSAGE_STATUS_OLDEDIT);
     }
@@ -342,15 +263,6 @@ class ClassicChat
                ->where("chat.id = ?1")->setParameter(1, $id)
                ->getQuery()
                ->execute();
-
-/*
-        $dbqt = new QueryTool();
-
-        $dbqt	->update("chat")
-                ->set(array("status" => (int)$status))
-                ->where("id=".(int)$id)
-                ->exec();
-*/
     }
 
     /**
@@ -371,14 +283,7 @@ class ClassicChat
                            ->from("Entities\Badword", "bw")
                            ->getQuery()
                            ->getResult();
- /*
-            $dbqt = new QueryTool();
 
-            $badwords = $dbqt	->select("badword, replacement")
-                                ->from("badwords")
-                                ->exec()
-                                ->fetchAll();
-*/
              SessionStore::writeCache("badwords", $badwords);
         }
 
@@ -417,7 +322,7 @@ class ClassicChat
 
         for ($i=0; $i<sizeof($page); $i++) {
             // Format Date to userdefined chatdateformat
-            $resultpage[$i]['date'] = $page[$i]->date->format($user->settings->chatdateformat);
+            $resultpage[$i]['date'] = $page[$i]->date->format($user->settings->chat_dateformat);
 
             // Get Displayname
             $resultpage[$i]['displayname'] = $page[$i]->author->displayname;
@@ -543,14 +448,17 @@ class ClassicChat
 
 
                 // visibility
-                if (isset($user->char->settings)) {
-                    if ($user->char->settings->get("chat_".$this->_section."_visibility", 1)) {
-                        $chatsnippet->assign("visibility", "inline");
-                        $chatsnippet->assign("visibility_inv", "none");
-                    } else {
+                if ($user->character->settings->chat_hide) {
+                    if (array_search($this->_section, $user->character->settings->chat_hide))
+                    {
+                        // Chat is hidden
                         $chatsnippet->assign("visibility", "none");
                         $chatsnippet->assign("visibility_inv", "inline");
+                    } else {
+                        $chatsnippet->assign("visibility", "inline");
+                        $chatsnippet->assign("visibility_inv", "none");
                     }
+
                 } else {
                     $chatsnippet->assign("visibility", "inline");
                     $chatsnippet->assign("visibility_inv", "none");
@@ -563,7 +471,7 @@ class ClassicChat
 
             case CHATMODE_EDIT:
 
-                if ($row = $this->_getLastLine($user->char)) {
+                if ($row = $this->_getLastLine($user->character)) {
                     $chattable = new SimpleTable;
 
                     // Editfield
@@ -572,9 +480,9 @@ class ClassicChat
                     $this->_page->$chatform->head($chatform, $this->_page->url);
                     $this->_page->$chatform->hidden($chatform."_op", "editLine");
                     $this->_page->$chatform->hidden($chatform."_section", $this->_section);
-                    $this->_page->$chatform->hidden($chatform."_editLineID", $row['id']);
+                    $this->_page->$chatform->hidden($chatform."_editLineID", $row->id);
                     $this->_page->$chatform->setCSS("floatleft textarea");
-                    $this->_page->$chatform->textArea($chatform."_chatline", btCode::exclude($row['chatline']), 60, 10);
+                    $this->_page->$chatform->textArea($chatform."_chatline", btCode::exclude($row->chatline), 60, 10);
 
                     $this->_page->$chatform->setCSS("floatleft button");
                     $this->_page->$chatform->submitButton("Ändern");
@@ -590,7 +498,7 @@ class ClassicChat
                     $this->_page->refreshbutton->submitButton("Zurück");
                     $this->_page->refreshbutton->close();
                 } else {
-                    $this->_page->output("Editieren des letzten Eintrages nicht möglich!");
+                    $this->_page->output("Editieren des letzten Eintrages nicht möglich!`n`n");
 
                     // BackButton
                     $this->_page->nav->add(new Link("", $this->_page->url));

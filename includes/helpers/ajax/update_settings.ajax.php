@@ -15,30 +15,36 @@
  */
 require_once("../../../config/dirconf.cfg.php");
 require_once(DIR_INCLUDES."includes.inc.php");
+$validator = new \Doctrine\ORM\Tools\SchemaValidator($em);
+$validator->validateMapping();
 
 // Initialize User-Object
-$user = new User;
-
-// Load User if in Session
 if ($userid = SessionStore::get('userid')) {
-    $user->load($userid);
-    $user->loadCharacter();
+    $user = new User($userid);
 }
 
-if (	!isset($user) ||
-        !isset($user->char) ||
-        !isset($_POST['setting']) ||
-        !isset($_POST['data']) ||
-        !isset($_POST['settingsobject'])
-    ) {
+if (!$userid || !$user || !isset($_POST['settingsobject'])) {
     echo json_encode(false);
     exit;
 }
 
 if ($_POST['settingsobject'] === 'user') {
-    $user->settings->set($_POST['setting'], $_POST['data']);
-} elseif ($_POST['settingsobject'] === 'character') {
-    $user->char->settings->set($_POST['setting'], $_POST['data']);
+    if (isset($_POST['arrayaction'])) {
+        $arraySetting = $user->settings->$_POST['setting'];
+        echo $arraySetting;
+        switch ($_POST['arrayaction']) {
+            case "add":
+                array_push($arraySetting, $_POST['data']);
+                break;
+            case "remove":
+                if ($pos=array_search($_POST['data'], $arraySetting)) {
+                    unset($arraySetting[$pos]);
+                }
+                break;
+        }
+    } else {
+        $user->settings->$_POST['setting'] = $_POST['data'];
+    }
 } else {
     echo json_encode(false);
     exit;
