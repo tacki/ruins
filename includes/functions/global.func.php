@@ -406,8 +406,8 @@ function ruinsAutoload($classname) {
     // Makes autoloading a lot faster, cause we don't have to check the filesystem everytime
     require_once(DIR_INCLUDES."classes/sessionstore.class.php");
     if ($fromcache = SessionStore::readCache("__autoload_".$classname)) {
-        require_once($fromcache);
-        return true;
+        //require_once($fromcache);
+        //return true;
     }
 
     // Namespaces Autoloading
@@ -420,10 +420,8 @@ function ruinsAutoload($classname) {
             require_once(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".manager.php");
         } elseif (file_exists(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".layer.php")) {
             require_once(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".layer.php");
-        }
-    } elseif (count($namespaces) == 3) {
-        if(file_exists(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1]."/".$namespaces[2]."/".".class.php")) {
-            require_once(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1]."/".$namespaces[2]."/".".class.php");
+        } elseif (file_exists(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".entity.php")) {
+            require_once(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".entity.php");
         }
     }
 

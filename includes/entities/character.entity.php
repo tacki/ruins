@@ -1,8 +1,10 @@
 <?php
+/**
+ * Namespaces
+ */
 namespace Entities;
-use Doctrine\Common\Collections\ArrayCollection;
-
-require_once 'entitybase.php';
+use DateTime,
+    Layers\Money;
 
 /**
  * @Entity
@@ -121,21 +123,21 @@ class Character extends EntityBase
         $this->race              = NULL;
         $this->profession        = NULL;
         $this->sex               = NULL;
-        $this->lastpagehit       = new \DateTime();
+        $this->lastpagehit       = new DateTime();
         $this->debugloglevel     = 0;
     }
 
     /** @PostLoad @PostUpdate @PostPersist */
     public function initLayers()
     {
-        if (!($this->money instanceof \Layers\Money))
-            $this->money = new \Layers\Money($this->money);
+        if (!($this->money instanceof Money))
+            $this->money = new Money($this->money);
     }
 
     /** @PreUpdate @PrePersist */
     public function endLayers()
     {
-        if ($this->money instanceof \Layers\Money)
+        if ($this->money instanceof Money)
             $this->money = $this->money->endLayer();
     }
 }

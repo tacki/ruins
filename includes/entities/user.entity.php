@@ -1,7 +1,9 @@
 <?php
+/**
+ * Namespaces
+ */
 namespace Entities;
-use Doctrine\Common\Collections\ArrayCollection;
-require_once 'entitybase.php';
+use DateTime;
 
 /**
  * @Entity
@@ -55,7 +57,7 @@ class User extends EntityBase
     public function __construct()
     {
         // Default Values
-        $this->lastlogin    = new \DateTime();
+        $this->lastlogin    = new DateTime();
         $this->loggedin     = false;
     }
 }

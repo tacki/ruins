@@ -1,6 +1,8 @@
 <?php
+/**
+ * Namespaces
+ */
 namespace Entities;
-require_once 'entitybase.php';
 
 /**
  * @Entity

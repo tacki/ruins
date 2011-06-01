@@ -1,6 +1,9 @@
 <?php
+/**
+ * Namespaces
+ */
 namespace Entities;
-require_once 'entitybase.php';
+use DateTime;
 
 /**
  * @Entity
@@ -28,7 +31,7 @@ class UserIP extends EntityBase
     public function __construct()
     {
         // Default Values
-        $this->date = new \DateTime;
+        $this->date = new DateTime;
     }
 }
 ?>

@@ -1,6 +1,9 @@
 <?php
+/**
+ * Namespaces
+ */
 namespace Entities;
-require_once 'entitybase.php';
+use DateTime;
 
 /**
  * @Entity
@@ -25,6 +28,6 @@ class Timer extends EntityBase
 
     public function __construct() {
         $this->backup_ttc = 0;
-        $this->completiontime = new \DateTime;
+        $this->completiontime = new DateTime;
     }
 }

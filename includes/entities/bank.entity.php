@@ -1,7 +1,9 @@
 <?php
+/**
+ * Namespaces
+ */
 namespace Entities;
-
-require_once 'entitybase.php';
+use Layers\Money;
 
 /**
  * @Entity
@@ -39,14 +41,14 @@ class Bank extends EntityBase
     /** @PostLoad @PostUpdate @PostPersist */
     public function initLayers()
     {
-        if (!($this->balance instanceof \Layers\Money))
-            $this->balance = new \Layers\Money($this->balance);
+        if (!($this->balance instanceof Money))
+            $this->balance = new Money($this->balance);
     }
 
     /** @PreUpdate @PrePersist */
     public function endLayers()
     {
-        if ($this->balance instanceof \Layers\Money)
+        if ($this->balance instanceof Money)
             $this->balance = $this->balance->endLayer();
     }
 }

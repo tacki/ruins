@@ -1,7 +1,12 @@
 <?php
+/**
+ * Namespaces
+ */
 namespace Entities;
 
-/** @MappedSuperclass */
+/**
+ * @MappedSuperclass
+ */
 class EntityBase
 {
     public function __isset($name)
@@ -15,13 +20,7 @@ class EntityBase
 
     public function __get($name)
     {
-        if (isset($this->$name) || is_null($this->$name)) {
-            return $this->$name;
-        } else {
-            var_dump($this);
-            echo "__get(): the property ".strtolower(get_class($this))."->$name doesn't exist!";
-            die;
-        }
+        return $this->$name;
     }
 
     public function __set($name, $value)

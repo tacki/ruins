@@ -1,6 +1,9 @@
 <?php
+/**
+ * Namespaces
+ */
 namespace Entities;
-require_once 'entitybase.php';
+use DateTime;
 
 /**
  * @Entity
@@ -33,7 +36,7 @@ class News extends EntityBase
 
     public function __construct()
     {
-        $this->date = new \DateTime;
+        $this->date = new DateTime;
         $this->area = "GLOBAL";
     }
 }
