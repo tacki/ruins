@@ -215,7 +215,7 @@ class User
                 global $config;
 
                 $qb ->andWhere("char.loggedin = 1")
-                    ->andWhere("char.lastpagehit < ?2")
+                    ->andWhere("char.lastpagehit > ?2")
                     ->setParameter(2, new \DateTime("-".$config->get("connectiontimeout", 15)." minutes"));
             }
 
@@ -278,6 +278,8 @@ class User
     public static function getCharactersOnline()
     {
         $characters = self::getCharacterList(array("displayname"), "id", "ASC", true);
+
+        var_dump($characters);
 
         $result = array();
 

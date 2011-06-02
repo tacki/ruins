@@ -69,13 +69,13 @@ class System
     {
         // get HumanReadable from Systemname
         if (!$result = SessionStore::readCache("systranslate_".$name)) {
-            $dbqt = new QueryTool();
+            $qb = getQueryBuilder();
 
-            $result = $dbqt	->select("humanreadable")
-                            ->from("systranslations")
-                            ->where("system=".$dbqt->quote($name))
-                            ->exec()
-                            ->fetchOne("humanreadable");
+            $result = $qb   ->select("translate.humanreadable")
+                            ->from("Entities\Translation", "translate")
+                            ->where("translate.system = ?1")->setParameter(1, $name)
+                            ->getQuery()
+                            ->getOneOrNullResult();
 
             if ($result) {
                 SessionStore::writeCache("systranslate_".$name, $result);

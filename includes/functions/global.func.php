@@ -416,12 +416,8 @@ function ruinsAutoload($classname) {
             require_once(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".class.php");
         } elseif (file_exists(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".interface.php")) {
             require_once(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".interface.php");
-        } elseif (file_exists(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".manager.php")) {
-            require_once(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".manager.php");
         } elseif (file_exists(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".layer.php")) {
             require_once(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".layer.php");
-        } elseif (file_exists(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".entity.php")) {
-            require_once(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".entity.php");
         }
     }
 
