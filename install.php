@@ -223,6 +223,10 @@ switch ($_GET['step']) {
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
                                                         "/config/".
                                                         "\");"."\n" .
+                                                    "	define(\"DIR_LIB\", ".
+                                                        "\"".str_replace('\\', '/', dirname(__FILE__)).
+                                                        "/lib/".
+                                                        "\");"."\n" .
                                                     "	define(\"DIR_INCLUDES\", ".
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
                                                         "/includes/".

@@ -9,41 +9,46 @@
  * @package Ruins
  */
 
-use Doctrine\ORM\EntityManager,
+use Doctrine\Common\Cache\ArrayCache,
+    Doctrine\Common\Cache\ApcCache,
+    Doctrine\ORM\EntityManager,
     Doctrine\ORM\Configuration,
     Doctrine\DBAL\Types\Type;
 
 $applicationMode = "development";
 
-if ($applicationMode == "development") {
-    $cache = new \Doctrine\Common\Cache\ArrayCache;
-} else {
-    $cache = new \Doctrine\Common\Cache\ApcCache;
-}
-
-$logger = new \Doctrine\DBAL\Logging\EchoSQLLogger;
-
 $config = new Configuration;
-$config->setMetadataCacheImpl($cache);
-$driverImpl = $config->newDefaultAnnotationDriver(DIR_INCLUDES."entities");
-$driverImpl->setFileExtension(".entity.php");
-$config->setMetadataDriverImpl($driverImpl);
+
+// Enable Caching
+if ($applicationMode == "development") {
+    $cache = new ArrayCache;
+} else {
+    $cache = new ApcCache;
+}
 $config->setMetadataCacheImpl($cache);
 $config->setQueryCacheImpl($cache);
-//$config->setSQLLogger($logger);
-$config->setProxyDir(DIR_INCLUDES."proxies");
-$config->setProxyNamespace('Proxies');
 
+// Load Annotation Driver
+$driverImpl = $config->newDefaultAnnotationDriver(DIR_LIB."Entities");
+$config->setMetadataDriverImpl($driverImpl);
+
+// Enable SQL Logger
+//$config->setSQLLogger(new Doctrine\DBAL\Logging\EchoSQLLogger);
+
+// Proxy Settings
 if ($applicationMode == "development") {
     $config->setAutoGenerateProxyClasses(true);
 } else {
     $config->setAutoGenerateProxyClasses(false);
 }
+$config->setProxyDir(DIR_INCLUDES."proxies");
+$config->setProxyNamespace('Proxies');
 
+// Get EntityManager
 global $dbconnect;
-$connectionOptions = $dbconnect;
+$em = EntityManager::create($dbconnect, $config);
 
-$em = EntityManager::create($connectionOptions, $config);
+// Default Options
 $em->getConnection()->setCharset('utf8');
 
 ?>

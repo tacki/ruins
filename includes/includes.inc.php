@@ -56,6 +56,12 @@ $classLoader->register();
 $classloader = new \Doctrine\Common\ClassLoader('Symfony', DIR_INCLUDES_DOCTRINE . 'vendor/');
 $classloader->register();
 
+$classloader = new \Doctrine\Common\ClassLoader('Entities', DIR_BASE . 'lib/');
+$classloader->register();
+
+$classloader = new \Doctrine\Common\ClassLoader('Manager', DIR_BASE . 'lib/');
+$classloader->register();
+
 /**
  * Doctrine Initialization
  */

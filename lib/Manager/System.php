@@ -13,6 +13,8 @@
  * Namespaces
  */
 namespace Manager;
+use SessionStore,
+    Entities\News;
 
 /**
  * Global Includes
@@ -32,7 +34,7 @@ class System
         global $em;
         global $user;
 
-        $newnews = new Entities\News;
+        $newnews = new News;
         $newnews->title   = $title;
         $newnews->body    = $body;
         $newnews->author  = $user->character;
