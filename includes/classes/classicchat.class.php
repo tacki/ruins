@@ -448,9 +448,12 @@ class ClassicChat
 
 
                 // visibility
-                if ($user->character->settings->chat_hide) {
-                    if (array_search($this->_section, $user->character->settings->chat_hide))
+                var_dump($this->_section);
+                var_dump($user->settings->chat_hide);
+                if ($user->settings->chat_hide) {
+                    if (array_search($this->_section, $user->settings->chat_hide) !== false)
                     {
+                        var_dump("hide");
                         // Chat is hidden
                         $chatsnippet->assign("visibility", "none");
                         $chatsnippet->assign("visibility_inv", "inline");
