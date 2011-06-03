@@ -18,9 +18,6 @@ $page->nav->add(new Link("Navigation"));
 $page->nav->add(new Link("Zum Zentrum", "page=derashok/tribalcenter"));
 $page->nav->add(new Link("Bogoob"));
 
-$npc = new NPC;
-$npc->load(Manager\User::getCharacterID("Thagigdash Bogoob"));
-
 switch ($_GET['op']) {
 
     default:
@@ -48,19 +45,20 @@ switch ($_GET['op']) {
         $fishnames	= array();
         $price = 0;
 
-        foreach($_POST['chooser'] as $itemid) {
-            $item = new Item;
-            $item->load($itemid);
+        if (is_array($_POST['chooser'])) {
+            foreach($_POST['chooser'] as $itemid) {
+                // FIXME
+                $item = new Item;
+                $item->load($itemid);
 
-            if ($item->owner == $user->char->id
-                && $item->class == "fish") {
-                    $wanttobuy[] 	= $item;
-                    $fishnames[]	= $item->name;
-                    $price 			+= $item->value->detailed();
+                if ($item->owner == $user->character->id
+                    && $item->class == "fish") {
+                        $wanttobuy[] 	= $item;
+                        $fishnames[]	= $item->name;
+                        $price 			+= $item->value->detailed();
+                }
             }
         }
-
-        ModuleSystem::enableManagerModule($price, "Money");
 
         if (empty($wanttobuy)) {
             $page->nav->add(new Link("Etwas anderes zeigen", "page=common/inventorychooser&return={$page->url->short}&callop=sellask"));
@@ -98,14 +96,19 @@ switch ($_GET['op']) {
         $price 	= $_POST['price'];
 
         foreach($ids as $itemid) {
-            $item = new Item;
+            $item = $em->find("Entities\Item", $itemid);
+
+            $em->remove($item);
+            $em->flush();
+ /*
+            $item = new Entities\Item;
             $item->load($itemid);
             $item->owner = $npc->id;
             $item->save();
+*/
         }
 
-        $npc->money->pay($price);
-        $user->char->money->receive($price);
+        $user->character->money->receive($price);
 
         $page->nav->add(new Link("Ihm etwas zeigen", "page=common/inventorychooser&return={$page->url->short}&callop=sellask"));
 
@@ -117,5 +120,4 @@ switch ($_GET['op']) {
 
 }
 
-$npc->save();
 ?>
