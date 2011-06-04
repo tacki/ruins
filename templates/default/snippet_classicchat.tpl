@@ -16,7 +16,7 @@
                 $('#chatid_{$chatname}_show').show();
                 $('#chatid_{$chatname}_hide').hide();
 
-                updateArraySettings('user', 'chat_hide', {$chatname}, 'add');
+                updateArraySettings('user', 'chat_hide', '{$chatname}', 'add');
             "
     style="font-size: 9px; margin: 0px; padding: 0px; display: {$visibility}"
     class="floatright button">Chat verstecken</a>
@@ -28,7 +28,7 @@
                 $('#chatid_{$chatname}_show').hide();
                 $('#chatid_{$chatname}_hide').show();
 
-                updateSettings('user', 'chat_hide', {$chatname}, 'remove');
+                updateArraySettings('user', 'chat_hide', '{$chatname}', 'remove');
             "
     style="font-size: 9px; margin: 0px; padding: 0px; display: {$visibility_inv}"
     class="floatright button">Chat anzeigen</a>
