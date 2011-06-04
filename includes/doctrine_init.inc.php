@@ -25,12 +25,12 @@ if ($applicationMode == "development") {
 } else {
     $cache = new ApcCache;
 }
-$config->setMetadataCacheImpl($cache);
 $config->setQueryCacheImpl($cache);
 
 // Load Annotation Driver
 $driverImpl = $config->newDefaultAnnotationDriver(DIR_LIB."Entities");
 $config->setMetadataDriverImpl($driverImpl);
+$config->setMetadataCacheImpl($cache);
 
 // Enable SQL Logger
 //$config->setSQLLogger(new Doctrine\DBAL\Logging\EchoSQLLogger);
@@ -50,5 +50,12 @@ $em = EntityManager::create($dbconnect, $config);
 
 // Default Options
 $em->getConnection()->setCharset('utf8');
+
+// Validate Entities
+if ($applicationMode == "development") {
+    $validator = new \Doctrine\ORM\Tools\SchemaValidator($em);
+    $error = $validator->validateMapping();
+    if($error) var_dump($error);
+}
 
 ?>

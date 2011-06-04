@@ -747,7 +747,7 @@ class Page extends BaseObject implements OutputObject
                         break;
 
                     case "weaponname":
-                        if ($weapon = ItemSystem::getEquippedItem($this->_char, "weapon")) {
+                        if ($weapon = Manager\Item::getEquippedItem($this->_char, "weapon")) {
                             $snippet->assign($value, $weapon->name);
                         } else {
                             $snippet->assign($value, "N/A");
@@ -755,7 +755,7 @@ class Page extends BaseObject implements OutputObject
                         break;
 
                     case "weapondamage":
-                        if ($weapon = ItemSystem::getEquippedItem($this->_char, "weapon")) {
+                        if ($weapon = Manager\Item::getEquippedItem($this->_char, "weapon")) {
                             $snippet->assign($value, $weapon->showDamage(false));
                         } else {
                             $snippet->assign($value, "N/A");

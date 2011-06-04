@@ -5,8 +5,7 @@
 namespace Entities;
 
 /**
- * @Entity
- * @Table(name="items")
+ * @MappedSuperclass
  */
 class Item extends EntityBase
 {
@@ -18,9 +17,6 @@ class Item extends EntityBase
 
     /** @Column(length=255) */
     protected $name;
-
-    /** @Column(length=64) */
-    protected $class;
 
     /** @Column(type="integer") */
     protected $level;

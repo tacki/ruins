@@ -68,9 +68,9 @@ $page->addJavaScript("
                     return false;
                 }
             },
-              drop: function(event, ui) {
-                  $(this).addClass('backpackboxchanged');
-                  $(this).attr('value', ui.draggable.attr('value'));
+            drop: function(event, ui) {
+                $(this).addClass('backpackboxchanged');
+                $(this).attr('value', ui.draggable.attr('value'));
                 $(this).html(ui.draggable.html());
 
                 jQuery.each (elements, function () {
@@ -89,43 +89,39 @@ if ($_GET['op'] == 'change' && isset($_POST['equipped'])) {
 
         if (is_numeric($itemid)) {
             // Replaced by a new Item or still old item
-            $item = ItemSystem::getItemObject($itemid);
+            $item = Manager\Item::getItem($itemid, $itemclass);
 
             // Check if the item fits the slot it's placed into
-            if (strncmp($item->class, $itemclass, strlen($itemclass)) === 0) {
+            if ($item->class === $itemclass) {
                 // Get the old equipped item
-                $olditem = ItemSystem::getEquippedItem($user->char, $itemclass);
+                $olditem = Manager\Item::getEquippedItem($user->character, $itemclass);
 
                 // First check if the newitem is different
                 if ($olditem && $olditem->id != $item->id) {
                     // Replace the old item from ITEMSYSTEM_LOCATION_EQUIPMENT
                     // with the new one
                     $olditem->location 	= ITEMSYSTEM_LOCATION_BACKPACK;
-                    $olditem->save();
-                    unset($olditem);
 
                     // Move the new item to the equipment
                     $item->location 	= ITEMSYSTEM_LOCATION_EQUIPMENT;
-                    $item->save();
                 } elseif (!$olditem) {
                     // There was no old item
                     $item->location 	= ITEMSYSTEM_LOCATION_EQUIPMENT;
-                    $item->save();
                 } else {
                     // Old and new item are the same - no action
                 }
             }
-
-            unset($item);
         } else {
             // Removed item
-            $olditem = ItemSystem::getEquippedItem($user->char, $itemclass);
+            $olditem = Manager\Item::getEquippedItem($user->character, $itemclass);
             if ($olditem) {
                 $olditem->location 	= ITEMSYSTEM_LOCATION_BACKPACK;
-                $olditem->save();
             }
+
         }
     }
+
+    $em->flush();
 
 }
 
@@ -137,50 +133,87 @@ $newURL->setParameter("op", "change");
 $page->inventoryform->head("inventoryform", $newURL);
 $page->nav->add(new Link("", $newURL));
 
-$itemclasses = array ('weapon','armor_head','armor_chest','armor_arms','armor_legs','armor_feet');
+$itemtypes = array ("Weapon", "Armor");
+$itemclasses = array ('weapon', 'armor_head', 'armor_chest', 'armor_arms', 'armor_legs', 'armor_feet');
+
+$equipped = Manager\Item::getInventoryList($user->character, "equipment", $itemtypes);
+$backpack = Manager\Item::getInventoryList($user->character, "backpack", $itemtypes, "class");
+
+$page->output("`g`bAusrüstung`b`g`n");
+
+$emptybox = true;
 
 foreach ($itemclasses as $itemclass) {
-//	$equipped = ItemSystem::getInventoryList($user->char, "equipment", $itemclass);
-     $equipped = array_shift(ItemSystem::getInventoryListAsObjects($user->char, "equipment", $itemclass));
-    $backpack = ItemSystem::getInventoryListAsObjects($user->char, false, $itemclass);
-
-    $page->output("<div id='{$itemclass}'>", true);
-
-    $page->output("`b`g`c".Manager\System::translate($itemclass) . "`g`b");
-
-    $page->output("<div class='equippedbox'>", true);
-    if (isset($equipped)) {
-        $page->output("<p class='itemid hidden'>".$equipped->itemid."</p>", true);
-        $page->output("<p class='itemname'>".$equipped->name."</p>", true);
-        $page->output("<p class='itemdata'>".Manager\System::translate($equipped->class)."</p>", true);
-        if ($itemclass == "weapon") {
-            $page->output("<p class='itemdata'>Schaden: ".$equipped->showDamage(false)."</p>", true);
+    foreach ($equipped as $item) {
+        if ($item->class == $itemclass) {
+            $emptybox = false;
+            break;
         } else {
-            $page->output("<p class='itemdata'>Rüstung: ".$equipped->showArmorClass(false)."</p>", true);
+            $emptybox = true;
         }
-        $page->output("<p class='itemdata'>Level ".$equipped->level."</p>", true);
     }
-    $page->output("</div>", true);
-    $page->output("<input type='hidden' id='{$itemclass}_equipped' name='equipped[{$itemclass}]' value=''>", true);
 
-    $page->output("<div class='floatclear'></div>", true);
+    if ($emptybox) {
+        $page->output("<div id='{$itemclass}'>", true);
 
-    foreach ($backpack as $backpackitem) {
-        $page->output("<div class='backpackbox'>", true);
-        $page->output("<p class='itemid hidden'>".$backpackitem->itemid."</p>", true);
-        $page->output("<p class='itemname'>".$backpackitem->name."</p>", true);
-        $page->output("<p class='itemdata'>".Manager\System::translate($backpackitem->class)."</p>", true);
-        if ($itemclass == "weapon") {
-            $page->output("<p class='itemdata'>Schaden: ".$backpackitem->showDamage(false)."</p>", true);
-        } else {
-            $page->output("<p class='itemdata'>Rüstung: ".$backpackitem->showArmorClass(false)."</p>", true);
+        $page->output("`b`g`c".Manager\System::translate($itemclass) . "`c`g`b");
+
+        $page->output("<div class='equippedbox'>", true);
+        $page->output("</div>", true);
+
+        $page->output("<input type='hidden' id='{$itemclass}_equipped' name='equipped[{$itemclass}]' value='0'>", true);
+        $page->output("</div>", true);
+    } else {
+        $page->output("<div id='{$item->class}'>", true);
+
+        $page->output("`b`g`c".Manager\System::translate($item->class) . "`c`g`b");
+
+        $page->output("<div class='equippedbox'>", true);
+
+        $page->output("<p class='itemid hidden'>".$item->id."</p>", true);
+        $page->output("<p class='itemname'>".$item->name."</p>", true);
+        $page->output("<p class='itemdata'>".Manager\System::translate($item->class)."</p>", true);
+
+        if ($item instanceof Entities\Weapon) {
+            $page->output("<p class='itemdata'>Schaden: ".$item->showDamage(false)."</p>", true);
+        } elseif ($item instanceof Entities\Armor) {
+            $page->output("<p class='itemdata'>Rüstung: ".$item->showArmorClass(false)."</p>", true);
         }
-        $page->output("<p class='itemdata'>Level ".$backpackitem->level."</p>", true);
+
+        $page->output("<p class='itemdata'>Level ".$item->level."</p>", true);
+        $page->output("</div>", true);
+
+        $page->output("<input type='hidden' id='{$item->class}_equipped' name='equipped[{$item->class}]' value=''>", true);
         $page->output("</div>", true);
     }
+}
+
+$page->output("<div class='floatclear'></div>", true);
+$page->output("<hr>", true);
+$page->output("`g`bRucksack`b`g`n");
+
+foreach ($backpack as $item) {
+    $page->output("<div id='{$item->class}'>", true);
+
+    $page->output("<div class='backpackbox'>", true);
+
+    $page->output("<p class='itemid hidden'>".$item->id."</p>", true);
+    $page->output("<p class='itemname'>".$item->name."</p>", true);
+    $page->output("<p class='itemdata'>".Manager\System::translate($item->class)."</p>", true);
+
+    if ($item instanceof Entities\Weapon) {
+        $page->output("<p class='itemdata'>Schaden: ".$item->showDamage(false)."</p>", true);
+    } elseif ($item instanceof Entities\Armor) {
+        $page->output("<p class='itemdata'>Rüstung: ".$item->showArmorClass(false)."</p>", true);
+    }
+
+    $page->output("<p class='itemdata'>Level ".$item->level."</p>", true);
+    $page->output("</div>", true);
 
     $page->output("</div>", true);
 }
+
+$page->output("<div class='floatclear'></div>", true);
 
 $page->inventoryform->setCSS("floatright");
 $page->inventoryform->submitButton("Änderung Speichern");

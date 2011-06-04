@@ -131,11 +131,11 @@ span.itemstat_improved {
 }
 
 span.itemstat_decreased {
-    color: f8a6a6;
+    color: #f8a6a6;
 }
 
 /* inventory */
-#weapon, #armor_head, #armor_chest, #armor_arms, #armor_legs, #armor_feet {
+#weapon, #armor, #armor_head, #armor_chest, #armor_arms, #armor_legs, #armor_feet {
     float:left;
 }
 div.equippedbox, div.backpackbox, div.backpackboxdrag {
@@ -153,6 +153,8 @@ div.equippedbox {
 }
 
 div.backpackbox {
+    float: left;
+    clear: none;
     cursor: move;
 }
 div.backpackboxdrag {

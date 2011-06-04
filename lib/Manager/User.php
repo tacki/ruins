@@ -279,8 +279,6 @@ class User
     {
         $characters = self::getCharacterList(array("displayname"), "id", "ASC", true);
 
-        var_dump($characters);
-
         $result = array();
 
         foreach ($characters as $character) {
