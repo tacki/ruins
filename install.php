@@ -237,6 +237,10 @@ switch ($_GET['step']) {
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
                                                         "/includes/external/pear/".
                                                         "\");"."\n" .
+                                                     "	define(\"DIR_COMMON\", ".
+                                                        "\"".str_replace('\\', '/', dirname(__FILE__)).
+                                                        "/common/".
+                                                        "\");"."\n" .
                                                     "	define(\"DIR_COMMON_EXTERNAL\", ".
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
                                                         "/common/external/".

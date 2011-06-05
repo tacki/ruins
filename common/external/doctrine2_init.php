@@ -40,7 +40,7 @@ if ($applicationMode == "development") {
 } else {
     $config->setAutoGenerateProxyClasses(false);
 }
-$config->setProxyDir(DIR_MAIN."Proxies");
+$config->setProxyDir(DIR_COMMON."Proxies");
 $config->setProxyNamespace('Proxies');
 
 // Get EntityManager
