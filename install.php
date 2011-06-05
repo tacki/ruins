@@ -128,9 +128,7 @@ switch ($_GET['step']) {
         $writeaccess = array();
 
         $writeaccess["Configuration Directory"] = "config";
-        $writeaccess["Database Dump Directory"]	= "db dump";
-        $writeaccess["Log Folder"]				= "logs";
-        $writeaccess["Temp Folder"]				= "temp";
+        $writeaccess["Temp Folder"]				= "tmp";
 
         // To add more Directories, just keep this syntax
         // $writeaccess['directorydescription']	= "pathname/pathname";
@@ -167,10 +165,10 @@ switch ($_GET['step']) {
         $createdirs = array();
 
         // dirconfig-file
-        $createdirs['Smarty Temp Base Dir'] 	= "temp/smarty";
-        $createdirs['Smarty Temp Cache Dir']	= "temp/smarty/cache";
-        $createdirs['Smarty Temp Compile Dir']	= "temp/smarty/templates_c";
-        $createdirs['OpenID Temp Base Dir']		= "temp/openid";
+        $createdirs['Smarty Temp Base Dir'] 	= "tmp/smarty";
+        $createdirs['Smarty Temp Cache Dir']	= "tmp/smarty/cache";
+        $createdirs['Smarty Temp Compile Dir']	= "tmp/smarty/templates_c";
+        $createdirs['OpenID Temp Base Dir']		= "tmp/openid";
 
         // To add more Directories, just keep this syntax
         // $createdirs['directorydescription']	= "pathname";
@@ -215,6 +213,10 @@ switch ($_GET['step']) {
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
                                                         "/".
                                                         "\");"."\n" .
+                                                    "	define(\"DIR_MAIN\", ".
+                                                        "\"".str_replace('\\', '/', dirname(__FILE__)).
+                                                        "/main/".
+                                                        "\");"."\n" .
                                                     "	define(\"DIR_AREA\", ".
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
                                                         "/area/".
@@ -235,13 +237,17 @@ switch ($_GET['step']) {
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
                                                         "/includes/external/pear/".
                                                         "\");"."\n" .
+                                                    "	define(\"DIR_COMMON_EXTERNAL\", ".
+                                                        "\"".str_replace('\\', '/', dirname(__FILE__)).
+                                                        "/common/external/".
+                                                        "\");"."\n" .
                                                     "	define(\"DIR_INCLUDES_DOCTRINE\", ".
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
-                                                        "/includes/external/doctrine2-orm/lib/".
+                                                        "/common/external/doctrine2/".
                                                         "\");"."\n" .
                                                     "	define(\"DIR_INCLUDES_SMARTY\", ".
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
-                                                        "/includes/external/smarty/".
+                                                        "/common/external/smarty/".
                                                         "\");"."\n" .
                                                     "	define(\"DIR_IMAGES\", ".
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
@@ -257,7 +263,7 @@ switch ($_GET['step']) {
                                                         "\");"."\n" .
                                                     "	define(\"DIR_TEMP\", ".
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
-                                                        "/temp/".
+                                                        "/tmp/".
                                                         "\");"."\n" .
                                                     "	define(\"DIR_MODULES\", ".
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
@@ -553,7 +559,7 @@ switch ($_GET['step']) {
         // Include dirconf, global function library and database information
         require_once("config/dirconf.cfg.php");
         require_once(DIR_INCLUDES."includes.inc.php");
-        require_once(DIR_INCLUDES."doctrine_init.inc.php");
+        require_once(DIR_COMMON_EXTERNAL."doctrine2_init.php");
 
         // Set Autoloader
         spl_autoload_register("ruinsAutoload");
@@ -639,7 +645,7 @@ switch ($_GET['step']) {
                     <input type='submit' value='Start Import' class='continue'></form>";
         }
         break;
-
+/*
     case 4:
         echo "<h2>Step " . $_GET['step'] .  " of 4 - Initialize Modules</h2>";
         echo "<h4>Initialize Modules</h4>";
@@ -690,9 +696,9 @@ switch ($_GET['step']) {
 
         break;
 
+*/
 
-
-    case 5:
+    case 4:
         echo "<h2>Installation complete</h2>";
         echo "<h4>Congratulations, the Installation is complete! Press 'Continue' to load the Frontpage of Ruins.</h4>";
 

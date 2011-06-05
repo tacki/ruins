@@ -42,30 +42,32 @@ spl_autoload_register("ruinsAutoload");
 /**
  * Doctrine ClassLoaders
  */
-require_once(DIR_INCLUDES_DOCTRINE."vendor/doctrine-common/lib/Doctrine/Common/ClassLoader.php");
+require_once(DIR_INCLUDES_DOCTRINE."Doctrine/Common/ClassLoader.php");
 
-$classLoader = new \Doctrine\Common\ClassLoader('Doctrine\Common', DIR_INCLUDES_DOCTRINE . 'vendor/doctrine-common/lib');
+$classLoader = new \Doctrine\Common\ClassLoader('Doctrine', DIR_INCLUDES_DOCTRINE);
 $classLoader->register();
 
-$classLoader = new \Doctrine\Common\ClassLoader('Doctrine\DBAL', DIR_INCLUDES_DOCTRINE . 'vendor/doctrine-dbal/lib');
+$classLoader = new \Doctrine\Common\ClassLoader('Symfony', DIR_INCLUDES_DOCTRINE . 'Doctrine/');
 $classLoader->register();
 
-$classLoader = new \Doctrine\Common\ClassLoader('Doctrine\ORM', DIR_INCLUDES_DOCTRINE);
+$classLoader = new \Doctrine\Common\ClassLoader('Entities', DIR_MAIN);
 $classLoader->register();
 
-$classloader = new \Doctrine\Common\ClassLoader('Symfony', DIR_INCLUDES_DOCTRINE . 'vendor/');
-$classloader->register();
+$classLoader = new \Doctrine\Common\ClassLoader('Manager', DIR_MAIN . 'lib/');
+$classLoader->register();
 
-$classloader = new \Doctrine\Common\ClassLoader('Entities', DIR_BASE . 'lib/');
-$classloader->register();
-
-$classloader = new \Doctrine\Common\ClassLoader('Manager', DIR_BASE . 'lib/');
-$classloader->register();
+$classLoader = new \Doctrine\Common\ClassLoader('Layers', DIR_MAIN . 'lib/');
+$classLoader->register();
 
 /**
  * Doctrine Initialization
  */
-require_once(DIR_INCLUDES."doctrine_init.inc.php");
+require_once(DIR_COMMON_EXTERNAL."doctrine2_init.php");
 
+
+/**
+ * Smarty Initialization
+ */
+require_once(DIR_COMMON_EXTERNAL."smarty_init.php");
 
 ?>

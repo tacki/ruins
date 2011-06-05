@@ -16,11 +16,6 @@
 require_once(DIR_INCLUDES."includes.inc.php");
 
 /**
- * Smarty Template System
- */
-require_once(DIR_INCLUDES_SMARTY."Smarty.class.php");
-
-/**
  * Class Defines
  */
 define("POPUP_DEFAULT_PUBLIC_TEMPLATE", 	"default");

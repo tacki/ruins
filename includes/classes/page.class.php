@@ -16,11 +16,6 @@
 require_once(DIR_INCLUDES."includes.inc.php");
 
 /**
- * Smarty Template System
- */
-require_once(DIR_INCLUDES_SMARTY."Smarty.class.php");
-
-/**
  * Class Defines
  */
 define("PAGE_DEFAULT_PUBLIC_TEMPLATE", 	"default");
@@ -119,6 +114,8 @@ class Page extends BaseObject implements OutputObject
      */
     function __construct($char=false)
     {
+        global $smarty;
+
         // Set microtime to meassure the page-generation time
         $this->_pagegenerationstarttime = getMicroTime();
 
@@ -146,16 +143,7 @@ class Page extends BaseObject implements OutputObject
         $this->shortname = $this->url->getParameter("page");
 
         // Initialize the Smarty-Class
-        $this->_smarty = new \Smarty();
-
-        // Enable Caching with endless lifetime
-        $this->_smarty->caching = 1;
-        $this->_smarty->cache_lifetime = -1;
-
-        $this->_smarty->template_dir 	= DIR_TEMPLATES;
-        $this->_smarty->compile_dir 	= DIR_TEMP."smarty/templates_c";
-        $this->_smarty->cache_dir 		= DIR_TEMP."smarty/cache";
-        $this->_smarty->config_dir 		= DIR_INCLUDES_SMARTY."configs";
+        $this->_smarty = $smarty;
     }
 
     /**
