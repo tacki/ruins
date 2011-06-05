@@ -5,7 +5,11 @@
 namespace Entities;
 
 /**
- * @MappedSuperclass
+ * @Entity
+ * @InheritanceType("JOINED")
+ * @DiscriminatorColumn(name="discr", type="string")
+ * @DiscriminatorMap({"armors" = "Armor", "commons" = "Common", "weapons" = "Weapon"})
+ * @Table(name="items")
  */
 class Item extends EntityBase
 {
@@ -14,6 +18,9 @@ class Item extends EntityBase
      * @GeneratedValue
      */
     protected $id;
+
+    /** @Column(length=64) */
+    protected $class;
 
     /** @Column(length=255) */
     protected $name;
@@ -37,4 +44,8 @@ class Item extends EntityBase
      * @ManyToOne(targetEntity="Character")
      */
     protected $owner;
+
+    public function __construct() {
+        // Default Values
+    }
 }

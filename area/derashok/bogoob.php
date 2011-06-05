@@ -47,15 +47,13 @@ switch ($_GET['op']) {
 
         if (is_array($_POST['chooser'])) {
             foreach($_POST['chooser'] as $itemid) {
-                // FIXME
-                $item = new Item;
-                $item->load($itemid);
+                $item = Manager\Item::getItem($itemid, "all");
 
                 if ($item->owner == $user->character->id
                     && $item->class == "fish") {
                         $wanttobuy[] 	= $item;
                         $fishnames[]	= $item->name;
-                        $price 			+= $item->value->detailed();
+                        $price 			+= $item->value;
                 }
             }
         }
@@ -68,7 +66,7 @@ switch ($_GET['op']) {
                             von dir?");
         } else {
             $page->output("Neugierig und mit großen Augen sieht er auf das, was du ihm anbietest.`n`n
-                            `#52Oh oh, da, das isch habe wolle! Dafür ich dir {$price->fullDetailedWithPic()} gebe!`#00
+                            `#52Oh oh, da, das isch habe wolle! Dafür ich dir {$price} gebe!`#00
                             ruft er auf einmal aus und zeigt auf ", true);
             if (count($wanttobuy) > 1) {
                 $page->output("die Fische vor ihm. Willst du sie ihm verkaufen?`n`n`n
@@ -84,7 +82,7 @@ switch ($_GET['op']) {
             $page->sellform->head("deleteform", "page=derashok/bogoob&op=sell");
             $page->nav->add(new Link("", "page=derashok/bogoob&op=sell"));
             $page->sellform->hidden("ids", implode(",", $_POST['chooser']));
-            $page->sellform->hidden("price", $price->detailed());
+            $page->sellform->hidden("price", $price);
             $page->sellform->setCSS("button");
             $page->sellform->submitButton("Ja, weg damit!");
             $page->sellform->close();
@@ -100,12 +98,6 @@ switch ($_GET['op']) {
 
             $em->remove($item);
             $em->flush();
- /*
-            $item = new Entities\Item;
-            $item->load($itemid);
-            $item->owner = $npc->id;
-            $item->save();
-*/
         }
 
         $user->character->money->receive($price);

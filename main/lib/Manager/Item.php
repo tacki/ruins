@@ -52,17 +52,11 @@ class Item
      * @param int $itemid ID of the item to retrieve
      * @return Item|Itemoverload The Item Object (Item or child of Itemoverload)
      */
-    public function getItem($itemid, $itemclass)
+    public function getItem($itemid)
     {
         global $em;
 
-        $itemclass = ucfirst($itemclass);
-
-        if ($position = strpos($itemclass, "_")) {
-            $itemclass = substr($itemclass, 0, $position);
-        }
-
-        $result = $em->find("Entities\\".$itemclass, $itemid);
+        $result = $em->find("Entities\Item", $itemid);
 
         return $result;
     }
@@ -73,7 +67,7 @@ class Item
      * @param string $itemclass Itemclass to get (defaults to equipped weapon)
      * @return Item The equipped Item as an object
      */
-    public function getEquippedItem($character, $itemclass=ITEMSYSTEM_CLASS_WEAPON)
+    public function getEquippedItem($character, $itemclass)
     {
         if ($tempresult	= self::getInventoryList($character, ITEMSYSTEM_LOCATION_EQUIPMENT, $itemclass)) {
 
@@ -94,7 +88,7 @@ class Item
      * @param string $class Filter by the itemclass
      * @return array 2-dimensional Array
      */
-    public function getInventoryList($character, $location, $itemclass, $order="id", $orderDir="ASC")
+    public function getInventoryList($character, $location, $itemclass=false, $order="id", $orderDir="ASC")
     {
         $qb = getQueryBuilder();
 
@@ -112,10 +106,10 @@ class Item
             }
 
             $qb ->select("item")
-                ->from("Entities\\".$entity, "item")
-                ->where("item.owner = ?1")->setParameter(1, $character)
-                ->andWhere("item.location = ?2")->setParameter(2, $location)
-                ->andWhere("item.class LIKE ?3")->setParameter(3, $itemclass."%")
+                ->from("Entities\Item", "item")
+                ->where("item.owner = ?1")->setParameter(1, $character);
+            if ($location != "all") $qb->andWhere("item.location = ?2")->setParameter(2, $location);
+            $qb->andWhere("item.class LIKE ?3")->setParameter(3, $itemclass."%")
                 ->orderBy("item.".$order, $orderDir);
 
 

@@ -6,13 +6,10 @@ namespace Entities;
 
 /**
  * @Entity
- * @Table(name="weapons")
+ * @Table(name="items__weapons")
  */
 class Weapon extends Item
 {
-    /** @Column(length=64) */
-    protected $class;
-
     /**
      * @Column(type="integer")
      */

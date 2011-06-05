@@ -6,7 +6,7 @@ namespace Entities;
 
 /**
  * @Entity
- * @Table(name="users_settings")
+ * @Table(name="users__settings")
  */
 class UserSetting extends EntityBase
 {

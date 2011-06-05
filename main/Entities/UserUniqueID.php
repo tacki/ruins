@@ -7,7 +7,7 @@ use DateTime;
 
 /**
  * @Entity
- * @Table(name="users_uniqueids")
+ * @Table(name="users__uniqueids")
  */
 class UserUniqueID extends EntityBase
 {

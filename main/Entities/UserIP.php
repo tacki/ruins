@@ -7,7 +7,7 @@ use DateTime;
 
 /**
  * @Entity
- * @Table(name="users_ips")
+ * @Table(name="users__ips")
  */
 class UserIP extends EntityBase
 {

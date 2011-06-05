@@ -29,9 +29,9 @@ switch ($_GET['op']) {
     case "all":
         // Show the complete Inventory
         if (isset($_GET['order']) && isset($_GET['orderDesc'])) {
-            $itemlist 	= ItemSystem::getInventoryList($user->char, false, false, $_GET['order'], $_GET['orderDesc']);
+            $itemlist 	= Manager\Item::getInventoryList($user->character, "all", false, $_GET['order'], $_GET['orderDesc']);
         } else {
-            $itemlist 	= ItemSystem::getInventoryList($user->char);
+            $itemlist 	= Manager\Item::getInventoryList($user->character, "all");
         }
 
         $newURL = clone $page->url;
@@ -42,9 +42,9 @@ switch ($_GET['op']) {
     case "backpack":
         // Only show the backpack
         if (isset($_GET['order']) && isset($_GET['orderDesc'])) {
-            $itemlist 	= ItemSystem::getInventoryList($user->char, "backpack", false, $_GET['order'], $_GET['orderDesc']);
+            $itemlist 	= Manager\Item::getInventoryList($user->character, "backpack", false, $_GET['order'], $_GET['orderDesc']);
         } else {
-            $itemlist 	= ItemSystem::getInventoryList($user->char, "backpack");
+            $itemlist 	= Manager\Item::getInventoryList($user->character, "backpack");
         }
 
         $newURL = clone $page->url;
@@ -67,18 +67,26 @@ if (isset($_GET['callop'])) {
 }
 
 if (is_array($itemlist)) {
+    $newItemList = array();
     foreach ($itemlist as &$item) {
+        $showItem = array();
+
+        $showItem['name'] = $item->name;
+        $showItem['class'] = $item->class;
+        $showItem['level'] = $item->level;
+        $showItem['requirement'] = $item->requirement;
+        $showItem['weight'] = $item->weight;
+        $showItem['value'] = $item->value;
+        $showItem['location']  = $item->location;
+
         if (isset($_GET['callop'])) {
-            $item['select']		= "<input type='checkbox' name='chooser[]' value='".$item['id']."'>";
+            $showItem['select']		= "<input type='checkbox' name='chooser[]' value='".$item->id."'>";
         }
-        ModuleSystem::EnableManagerModule($item['value'], "Money");
-        $item['value'] = $item['value']->fullDetailedWithPic();
-        unset($item['id']);
-        unset($item['buffid']);
-        unset($item['owner']);
+
+        $newItemList[] = $showItem;
     }
 } else {
-    $itemlist = array();
+    $newItemList = array();
 }
 
 // Database Fields to sort by + Headername
@@ -95,7 +103,7 @@ $page->addTable("itemlist_armors", true);
 $page->itemlist_armors->setCSS("messagelist");
 $page->itemlist_armors->setTabAttributes(false);
 $page->itemlist_armors->addTabHeader($headers);
-$page->itemlist_armors->addListArray($itemlist, "firstrow", "firstrow");
+$page->itemlist_armors->addListArray($newItemList, "firstrow", "firstrow");
 $page->itemlist_armors->setSecondRowCSS("secondrow");
 $page->itemlist_armors->load();
 
