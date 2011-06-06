@@ -20,7 +20,7 @@
 
 </div>
 
-<div id="footer>
+<div id="footer">
     <div id=time><span id='serverTime'>{$servertime}</span> Uhr</div>
     <div id=pagegen>{$pagegen}ms</div>
 </div>
