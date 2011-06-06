@@ -70,7 +70,8 @@ class User
             }
 
             $result = $qb   ->from("Entities\Character", "char")
-                            ->where("char.id = ?1")->setParameter($charid)
+                            ->where("char.id = ?1")->setParameter(1, $charid)
+                            ->getQuery()
                             ->getOneOrNullResult();
 
             if ($result) {
@@ -91,14 +92,15 @@ class User
     public static function getCharacterID($charactername)
     {
         // purge existing btCode-Tags
-        $charactername = btCode::purgeTags($charactername);
+        $charactername = \btCode::purgeTags($charactername);
 
         if (!$result = \SessionStore::readCache($charactername . "_CharacterID ")) {
             $qb = getQueryBuilder();
 
             $result = $qb   ->select("char.id")
                             ->from("Entities\Character", "char")
-                            ->where("char.name = ?1")->setParameter($charactername)
+                            ->where("char.name = ?1")->setParameter(1, $charactername)
+                            ->getQuery()
                             ->getOneOrNullResult();
 
             if ($result) {
@@ -124,7 +126,8 @@ class User
 
             $result = $qb   ->select("char.type")
                             ->from("Entities\Character", "char")
-                            ->where("char.id = ?1")->setParameter($charid)
+                            ->where("char.id = ?1")->setParameter(1, $charid)
+                            ->getQuery()
                             ->getOneOrNullResult();
 
             if ($result) {
@@ -150,7 +153,8 @@ class User
 
             $result = $qb   ->select("char.race")
                             ->from("Entities\Character", "char")
-                            ->where("char.id = ?1")->setParameter($charid)
+                            ->where("char.id = ?1")->setParameter(1, $charid)
+                            ->getQuery()
                             ->getOneOrNullResult();
 
             if ($result) {
@@ -176,7 +180,8 @@ class User
 
             $result = $qb   ->select("char.id")
                             ->from("Entities\Character", "char")
-                            ->where("char.user = ?1")->setParameter($userid)
+                            ->where("char.user = ?1")->setParameter(1, $userid)
+                            ->getQuery()
                             ->getResult();
 
             if ($result) {
@@ -198,7 +203,7 @@ class User
      */
     public static function getCharacterList($fields=false, $order="id", $orderDir="ASC", $onlineonly=false)
     {
-        if (!$result = \SessionStore::readCache("CharacterList_".serialize($fields)."_".$order."_".$orderDesc."_".$onlineonly)) {
+ //       if (!$result = \SessionStore::readCache("CharacterList_".serialize($fields)."_".$order."_".$orderDesc."_".$onlineonly)) {
             $qb = getQueryBuilder();
 
             if (is_array($fields)) {
@@ -206,10 +211,11 @@ class User
                     $fields[$key] = "char." . $column;
                 }
                 $qb->select($fields);
+            } else {
+                $qb->select("char." . $fields);
             }
 
-            $qb    ->from("Entities\Character", "char")
-                   ->where("char.type != ?1")->setParameter(1, "npc");
+            $qb    ->from("Entities\Character", "char");
 
             if ($onlineonly) {
                 global $config;
@@ -262,11 +268,11 @@ class User
 
             if ($result) {
                 // CharacterLists-Cache is valid for 1 minute
-                \SessionStore::writeCache("CharacterList_".serialize($fields)."_".$order."_".$orderDesc."_".$onlineonly, $result, 60);
+ //               \SessionStore::writeCache("CharacterList_".serialize($fields)."_".$order."_".$orderDesc."_".$onlineonly, $result, 60);
             } else {
                 $result = array();
             }
-        }
+//        }
 
         return $result;
     }

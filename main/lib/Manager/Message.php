@@ -6,22 +6,16 @@
  * @author Markus Schlegel <g42@gmx.net>
  * @copyright Copyright (C) 2007 Markus Schlegel
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version SVN: $Id: messagesystem.class.php 326 2011-04-19 20:19:34Z tacki $
  * @package Ruins
  */
 
 /**
- * Global Includes
+ * Namespaces
  */
-require_once(DIR_INCLUDES."includes.inc.php");
-
-/**
- * Class Defines
- */
-define("MESSAGESYSTEM_STATUS_UNREAD", 0);
-define("MESSAGESYSTEM_STATUS_READ", 1);
-define("MESSAGESYSTEM_STATUS_REPLIED", 2);
-define("MESSAGESYSTEM_STATUS_DELETED", 3);
+namespace Manager;
+use Entities\Character,
+    Manager\User,
+    SessionStore;
 
 /**
  * MessageSystem Class
@@ -29,20 +23,70 @@ define("MESSAGESYSTEM_STATUS_DELETED", 3);
  * Class to control the Messaging-System
  * @package Ruins
  */
-class MessageSystem
+class Message
 {
+    const STATUS_UNREAD    = 0;
+    const STATUS_READ      = 1;
+    const STATUS_REPLIED   = 2;
+    const STATUS_DELETED   = 3;
+
     /**
      * Write a normal Message
      * @param int $sender ID of the Sender
      * @param mixed $receivers Receivers ID OR array of ID's OR "all" for all ID's
      * @param string $subject Subject of the Message
      * @param string $text Messagetext
-     * @param int ID of the newly created Message
+     * @param int ID of the MessageData (because it's unique!)
      */
     public static function write($sender, $receivers, $subject, $text)
     {
-        global $user;
+        global $em;
 
+        $messagedata          = new \Entities\MessageData;
+        $messagedata->subject = $subject;
+        $messagedata->text    = $text;
+        $em->persist($messagedata);
+
+        if (is_array($receivers)) {
+            foreach ($receivers as $receiverid) {
+                $message = new \Entities\Message;
+                $message->sender = $sender;
+                $message->receiver = $em->find("Entities\Character", $receiverid);
+                $message->data = $messagedata;
+                $em->persist($message);
+            }
+        } elseif (is_numeric($receivers)) {
+            $message = new \Entities\Message;
+            $message->sender = $sender;
+            $message->receiver = $em->find("Entities\Character", $receivers);
+            $message->data = $messagedata;
+            $em->persist($message);
+        } elseif (is_string($receivers) && $receivers != "all") {
+            $message = new \Entities\Message;
+            $message->sender = $sender;
+            $message->receiver = $em->getRepository("Entities\Character")->findOneByName($receivers);
+            $message->data = $messagedata;
+            $em->persist($message);
+        } elseif ($receivers == "all") {
+            $idlist = User::getCharacterList("id");
+
+            var_dump($idlist);
+
+            foreach ($idlist as $receiverid) {
+                $message = new \Entities\Message;
+                $message->sender = $sender;
+                $message->receiver = $em->find("Entities\Character", $receiverid);
+                $message->data = $messagedata;
+                $em->persist($message);
+            }
+        }
+
+        $em->flush();
+
+        return $messagedata->id;
+
+
+/*
         // Some Sanity-Checks
         if (!$subject) $subject=" ";
         if (!$text) $text=" ";
@@ -110,10 +154,11 @@ class MessageSystem
         }
 
         return $messageid;
+*/
     }
 
     /**
-     * Delete a Message by setting the status to MESSAGESYSTEM_STATUS_DELETED
+     * Delete a Message by setting the status to self::STATUS_DELETED
      * @param int $messageid
      */
     public static function delete($messageid)
@@ -131,18 +176,25 @@ class MessageSystem
 
         // Delete the References
         foreach ($result as $ids) {
-            self::updateMessageStatus($ids, false, MESSAGESYSTEM_STATUS_DELETED);
+            self::updateMessageStatus($ids, self::STATUS_DELETED);
         }
     }
 
     /**
      * Update Message Status
      * @param int $messageid ID of the Message to alter
-     * @param int $receiverid ID of the Receiver (set to false for all receivers)
      * @param int $status New Status
      */
-    public static function updateMessageStatus($messageid, $receiverid, $status)
+    public static function updateMessageStatus($messageid, $status)
     {
+        $qb = getQueryBuilder();
+
+        $qb ->update("Entities\Message", "message")
+            ->set("message.status", $status)
+            ->where("message.id = ?1")->setParameter(1, $messageid)
+            ->getQuery()
+            ->execute();
+/*
         global $dbconnect;
         $dbqt = new QueryTool;
 
@@ -158,6 +210,7 @@ class MessageSystem
         }
 
         $dbqt->exec();
+*/
     }
 
     /**
@@ -167,7 +220,13 @@ class MessageSystem
      */
     public static function getMessage($messageid, $fields=false)
     {
+        global $em;
+
+        $result = $em->find("Entities\Message", $messageid);
+
+/*
         if (!$result = SessionStore::readCache("message_".$messageid."_".serialize($fields))) {
+
             $dbqt = new QueryTool();
 
             if (is_array($fields)) {
@@ -181,8 +240,9 @@ class MessageSystem
 
             $result = $dbqt->exec()->fetchRow();
 
-            SessionStore::writeCache("message_".$messageid."_".serialize($fields), $result);
+           SessionStore::writeCache("message_".$messageid."_".serialize($fields), $result);
         }
+*/
         return $result;
     }
 
@@ -197,6 +257,25 @@ class MessageSystem
      */
     public static function getInbox(Character $character, $fields=false, $limit=false, $ascending=true, $status=false)
     {
+        $qb = getQueryBuilder();
+
+        $qb  ->select("message")
+             ->from("Entities\Message", "message")
+             ->where("message.receiver = ?1")->setParameter(1, $character->id);
+
+
+        if ($status) $qb->andWhere("message.status = ?2")->setParameter(2, $status);
+        if ($limit) $qb->setMaxResults($limit);
+
+        if ($ascending) {
+            $qb->orderBy("message.date", "ASC");
+        } else {
+            $qb->orderBy("message.date", "DESC");
+        }
+
+        $result = $qb->getQuery()->getResult();
+
+/*
         $dbqt = new QueryTool();
 
         if (is_array($fields)) {
@@ -223,7 +302,7 @@ class MessageSystem
         }
 
         $result = $dbqt->exec()->fetchAll();
-
+*/
         return $result;
     }
 
@@ -238,6 +317,25 @@ class MessageSystem
      */
     public static function getOutbox(Character $character, $fields=false, $limit=false, $ascending=true, $status=false)
     {
+        $qb = getQueryBuilder();
+
+        $qb ->select("message")
+            ->from("Entities\Message", "message")
+            ->where("message.sender = ?1")->setParameter(1, $character);
+
+        if ($status) $qb->andWhere("message.status = ?2")->setParameter(2, $status);
+        if ($limit) $qb->setMaxResults($limit);
+
+        if ($ascending) {
+            $qb->orderBy("message.date", "ASC");
+        } else {
+            $qb->orderBy("message.date", "DESC");
+        }
+
+        $result = $qb->getQuery()->getResult();
+
+
+/*
         $dbqt = new Querytool;
 
         if (is_array($fields)) {
@@ -262,7 +360,7 @@ class MessageSystem
         }
 
         $result = $dbqt->exec()->fetchAll();
-
+*/
         return $result;
     }
 }

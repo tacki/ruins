@@ -21,12 +21,13 @@ $popup->nav->add(new Link("Postausgang", "popup=popup/messenger&op=outbox"));
 switch ($_GET['op']) {
 
     case "send":
-        $messageid = MessageSystem::write(	$user->char->id,
-                                            $_POST['receivers'],
-                                            $_POST['subject'],
-                                            $_POST['text'] );
+        $messageid = Manager\Message::write(	$user->character,
+                                                $_POST['receivers'],
+                                                $_POST['subject'],
+                                                $_POST['text']
+                                           );
         if (isset($_GET['reply'])) {
-            MessageSystem::updateMessageStatus($messageid, $user->char->id, MESSAGESYSTEM_STATUS_REPLIED);
+            Manager\Message::updateMessageStatus($messageid, MESSAGESYSTEM_STATUS_REPLIED);
             $popup->output("Antwort gesendet!");
         } else {
             $popup->output("Nachricht gesendet!");
@@ -67,26 +68,29 @@ switch ($_GET['op']) {
         $popup->addForm("deleteform", true);
         $popup->deleteform->head("deleteform", "popup=popup/messenger&op=delete");
 
-        //MessageSystem::write(rand(4,11), 3, "test", "blabla");
-        $messagelist = MessageSystem::getInbox($user->char, array("status", "messages.id", "sender", "subject", "date"));
-        foreach ($messagelist as &$message) {
-            switch($message['status']) {
-                case 0: $message['status'] = "<img src='".$popup->template['mytemplatedir']."/images/message_unread.gif' />"; break;
-                case 1: $message['status'] = "<img src='".$popup->template['mytemplatedir']."/images/message_read.gif' />"; break;
-                case 2: $message['status'] = "<img src='".$popup->template['mytemplatedir']."/images/message_replied.gif' />"; break;
+        $messagelist = Manager\Message::getInbox($user->character);
+        $showlist = array();
+        foreach ($messagelist as $message) {
+            $showmessage = array();
+            switch($message->status) {
+                case 0: $showmessage['status'] = "<img src='".$popup->template['mytemplatedir']."/images/message_unread.gif' />"; break;
+                case 1: $showmessage['status'] = "<img src='".$popup->template['mytemplatedir']."/images/message_read.gif' />"; break;
+                case 2: $showmessage['status'] = "<img src='".$popup->template['mytemplatedir']."/images/message_replied.gif' />"; break;
             }
-            $message['sender']		= "<a href='?popup=popup/messenger&op=read&messageid=".$message['_messages_id']."'>".Manager\User::getCharacterName($message['sender'])."</a>";
-            $message['subject'] 	= "<a href='?popup=popup/messenger&op=read&messageid=".$message['_messages_id']."'>".$message['subject']."</a>";
-            $message['date']		= date("H:i:s d.m.y", strtotime($message['date']));
-            $message['action']		= "<input type='checkbox' name='chooser[]' value='".$message['_messages_id']."'>";
-            unset ($message['_messages_id']);
+
+            $showmessage['sender']		= "<a href='?popup=popup/messenger&op=read&messageid=".$message->id."'>".$message->sender->name."</a>";
+            $showmessage['subject'] 	= "<a href='?popup=popup/messenger&op=read&messageid=".$message->id."'>".$message->data->subject."</a>";
+            $showmessage['date']		= $message->date->format("H:i:s d.m.y");
+            $showmessage['action']		= "<input type='checkbox' name='chooser[]' value='".$message->id."'>";
+
+            $showlist[] = $showmessage;
         }
 
         $popup->addTable("messagelist", true);
         $popup->messagelist->setCSS("messagelist");
         $popup->messagelist->setTabAttributes(false);
         $popup->messagelist->addTabHeader(array("", "Absender", "Betreff", "Datum", ""), false, false, "head");
-        $popup->messagelist->addListArray($messagelist, "firstrow", "firstrow");
+        $popup->messagelist->addListArray($showlist, "firstrow", "firstrow");
         $popup->messagelist->setSecondRowCSS("secondrow");
         $popup->messagelist->load();
 
@@ -100,15 +104,16 @@ switch ($_GET['op']) {
 
     case "read":
         if (isset($_GET['messageid'])) {
-            $message = MessageSystem::getMessage($_GET['messageid']);
-            $snippet = $popup->createTemplateSnippet();
-            $snippet->assign("target", "popup=popup/messenger&op=reply&replyto=".$message['id']);
-            $snippet->assign("sender", Manager\User::getCharacterName($message['sender']));
-            $snippet->assign("date", date("H:i:s d.m.y", strtotime($message['date'])));
-            $snippet->assign("subject", $message['subject']);
-            $snippet->assign("text", $message['text']);
+            $message = Manager\Message::getMessage($_GET['messageid']);
 
-            MessageSystem::updateMessageStatus($message['id'], $user->char->id, MESSAGESYSTEM_STATUS_READ);
+            $snippet = $popup->createTemplateSnippet();
+            $snippet->assign("target", "popup=popup/messenger&op=reply&replyto=".$message->id);
+            $snippet->assign("sender", $message->sender->displayname);
+            $snippet->assign("date", $message->date->format("H:i:s d.m.y"));
+            $snippet->assign("subject", $message->data->subject);
+            $snippet->assign("text", $message->data->text);
+
+            Manager\Message::updateMessageStatus($message->id, Manager\Message::STATUS_READ);
         }
         $output = $snippet->fetch("snippet_messenger_read.tpl");
         $popup->output($output, true);
@@ -135,20 +140,23 @@ switch ($_GET['op']) {
         break;
 
     case "outbox":
-        $messagelist = MessageSystem::getOutbox($user->char, array("messages.id", "receiver", "subject", "date"));
+        $messagelist = Manager\Message::getOutbox($user->character, array("messages.id", "receiver", "subject", "date"));
 
-        foreach ($messagelist as &$message) {
-            $message['receiver']	= "<a href='?popup=popup/messenger&op=read&messageid=".$message['_messages_id']."'>".Manager\User::getCharacterName($message['receiver'])."</a>";
-            $message['subject'] 	= "<a href='?popup=popup/messenger&op=read&messageid=".$message['_messages_id']."'>".$message['subject']."</a>";
-            $message['date']		= date("H:i:s d.m.y", strtotime($message['date']));
-            unset ($message['_messages_id']);
+        $showlist = array();
+        foreach ($messagelist as $message) {
+            $showmessage = array();
+            $showmessage['receiver']	= "<a href='?popup=popup/messenger&op=read&messageid=".$message->id."'>".$message->receiver->displayname."</a>";
+            $showmessage['subject'] 	= "<a href='?popup=popup/messenger&op=read&messageid=".$message->id."'>".$message->data->subject."</a>";
+            $showmessage['date']		= $message->date->format("H:i:s d.m.y");
+
+            $showlist[] = $showmessage;
         }
 
         $popup->addTable("messagelist", true);
         $popup->messagelist->setCSS("messagelist");
         $popup->messagelist->setTabAttributes(false);
         $popup->messagelist->addTabHeader(array("Empfänger", "Betreff", "Datum"), false, false, "head");
-        $popup->messagelist->addListArray($messagelist, "firstrow", "firstrow");
+        $popup->messagelist->addListArray($showlist, "firstrow", "firstrow");
         $popup->messagelist->setSecondRowCSS("secondrow");
         $popup->messagelist->load();
         break;

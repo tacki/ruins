@@ -583,11 +583,11 @@ switch ($_GET['step']) {
                 if (isset($_GET['force'])) {
                     $schemaTool->dropSchema($metadata);
                 }
+                $schemaTool->updateSchema($metadata);
+
                 if (file_exists("main/setup/install.php")) {
                     include ("main/setup/install.php");
                 }
-
-                $schemaTool->updateSchema($metadata);
 
                 $em->flush();
             } catch (Exception $e) {
@@ -633,7 +633,7 @@ switch ($_GET['step']) {
                     <input type='submit' value='Start Import' class='continue'></form>";
         }
         break;
-/*
+
     case 4:
         echo "<h2>Step " . $_GET['step'] .  " of 4 - Initialize Modules</h2>";
         echo "<h4>Initialize Modules</h4>";
@@ -684,9 +684,7 @@ switch ($_GET['step']) {
 
         break;
 
-*/
-
-    case 4:
+    case 5:
         echo "<h2>Installation complete</h2>";
         echo "<h4>Congratulations, the Installation is complete! Press 'Continue' to load the Frontpage of Ruins.</h4>";
 

@@ -19,15 +19,12 @@ require_once(DIR_INCLUDES."includes.inc.php");
  * Popup Content
  */
 
-// Initialize User-Object
-$user = new User;
 // Initialize Config-Class
 $config = new Config();
 
 // Load User if in Session
 if ($userid = SessionStore::get('userid')) {
-    $user->load($userid);
-    $user->loadCharacter();
+    $user = new User($userid);
 }
 
 // Page preparation
@@ -39,15 +36,15 @@ if (array_search($_GET['popup'], $config->get("publicpages")) !== false) {
 
     // Create the Page
     $popup->create();
-} elseif ($user->isloaded) {
+} elseif (isset($user)) {
     // this is a private page and a user is loaded
-    $popup = new Popup($user->char);
+    $popup = new Popup($user->character);
 
     // Create the Page
     $popup->create();
 
     // Check for Connection Timeout
-    if ($user->char->hasConnectionTimeout()) {
+    if ($user->hasConnectionTimeout()) {
         // Connection Timeout occurred
         SessionStore::set("logoutreason", "Automatischer Logout: Connection Timeout!");
 
@@ -58,7 +55,7 @@ if (array_search($_GET['popup'], $config->get("publicpages")) !== false) {
         $popup->close();
     } else {
         // Update lastpagehit
-        $user->char->lastpagehit = date("Y-m-d H:i:s");
+        $user->character->lastpagehit = new DateTime();
     }
 } else {
     // this is a private page, but no user is loaded. Could be a normal BadNav too
