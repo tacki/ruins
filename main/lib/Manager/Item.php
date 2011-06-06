@@ -17,29 +17,6 @@ use SessionStore,
     Entities\Character;
 
 /**
- * Global Includes
- */
-require_once(DIR_INCLUDES."includes.inc.php");
-
-/**
- * Class Defines
- */
-define("ITEMSYSTEM_CLASS_DEFAULT", 			"default");
-define("ITEMSYSTEM_CLASS_WEAPON", 			"weapon");
-define("ITEMSYSTEM_CLASS_WEAPON_BLADE", 	"weapon_blade");
-define("ITEMSYSTEM_CLASS_WEAPON_BLUNT", 	"weapon_blunt");
-define("ITEMSYSTEM_CLASS_WEAPON_RANGED", 	"weapon_ranged");
-define("ITEMSYSTEM_CLASS_WEAPON_STAFF", 	"weapon_staff");
-define("ITEMSYSTEM_CLASS_ARMOR", 			"armor");
-define("ITEMSYSTEM_CLASS_ARMOR_HEAD", 		"armor_head");
-define("ITEMSYSTEM_CLASS_ARMOR_CHEST", 		"armor_chest");
-define("ITEMSYSTEM_CLASS_ARMOR_ARMS", 		"armor_arms");
-define("ITEMSYSTEM_CLASS_ARMOR_LEGS", 		"armor_legs");
-define("ITEMSYSTEM_CLASS_ARMOR_FEET", 		"armor_feet");
-define("ITEMSYSTEM_LOCATION_BACKPACK", 		"backpack");
-define("ITEMSYSTEM_LOCATION_EQUIPMENT",		"equipment");
-
-/**
  * Item Systemclass
  *
  * Class to manage all kind of Items
@@ -47,6 +24,50 @@ define("ITEMSYSTEM_LOCATION_EQUIPMENT",		"equipment");
  */
 class Item
 {
+    const CLASS_DEFAULT        = "default";
+    const CLASS_WEAPON         = "weapon";
+    const CLASS_WEAPON_BLADE   = "weapon_blade";
+    const CLASS_WEAPON_BLUNT   = "weapon_blunt";
+    const CLASS_WEAPON_RANGED  = "weapon_ranged";
+    const CLASS_WEAPON_STAFF   = "weapon_staff";
+    const CLASS_ARMOR          = "armor";
+    const CLASS_ARMOR_HEAD     = "armor_head";
+    const CLASS_ARMOR_CHEST    = "armor_chest";
+    const CLASS_ARMOR_ARMS     = "armor_arms";
+    const CLASS_ARMOR_LEGS     = "armor_legs";
+    const CLASS_ARMOR_FEET     = "armor_feet";
+    const LOCATION_BACKPACK    = "backpack";
+    const LOCATION_EQUIPMENT   = "equipment";
+
+    /**
+     * Get all defined Armor Classes
+     * @return array
+     */
+    public function getArmorClasses()
+    {
+        return array (
+                        self::CLASS_ARMOR_HEAD,
+                        self::CLASS_ARMOR_ARMS,
+                        self::CLASS_ARMOR_CHEST,
+                        self::CLASS_ARMOR_LEGS,
+                        self::CLASS_ARMOR_FEET,
+                     );
+    }
+
+    /**
+     * Get all defined Weapon Classes
+     * @return array
+     */
+    public function getWeaponClasses()
+    {
+        return array (
+                        self::CLASS_WEAPON_BLADE,
+                        self::CLASS_WEAPON_BLUNT,
+                        self::CLASS_WEAPON_RANGED,
+                        self::CLASS_WEAPON_STAFF,
+                     );
+    }
+
     /**
      * Get Item Object (including overloaded Items Objects like armor or weapon)
      * @param int $itemid ID of the item to retrieve
@@ -64,12 +85,12 @@ class Item
     /**
      * Get the equipped Item of the given Character
      * @param Character $character Character
-     * @param string $itemclass Itemclass to get (defaults to equipped weapon)
+     * @param string $itemclass Itemclass to get
      * @return Item The equipped Item as an object
      */
     public function getEquippedItem($character, $itemclass)
     {
-        if ($tempresult	= self::getInventoryList($character, ITEMSYSTEM_LOCATION_EQUIPMENT, $itemclass)) {
+        if ($tempresult	= self::getInventoryList($character, self::LOCATION_EQUIPMENT, $itemclass)) {
 
             // Get the first Item found (should be only one)
             $result		= array_shift($tempresult);

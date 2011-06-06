@@ -98,15 +98,15 @@ if ($_GET['op'] == 'change' && isset($_POST['equipped'])) {
 
                 // First check if the newitem is different
                 if ($olditem && $olditem->id != $item->id) {
-                    // Replace the old item from ITEMSYSTEM_LOCATION_EQUIPMENT
+                    // Replace the old item from Manager\Item::LOCATION_EQUIPMENT
                     // with the new one
-                    $olditem->location 	= ITEMSYSTEM_LOCATION_BACKPACK;
+                    $olditem->location 	= Manager\Item::LOCATION_BACKPACK;
 
                     // Move the new item to the equipment
-                    $item->location 	= ITEMSYSTEM_LOCATION_EQUIPMENT;
+                    $item->location 	= Manager\Item::LOCATION_EQUIPMENT;
                 } elseif (!$olditem) {
                     // There was no old item
-                    $item->location 	= ITEMSYSTEM_LOCATION_EQUIPMENT;
+                    $item->location 	= Manager\Item::LOCATION_EQUIPMENT;
                 } else {
                     // Old and new item are the same - no action
                 }
@@ -115,7 +115,7 @@ if ($_GET['op'] == 'change' && isset($_POST['equipped'])) {
             // Removed item
             $olditem = Manager\Item::getEquippedItem($user->character, $itemclass);
             if ($olditem) {
-                $olditem->location 	= ITEMSYSTEM_LOCATION_BACKPACK;
+                $olditem->location 	= Manager\Item::LOCATION_BACKPACK;
             }
 
         }
@@ -133,8 +133,10 @@ $newURL->setParameter("op", "change");
 $page->inventoryform->head("inventoryform", $newURL);
 $page->nav->add(new Link("", $newURL));
 
-$itemtypes = array ("Weapon", "Armor");
-$itemclasses = array ('weapon', 'armor_head', 'armor_chest', 'armor_arms', 'armor_legs', 'armor_feet');
+$itemtypes = array (Manager\Item::CLASS_WEAPON, Manager\Item::CLASS_ARMOR);
+
+$itemclasses = array (Manager\Item::CLASS_WEAPON);
+$itemclasses = array_merge($itemclasses, Manager\Item::getArmorClasses());
 
 $equipped = Manager\Item::getInventoryList($user->character, "equipment", $itemtypes);
 $backpack = Manager\Item::getInventoryList($user->character, "backpack", $itemtypes, "class");

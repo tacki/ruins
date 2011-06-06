@@ -582,27 +582,11 @@ switch ($_GET['step']) {
                 $metadata = $em->getMetadataFactory()->getAllMetadata();
                 if (isset($_GET['force'])) {
                     $schemaTool->dropSchema($metadata);
-
-                    $install_char = new Entities\Character;
-                    $install_char->name = "Testuser";
-                    $install_char->displayname = "`#35Testuser`#00";
-                    $em->persist($install_char);
-
-                    $install_settings = new Entities\UserSetting;
-                    $install_settings->default_character = $install_char;
-                    $em->persist($install_settings);
-
-                    $install_user = new Entities\User;
-                    $install_user->login = "test";
-                    $install_user->password = md5("test");
-                    $install_user->character = $install_char;
-                    $install_user->settings  = $install_settings;
-                    $em->persist($install_user);
-
-                    // Reverse Mappings
-                    $install_char->user     = $install_user;
-                    $install_settings->user = $install_user;
                 }
+                if (file_exists("main/setup/install.php")) {
+                    include ("main/setup/install.php");
+                }
+
                 $schemaTool->updateSchema($metadata);
 
                 $em->flush();

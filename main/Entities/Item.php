@@ -56,5 +56,6 @@ class Item extends EntityBase
         $this->requirement = 0;
         $this->weight = 0;
         $this->value = 0;
+        $this->location = \Manager\Item::LOCATION_BACKPACK;
     }
 }
