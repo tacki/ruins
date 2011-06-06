@@ -2,7 +2,8 @@
 /**
  * Namespaces
  */
-namespace Entities;
+namespace Entities\Items;
+use Entities\Item;
 
 /**
  * @Entity
@@ -22,6 +23,8 @@ class Weapon extends Item
 
     public function __construct()
     {
+        parent::__construct();
+
         // Default Values
         $this->damage_min = 0;
         $this->damage_max = 0;

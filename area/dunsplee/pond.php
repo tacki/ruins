@@ -37,7 +37,7 @@ switch ($_GET['op']) {
         break;
 
     case "fish":
-        $timer = new Timer("dunsplee_pond_fishing", $user->char);
+        $timer = new Timer("dunsplee_pond_fishing", $user->character);
         // Don't refresh the Page, show this Button instead
         $timer->useReplacementButton("Weiter...", $page->url);
 
@@ -131,6 +131,19 @@ switch ($_GET['op']) {
                             zu bewundern... :(`n");
 
             // Insert the Fish into the Database
+            global $em;
+
+            $fish = new Entities\Items\Common;
+            $fish->name = $fishname;
+            $fish->class = "fish";
+            $fish->weight	= round($fishsize / 15); 	// 15 cm fish = 1 weight-unit? :D
+            $fish->value	= round($fishsize / 10);  	// 10 cm fish = 1 copper
+            $fish->location	= "backpack";
+            $fish->owner	= $user->character;
+
+            $em->persist($fish);
+
+/*
             $fish = new Item;
             $fish->create();
             $fish->name 	= $fishname;
@@ -140,7 +153,7 @@ switch ($_GET['op']) {
             $fish->location	= "backpack";
             $fish->owner	= $user->char->id;
             $fish->save();
-
+*/
             $page->nav->add(new Link("Ui, gleich nochmal!", "page=dunsplee/pond&op=fishask"));
         } else {
             $page->output("Da bist du nun so lange hier herumgesessen und du hast nichts, aber auch garnichts

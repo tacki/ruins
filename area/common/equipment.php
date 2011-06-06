@@ -89,7 +89,7 @@ if ($_GET['op'] == 'change' && isset($_POST['equipped'])) {
 
         if (is_numeric($itemid)) {
             // Replaced by a new Item or still old item
-            $item = Manager\Item::getItem($itemid, $itemclass);
+            $item = Manager\Item::getItem($itemid);
 
             // Check if the item fits the slot it's placed into
             if ($item->class === $itemclass) {

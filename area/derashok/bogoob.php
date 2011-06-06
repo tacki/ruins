@@ -94,7 +94,7 @@ switch ($_GET['op']) {
         $price 	= $_POST['price'];
 
         foreach($ids as $itemid) {
-            $item = $em->find("Entities\Item", $itemid);
+            $item = $em->find("Entities\Items\Common", $itemid);
 
             $em->remove($item);
             $em->flush();

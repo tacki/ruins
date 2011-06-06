@@ -2,7 +2,8 @@
 /**
  * Namespaces
  */
-namespace Entities;
+namespace Entities\Items;
+use Entities\Item;
 
 /**
  * @Entity
@@ -12,5 +13,6 @@ class Common extends Item
 {
     public function __construct()
     {
+        parent::__construct();
     }
 }

@@ -8,7 +8,11 @@ namespace Entities;
  * @Entity
  * @InheritanceType("JOINED")
  * @DiscriminatorColumn(name="discr", type="string")
- * @DiscriminatorMap({"armors" = "Armor", "commons" = "Common", "weapons" = "Weapon"})
+ * @DiscriminatorMap({
+ * 					   "armors" = "Entities\Items\Armor",
+ * 					   "commons" = "Entities\Items\Common",
+ *                     "weapons" = "Entities\Items\Weapon"
+ *                   })
  * @Table(name="items")
  */
 class Item extends EntityBase
@@ -45,7 +49,12 @@ class Item extends EntityBase
      */
     protected $owner;
 
-    public function __construct() {
+    public function __construct()
+    {
         // Default Values
+        $this->level = 0;
+        $this->requirement = 0;
+        $this->weight = 0;
+        $this->value = 0;
     }
 }

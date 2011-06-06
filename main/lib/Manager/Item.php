@@ -85,7 +85,9 @@ class Item
      * Get Inventory of the given Character
      * @param Character $character Character
      * @param string $location Filter by the location
-     * @param string $class Filter by the itemclass
+     * @param string $itemclass Filter by the itemclass
+     * @param string $order
+     * @param string $orderDir
      * @return array 2-dimensional Array
      */
     public function getInventoryList($character, $location, $itemclass=false, $order="id", $orderDir="ASC")
@@ -99,18 +101,12 @@ class Item
                 $result = array_merge($result, self::getInventoryList($character, $location, $class, $order, $orderDir));
             }
         } else {
-            $entity = ucfirst($itemclass);
-
-            if ($position = strpos($entity, "_")) {
-                $entity = substr($entity, 0, $position);
-            }
-
             $qb ->select("item")
                 ->from("Entities\Item", "item")
                 ->where("item.owner = ?1")->setParameter(1, $character);
             if ($location != "all") $qb->andWhere("item.location = ?2")->setParameter(2, $location);
-            $qb->andWhere("item.class LIKE ?3")->setParameter(3, $itemclass."%")
-                ->orderBy("item.".$order, $orderDir);
+            if ($itemclass) $qb->andWhere("item.class LIKE ?3")->setParameter(3, $itemclass."%");
+            $qb->orderBy("item.".$order, $orderDir);
 
 
             $query  = $qb->getQuery();
