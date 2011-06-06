@@ -276,7 +276,7 @@ class ClassicChat
         $words = explode(" ", $text);
 
         // Get List of bad words (use SessionStore to avoid unneeded dbtraffic)
-        if (!$badwords = SessionStore::readCache("badwords")) {
+        if (!($badwords = SessionStore::readCache("badwords"))) {
             $qb = getQueryBuilder();
 
             $badwords = $qb->select("bw")
@@ -330,6 +330,8 @@ class ClassicChat
             // Apply Censorship
             if ($user->settings->chat_censorship) {
                 $resultpage[$i]['chatline'] = $this->_chatlineCensorship($page[$i]->chatline);
+            } else {
+                $resultpage[$i]['chatline'] = $page[$i]->chatline;
             }
 
             // Check for special Commands
