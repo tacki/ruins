@@ -21,16 +21,24 @@ $popup->nav->add(new Link("Postausgang", "popup=popup/messenger&op=outbox"));
 switch ($_GET['op']) {
 
     case "send":
-        $messageid = Manager\Message::write(	$user->character,
-                                                $_POST['receivers'],
-                                                $_POST['subject'],
-                                                $_POST['text']
-                                           );
+        if ($_GET['reply']) {
+            $messagestatus = Manager\Message::STATUS_REPLIED;
+        } else {
+            $messagestatus = Manager\Message::STATUS_UNREAD;
+        }
+
+        $nrSentMessages = Manager\Message::write(
+                                                    $user->character,
+                                                    $_POST['receivers'],
+                                                    $_POST['subject'],
+                                                    $_POST['text'],
+                                                    $messagestatus
+                                                );
+
         if (isset($_GET['reply'])) {
-            Manager\Message::updateMessageStatus($messageid, MESSAGESYSTEM_STATUS_REPLIED);
             $popup->output("Antwort gesendet!");
         } else {
-            $popup->output("Nachricht gesendet!");
+            $popup->output("$nrSentMessages Nachricht(en) erfolgreich gesendet!");
         }
         break;
 
@@ -50,15 +58,15 @@ switch ($_GET['op']) {
         $snippet = $popup->createTemplateSnippet();
         $snippet->assign("target", "popup=popup/messenger&op=send&reply=1");
         if (isset($_GET['replyto'])) {
-            $message = MessageSystem::getMessage($_GET['replyto']);
-            $snippet->assign("receiver", Manager\User::getCharacterName($message['sender'], false));
-            if (substr($message['subject'], 0, 4) != "RE: ") {
+            $message = Manager\Message::getMessage($_GET['replyto']);
+            $snippet->assign("receiver", $message->sender->name);
+            if (substr($message->subject, 0, 4) != "RE: ") {
                 // Add 'RE: ' if there isn't already one
-                $snippet->assign("subject", "RE: " . $message['subject']);
+                $snippet->assign("subject", "RE: " . $message->data->subject);
             } else {
-                $snippet->assign("subject", $message['subject']);
+                $snippet->assign("subject", $message->data->subject);
             }
-            $snippet->assign("text", "\r\n\n--- Original Message ---\r\n". $message['text']);
+            $snippet->assign("text", "\r\n\n--- Original Message ---\r\n". $message->data->text);
         }
         $output = $snippet->fetch("snippet_messenger_create.tpl");
         $popup->output($output, true);
@@ -113,7 +121,10 @@ switch ($_GET['op']) {
             $snippet->assign("subject", $message->data->subject);
             $snippet->assign("text", $message->data->text);
 
-            Manager\Message::updateMessageStatus($message->id, Manager\Message::STATUS_READ);
+            if ($message->status != Manager\Message::STATUS_DELETED ||
+                $message->receiver == $user->character) {
+                Manager\Message::updateMessageStatus($message->id, Manager\Message::STATUS_READ);
+            }
         }
         $output = $snippet->fetch("snippet_messenger_read.tpl");
         $popup->output($output, true);
@@ -129,18 +140,14 @@ switch ($_GET['op']) {
             $popup->deleteform->submitButton("Ja, Löschen");
             $popup->deleteform->close();
         } elseif (isset($_POST['ids'])) {
-            $messages = explode(",", $_POST['ids']);
+            Manager\Message::delete($_POST['ids']);
 
-            foreach ($messages as $messageid) {
-                MessageSystem::delete($messageid);
-            }
-
-            $popup->output(count($messages) . " Nachrichten gelöscht!");
+            $popup->output(count($_POST['ids']) . " Nachrichten gelöscht!");
         }
         break;
 
     case "outbox":
-        $messagelist = Manager\Message::getOutbox($user->character, array("messages.id", "receiver", "subject", "date"));
+        $messagelist = Manager\Message::getOutbox($user->character);
 
         $showlist = array();
         foreach ($messagelist as $message) {

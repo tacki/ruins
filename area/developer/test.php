@@ -613,40 +613,59 @@ $mt = getMicroTime();
 // Message Test Start
 $page->output("Starting Message Test: `n");
 $position = "messagetest";
-/*
-$character = new RPGCharacter;
 
-$page->output("Sending Message from anonymous(1) to anonymous(1)`n");
-$messageid1 = MessageSystem::write(1, 1, "du...", "...idiota!");
+$user = new User(1);
 
-//$page->output("Sending Message from anonymous(1) to all Users`n");
-//$messageid2 = MessageSystem::write(1, "all", "global warning", "you all suck!");
+$page->output("Sending Message from {$user->character->displayname} to {$user->character->displayname}`n");
+Manager\Message::write($user->character, $user->character, "du...", "...idiota!");
 
-$page->output("`bInbox of anonymous(1):`b`n");
-$character->load(1);
-$messagelist = MessageSystem::getInbox($character);
+$page->output("`bInbox of {$user->character->displayname}:`b`n");
+$messagelist = Manager\Message::getInbox($user->character);
+$showlist = array();
+foreach ($messagelist as $message) {
+    $showmessage = array();
+    $showmessage['id']		  = $message->id;
+    $showmessage['sender']	  = $message->sender->name;
+    $showmessage['receiver']  = $message->receiver->name;
+    $showmessage['subject']   = $message->data->subject;
+    $showmessage['date']      = $message->date->format("H:i:s d.m.y");
+    $showmessage['status']    = $message->status;
+    $showlist[] = $showmessage;
+}
+
 $newtab = new Table;
-$newtab->setCSS("`~35");
-$newtab->setTabAttributes(false,2);
-$newtab->addTabHeader(array("id","sender","receiver","subject","text","date","status"),false,array("`b","`b`c","`b`c","`b`c","`b`c","`b`c","`b`c","`b`c"));
-$newtab->addListArray($messagelist);
+$newtab->setCSS("`~9f");
+$newtab->setTabAttributes(false,0);
+$newtab->addTabHeader(array("id","sender","receiver","subject","date","status"),false,array("`b","`b`c","`b`c","`b`c","`b`c","`b`c"));
+$newtab->addListArray($showlist);
 $page->output($newtab->load(),true);
 
-$page->output("Deleting Message $messageid1`n");
-MessageSystem::delete($messageid1);
-//$page->output("Deleting Message $messageid2`n");
-//MessageSystem::delete($messageid2);
+$page->output("Deleting last Message`n");
+$lastMessage = Manager\Message::getInbox($user->character, 1, false);
+Manager\Message::delete($lastMessage);
 
-$page->output("`bInbox of anonymous(1):`b`n");
-$character->load(1);
-$messagelist = MessageSystem::getInbox($character);
+$page->output("`bInbox of {$user->character->displayname}:`b`n");
+$messagelist = Manager\Message::getInbox($user->character);
+$messagelist = Manager\Message::getInbox($user->character);
+$showlist = array();
+foreach ($messagelist as $message) {
+    $showmessage = array();
+    $showmessage['id']		  = $message->id;
+    $showmessage['sender']	  = $message->sender->name;
+    $showmessage['receiver']  = $message->receiver->name;
+    $showmessage['subject']   = $message->data->subject;
+    $showmessage['date']      = $message->date->format("H:i:s d.m.y");
+    $showmessage['status']    = $message->status;
+    $showlist[] = $showmessage;
+}
+
 $newtab = new Table;
-$newtab->setCSS("`~35");
-$newtab->setTabAttributes(false,2);
-$newtab->addTabHeader(array("id","sender","receiver","subject","text","date","status"),false,array("`b","`b`c","`b`c","`b`c","`b`c","`b`c","`b`c","`b`c"));
-$newtab->addListArray($messagelist);
+$newtab->setCSS("`~9f");
+$newtab->setTabAttributes(false,0);
+$newtab->addTabHeader(array("id","sender","receiver","subject","date","status"),false,array("`b","`b`c","`b`c","`b`c","`b`c","`b`c"));
+$newtab->addListArray($showlist);
 $page->output($newtab->load(),true);
-*/
+
 // Message Test End
 
 // *************************************
@@ -703,58 +722,6 @@ $page->output("`nStep 5: Is '3' inside the Stack?`n");
 $page->output(($stack->contains(3)?"Yes":"No") . "`n");
 
 // StackObject Test End
-
-// *************************************
-$res = getMicroTime() - $mt;
-$page->output("`n"."Dauer: ".$res." seconds");
-$page->output("`n`n*************************************`n`n");
-$mt = getMicroTime();
-// *************************************
-
-// UniqueID Test Start
-
-$page->output("Starting UniqueID Test: `n");
-$position = "uniqueidtest";
-
-$uniqueIDs = new UniqueIDStack(3);
-
-$page->output("Start with empty Stack`n");
-
-for ($i=1; $i<=3; $i++) {
-
-    $uniqueid = md5(getMicroTime());
-    $page->output("`nStep $i: Add UniqueID '" . $uniqueid . "'`n");
-    $uniqueIDs->add($uniqueid);
-
-    $page->output("Stackcontent:`n");
-    foreach($uniqueIDs->export() as $uniqueid) {
-        $page->output("Date UniqueID added: " . date("Y-m-d H:i:s", $uniqueid['date']) . "`n");
-        $page->output("UniqueID: " . $uniqueid['data'] . "`n");
-    }
-}
-
-$page->output("`nStep 4: Get Last UniqueID`n");
-$page->output($uniqueIDs->getLast("data") . "`n");
-
-$page->output("`nStep 5: Get First UniqueID`n");
-$page->output($uniqueIDs->getFirst("data") . "`n");
-
-$page->output("`nStep 6: Get Next UniqueID`n");
-$page->output($uniqueIDs->getNext("data") . "`n");
-
-$page->output("`nStep 6: Get Previous UniqueID`n");
-$page->output($uniqueIDs->getPrev("data") . "`n");
-
-$page->output("`nStep 7: Remove Last UniqueID`n");
-$uniqueIDs->delLast();
-
-$page->output("Stackcontent:`n");
-foreach($uniqueIDs->export() as $uniqueid) {
-    $page->output("Date UniqueID added: " . date("Y-m-d H:i:s", $uniqueid['date']) . "`n");
-    $page->output("UniqueID: " . $uniqueid['data'] . "`n");
-}
-
-// UniqueID Test End
 
 // *************************************
 $res = getMicroTime() - $mt;

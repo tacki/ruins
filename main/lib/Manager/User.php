@@ -94,12 +94,12 @@ class User
         // purge existing btCode-Tags
         $charactername = \btCode::purgeTags($charactername);
 
-        if (!$result = \SessionStore::readCache($charactername . "_CharacterID ")) {
+        if (!$result = \SessionStore::readCache($charactername . "_CharacterID")) {
             $qb = getQueryBuilder();
 
             $result = $qb   ->select("char.id")
                             ->from("Entities\Character", "char")
-                            ->where("char.name = ?1")->setParameter(1, $charactername)
+                            ->where("char.name LIKE ?1")->setParameter(1, $charactername)
                             ->getQuery()
                             ->getOneOrNullResult();
 
@@ -110,7 +110,7 @@ class User
             }
         }
 
-        return $result;
+        return $result['id'];
     }
 
     /**

@@ -32,59 +32,70 @@ class Message
 
     /**
      * Write a normal Message
-     * @param int $sender ID of the Sender
+     * @param Character $sender ID of the Sender
      * @param mixed $receivers Receivers ID OR array of ID's OR "all" for all ID's
      * @param string $subject Subject of the Message
      * @param string $text Messagetext
-     * @param int ID of the MessageData (because it's unique!)
+     * @param int $status Messagestatus to set
+     * @return int Number of Messages sent
      */
-    public static function write($sender, $receivers, $subject, $text)
+    public static function write(Character $sender, $receivers, $subject, $text, $status=self::STATUS_UNREAD)
     {
         global $em;
 
+        // Add MessageData (happens only once)
         $messagedata          = new \Entities\MessageData;
         $messagedata->subject = $subject;
         $messagedata->text    = $text;
         $em->persist($messagedata);
 
+        $receiverIDlist = array();
+
         if (is_array($receivers)) {
-            foreach ($receivers as $receiverid) {
-                $message = new \Entities\Message;
-                $message->sender = $sender;
-                $message->receiver = $em->find("Entities\Character", $receiverid);
-                $message->data = $messagedata;
-                $em->persist($message);
-            }
+            $receiverIDlist = $receivers;
         } elseif (is_numeric($receivers)) {
-            $message = new \Entities\Message;
-            $message->sender = $sender;
-            $message->receiver = $em->find("Entities\Character", $receivers);
-            $message->data = $messagedata;
-            $em->persist($message);
+            $receiverIDlist[] = $receivers;
+        } elseif ($receivers instanceof Character) {
+            $receiverIDlist[] = $receivers->id;
         } elseif (is_string($receivers) && $receivers != "all") {
+            $receiverNameList = explode(",", $receivers);
+            foreach ($receiverNameList as $receiver) {
+                $receiverIDlist[] = User::getCharacterID(trim($receiver));
+            }
+        } elseif ($receivers == "all") {
+            $receiverIDlist = User::getCharacterList("id");
+        }
+
+        // remove duplicates from List
+        $receiverIDlist = array_unique($receiverIDlist);
+
+        $nrSentMessages = 0;
+        $batchSize = 20;
+        $listSize = count($receiverIDlist);
+        for ($i = 0; $i <= $listsize; $i++) {
             $message = new \Entities\Message;
             $message->sender = $sender;
-            $message->receiver = $em->getRepository("Entities\Character")->findOneByName($receivers);
+            $message->receiver = $em->find("Entities\Character", $receiverIDlist[$i]);
             $message->data = $messagedata;
-            $em->persist($message);
-        } elseif ($receivers == "all") {
-            $idlist = User::getCharacterList("id");
-
-            var_dump($idlist);
-
-            foreach ($idlist as $receiverid) {
-                $message = new \Entities\Message;
-                $message->sender = $sender;
-                $message->receiver = $em->find("Entities\Character", $receiverid);
-                $message->data = $messagedata;
+            $message->status = $status;
+            if ($message->receiver) {
+                // Receiver exists
                 $em->persist($message);
+                $nrSentMessages++;
+            }
+
+            if (($i % $batchSize) == 0 && $i > 0) {
+                // Write to DB every $batchSize Inserts
+                $em->flush();
             }
         }
 
-        $em->flush();
+        if ($nrSentMessages == 0) {
+            // delete $messagedata
+            $em->detach($messagedata);
+        }
 
-        return $messagedata->id;
-
+        return $nrSentMessages;
 
 /*
         // Some Sanity-Checks
@@ -159,10 +170,12 @@ class Message
 
     /**
      * Delete a Message by setting the status to self::STATUS_DELETED
-     * @param int $messageid
+     * @param int|array $messageid
      */
     public static function delete($messageid)
     {
+        self::updateMessageStatus($messageid, self::STATUS_DELETED);
+/*
         $dbqt = new QueryTool();
         $result = $dbqt	->select("id")
                         ->from("messages_references")
@@ -178,11 +191,12 @@ class Message
         foreach ($result as $ids) {
             self::updateMessageStatus($ids, self::STATUS_DELETED);
         }
+*/
     }
 
     /**
      * Update Message Status
-     * @param int $messageid ID of the Message to alter
+     * @param int|array $messageid ID of the Message to alter
      * @param int $status New Status
      */
     public static function updateMessageStatus($messageid, $status)
@@ -191,9 +205,15 @@ class Message
 
         $qb ->update("Entities\Message", "message")
             ->set("message.status", $status)
-            ->where("message.id = ?1")->setParameter(1, $messageid)
-            ->getQuery()
-            ->execute();
+            ->where("message.id = ?1");
+
+        if (is_array($messageid)) {
+            foreach ($messageid as $id) {
+                $qb->getQuery()->execute(array(1 => $id));
+            }
+        } else {
+            $qb->getQuery()->execute(array(1 => $messageid));
+        }
 /*
         global $dbconnect;
         $dbqt = new QueryTool;
@@ -222,7 +242,7 @@ class Message
     {
         global $em;
 
-        $result = $em->find("Entities\Message", $messageid);
+        return $em->find("Entities\Message", $messageid);
 
 /*
         if (!$result = SessionStore::readCache("message_".$messageid."_".serialize($fields))) {
@@ -242,20 +262,20 @@ class Message
 
            SessionStore::writeCache("message_".$messageid."_".serialize($fields), $result);
         }
-*/
+
         return $result;
+*/
     }
 
     /**
      * Get Message Inbox for a specific Character
      * @param Character $character Character Object
-     * @param array $fields Fields to get
      * @param int $limit Number of Messages to get
      * @param bool $ascending Ascending sorting
      * @param int $status The Status of the Messages
      * @return array Array of Messages
      */
-    public static function getInbox(Character $character, $fields=false, $limit=false, $ascending=true, $status=false)
+    public static function getInbox(Character $character, $limit=false, $ascending=true, $status=false)
     {
         $qb = getQueryBuilder();
 
@@ -264,7 +284,12 @@ class Message
              ->where("message.receiver = ?1")->setParameter(1, $character->id);
 
 
-        if ($status) $qb->andWhere("message.status = ?2")->setParameter(2, $status);
+        if ($status) {
+            $qb->andWhere("message.status = ?2")->setParameter(2, $status);
+        } else {
+            $qb->andWhere("message.status != ?2")->setParameter(2, self::STATUS_DELETED);
+        }
+
         if ($limit) $qb->setMaxResults($limit);
 
         if ($ascending) {
@@ -273,7 +298,7 @@ class Message
             $qb->orderBy("message.date", "DESC");
         }
 
-        $result = $qb->getQuery()->getResult();
+        return $qb->getQuery()->getResult();
 
 /*
         $dbqt = new QueryTool();
@@ -302,20 +327,20 @@ class Message
         }
 
         $result = $dbqt->exec()->fetchAll();
-*/
+
         return $result;
+*/
     }
 
     /**
      * Get Message Outbox for a specific Character
      * @param Character $character Character Object
-     * @param array $fields Fields to get
      * @param int $limit Number of Messages to get
      * @param bool $ascending Ascending sorting
      * @param int $status The Status of the Messages
      * @return array Array of Messages
      */
-    public static function getOutbox(Character $character, $fields=false, $limit=false, $ascending=true, $status=false)
+    public static function getOutbox(Character $character, $limit=false, $ascending=true, $status=false)
     {
         $qb = getQueryBuilder();
 
@@ -323,7 +348,6 @@ class Message
             ->from("Entities\Message", "message")
             ->where("message.sender = ?1")->setParameter(1, $character);
 
-        if ($status) $qb->andWhere("message.status = ?2")->setParameter(2, $status);
         if ($limit) $qb->setMaxResults($limit);
 
         if ($ascending) {
@@ -332,7 +356,7 @@ class Message
             $qb->orderBy("message.date", "DESC");
         }
 
-        $result = $qb->getQuery()->getResult();
+        return $qb->getQuery()->getResult();
 
 
 /*
@@ -360,8 +384,9 @@ class Message
         }
 
         $result = $dbqt->exec()->fetchAll();
-*/
+
         return $result;
+*/
     }
 }
 ?>
