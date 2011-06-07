@@ -39,16 +39,12 @@ switch ($_GET['op']) {
         $page->charchooseform->head("charchoose", "page=common/portal&op=forward");
         $page->nav->add(new Link("", "page=common/portal&op=forward"));
 
-        foreach ($characters as $charid) {
+        foreach ($characters as $character) {
             $page->chartable->startRow();
             $page->chartable->startData();
-            $page->charchooseform->radio("chooser", $charid, ($user->current_character == $charid?true:false));
+            $page->charchooseform->radio("chooser", $character->id, ($user->current_character == $character?true:false));
 
             $page->chartable->startData();
-
-            $chartype = Manager\User::getCharacterType($charid);
-            $character = new $chartype;
-            $character->load($charid);
 
             $page->output("Name: " . $character->displayname . "`n");
             $page->output("Rasse: " . $character->race . "`n");

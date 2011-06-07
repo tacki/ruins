@@ -49,11 +49,6 @@ class Banking
      */
     public function getAccount(Character $character, $bankname)
     {
-/*        global $em;
-
-        $result = $em    ->getRepository("Entities\Bank")
-                         ->findOneBy(array("name" => $bankname, "depositor" => $character->id));
-*/
         $qb = getQueryBuilder();
 
         $result = $qb   ->select("bank")

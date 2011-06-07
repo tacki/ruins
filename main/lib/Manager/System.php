@@ -68,28 +68,23 @@ class System
     public static function translate($name, $return_unknown=false)
     {
         // get HumanReadable from Systemname
-        if (!$result = SessionStore::readCache("systranslate_".$name)) {
-            $qb = getQueryBuilder();
+        $qb = getQueryBuilder();
 
-            $result = $qb   ->select("translate.humanreadable")
-                            ->from("Entities\Translation", "translate")
-                            ->where("translate.system = ?1")->setParameter(1, $name)
-                            ->getQuery()
-                            ->getOneOrNullResult();
+        $result = $qb   ->select("translate.humanreadable")
+                        ->from("Entities\Translation", "translate")
+                        ->where("translate.system = ?1")->setParameter(1, $name)
+                        ->getQuery()
+                        ->getOneOrNullResult();
 
-            if ($result) {
-                SessionStore::writeCache("systranslate_".$name, $result);
+        if ($result) {
+            return $result;
+        } else {
+            if ($return_unknown) {
+                return "Unbekannt";
             } else {
-                if ($return_unknown) {
-                    return "Unbekannt";
-                } else {
-                    return $name;
-                }
+                return $name;
             }
         }
-
-        return $result;
-
     }
 }
 ?>
