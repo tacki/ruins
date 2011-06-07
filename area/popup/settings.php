@@ -57,16 +57,17 @@ switch ($_GET['op']) {
         // Default Character
         $defaultchar 	= $user->settings->default_character;
         $charlist		= Manager\User::getUserCharactersList($user->id);
+
         $popup->output("<div class='floatclear floatleft'>", true);
         $popup->output("Standard Charakter: ");
         $popup->output("</div><div class='floatright'>", true);
         $popup->settingsform->selectStart("default_character", 1);
         $popup->settingsform->selectOption("Keiner", 0);
-        foreach ($charlist as $charid) {
-            if ($charid == $defaultchar) {
-                $popup->settingsform->selectOption(Manager\User::getCharacterName($charid, false), $charid, true);
+        foreach ($charlist as $character) {
+            if ($character === $defaultchar) {
+                $popup->settingsform->selectOption($character->name, $character->id, true);
             } else {
-                $popup->settingsform->selectOption(Manager\User::getCharacterName($charid, false), $charid);
+                $popup->settingsform->selectOption($character->name, $character->id);
             }
         }
         $popup->settingsform->selectEnd();
@@ -82,14 +83,14 @@ switch ($_GET['op']) {
         $popup->output("<div class='floatclear floatleft'>", true);
         $popup->output("Chat Zensur: ");
         $popup->output("</div><div class='floatright'>", true);
-        $popup->settingsform->checkbox("chatcensorship", false, false, $user->settings->get("chatcensorship", 1));
+        $popup->settingsform->checkbox("chat_censorship", false, false, $user->settings->chat_censorship);
         $popup->output("</div>", true);
 
         // Chatdateformat
         $popup->output("<div class='floatclear floatleft'>", true);
         $popup->output("Chat Datums Format: ");
         $popup->output("</div><div class='floatright'>", true);
-        $popup->settingsform->inputText("chatdateformat", $user->settings->get("chatdateformat", "[H:i:s]"), 20, 50);
+        $popup->settingsform->inputText("chat_dateformat", $user->settings->chat_dateformat, 20, 50);
         $popup->output("</div>", true);
 
         break;
@@ -111,21 +112,20 @@ switch ($_GET['op']) {
             case "char":
                 // Default Character
                 if (is_numeric($_POST['default_character'])) {
-                    $user->settings->default_character = $_POST['default_character'];
+                    global $em;
+                    $user->settings->default_character = $em->find("Entities\Character",$_POST['default_character']);
+                } else {
+                    $user->settings->default_character = NULL;
                 }
                 break;
 
             case "other":
                 // Chatcensorship
-                if (isset($_POST['chatcensorship'])) {
-                    $user->settings->chatcensorship = 1;
-                } else {
-                    $user->settings->chatcensorship = 0;
-                }
+                $user->settings->chat_censorship = isset($_POST['chat_censorship']);
 
                 // Chatdateformat
-                if (strlen($_POST['chatdateformat']) > 0) {
-                    $user->settings->chatdateformat = $_POST['chatdateformat'];
+                if (strlen($_POST['chat_dateformat']) > 0) {
+                    $user->settings->chat_dateformat = $_POST['chat_dateformat'];
                 }
                 break;
         }

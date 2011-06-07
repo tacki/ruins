@@ -174,11 +174,11 @@ class User
      */
     public static function getUserCharactersList($userid)
     {
-        if (!$result = \SessionStore::readCache($userid . "_CharacterList")) {
+        //if (!$result = \SessionStore::readCache($userid . "_CharacterList")) {
 
             $qb = getQueryBuilder();
 
-            $result = $qb   ->select("char.id")
+            $result = $qb   ->select("char")
                             ->from("Entities\Character", "char")
                             ->where("char.user = ?1")->setParameter(1, $userid)
                             ->getQuery()
@@ -189,7 +189,7 @@ class User
             } else {
                 return false;
             }
-        }
+        //}
 
         return $result;
     }
