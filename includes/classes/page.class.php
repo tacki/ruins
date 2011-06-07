@@ -753,7 +753,11 @@ class Page extends BaseObject implements OutputObject
             }
 
             // get users currently here
-            $userlist = implode(", ", Manager\User::getCharactersAt($this->shortname));
+            $userlist = "";
+            foreach (Manager\User::getCharactersAt($this->shortname) as $char) {
+                $userlist .= $char['displayname'] . " ";
+            }
+
             $snippet->assign("characters_here", BtCode::decode($userlist));
 
             // generate the result

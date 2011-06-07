@@ -244,9 +244,8 @@ class User
 
         $result = $qb    ->select("char.displayname")
                          ->from("Entities\Character", "char")
-                         ->where("char.loggedin = 1")
-                         ->andWhere("char.current_nav LIKE ?1")->setParameter(1, $place)
-                         ->andWhere("char.lastpagehit < ?2")
+                         ->andWhere("char.current_nav LIKE ?1")->setParameter(1, "page=".$place."%")
+                         ->andWhere("char.lastpagehit > ?2")
                          ->setParameter(2, new \DateTime("-".$config->get("connectiontimeout", 15)." minutes"))
                          ->getQuery()
                          ->getResult();
