@@ -24,3 +24,4 @@ class DebugLog extends EntityBase
     /** @Column(length=255) */
     protected $text;
 }
+?>

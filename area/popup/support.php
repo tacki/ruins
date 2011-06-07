@@ -16,10 +16,10 @@ $popup->set("headtitle", "Supportanfrage");
 
 $popup->nav->add(new Link("Anfrage", "popup=popup/messenger&op=create"));
 
-if (isset($user) && $user->loggedin && $user->char->loggedin) {
-    $charisloaded = true;
+if (isset($user) && $user->loggedin) {
+    $loggedin = true;
 } else {
-    $charisloaded = false;
+    $loggedin = false;
 }
 
 switch ($_GET['op']) {
@@ -36,7 +36,7 @@ switch ($_GET['op']) {
         $popup->supportformtable->startData();
         $popup->output("Loginname: ");
         $popup->supportformtable->startData();
-        if ($charisloaded) {
+        if ($loggedin) {
             $popup->supportform->inputText("userlogin", $user->login, 20, 50, true);
         } else {
             $popup->supportform->inputText("userlogin");
@@ -48,7 +48,7 @@ switch ($_GET['op']) {
         $popup->supportformtable->startData();
         $popup->output("Email Addresse: ");
         $popup->supportformtable->startData();
-        if ($charisloaded) {
+        if ($loggedin) {
             $popup->supportform->inputText("email", $user->email, 20, 50, true);
         } else {
             $popup->supportform->inputText("email");
@@ -60,8 +60,8 @@ switch ($_GET['op']) {
         $popup->supportformtable->startData();
         $popup->output("Character: ");
         $popup->supportformtable->startData();
-        if ($charisloaded) {
-            $popup->supportform->inputText("charname", $user->char->name, 20, 50, true);
+        if ($loggedin) {
+            $popup->supportform->inputText("charname", $user->character->name, 20, 50, true);
         } else {
             $popup->supportform->inputText("charname");
         }
@@ -72,7 +72,7 @@ switch ($_GET['op']) {
         $popup->supportformtable->startData();
         $popup->output("Supportanfrage: ");
         $popup->supportformtable->startData();
-        $popup->supportform->textArea("supporttext", false, 45);
+        $popup->supportform->textArea("text", false, 45);
         $popup->supportformtable->closeRow();
 
         // CAPTCHA
@@ -85,7 +85,7 @@ switch ($_GET['op']) {
         $popup->supportformtable->closeRow();
 
         // Pagedump
-        if ($charisloaded) {
+        if ($loggedin) {
             $popup->supportformtable->startRow();
             $popup->supportformtable->startData();
             $popup->output("Seitenkopie`neinfügen: ");
@@ -114,38 +114,45 @@ switch ($_GET['op']) {
         SessionStore::remove("support_captcha");
 
         // Valid Supportrequest Check
-        if (!$_POST['userlogin'] || !$_POST['email'] || !$_POST['supporttext']) {
-            $popup->output("Bitte alle Felder ausfüllen!`n`n");
-            $popup->nav->addTextLink(new Link("Zurück", "popup=popup/support"));
-            break;
+        if (!$loggedin) {
+            if (!$_POST['userlogin'] || !$_POST['email'] || !$_POST['text']) {
+                $popup->output("Bitte alle Felder ausfüllen!`n`n");
+                $popup->nav->addTextLink(new Link("Zurück", "popup=popup/support"));
+                break;
+            }
         }
 
         // Get Pagedump of the Mainpage
         // To get this, we need to create a new, temporary Page-Object,
         // initialize it with the current character (to get the correct Template)
         // and call Page::getLatestGenerated()
-        if (isset($_POST['pagedump']) && $charisloaded) {
-            $temppage = new Page($user->char);
+        if (isset($_POST['pagedump']) && $loggedin) {
+            $temppage = new Page($user->character);
             $pagedump = $temppage->getLatestGenerated();
         } else {
             $pagedump = "-";
         }
 
         // Collect all Information and write it to the Database
-        $data 					= array();
-        $data['date'] 			= date("Y-m-d H:i:s");
-        $data['userlogin'] 		= $_POST['userlogin'];
-        $data['email']			= $_POST['email'];
-        $data['supporttext']	= $_POST['supporttext'];
-        $data['pagedump']		= $pagedump;
+        global $em;
 
-        $dbqt = new QueryTool();
+        $data = new Entities\SupportRequests;
 
-        $insertid = $dbqt	->insertint("supportrequests")
-                            ->set($data)
-                            ->exec();
+        if ($loggedin) {
+            $data->user = $user->getEntity();
+        } elseif ($user = $em->getRepository("Entities\User")->findByLogin($_POST['userlogin'])) {
+            $data->user = $user;
+        }
 
-        if ($insertid) {
+        $data->email         = $_POST['email'];
+        $data->charactername = $_POST['charname'];
+        $data->text          = $_POST['text'];
+        $data->pagedump      = $pagedump;
+        $em->persist($data);
+
+        $em->flush();
+
+        if ($data->id) {
             $popup->output("Supportanfrage abgeschickt!`n`n");
         } else {
             $popup->output("Fehler beim Speichern der Supportanfrage! :(`n`n");

@@ -40,6 +40,10 @@ class Popup extends Page
 
         // Disable OutputModules for Popups
         $this->modulesenabled = false;
+
+        $this->nav = new Nav(false, $this);
+        // Disable Smarty Caching
+        $this->_smarty->caching = 0;
     }
 
     /**
@@ -99,10 +103,7 @@ class Popup extends Page
      */
     protected function _checkNav()
     {
-        // No caching or nav-checking on popups!!!
-        $this->nav = new Nav();
-        $this->_smarty->caching = 0;
-
+        // No nav-checking on popups!!!
         return true;
     }
 
