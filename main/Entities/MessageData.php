@@ -17,6 +17,11 @@ class MessageData extends EntityBase
      */
     protected $id;
 
+    /**
+     * @OneToMany(targetEntity="Message", mappedBy="data", orphanRemoval=true)
+     */
+    protected $messages;
+
     /** @Column(length=255) */
     protected $subject;
 

@@ -115,6 +115,11 @@ class Popup extends Page
         $i = 0;
 
         foreach ($this->nav->export() as $linkitem) {
+            if (!$linkitem['displayname']) {
+                // Ignore Items with no Displayname
+                continue;
+            }
+
             $linktype = array_shift(explode("=", $linkitem['url']));
 
             if ($linktype == "popup") {

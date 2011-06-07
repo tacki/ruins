@@ -18,12 +18,12 @@ class Message extends EntityBase
     protected $id;
 
     /**
-     * @ManyToOne(targetEntity="Character", cascade={"persist", "remove"})
+     * @ManyToOne(targetEntity="Character")
      */
     protected $sender;
 
     /**
-     * @ManyToOne(targetEntity="Character", cascade={"persist", "remove"})
+     * @ManyToOne(targetEntity="Character")
      */
     protected $receiver;
 
@@ -31,7 +31,7 @@ class Message extends EntityBase
     protected $date;
 
     /**
-     * @ManyToOne(targetEntity="MessageData", cascade={"persist", "remove"})
+     * @ManyToOne(targetEntity="MessageData", inversedBy="messages")
      */
     protected $data;
 

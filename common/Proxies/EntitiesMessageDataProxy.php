@@ -42,7 +42,7 @@ class EntitiesMessageDataProxy extends \Entities\MessageData implements \Doctrin
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'subject', 'text');
+        return array('__isInitialized__', 'id', 'messages', 'subject', 'text');
     }
 
     public function __clone()

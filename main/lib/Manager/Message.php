@@ -44,10 +44,18 @@ class Message
         global $em;
 
         // Add MessageData (happens only once)
-        $messagedata          = new \Entities\MessageData;
-        $messagedata->subject = $subject;
-        $messagedata->text    = $text;
-        $em->persist($messagedata);
+        $messagedata = $em ->getRepository("Entities\MessageData")
+                           ->findOneBy(array(
+                                               "subject" => $subject,
+                                               "text"	 => $text,
+                                            )
+                                       );
+        if (!$messagedata) {
+            $messagedata          = new \Entities\MessageData;
+            $messagedata->subject = $subject;
+            $messagedata->text    = $text;
+            $em->persist($messagedata);
+        }
 
         $receiverIDlist = array();
 
@@ -96,76 +104,6 @@ class Message
         }
 
         return $nrSentMessages;
-
-/*
-        // Some Sanity-Checks
-        if (!$subject) $subject=" ";
-        if (!$text) $text=" ";
-
-        $message = new Message;
-        $message->create();
-
-        // Fill in the Messagedata
-        $message->sender = $sender;
-        $message->subject = $subject;
-        $message->text = $text;
-        $message->date = date("Y-m-d H:i:s");
-        $messageid = $message->save();
-
-        // Add Messagerefs for the receivers
-        if (is_array($receivers)) {
-            // Array of ID's
-
-            // Add DebugLogEntry
-            if (isset ($user->char)) {
-                $user->char->debuglog->add("Send Message to ids: ".implode(", ", $receivers), "veryverbose");
-            }
-
-            // Add Messageref
-            $message->addReceiver($messageid, $receivers);
-        } elseif (is_numeric($receivers)) {
-            // Single ID
-
-            // Add DebugLogEntry
-            if (isset ($user->char)) {
-                $user->char->debuglog->add("Send Message to $receivers", "veryverbose");
-            }
-
-            // Add Messageref
-            $message->addReceiver($messageid, $receivers);
-        } elseif (is_string($receivers) && strtolower($receivers) != "all") {
-            // Charactername, separated by ;
-            $characternames = explode(";", $receivers);
-
-            // Add DebugLogEntry
-            if (isset ($user->char)) {
-                $user->char->debuglog->add("Send Message to ".implode(", ", $characternames), "veryverbose");
-            }
-
-            foreach ($characternames as $receivername) {
-                // Add Messageref
-                $message->addReceiver($messageid, Manager\User::getCharacterID(trim($receivername)));
-            }
-        } elseif (is_string($receivers) && strtolower($receivers) == "all") {
-            // "all"
-            // Get ID-List
-            $dbqt = new QueryTool();
-            $result = $dbqt	->select("id")
-                            ->from("characters")
-                            ->exec()
-                            ->fetchCol("id");
-
-            // Add DebugLogEntry
-            if (isset ($user->char)) {
-                $user->char->debuglog->add("Send Message to all Users!", "veryverbose");
-            }
-
-            // Add Messageref
-            $message->addReceiver($messageid, $result);
-        }
-
-        return $messageid;
-*/
     }
 
     /**
@@ -175,23 +113,6 @@ class Message
     public static function delete($messageid)
     {
         self::updateMessageStatus($messageid, self::STATUS_DELETED);
-/*
-        $dbqt = new QueryTool();
-        $result = $dbqt	->select("id")
-                        ->from("messages_references")
-                        ->where("messageid=".$messageid)
-                        ->exec()
-                        ->fetchCol("id");
-
-        if (!is_array($result)) {
-            throw new Error("Can't get Message_References List for Message ID " . $messageid . " (Messagesys->delete())");
-        }
-
-        // Delete the References
-        foreach ($result as $ids) {
-            self::updateMessageStatus($ids, self::STATUS_DELETED);
-        }
-*/
     }
 
     /**
@@ -214,23 +135,57 @@ class Message
         } else {
             $qb->getQuery()->execute(array(1 => $messageid));
         }
-/*
-        global $dbconnect;
-        $dbqt = new QueryTool;
+    }
 
-        $tablename 	= "messages_references";
-        $values		= array ( "status" => $status );
+    /**
+     * Delete Messages from Database, marked as self::STATUS_DELETED
+     * @param Character $character Limit to this Character
+     */
+    public static function flushDeleted($character=false)
+    {
+        global $em;
 
-        $dbqt	->update($tablename)
-                ->set($values)
-                ->where("messageid=".$messageid);
+        // Delete the Messages
+        $qb = getQueryBuilder();
 
-        if (is_numeric($receiverid) && $receiverid > 0) {
-            $dbqt->where("receiver=".$receiverid);
+        $qb ->delete("Entities\Message", "message")
+            ->where("message.status = ?1")->setParameter(1, self::STATUS_DELETED);
+
+        if ($character instanceof Character) $qb->andWhere("message.receiver = ?2")->setParameter(2, $character);
+
+        $qb->getQuery()->execute();
+        $em->flush();
+
+        //---
+
+        // Delete orphan Messagedata
+        $qb = getQueryBuilder();
+        $sub = getQueryBuilder();
+
+        // IDs of MessageData in use
+        $sub ->select("sub_messagedata.id")
+             ->from("Entities\Message", "sub_message")
+             ->join("sub_message.data", "sub_messagedata");
+
+        // Retrieve unused MessageData
+        $qb ->select("messagedata.id")
+            ->from("Entities\MessageData", "messagedata")
+            ->where("messagedata NOT IN (".$sub->getDQL().")");
+
+        $result = $qb->getQuery()->getResult();
+
+        // Remove them From Database
+        $delqb = getQueryBuilder();
+
+        $delqb->delete("Entities\MessageData", "messagedata");
+
+        foreach ($result as $resrow) {
+            $delqb->orWhere("messagedata.id = ?1")->setParameter(1, $resrow['id']);
         }
 
-        $dbqt->exec();
-*/
+        if ($result) {
+            $delqb->getQuery()->execute();
+        }
     }
 
     /**
@@ -243,28 +198,6 @@ class Message
         global $em;
 
         return $em->find("Entities\Message", $messageid);
-
-/*
-        if (!$result = SessionStore::readCache("message_".$messageid."_".serialize($fields))) {
-
-            $dbqt = new QueryTool();
-
-            if (is_array($fields)) {
-                $dbqt->select(implode(",", $fields));
-            } else {
-                $dbqt->select("*");;
-            }
-
-            $dbqt	->from("messages")
-                    ->where("id=".$messageid);
-
-            $result = $dbqt->exec()->fetchRow();
-
-           SessionStore::writeCache("message_".$messageid."_".serialize($fields), $result);
-        }
-
-        return $result;
-*/
     }
 
     /**
@@ -299,37 +232,6 @@ class Message
         }
 
         return $qb->getQuery()->getResult();
-
-/*
-        $dbqt = new QueryTool();
-
-        if (is_array($fields)) {
-            $dbqt->select(implode(", ", $fields));
-        } else {
-            $dbqt->select("messages.id, sender, receiver, subject, text, date, status");
-        }
-
-        $dbqt	->from("messages_references")
-                ->join("messages", "messages.id = messages_references.messageid")
-                ->where("receiver=".$character->id);
-
-        if ($status && is_numeric($status)) {
-            $dbqt->where("status=".$status);
-        } else {
-            $dbqt->where("status!=3"); // Message is not deleted
-        }
-
-        $dbqt	->order("date", $ascending)
-                ->order("id", $ascending);
-
-        if (is_numeric($limit)) {
-            $dbqt->limit($limit, 0);
-        }
-
-        $result = $dbqt->exec()->fetchAll();
-
-        return $result;
-*/
     }
 
     /**
@@ -357,36 +259,6 @@ class Message
         }
 
         return $qb->getQuery()->getResult();
-
-
-/*
-        $dbqt = new Querytool;
-
-        if (is_array($fields)) {
-            $dbqt->select(implode(", ", $fields));
-        } else {
-            $dbqt->select("messages.id, sender, receiver, subject, text, date, status");
-        }
-
-        $dbqt	->from("messages_references")
-                ->join("messages", "messages.id = messages_references.messageid")
-                ->where("sender=".$character->id);
-
-        if ($status && is_numeric($status)) {
-            $dbqt->where("status=".$status);
-        }
-
-        $dbqt	->order("date", $ascending)
-                ->order("id", $ascending);
-
-        if (is_numeric($limit)) {
-            $dbqt->limit($limit, 0);
-        }
-
-        $result = $dbqt->exec()->fetchAll();
-
-        return $result;
-*/
     }
 }
 ?>

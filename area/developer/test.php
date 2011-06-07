@@ -659,6 +659,8 @@ foreach ($messagelist as $message) {
     $showlist[] = $showmessage;
 }
 
+Manager\Message::flushDeleted($user->character);
+
 $newtab = new Table;
 $newtab->setCSS("`~9f");
 $newtab->setTabAttributes(false,0);
