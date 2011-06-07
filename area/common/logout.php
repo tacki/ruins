@@ -8,8 +8,8 @@
  * @package Ruins
  */
 
-if ($user instanceof User && $user->char instanceof Character) {
-    $user->debuglog->add("Logout");
+if ($user instanceof User) {
+    $user->addDebugLog("Logout");
     $user->logout();
 }
 $page->nav->redirect("page=common/login");

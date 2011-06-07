@@ -48,6 +48,21 @@ class User extends EntityHandler
     }
 
     /**
+     * Care about everything needed for logout
+     */
+    public function logout()
+    {
+        // unset Session User ID
+        SessionStore::remove('userid');
+
+        // prune Cache
+        SessionStore::pruneCache();
+
+        // set loggedin-flag
+        $this->loggedin = 0;
+    }
+
+    /**
      * Add the IP Address to the List
      */
     public function addIPAddress()
