@@ -357,50 +357,7 @@ Manager\Rights::removeFromGroup("TempGroup", $user->character);
 
 // Remove Group
 Manager\Rights::removeGroup("TempGroup", $user->character);
-/*
-foreach($user->character->groups as $group) {
-    var_dump($group->name);
-}
-*/
-/*
-$char = new GPCharacter;
-$char->load(1);
 
-$char->rightgroups->add("Developers");
-$char->rightgroups->add("Administrators;Gamemasters");
-$char->rightgroups->add( array("Gameops") );
-
-$link1 = new Link("Admingrotte", "admin.php", "main", "", "Administrators");
-$link2 = new Link("Gameopgebiet", "gameop.php", "main", "","Gameops");
-$link3 = new Link("Forum", "forum.php");
-
-if ($link1->isAllowedBy($char->rightgroups) && $link2->isAllowedBy($char->rightgroups) && $link3->isAllowedBy($char->rightgroups)) {
-    $page->output("Test1 successful...`n");
-} else {
-    $page->output("Test1 failed!`n");
-}
-
-$char->rightgroups->remove("Administrators");
-$char->rightgroups->remove("Gamemasters");
-$char->rightgroups->remove("Developers");
-
-if (!$link1->isAllowedBy($char->rightgroups) && $link2->isAllowedBy($char->rightgroups) && $link3->isAllowedBy($char->rightgroups)) {
-    $page->output("Test2 successful...`n");
-} else {
-    $page->output("Test2 failed!`n");
-}
-
-$char->rightgroups->set(array());
-
-if (!$link1->isAllowedBy($char->rightgroups) && !$link2->isAllowedBy($char->rightgroups) && $link3->isAllowedBy($char->rightgroups)) {
-    $page->output("Test3 successful...");
-} else {
-    $page->output("Test3 failed!`n");
-}
-
-unset($char);
-unset($link1, $link2, $link3);
-*/
 // Link-Class + Rights-Class Test end
 
 // *************************************
@@ -439,47 +396,44 @@ $mt = getMicroTime();
 // Money Test start
 $position = "moneytest";
 $page->output("Starting Money+Manager-Module Test:`n");
-/*
-$char = new GPCharacter;
-$char->load(1);
 
-$page->output("`nStarting Money from $char->displayname:`n");
+$user = new User(1);
 
-$page->output("Gold: ". $char->money->detailed("gold") ."`n");
-$page->output("Silver: ". $char->money->detailed("silver") ."`n");
-$page->output("Copper: ". $char->money->detailed("copper") ."`n");
+$page->output("`nStarting Money from {$user->character->displayname}:`n");
+
+$page->output("Gold: ". $user->character->money->getCurrency("gold") ."`n");
+$page->output("Silver: ". $user->character->money->getCurrency("silver") ."`n");
+$page->output("Copper: ". $user->character->money->getCurrency("copper") ."`n");
 
 $page->output("`nReceive 5 Gold from dead uncle:`n");
-if (!$char->money->receive(5, "gold")) {
+if (!$user->character->money->receive(5, "gold")) {
     $page->output("Transaction failed!`n");
 }
 
-$page->output("Gold: ". $char->money->detailed("gold") ."`n");
-$page->output("Silver: ". $char->money->detailed("silver") ."`n");
-$page->output("Copper: ". $char->money->detailed("copper") ."`n");
+$page->output("Gold: ". $user->character->money->getCurrency("gold") ."`n");
+$page->output("Silver: ". $user->character->money->getCurrency("silver") ."`n");
+$page->output("Copper: ". $user->character->money->getCurrency("copper") ."`n");
 
 $page->output("`nPay 20 Silver for Ale:`n");
-if (!$char->money->pay(20, "silver")) {
+if (!$user->character->money->pay(20, "silver")) {
     $page->output("Transaction failed!`n");
 }
 
-$page->output("Gold: ". $char->money->detailed("gold") ."`n");
-$page->output("Silver: ". $char->money->detailed("silver") ."`n");
-$page->output("Copper: ". $char->money->detailed("copper") ."`n");
+$page->output("Gold: ". $user->character->money->getCurrency("gold") ."`n");
+$page->output("Silver: ". $user->character->money->getCurrency("silver") ."`n");
+$page->output("Copper: ". $user->character->money->getCurrency("copper") ."`n");
 
 $page->output("`nTry to pay 100 Gold to Mafia via Check:`n");
-if (!$char->money->pay(100, "gold")) {
+if (!$user->character->money->pay(100, "gold")) {
     $page->output("Transaction failed! Oh Oh, Mafia is coming!`n");
 } else {
     $page->output("Transaction OK! The Mafia is pleased!`n");
 }
 
-$page->output("Gold: ". $char->money->detailed("gold") ."`n");
-$page->output("Silver: ". $char->money->detailed("silver") ."`n");
-$page->output("Copper: ". $char->money->detailed("copper") ."`n");
+$page->output("Gold: ". $user->character->money->getCurrency("gold") ."`n");
+$page->output("Silver: ". $user->character->money->getCurrency("silver") ."`n");
+$page->output("Copper: ". $user->character->money->getCurrency("copper") ."`n");
 
-$char->save();
-*/
 // Money Test end
 
 // *************************************
@@ -758,19 +712,18 @@ $page->output("`n`n*************************************`n`n");
 $mt = getMicroTime();
 // *************************************
 
-// QueryTool Start
-/*
-$page->output("QueryTool Start: `n");
-$position = "QueryTooltest";
+// QueryBuilder Start
 
-$dbqt = new QueryTool();
+$page->output("QueryBuilder Start: `n");
+$position = "QueryBuildertest";
 
-$result = $dbqt	->select("id, displayname")
-                ->from("characters")
-                ->where("id > 0")
-                ->order("id")
-                ->exec()
-                ->fetchAll();
+$qb = getQueryBuilder();
+
+$result = $qb ->select("char.id, char.displayname")
+                ->from("Entities\Character", "char")
+                ->where("char.id > 0")
+                ->orderBy("char.id", "DESC")
+                ->getQuery()->getResult();
 
 $table = new Table();
 //$table->setCSS("`~35");
@@ -778,8 +731,8 @@ $table->setTabAttributes(false,2);
 $table->addTabHeader(array("id","displayname"),false,array("`b","`b`c"));
 $table->addListArray($result);
 $page->output($table->load(),true);
-*/
-// QueryTool End
+
+// QueryBuilder End
 
 // *************************************
 $res = getMicroTime() - $mt;
