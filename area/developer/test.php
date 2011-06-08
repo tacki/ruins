@@ -873,54 +873,43 @@ $mt = getMicroTime();
 
 $page->output("Item Handling Start: `n");
 $position = "itemhandling";
-/*
-$item = new Item;
-$item->load(2);
 
-$page->output("`n");
-$page->output("Item Name: " . $item->name . " (Level: " . $item->level . ")`n");
-$page->output("Item Wert: " . $item->value->fullDetailedWithPic() . "`n", true);
-$page->output("`n");
+$item = $em->getRepository("Entities\Item")->findOneByClass("fish");
 
-$item->unload();
+if ($item) {
+    $page->output("`n");
+    $page->output("Item Name: " . $item->name . " (Level: " . $item->level . ")`n");
+    $page->output("Item Wert: " . $item->value->getAllCurrenciesWithPic() . "`n", true);
+    $page->output("`n");
+}
 
-$weapon = new Weapon;
-$weapon->load(1);
+$weapon = $em->getRepository("Entities\Items\Weapon")->findOneByClass("weapon");
 
-$page->output("`n");
-$page->output("Item Name: " . $weapon->name . " (Level: " . $weapon->level . ")`n");
-$page->output("Waffen Schaden: " . $weapon->showDamage(false) . "`n", true);
-$page->output("Item Wert: " . $weapon->value->fullDetailedWithPic() . "`n", true);
-$page->output("`n");
+if ($weapon) {
+    $page->output("`n");
+    $page->output("Item Name: " . $weapon->name . " (Level: " . $weapon->level . ")`n");
+    $page->output("Waffen Schaden: " . $weapon->showDamage(false) . "`n", true);
+    $page->output("Item Wert: " . $weapon->value->getAllCurrenciesWithPic(). "`n", true);
+    $page->output("`n");
+}
 
-$weapon->unload();
+$armorset = $em->find("Entities\ArmorSet", 1);
 
-$weapon = new Weapon;
-$weapon->load(2);
+if ($armorset) {
+    $page->output("`n");
+    $page->output("Kopf: " . $armorset->head->name . " - RK: " . $armorset->head->getArmorClass() . " (Level: " . $armorset->head->level . ")`n");
+    $page->output("Wert: " . $armorset->head->value->getAllCurrenciesWithPic() . "`n", true);
+    $page->output("Oberkörper: " . $armorset->chest->name . " - RK: " . $armorset->chest->getArmorClass() . " (Level: " . $armorset->chest->level . ")`n");
+    $page->output("Wert: " . $armorset->chest->value->getAllCurrenciesWithPic() . "`n", true);
+    $page->output("Arme: " . $armorset->arms->name . " - RK: " . $armorset->arms->getArmorClass() . " (Level: " . $armorset->arms->level . ")`n");
+    $page->output("Wert: " . $armorset->arms->value->getAllCurrenciesWithPic() . "`n", true);
+    $page->output("Beine: " . $armorset->legs->name . " - RK: " . $armorset->legs->getArmorClass() . " (Level: " . $armorset->legs->level . ")`n");
+    $page->output("Wert: " . $armorset->legs->value->getAllCurrenciesWithPic() . "`n", true);
+    $page->output("Füße: " . $armorset->feet->name . " - RK: " . $armorset->feet->getArmorClass() . " (Level: " . $armorset->feet->level . ")`n");
+    $page->output("Wert: " . $armorset->feet->value->getAllCurrenciesWithPic() . "`n", true);
+    $page->output("Gesamt RK: " . $armorset->getTotalArmorClass());
+}
 
-$page->output("`n");
-$page->output("Item Name: " . $weapon->name . " (Level: " . $weapon->level . ")`n");
-$page->output("Waffen Schaden: " . $weapon->showDamage(false) . "`n", true);
-$page->output("Item Wert: " . $weapon->value->fullDetailedWithPic() . "`n", true);
-
-$weapon->unload();
-
-$armorset = new Armorset;
-$armorset->load(1);
-$page->output("`n");
-$page->output("Kopf: " . $armorset->head->name . " - RK: " . $armorset->head->getArmorClass() . " (Level: " . $armorset->head->level . ")`n");
-$page->output("Wert: " . $armorset->head->value->fullDetailedWithPic() . "`n", true);
-$page->output("Oberkörper: " . $armorset->chest->name . " - RK: " . $armorset->chest->getArmorClass() . " (Level: " . $armorset->chest->level . ")`n");
-$page->output("Wert: " . $armorset->chest->value->fullDetailedWithPic() . "`n", true);
-$page->output("Arme: " . $armorset->arms->name . " - RK: " . $armorset->arms->getArmorClass() . " (Level: " . $armorset->arms->level . ")`n");
-$page->output("Wert: " . $armorset->arms->value->fullDetailedWithPic() . "`n", true);
-$page->output("Beine: " . $armorset->legs->name . " - RK: " . $armorset->legs->getArmorClass() . " (Level: " . $armorset->legs->level . ")`n");
-$page->output("Wert: " . $armorset->legs->value->fullDetailedWithPic() . "`n", true);
-$page->output("Füße: " . $armorset->feet->name . " - RK: " . $armorset->feet->getArmorClass() . " (Level: " . $armorset->feet->level . ")`n");
-$page->output("Wert: " . $armorset->feet->value->fullDetailedWithPic() . "`n", true);
-$page->output("Gesamt RK: " . $armorset->getTotalArmorClass());
-$armorset->unload();
-*/
 // Itemhandling End
 
 // *************************************

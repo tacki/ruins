@@ -165,7 +165,7 @@ class Money extends LayerBase
             $output .= $this->getCurrencyWithPic("silver") . " ";
         }
 
-        if ($this->getCurrency("copper") || $showempty) {
+        if ($this->getCurrency("copper") || $showempty || $this->money == 0) {
             $output .= $this->getCurrencyWithPic("copper");
         }
 

@@ -3,9 +3,11 @@
  * Namespaces
  */
 namespace Entities;
+use Layers\Money;
 
 /**
  * @Entity
+ * @HasLifecycleCallbacks
  * @InheritanceType("JOINED")
  * @DiscriminatorColumn(name="discr", type="string")
  * @DiscriminatorMap({
@@ -57,5 +59,19 @@ class Item extends EntityBase
         $this->weight = 0;
         $this->value = 0;
         $this->location = \Manager\Item::LOCATION_BACKPACK;
+    }
+
+    /** @PostLoad @PostUpdate @PostPersist */
+    public function initLayers()
+    {
+        if (!($this->value instanceof Money))
+            $this->value = new Money($this->value);
+    }
+
+    /** @PreUpdate @PrePersist */
+    public function endLayers()
+    {
+        if ($this->value instanceof Money)
+            $this->value = $this->value->endLayer();
     }
 }
