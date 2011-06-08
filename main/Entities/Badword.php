@@ -22,3 +22,4 @@ class Badword extends EntityBase
     /** @Column(length=255) */
     protected $replacement;
 }
+?>

@@ -59,6 +59,9 @@ $classLoader->register();
 $classLoader = new \Doctrine\Common\ClassLoader('Layers', DIR_MAIN . 'lib/');
 $classLoader->register();
 
+$classLoader = new \Doctrine\Common\ClassLoader('Controller', DIR_MAIN . 'lib/');
+$classLoader->register();
+
 /**
  * Doctrine Initialization
  */

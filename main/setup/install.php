@@ -1,8 +1,6 @@
 <?php
 global $em;
 
-use Manager\Item;
-
 // Create Test-Character
 if (!($install_char = $em->getRepository("Entities\Character")->findOneByName("Testuser"))) {
     $install_char = new Entities\Character;
@@ -11,6 +9,8 @@ if (!($install_char = $em->getRepository("Entities\Character")->findOneByName("T
     $em->persist($install_char);
 }
 
+$em->flush();
+
 // Create Test-UserSettings
 if (!($install_settings = $em->getRepository("Entities\UserSetting")->findOneBy(array("default_character" => $install_char->id)))) {
     $install_settings = new Entities\UserSetting;
@@ -18,6 +18,7 @@ if (!($install_settings = $em->getRepository("Entities\UserSetting")->findOneBy(
     $em->persist($install_settings);
 }
 
+$em->flush();
 
 // Create Test-User
 if (!($install_user = $em->getRepository("Entities\User")->findOneByLogin("test"))) {
@@ -29,42 +30,89 @@ if (!($install_user = $em->getRepository("Entities\User")->findOneByLogin("test"
     $em->persist($install_user);
 }
 
+$em->flush();
+
 // Create Test-Weapons
 if (!($weapon = $em->getRepository("Entities\Items\Weapon")->findOneByName("Testwaffe"))) {
     $weapon             = new Entities\Items\Weapon;
-    $weapon->class      = Item::CLASS_WEAPON;
+    $weapon->class      = Manager\Item::CLASS_WEAPON;
     $weapon->name       = "Testwaffe";
     $weapon->damage_min = 5;
     $weapon->damage_max = 10;
-    $weapon->location   = Item::LOCATION_BACKPACK;
+    $weapon->location   = Manager\Item::LOCATION_BACKPACK;
     $weapon->owner      = $install_char;
     $em->persist($weapon);
 }
 
+$em->flush();
+
 // Create Test-Armor
 $armors = array (
-                   Item::CLASS_ARMOR_HEAD  => "Testrüstung (Kopf)",
-                   Item::CLASS_ARMOR_ARMS  => "Testrüstung (Arm)",
-                   Item::CLASS_ARMOR_CHEST => "Testrüstung (Brust)",
-                   Item::CLASS_ARMOR_LEGS  => "Testrüstung (Beine)",
-                   Item::CLASS_ARMOR_FEET  => "Testrüstung (Füße)",
+                   Manager\Item::CLASS_ARMOR_HEAD  => "Testrüstung (Kopf)",
+                   Manager\Item::CLASS_ARMOR_ARMS  => "Testrüstung (Arm)",
+                   Manager\Item::CLASS_ARMOR_CHEST => "Testrüstung (Brust)",
+                   Manager\Item::CLASS_ARMOR_LEGS  => "Testrüstung (Beine)",
+                   Manager\Item::CLASS_ARMOR_FEET  => "Testrüstung (Füße)",
                 );
 
 foreach ($armors as $armorclass => $armorname) {
-    if (!($armor = $em->getRepository("Entities\Items\Armor")->findOneByName($armorname))) {
+    if (!$em->getRepository("Entities\Items\Armor")->findOneByName($armorname)) {
         $armor             = new Entities\Items\Armor;
         $armor->class      = $armorclass;
         $armor->name       = $armorname;
         $armor->armorclass = 1;
-        $armor->location   = Item::LOCATION_BACKPACK;
+        $armor->location   = Manager\Item::LOCATION_BACKPACK;
         $armor->owner      = $install_char;
         $em->persist($armor);
     }
 }
 
+$em->flush();
+
+// Create Waypoints
+$waypoints = array (
+                        "derashok"   => array(135, 170, 25),
+                        "ironlance"  => array(20, 180, 40),
+                        "dunsplee"	 => array(55, 45, 30),
+                   );
+
+foreach ($waypoints as $name => $coords) {
+    if (!$em->getRepository("Entities\Waypoint")->findOneByName($name)) {
+        $waypoint         = new Entities\Waypoint;
+        $waypoint->name   = $name;
+        $waypoint->x      = $coords[0];
+        $waypoint->y      = $coords[1];
+        $waypoint->z      = $coords[2];
+        $em->persist($waypoint);
+    }
+}
+
+$em->flush();
+
+// Create Waypoint-Connections
+$waypoints_conn = array (
+                            array("derashok","dunsplee"),
+                            array("ironlance","dunsplee"),
+                        );
+
+foreach ($waypoints_conn as $connection) {
+    $wp_conn             = new Entities\WaypointConnection;
+    $wp_conn->start      = $em->getRepository("Entities\Waypoint")->findOneByName($connection[0]);
+    $wp_conn->end        = $em->getRepository("Entities\Waypoint")->findOneByName($connection[1]);
+    $wp_conn->difficulty = 0;
+
+    if (!$em->getRepository("Entities\WaypointConnection")->findOneBy(array("start" => $wp_conn->start->id, "end" => $wp_conn->end->id))) {
+        $em->persist($wp_conn);
+    }
+
+}
+
+$em->flush();
 
 // Reverse Mappings
 $install_char->user     = $install_user;
 $install_settings->user = $install_user;
+
+$em->flush();
 
 ?>

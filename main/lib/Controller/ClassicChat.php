@@ -6,29 +6,31 @@
  * @author Markus Schlegel <g42@gmx.net>
  * @copyright Copyright (C) 2008 Markus Schlegel
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version SVN: $Id: classicchat.class.php 328 2011-04-20 10:29:29Z tacki $
  * @package Ruins
  */
 
 /**
- * Global Includes
+ * Namespaces
  */
-require_once(DIR_INCLUDES."includes.inc.php");
+namespace Controller;
+use Page,
+    Link,
+    SimpleTable,
+    Entities\Chat,
+    Entities\Character,
+    DateTime;
 
 /**
- * Class defines
- */
-define("CHATMESSAGE_STATUS_NORMAL", 0);
-define("CHATMESSAGE_STATUS_OLDEDIT", 1);
-define("CHATMODE_NORMAL", 0);
-define("CHATMODE_EDIT", 1);
-
-/**
- * Selecting and Ordering Class
+ * Class to create a simple Chat
  * @package Ruins
  */
 class ClassicChat
 {
+    const MESSAGE_STATUS_NORMAL = 0;
+    const MESSAGE_STATUS_OLDEDIT= 1;
+    const MODE_NORMAL= 0;
+    const MODE_EDIT= 1;
+
     /**
      * Page-Object for direct Output
      * @var Page
@@ -51,7 +53,7 @@ class ClassicChat
      * Current Mode
      * @var integer
      */
-    private $_mode = CHATMODE_NORMAL;
+    private $_mode = self::MODE_NORMAL;
 
     /**
      * constructor - load the default values and initialize the attributes
@@ -88,9 +90,9 @@ class ClassicChat
             case "editLine":
                 if (isset($_POST[$chatform."_chatline"]) && isset($_POST[$chatform."_editLineID"])) {
                     $this->_updateLine($_POST[$chatform."_editLineID"], $_POST[$chatform."_chatline"]);
-                    $this->_mode = CHATMODE_NORMAL;
+                    $this->_mode = self::MODE_NORMAL;
                 } else {
-                    $this->_mode = CHATMODE_EDIT;
+                    $this->_mode = self::MODE_EDIT;
                 }
                 break;
 
@@ -124,7 +126,7 @@ class ClassicChat
         $result = $qb   ->select("chat")
                         ->from("Entities\Chat", "chat")
                         ->where("chat.section = ?1")->setParameter(1, $this->_section)
-                        ->andWhere("chat.status = ?2")->setParameter(2, CHATMESSAGE_STATUS_NORMAL)
+                        ->andWhere("chat.status = ?2")->setParameter(2, self::MESSAGE_STATUS_NORMAL)
                         ->orderBy("chat.date", "DESC")
                         ->setFirstResult( $pagenr*$linesperpage )
                         ->setMaxResults( $linesperpage )
@@ -150,7 +152,7 @@ class ClassicChat
         $result = $qb   ->select("chat")
                         ->from("Entities\Chat", "chat")
                         ->where("chat.section = ?1")->setParameter(1, $this->_section)
-                        ->andWhere("chat.status = ?2")->setParameter(2, CHATMESSAGE_STATUS_NORMAL)
+                        ->andWhere("chat.status = ?2")->setParameter(2, self::MESSAGE_STATUS_NORMAL)
                         ->andWhere("chat.author = ?3")->setParameter(3, $character)
                         ->orderBy("chat.date", "DESC")
                         ->setMaxResults(1)
@@ -176,7 +178,7 @@ class ClassicChat
         $chatlines = $qb->select('COUNT(chat.id)')
                         ->from("Entities\Chat", "chat")
                         ->where('chat.section = ?1')->setParameter(1, $this->_section)
-                        ->andWhere("chat.status = ?2")->setParameter(2, CHATMESSAGE_STATUS_NORMAL)
+                        ->andWhere("chat.status = ?2")->setParameter(2, self::MESSAGE_STATUS_NORMAL)
                         ->getQuery()
                         ->getSingleScalarResult();
 
@@ -203,9 +205,9 @@ class ClassicChat
             return false;
         }
 
-        if ($user->character instanceof Entities\Character) {
+        if ($user->character instanceof Character) {
             // Add new line
-            $newline = new Entities\Chat;
+            $newline = new Chat;
             $newline->section  = $this->_section;
             $newline->author   = $user->character;
             $newline->chatline = $text;
@@ -237,7 +239,7 @@ class ClassicChat
         $oldline = $em->find("Entities\Chat", $id);
 
         // Add new line
-        $newline = new Entities\Chat;
+        $newline = new Chat;
         $newline->section  = $oldline->section;
         $newline->author   = $oldline->author;
         $newline->chatline = $text;
@@ -246,7 +248,7 @@ class ClassicChat
         $em->flush();
 
         // Hide old Message from Chat
-        $this->_updateMessageStatus($id, CHATMESSAGE_STATUS_OLDEDIT);
+        $this->_updateMessageStatus($id, self::MESSAGE_STATUS_OLDEDIT);
     }
 
     /**
@@ -288,7 +290,7 @@ class ClassicChat
         }
 
         foreach ($words as $key=>$word) {
-            $purgedword = btcode::purgeTags($word);
+            $purgedword = \btcode::purgeTags($word);
 
             foreach ($badwords as $badword) {
                 if (array_search($purgedword, $badword) !== false) {
@@ -373,7 +375,7 @@ class ClassicChat
         if (strlen($this->_section)) {
             return $this->_section . "_form";
         } else {
-            throw new Error("Section not set! A Chat has no Sectionname set!");
+            throw new \Error("Section not set! A Chat has no Sectionname set!");
         }
     }
 
@@ -392,7 +394,7 @@ class ClassicChat
         $this->_addHelper();
 
         switch ($this->_mode) {
-            case CHATMODE_NORMAL:
+            case self::MODE_NORMAL:
                 // Chatlines
                 $chatsnippet = $this->_page->createTemplateSnippet();
 
@@ -472,7 +474,7 @@ class ClassicChat
 
                 break;
 
-            case CHATMODE_EDIT:
+            case self::MODE_EDIT:
 
                 if ($row = $this->_getLastLine($user->character)) {
                     $chattable = new SimpleTable;
@@ -485,7 +487,7 @@ class ClassicChat
                     $this->_page->$chatform->hidden($chatform."_section", $this->_section);
                     $this->_page->$chatform->hidden($chatform."_editLineID", $row->id);
                     $this->_page->$chatform->setCSS("floatleft textarea");
-                    $this->_page->$chatform->textArea($chatform."_chatline", btCode::exclude($row->chatline), 60, 10);
+                    $this->_page->$chatform->textArea($chatform."_chatline", \btCode::exclude($row->chatline), 60, 10);
 
                     $this->_page->$chatform->setCSS("floatleft button");
                     $this->_page->$chatform->submitButton("Ändern");

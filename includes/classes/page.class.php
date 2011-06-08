@@ -368,7 +368,7 @@ class Page extends BaseObject implements OutputObject
         // remove whitespaces
         $name = str_replace(' ', '', $name);
 
-        $this->addProperty($name, new ClassicChat($this, $name), true);
+        $this->addProperty($name, new \Controller\ClassicChat($this, $name), true);
 
         return $name;
     }

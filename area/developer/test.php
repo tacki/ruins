@@ -968,26 +968,18 @@ $mt = getMicroTime();
 /* Ende Ausklammern */
 
 // Waypoint Traveling System Start
-/*
-$travel = new traveling;
-$travel->load();
+
+$travel = new Controller\Travel;
 $page->output("Der Startpunkt ist Ironlance. `n");
 $page->output("Der Zielort ist Derashok.`n");
-//$page->output("<label for='searchField'>Wohin soll die Reise gehen?: </label>", true);
-//$page->output("<input type='text' id='searchField' name='searchField'>", true);
-//$page->addCommonCSS("autocomplete.css");
-//$page->addJavaScriptFile("autocomplete.func.js");
-//$page->addJavaScriptFile("jquery.plugin.dimensions.js");
-//
-//$page->addJavaScript("
-//	$(function() {
-//		setAutoComplete('searchField', 'results', '" . htmlpath(DIR_INCLUDES."helpers/ajax/autocomplete_locationname.ajax.php?part=") ."');
-//	});
-//");
 
-if ($travel->check_target(2,7)){
+$ironlance = $em->getRepository("Entities\Waypoint")->findOneByName("ironlance");
+$dunsplee  = $em->getRepository("Entities\Waypoint")->findOneByName("dunsplee");
+$derashok  = $em->getRepository("Entities\Waypoint")->findOneByName("derashok");
+
+if ($travel->isConnected($ironlance, $derashok)){
     $page->output("Sind verbunden. Die Reisedauer betraegt: ");
-    $page->output($travel->find_way(2,7));
+    $page->output($travel->findWay($ironlance, $derashok));
     $page->output(" Sekunden.`n`n");
 }else {
     $page->output("Nope, sind nicht verbunden.`n`n");
@@ -995,12 +987,14 @@ if ($travel->check_target(2,7)){
 
 $page->output("Der Startpunkt ist Ironlance. `n");
 $page->output("Der Zielort ist Dunsplee.`n");
-if ($travel->check_target(3,3)){
-    $page->output("Sind verbunden.`n`n");
+if ($travel->isConnected($ironlance, $dunsplee)){
+    $page->output("Sind verbunden. Die Reisedauer betraegt: ");
+    $page->output($travel->findWay($ironlance, $dunsplee));
+    $page->output(" Sekunden.`n`n");
 }else {
     $page->output("Nope, sind nicht verbunden.`n`n");
 }
-*/
+
 // Waypoint Traveling System End
 
 // *************************************
