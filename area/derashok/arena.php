@@ -17,15 +17,18 @@ $page->set("headtitle", "Derashok Kampfarena");
 $page->nav->add(new Link("Navigation"));
 $page->nav->add(new Link("Aktualisieren", $page->url));
 
-$battle = new Battle();
+$battle = new Controller\Battle;
 
-if ($user->char->isInABattle()) {
+if ($battleid = Manager\Battle::getBattleID($user->character)) {
+    $battle->load($battleid);
     include (DIR_INCLUDES."helpers/battle.running.php");
-} elseif (BattleSystem::getBattleList()) {
+} elseif (Manager\Battle::getBattleList()) {
     $page->nav->add(new Link("Zurück", "page=derashok/tribalcenter"));
     include (DIR_INCLUDES."helpers/battle.list.php");
 } else {
     $page->nav->add(new Link("Zurück", "page=derashok/tribalcenter"));
-    include (DIR_INCLUDES."helpers/battle.create.php");
+
+    $page->output("Zur Zeit läuft kein Kampf! Willst du einen provozieren?");
+    $battle->addCreateBattleNav();
 }
 ?>

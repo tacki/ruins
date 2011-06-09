@@ -11,11 +11,11 @@
 $battle->addCreateBattleNav();
 $page->output("`nGegenwärtige Kämpfe`n");
 
-$battlelist = BattleSystem::getBattleList();
+$battlelist = Manager\Battle::getBattleList();
 
 foreach ($battlelist as $activebattle) {
-    $tempbattle = new Battle;
-    $tempbattle->load($activebattle['id']);
+    $tempbattle = new Controller\Battle;
+    $tempbattle->load($activebattle->id);
     $tempbattle->showBattleInformation();
 }
 ?>

@@ -27,7 +27,7 @@ $page->output("`n<div style='border-bottom: 1px solid;'></div>`n", true);
 
 // Skill Options
 $page->output("`bAktion: `b`n");
-$battle->showSkillChooser();
+//$battle->showSkillChooser();
 $page->output("`n");
 
 // Divider
@@ -37,7 +37,7 @@ $page->output("`n<div style='border-bottom: 1px solid;'></div>`n", true);
 $page->output("`bNachrichten: `b`n");
 
 foreach ($battle->getResultMessages() as $resultmessage) {
-        $page->output($resultmessage['date'] . " " . $resultmessage['message'] ."`n");
+        $page->output($resultmessage->date . " " . $resultmessage->message ."`n");
 }
 
 //$battle->getActionDoneList();

@@ -9,53 +9,50 @@
  */
 
 /**
- * Global Includes
+ * Namespaces
  */
-require_once(DIR_INCLUDES."includes.inc.php");
+namespace Controller;
+use Entities\Character,
+    Link,
+    Error,
+    SessionStore;
 
-/**
- * Class defines
- */
-define("BATTLE_SIDE_ATTACKERS", "attackers");
-define("BATTLE_SIDE_DEFENDERS", "defenders");
-define("BATTLE_SIDE_NEUTRALS", "neutrals");
-define("BATTLE_MEMBERSTATUS_ACTIVE", 0);
-define("BATTLE_MEMBERSTATUS_INACTIVE", 1);
-define("BATTLE_MEMBERSTATUS_EXCLUDED", 2);
-define("BATTLE_MEMBERSTATUS_BEATEN", 4);
 
 /**
  * Battle Class
  *
  * @package Ruins
  */
-class Battle extends DBObject
+class Battle
 {
     /**
-     * Initialized Flag
-     * @var bool
+     * Class constants
      */
-    public $initialized = false;
+    const SIDE_ATTACKERS        = "attackers";
+    const SIDE_DEFENDERS        = "defenders";
+    const SIDE_NEUTRALS         = "neutrals";
+    const MEMBERSTATUS_ACTIVE   = 0;
+    const MEMBERSTATUS_INACTIVE = 1;
+    const MEMBERSTATUS_EXCLUDED = 2;
+    const MEMBERSTATUS_BEATEN   = 4;
 
     /**
-     * QueryTool Object
+     * Battle Object
+     * @var Entities\Battle
      */
-    private $_dbqt;
+    private $_battle;
 
     /**
-     * Battle Timer
+     * Battle Timer Controlling Object
      * @var Timer
      */
-    private $_timer;
+    private $_battleTimerControl;
 
     /**
      * constructor - load the default values and initialize the attributes
      */
     public function __construct()
     {
-        parent::__construct();
-        $this->_dbqt = new QueryTool();
-
         // Add the Helper Functions
         // Only if we have an OutputObject
         if (getOutputObject()) {
@@ -64,26 +61,35 @@ class Battle extends DBObject
     }
 
     /**
-     * destructor - save the battlestatus
-     * @return unknown_type
-     */
-    public function __destruct()
-    {
-        $this->save();
-    }
-
-    /**
      * Initialize for a new Battle
      */
     public function initialize()
     {
-        global $user;
+        global $em, $user;
 
+        // Create Timer Entity
+        $battletimer               = new \Entities\Timer;
+        $battletimer->name         = uniqid("battle_");
+        $em->persist($battletimer);
+
+        // Create Battle Entity
+        $this->_battle             = new \Entities\Battle;
+        $this->_battle->initiator  = $user->character;
+        $this->_battle->timer      = $battletimer;
+        $this->round               = 1;
+        $em->persist($this->_battle);
+
+        $em->flush();
+
+        // Initialize Battletick-Timer
+        $this->initTimer();
+
+/*
         // Create the Battle Instance
         $this->create();
 
         // Add the Initiator to the Battle Members
-        $this->initiatorid = $user->char->id;
+        $this->initiatorid = $user->character->id;
 
         // Create the Battletick-Timer
         $this->initTimer();
@@ -97,6 +103,19 @@ class Battle extends DBObject
 
         // Set initialized-Flag
         $this->initialized = true;
+*/
+    }
+
+    public function load($battleid)
+    {
+        global $em;
+
+        // Check if this Battle is already initialized
+        if ($this->_battle) {
+            return false;
+        }
+
+        $this->_battle = $em->find("Entities\Battle", $battleid);
     }
 
     /**
@@ -104,14 +123,22 @@ class Battle extends DBObject
      * @param Character $char Character to check
      * @return bool true if the char is a Member, else false
      */
-    public function isMember(Character $char)
+    public function isMember(Character $character)
     {
         // Check if this Battle is initialized
-        if (!$this->initialized) {
+        if (!$this->_battle) {
             return false;
         }
 
-        if ($char->isInABattle($this->id)) {
+        $qb = getQueryBuilder();
+
+        $result = $qb   ->select("battlemember.id")
+                        ->from("Entities\BattleMember", "battlemember")
+                        ->where("battlemember.battle = ?1")->setParameter(1, $this->_battle)
+                        ->andWhere("battlemember.character = ?2")->setParameter(2, $character)
+                        ->getQuery()->getOneOrNullResult();
+
+        if ($result) {
             return true;
         } else {
             return false;
@@ -124,18 +151,29 @@ class Battle extends DBObject
      * @param string $side The side the Character joins (attacker, defender, ...)
      * @return bool true if successful, else false
      */
-    public function addMember(Character $char, $side)
+    public function addMember(Character $character, $side)
     {
+        global $em;
+
         // Check if this Battle is initialized
-        if (!$this->initialized) {
+        if (!$this->_battle) {
             throw new Error("Cannot add a Member to a Battle if it's not initialized");
         }
 
-        if ($this->isMember($char)) {
+        if ($this->isMember($character)) {
             return false;
         }
 
         // add the Char to the Battlemembers-List
+        $battlemember             = new \Entities\BattleMember();
+        $battlemember->battle     = $this->_battle;
+        $battlemember->character  = $character;
+        $battlemember->side       = $side;
+        $battlemember->speed      = $character->getSpeed();
+        $em->persist($battlemember);
+        $em->flush();
+
+/*
         $this->_dbqt->clear();
         $data = array(
                         "battleid" => $this->id,
@@ -148,7 +186,7 @@ class Battle extends DBObject
         $result = $this->_dbqt	->insertinto("battlemembers")
                                 ->data($data)
                                 ->exec();
-
+*/
         return $result;
     }
 
@@ -157,26 +195,25 @@ class Battle extends DBObject
      * @param Character $char The Character to remove
      * @return bool true if successful, else false
      */
-    public function removeMember(Character $char)
+    public function removeMember(Character $character)
     {
         // Check if this Battle is initialized
-        if (!$this->initialized) {
+        if (!$this->_battle) {
             return false;
         }
 
         // Cycle Token if this is the token-owner
-        if ($this->getTokenOwner() == $char->id) {
+        if ($this->getTokenOwner() === $character) {
             // Give the Token to another Battle Member
             $this->cycleToken();
         }
 
-        // remove the Char from the Battlemembers-List
-        $this->_dbqt->clear();
+        $qb = getQueryBuilder();
 
-        $result = $this->_dbqt	->deletefrom("battlemembers")
-                                ->where("battleid=".$this->id)
-                                ->where("characterid=".$char->id)
-                                ->exec();
+        $qb ->delete("Entities\BattleMember", "bm")
+            ->where("bm.battle = ?1")->setParameter(1, $this->_battle)
+            ->andWhere("bm.character = ?2")->setParameter(2, $character)
+            ->getQuery()->execute();
 
         // Check if there are enough Battle Members to continue
         if ( !($this->getAttackerList())
@@ -192,37 +229,39 @@ class Battle extends DBObject
      */
     public function removeBattle()
     {
-        if ($this->initialized) {
+        if ($this->_battle) {
             // Remove all Battlemembers
-            $this->_dbqt->clear();
-            $this->_dbqt->deletefrom("battlemembers")
-                        ->where("battleid=".$this->id)
-                        ->exec();
+            $qb = getQueryBuilder();
+            $qb ->delete("Entities\BattleMember", "bm")
+                ->where("bm.battle = ?1")->setParameter(1, $this->_battle)
+                ->getQuery()->execute();
 
             // Remove Battlemessages
-            $this->_dbqt->clear();
-            $this->_dbqt->deletefrom("battlemessages")
-                        ->where("battleid=".$this->id)
-                        ->exec();
+            $qb = getQueryBuilder();
+            $qb ->delete("Entities\BattleMessage", "bm")
+                ->where("bm.battle = ?1")->setParameter(1, $this->_battle)
+                ->getQuery()->execute();
 
             // Clear Battletable
-            $this->_dbqt->clear();
-            $this->_dbqt->deletefrom("battletable")
-                        ->where("battleid=".$this->id)
-                        ->exec();
-
-            // Remove Timer
-            $this->_dbqt->clear();
-            $this->_dbqt->deletefrom("timers")
-                        ->where("name=".$this->_dbqt->quote($this->battletimer))
-                        ->exec();
-
-            // Remove initialized Flag
-            $this->initialized = false;
+            $qb = getQueryBuilder();
+            $qb ->delete("Entities\BattleAction", "ba")
+                ->where("ba.battle = ?1")->setParameter(1, $this->_battle)
+                ->getQuery()->execute();
 
             // Remove Battle
-            $this->delete();
+            $qb = getQueryBuilder();
+            $qb ->delete("Entities\Battle", "battle")
+                ->where("battle.id = ?1")->setParameter(1, $this->_battle)
+                ->getQuery()->execute();
+
+            // Remove Timer
+            $qb = getQueryBuilder();
+            $qb ->delete("Entities\Timer", "timer")
+                ->where("timer.name = ?1")->setParameter(1, $this->_battle->timer->name)
+                ->getQuery()->execute();
         }
+
+        $this->_battle = NULL;
     }
 
     /**
@@ -233,7 +272,7 @@ class Battle extends DBObject
     public function getMemberEntry($char)
     {
         // Check if this Battle is initialized
-        if (!$this->initialized) {
+        if (!$this->_battle) {
             return false;
         }
 
@@ -266,12 +305,12 @@ class Battle extends DBObject
     {
         $result = $this->getMemberEntry($char);
 
-        if ($result['side'] == BATTLE_SIDE_ATTACKERS) {
-            return BATTLE_SIDE_DEFENDERS;
-        } elseif ($result['side'] == BATTLE_SIDE_DEFENDERS) {
-            return BATTLE_SIDE_ATTACKERS;
+        if ($result['side'] == self::SIDE_ATTACKERS) {
+            return self::SIDE_DEFENDERS;
+        } elseif ($result['side'] == self::SIDE_DEFENDERS) {
+            return self::SIDE_ATTACKERS;
         } else {
-            return BATTLE_SIDE_NEUTRALS;
+            return self::SIDE_NEUTRALS;
         }
     }
 
@@ -282,7 +321,7 @@ class Battle extends DBObject
     public function addResultMessage($message)
     {
         // Check if this Battle is initialized
-        if (!$this->initialized) {
+        if (!$this->_battle) {
             return false;
         }
 
@@ -307,7 +346,7 @@ class Battle extends DBObject
     public function addResultMessages(array $messages)
     {
         // Check if this Battle is initialized
-        if (!$this->initialized) {
+        if (!$this->_battle) {
             return false;
         }
 
@@ -331,13 +370,21 @@ class Battle extends DBObject
      * Retrieve the Messages from the Database
      * @return array Array of ResultMessages
      */
-    public function getResultMessages($newestfirst=true)
+    public function getResultMessages($orderDir="DESC")
     {
         // Check if this Battle is initialized
-        if (!$this->initialized) {
+        if (!$this->_battle) {
             return false;
         }
 
+        $qb = getQueryBuilder();
+
+        $result = $qb   ->select("bm")
+                        ->from("Entities\BattleMessage", "bm")
+                        ->where("bm.battle = ?1")->setParameter(1, $this->_battle)
+                        ->orderBy("bm.date", $orderDir)
+                        ->getQuery()->getResult();
+/*
         $this->_dbqt->clear();
 
         $result = $this->_dbqt	->select("*")
@@ -346,7 +393,7 @@ class Battle extends DBObject
                                 ->order("id", $newestfirst)
                                 ->exec()
                                 ->fetchAll();
-
+*/
         if ($result) {
             return $result;
         } else {
@@ -360,7 +407,7 @@ class Battle extends DBObject
     public function resetMessages()
     {
         // Check if this Battle is initialized
-        if (!$this->initialized) {
+        if (!$this->_battle) {
             return false;
         }
 
@@ -382,7 +429,7 @@ class Battle extends DBObject
     public function setMemberStatus($char, $status)
     {
         // Check if this Battle is initialized
-        if (!$this->initialized) {
+        if (!$this->_battle) {
             return false;
         }
 
@@ -415,7 +462,7 @@ class Battle extends DBObject
     public function setMemberSide($char, $side)
     {
         // Check if this Battle is initialized
-        if (!$this->initialized) {
+        if (!$this->_battle) {
             return false;
         }
 
@@ -441,41 +488,33 @@ class Battle extends DBObject
 
     /**
      * Set the Battle token to the new Character
-     * @param int|Character $char Character ID or Character Object
+     * @param Character $char Character Object
      */
-    public function setTokenOwner($char)
+    public function setTokenOwner(Character $char)
     {
         // Check if this Battle is initialized
-        if (!$this->initialized) {
+        if (!$this->_battle) {
             return false;
         }
 
         // Erase old Token (if exists)
-        $this->_dbqt->clear();
-        $this->_dbqt->update("battlemembers")
-                    ->where("battleid=".$this->id)
-                    ->data(array( "token" => 0 ))
-                    ->exec();
+        $qb = getQueryBuilder();
+
+        $qb ->update("Entities\BattleMember", "bm")
+            ->set("bm.token", 0)
+            ->where("bm.battle = ?1")->setParameter(1, $this->_battle)
+            ->getQuery()->execute();
 
         // Set new Token
-        $this->_dbqt->clear();
+        $qb = getQueryBuilder();
 
-        $this->_dbqt->update("battlemembers");
+        $qb ->update("Entities\BattleMember", "bm")
+            ->set("bm.token", 1)
+            ->where("bm.battle = ?1")->setParameter(1, $this->_battle)
+            ->andWhere("bm.character = ?2")->setParameter(2, $character)
+            ->getQuery()->execute();
 
-        if ($char instanceof Character) {
-            $this->_dbqt->where("characterid=".$char->id);
-        } else {
-            $this->_dbqt->where("characterid=".$char);
-        }
-        $this->_dbqt->where("battleid=".$this->id);
-
-        $this->_dbqt->data(array( "token" => 1 ));
-
-        if ($result = $this->_dbqt->exec()) {
-            return true;
-        } else {
-            return false;
-        }
+        return true;
     }
 
     /**
@@ -485,21 +524,20 @@ class Battle extends DBObject
     public function getTokenOwner()
     {
         // Check if this Battle is initialized
-        if (!$this->initialized) {
+        if (!$this->_battle) {
             return false;
         }
 
-        $this->_dbqt->clear();
+        $qb = getQueryBuilder();
 
-        $result = $this	->_dbqt->select("characterid")
-                        ->from("battlemembers")
-                        ->where("battleid=".$this->id)
-                        ->where("token=1")
-                        ->exec()
-                        ->fetchOne();
+        $result = $qb   ->select("bm")
+                        ->from("Entities\Battlemember", "bm")
+                        ->where("bm.battle = ?1")->setParameter(1, $this->_battle)
+                        ->andWhere("bm.token = 1")
+                        ->getQuery()->getResult();
 
         if ($result) {
-            return $result;
+            return $result->character;
         } else {
             return false;
         }
@@ -536,39 +574,36 @@ class Battle extends DBObject
      * @param array $status only get Members with one of the given status
      * @return array Array of all Battlemembers
      */
-    public function getMemberList($side=false, $names=false, $status=false)
+    public function getMemberList($side=false, $status=false)
     {
-        return $this->_getBattleMemberList($side, $names, $status);
+        return $this->_getBattleMemberList($side, $status);
     }
 
     /**
      * Get List of Attackers
-     * @param bool $names Return names instead of ids
      * @return array Array of Attackers
      */
-    public function getAttackerList($names=false)
+    public function getAttackerList()
     {
-        return $this->_getBattleMemberList(BATTLE_SIDE_ATTACKERS, $names);
+        return $this->_getBattleMemberList(self::SIDE_ATTACKERS);
     }
 
     /**
      * Get List of Neutrals
-     * @param bool $names Return names instead of ids
      * @return array Array of Neutrals
      */
-    public function getNeutralList($names=false)
+    public function getNeutralList()
     {
-        return $this->_getBattleMemberList(BATTLE_SIDE_NEUTRALS, $names);
+        return $this->_getBattleMemberList(self::SIDE_NEUTRALS);
     }
 
     /**
      * Get List of Defenders
-     * @param bool $names Return names instead of ids
      * @return array Array of Defenders
      */
-    public function getDefenderList($names=false)
+    public function getDefenderList()
     {
-        return $this->_getBattleMemberList(BATTLE_SIDE_DEFENDERS, $names);
+        return $this->_getBattleMemberList(self::SIDE_DEFENDERS);
     }
 
     /**
@@ -579,7 +614,7 @@ class Battle extends DBObject
     public function getBeatenList($names=false)
     {
         // Check if this Battle is initialized
-        if (!$this->initialized) {
+        if (!$this->_battle) {
             return false;
         }
 
@@ -615,7 +650,7 @@ class Battle extends DBObject
     public function getActionDoneList($names=false)
     {
         // Check if this Battle is initialized
-        if (!$this->initialized) {
+        if (!$this->_battle) {
             return false;
         }
 
@@ -650,24 +685,39 @@ class Battle extends DBObject
     {
         $outputobject = getOutputObject();
 
+        $attackerlist = $this->getAttackerList();
+        $defenderlist = $this->getDefenderList();
+
         $output = "<div class='floatleft battleinfo'>";
-        $output .= "Angreifer: " . implode(", ", $this->getAttackerList(true)) . "`n";
-        $output .= "Verteidiger: " . implode(", ", $this->getDefenderList(true)) . "`n";
+        if (count($attackerlist)) {
+            $output .= "Angreifer: ";
+            foreach ($attackerlist as $entry) {
+                $output .= $entry->character->displayname . " ";
+            }
+            $output .= "`n";
+        }
+        if (count($defenderlist)) {
+            $output .= "Verteidiger: ";
+            foreach ($defenderlist as $entry) {
+                $output .= $entry->character->displayname . " ";
+            }
+            $output .= "`n";
+        }
         $output .= "Timer: " . ($this->getTimer()?$this->getTimer():"inaktiv") . "`n";
 
         $battleopstr = $this->_getBattleOpString();
 
         if (!$this->isActive()) {
-            $target = $outputobject->url->base."&{$battleopstr}=join&side=".BATTLE_SIDE_ATTACKERS."&battleid=".$this->id;
+            $target = $outputobject->url->base."&{$battleopstr}=join&side=".self::SIDE_ATTACKERS."&battleid=".$this->id;
             $output .= "<a href='?".$target."'>Angreifen</a>";
             $outputobject->nav->add(new Link("", $target));
             $output .= " || ";
-            $target = $outputobject->url->base."&{$battleopstr}=join&side=".BATTLE_SIDE_DEFENDERS."&battleid=".$this->id;
+            $target = $outputobject->url->base."&{$battleopstr}=join&side=".self::SIDE_DEFENDERS."&battleid=".$this->id;
             $output .= "<a href='?".$target."'>Verteidigen</a>";
             $outputobject->nav->add(new Link("", $target));
             $output .= " || ";
         }
-        $target = $outputobject->url->base."&{$battleopstr}=join&side=".BATTLE_SIDE_NEUTRALS."&battleid=".$this->id;
+        $target = $outputobject->url->base."&{$battleopstr}=join&side=".self::SIDE_NEUTRALS."&battleid=".$this->id;
         $output .= "<a href='?".$target."'>Zuschauen</a>";
         $outputobject->nav->add(new Link("", $target));
         $output .= "</div>";
@@ -690,11 +740,11 @@ class Battle extends DBObject
         $output			= "";
         $outputobject 	= getOutputObject();
         $battleopstr 	= $this->_getBattleOpString();
-        $memberentry 	= $this->getMemberEntry($user->char);
+        $memberentry 	= $this->getMemberEntry($user->character);
 
-        if ($memberentry['side'] == BATTLE_SIDE_NEUTRALS
-            || $memberentry['status'] == BATTLE_MEMBERSTATUS_BEATEN
-            || $memberentry['status'] == BATTLE_MEMBERSTATUS_EXCLUDED) {
+        if ($memberentry['side'] == self::SIDE_NEUTRALS
+            || $memberentry['status'] == self::MEMBERSTATUS_BEATEN
+            || $memberentry['status'] == self::MEMBERSTATUS_EXCLUDED) {
             // Caller is Neutral
             $output .= "Beobachte den Kampf...";
         } elseif ($memberentry['actiondone']) {
@@ -732,7 +782,7 @@ class Battle extends DBObject
             // The third Parameter is the name of the select-Form where we choose the skill
             // The third Parameter is the name of the select-Form where the targets appear
             $outputobject->addJavaScript("$(function(){
-                                        getTargetList(".$this->id.", ".$user->char->id.", 'skill', 'target');
+                                        getTargetList(".$this->id.", ".$user->character->id.", 'skill', 'target');
             });");
         }
 
@@ -754,27 +804,32 @@ class Battle extends DBObject
 
         $output = "";
 
-        foreach (array(BATTLE_SIDE_ATTACKERS=>"Angreifer", BATTLE_SIDE_DEFENDERS=>"Verteidiger") as $sysname=>$realname) {
+        foreach (array(self::SIDE_ATTACKERS=>"Angreifer", self::SIDE_DEFENDERS=>"Verteidiger") as $sysname=>$realname) {
             $output .= "`n$realname: `n";
 
             $temparray = array();
-            foreach ($this->getMemberList($sysname) as $memberid) {
-                $chartype = Manager\User::getCharacterType($memberid);
-                $member = new $chartype;
-                $member->load($memberid);
-                if ($member->madeBattleAction($this->id)) {
+            foreach ($this->getMemberList($sysname) as $member) {
+
+                if ($member->actiondone) {
                     $transparentstyle = "style=\"opacity: 0.5; filter: alpha(opacity=50); filter: 'progid:DXImageTransform.Microsoft.Alpha(Opacity=50, FinishOpacity=50, Style=2)'\"";
                 } else {
                     $transparentstyle = "";
                 }
-                $temparray[] = "<span id='action_".$member->id."' $transparentstyle>".btCode::decode($member->displayname)." HP: ".$member->healthpoints."/".$member->lifepoints."</span>";
+                $temparray[] = "<span id='action_".$member->character->id."' $transparentstyle>".$member->character->displayname." HP: ".$member->character->healthpoints."/".$member->character->lifepoints."</span>";
             }
 
             $output .= implode(", ", $temparray);
         }
 
-        $output .= "`nZuschauer: `n";
-        $output .= implode(", ", $this->getNeutralList(true));
+        $neutrallist = $this->getNeutralList(true);
+
+        if (count($neutrallist)) {
+            $output .= "`nZuschauer: `n";
+            foreach ($neutrallist as $entry) {
+                $output .= $entry->character->displayname . " ";
+            }
+            $output .= "`n";
+        }
 
         if ($directoutput) {
             $outputobject->output($output, true);
@@ -803,10 +858,10 @@ class Battle extends DBObject
             $status = "";
 
             switch ($bminfo) {
-                case BATTLE_MEMBERSTATUS_ACTIVE: $status = "Aktiv"; break;
-                case BATTLE_MEMBERSTATUS_INACTIVE: $status = "Inaktiv"; break;
-                case BATTLE_MEMBERSTATUS_EXCLUDED: $status = "Ausgeschlossen"; break;
-                case BATTLE_MEMBERSTATUS_BEATEN: $status = "Tot"; break;
+                case self::MEMBERSTATUS_ACTIVE: $status = "Aktiv"; break;
+                case self::MEMBERSTATUS_INACTIVE: $status = "Inaktiv"; break;
+                case self::MEMBERSTATUS_EXCLUDED: $status = "Ausgeschlossen"; break;
+                case self::MEMBERSTATUS_BEATEN: $status = "Tot"; break;
             }
 
             foreach ($beforeSS['description'] as $property) {
@@ -848,8 +903,8 @@ class Battle extends DBObject
         $outputobject 	= getOutputObject();
         $battleopstr 	= $this->_getBattleOpString();
 
-        $outputobject->nav->add(new Link("Kampf"));
-        $outputobject->nav->add(new Link("Anfangen", $outputobject->url->base."&{$battleopstr}=create"));
+        $outputobject->nav->add(new \Link("Kampf"));
+        $outputobject->nav->add(new \Link("Anfangen", $outputobject->url->base."&{$battleopstr}=create"));
     }
 
     /**
@@ -872,52 +927,82 @@ class Battle extends DBObject
      * @param array $status Only get Members with the given status
      * @return array of characterids
      */
-    private function _getBattleMemberList($side=false, $names=false, $status=false)
+    private function _getBattleMemberList($side=false, $status=false)
     {
-        if (!$result = SessionStore::readCache("battlememberlist_".$this->id."_".$side."_".$names."_".$status)) {
+        $qb = getQueryBuilder();
 
-            $this->_dbqt->clear();
+        $qb ->select("bm")
+            ->from("Entities\Battlemember", "bm")
+            ->where("bm.battle = ?1")->setParameter(1, $this->_battle)
+            ->andWhere("bm.side = ?2");
 
-            $this->_dbqt->select("characterid")
-                        ->from("battlemembers")
-                        ->where("battleid=".$this->id);
-
-            if ($side) {
-                $this->_dbqt->where("side=".$this->_dbqt->quote(strtolower($side)));
-            } else {
-                $this->_dbqt->where("side!=".$this->_dbqt->quote(strtolower(BATTLE_SIDE_NEUTRALS)));
-            }
-
-            if ($status) {
-                if (is_array($status)) {
-                    foreach($status as &$value) {
-                        $value = "status=".$this->_dbqt->quote($value);
-                    }
-                    $sqlstring = "(";
-                    $sqlstring .= implode(" OR ", $status);
-                    $sqlstring .= ")";
-                } else {
-                    $sqlstring = "status=" . $this->_dbqt->quote($status);
-                }
-                $this->_dbqt->where($sqlstring);
-            }
-
-            if ($qResult = $this->_dbqt->exec()->fetchCol("characterid")) {
-                $result = $qResult;
-            } else {
-                $result = array();
-            }
-
-            if ($names) {
-                $tempres = array();
-                foreach ($result as $id) {
-                    $tempres[] = Manager\User::getCharacterName($id);
-                }
-                $result = $tempres;
-            }
-
-            SessionStore::writeCache("battlememberlist_".$this->id."_".$side."_".$names."_".$status, $result, "page");
+        if ($side) {
+            $qb->setParameter(2, strtolower($side));
+        } else {
+            $qb->setParameter(2, strtolower(self::SIDE_NEUTRALS));
         }
+
+        if ($status) {
+            if (is_array($status)) {
+                $dql = "(";
+                for ($i=1; $i<=count($status); $i++) {
+                    $dql .= "bm.status = :status{$i}";
+                    if ($i!=count($status)) {
+                        $dql .= " OR ";
+                    }
+                    $qb->setParameter("status{$i}", $status[$i]);
+                }
+                $dql .= ")";
+            } else {
+                $dql = "bmstatus = :status";
+                $qb->setParameter("status", $status);
+            }
+            $qb->andWhere($dql);
+        }
+
+        $result = $qb->getQuery()->getResult();
+
+/*
+        $this->_dbqt->clear();
+
+        $this->_dbqt->select("characterid")
+                    ->from("battlemembers")
+                    ->where("battleid=".$this->id);
+
+        if ($side) {
+            $this->_dbqt->where("side=".$this->_dbqt->quote(strtolower($side)));
+        } else {
+            $this->_dbqt->where("side!=".$this->_dbqt->quote(strtolower(self::SIDE_NEUTRALS)));
+        }
+
+        if ($status) {
+            if (is_array($status)) {
+                foreach($status as &$value) {
+                    $value = "status=".$this->_dbqt->quote($value);
+                }
+                $sqlstring = "(";
+                $sqlstring .= implode(" OR ", $status);
+                $sqlstring .= ")";
+            } else {
+                $sqlstring = "status=" . $this->_dbqt->quote($status);
+            }
+            $this->_dbqt->where($sqlstring);
+        }
+
+        if ($qResult = $this->_dbqt->exec()->fetchCol("characterid")) {
+            $result = $qResult;
+        } else {
+            $result = array();
+        }
+
+        if ($names) {
+            $tempres = array();
+            foreach ($result as $id) {
+                $tempres[] = Manager\User::getCharacterName($id);
+            }
+            $result = $tempres;
+        }
+*/
 
         return $result;
     }
@@ -932,7 +1017,7 @@ class Battle extends DBObject
     public function chooseSkill(Character &$char, $target, Skill $skill)
     {
         // Check if this Battle is initialized
-        if (!$this->initialized) {
+        if (!$this->_battle) {
             return false;
         }
 
@@ -957,7 +1042,7 @@ class Battle extends DBObject
         // Set actiondone-flag
         $this->_dbqt->clear();
         $data = array( 	"actiondone" => true,
-                        "status" => BATTLE_MEMBERSTATUS_ACTIVE );
+                        "status" => self::MEMBERSTATUS_ACTIVE );
 
         $this->_dbqt->update("battlemembers")
                     ->where("battleid=".$this->id)
@@ -982,7 +1067,7 @@ class Battle extends DBObject
             $this->addResultMessage($displayname . " wurde besiegt!");
 
             // Set status to beaten
-            $this->setMemberStatus($member['characterid'], BATTLE_MEMBERSTATUS_BEATEN);
+            $this->setMemberStatus($member['characterid'], self::MEMBERSTATUS_BEATEN);
 
             // Remove Token from this Member
             if ($this->getTokenOwner() == $member['characterid']) {
@@ -1001,8 +1086,8 @@ class Battle extends DBObject
     public function checkPremise()
     {
         // First Check if one Side has less than 1 member
-        if (count($this->getMemberList(BATTLE_SIDE_ATTACKERS)) < 1
-            || count($this->getMemberList(BATTLE_SIDE_DEFENDERS)) < 1) {
+        if (count($this->getMemberList(self::SIDE_ATTACKERS)) < 1
+            || count($this->getMemberList(self::SIDE_DEFENDERS)) < 1) {
             return false;
         }
 
@@ -1018,8 +1103,8 @@ class Battle extends DBObject
                                 ->from("battlemembers")
                                 ->where("battleid=".$this->id)
                                 ->where("actiondone=0")
-                                ->where("( status=".$this->_dbqt->quote(BATTLE_MEMBERSTATUS_ACTIVE))
-                                ->where("status=".$this->_dbqt->quote(BATTLE_MEMBERSTATUS_INACTIVE). " )", "OR")
+                                ->where("( status=".$this->_dbqt->quote(self::MEMBERSTATUS_ACTIVE))
+                                ->where("status=".$this->_dbqt->quote(self::MEMBERSTATUS_INACTIVE). " )", "OR")
                                 ->exec()
                                 ->numRows();
 
@@ -1043,8 +1128,8 @@ class Battle extends DBObject
                                 ->join("battlemembers", "battlemembers.characterid = battletable.initiatorid")
                                 ->where("battletable.battleid=".$this->id)
                                 ->where("battlemembers.battleid = battletable.battleid")
-                                ->where("( status=".$this->_dbqt->quote(BATTLE_MEMBERSTATUS_ACTIVE))
-                                ->where("status=".$this->_dbqt->quote(BATTLE_MEMBERSTATUS_INACTIVE). " )", "OR")
+                                ->where("( status=".$this->_dbqt->quote(self::MEMBERSTATUS_ACTIVE))
+                                ->where("status=".$this->_dbqt->quote(self::MEMBERSTATUS_INACTIVE). " )", "OR")
                                 ->order("battlemembers.speed", true)
                                 ->order("battlemembers.side") // attackers before defenders if speed is equal
                                 ->exec()
@@ -1076,7 +1161,7 @@ class Battle extends DBObject
         $battleop 		= $this->_getBattleOpString();
         $outputobject 	= getOutputObject();
 
-        if ($battleid = $user->char->isInABattle()) {
+        if ($battleid = \Manager\Battle::getBattleID($user->character)) {
             // Load the Battle
             $this->load($battleid);
 
@@ -1085,7 +1170,7 @@ class Battle extends DBObject
             $outputobject->addJavaScriptFile("battle.func.js");
 
             // Add Autorefresher + Statuschecker
-            if ($this->getTokenOwner() == $user->char->id) {
+            if ($this->getTokenOwner() == $user->character->id) {
                 // We own the token
                 // Refresh the Page if every Battlemember has made his move
                 $outputobject->addJavaScript("$(function(){
@@ -1096,7 +1181,7 @@ class Battle extends DBObject
                 // Refresh the Page if a new Round is created by the Token Owner
                 $outputobject->addJavaScript("$(function(){
                                 checkBattleActionDone(".$this->id.");
-                                refreshOnNewRound(".$user->char->id.");
+                                refreshOnNewRound(".$user->character->id.");
                 });");
             }
 
@@ -1104,7 +1189,7 @@ class Battle extends DBObject
             // Check if every Battlemember made his move or the time ran out
             // Calculate the Result of this Round
             if ($this->checkPremise()) {
-                if ($this->getTokenOwner() == $user->char->id) {
+                if ($this->getTokenOwner() == $user->character->id) {
                     $this->calculate();
                 }
             }
@@ -1122,7 +1207,7 @@ class Battle extends DBObject
                 // Join a Battle
                 if (isset($_GET['battleid']) && isset($_GET['side'])) {
                     $this->load($_GET['battleid']);
-                    $this->addMember($user->char, $_GET['side']);
+                    $this->addMember($user->character, $_GET['side']);
                 }
 
                 $outputobject->refresh(true);
@@ -1130,14 +1215,14 @@ class Battle extends DBObject
 
             case "part":
                 // Part a Battle
-                $this->removeMember($user->char);
+                $this->removeMember($user->character);
 
                 $outputobject->refresh(true);
                 break;
 
             case "flee":
                 // Part a Battle
-                $this->removeMember($user->char);
+                $this->removeMember($user->character);
 
                 $outputobject->refresh(true);
                 break;
@@ -1147,15 +1232,15 @@ class Battle extends DBObject
                 $this->initialize();
 
                 // Automatically add the Creator to the attackers and give him the token
-                $this->addMember($user->char, BATTLE_SIDE_ATTACKERS);
-                $this->setTokenOwner($user->char);
+                $this->addMember($user->character, self::SIDE_ATTACKERS);
+                $this->setTokenOwner($user->character);
 
                 $outputobject->refresh(true);
                 break;
 
             case "use_skill":
                 if (isset($_POST['skill']) && isset($_POST['target'])) {
-                    $this->chooseSkill($user->char, $_POST['target'], ModuleSystem::getSkillModule($_POST['skill']));
+                    $this->chooseSkill($user->character, $_POST['target'], ModuleSystem::getSkillModule($_POST['skill']));
                 }
 
                 $outputobject->refresh(true);
@@ -1208,13 +1293,13 @@ class Battle extends DBObject
                 $tempchar = new $chartype;
                 $tempchar->load($entry['characterid']);
 
-                if ($entry['status'] == BATTLE_MEMBERSTATUS_ACTIVE) {
+                if ($entry['status'] == self::MEMBERSTATUS_ACTIVE) {
                     // First inactive Round
                     $this->chooseSkill($tempchar, "none", ModuleSystem::getSkillModule("wait"));
-                    $this->setMemberStatus($tempchar, BATTLE_MEMBERSTATUS_INACTIVE);
-                } elseif ($entry['status'] == BATTLE_MEMBERSTATUS_INACTIVE) {
+                    $this->setMemberStatus($tempchar, self::MEMBERSTATUS_INACTIVE);
+                } elseif ($entry['status'] == self::MEMBERSTATUS_INACTIVE) {
                     // Second inactive Round => exclude Battlemember
-                    $this->setMemberStatus($tempchar, BATTLE_MEMBERSTATUS_EXCLUDED);
+                    $this->setMemberStatus($tempchar, self::MEMBERSTATUS_EXCLUDED);
                     $this->addResultMessage($tempchar->displayname . " wurde wegen Inaktivität vom Kampf ausgeschlossen.");
                 }
             }
@@ -1312,8 +1397,8 @@ class Battle extends DBObject
 
         // Finish the Battle if there aren't enough BattleMembers to fight
         $fightmembers = $this->getMemberList(false, false, array(
-                                                                    BATTLE_MEMBERSTATUS_ACTIVE,
-                                                                    BATTLE_MEMBERSTATUS_INACTIVE) );
+                                                                    self::MEMBERSTATUS_ACTIVE,
+                                                                    self::MEMBERSTATUS_INACTIVE) );
 
         if (count($fightmembers) <= 1) {
             $this->finish();
@@ -1376,7 +1461,7 @@ class Battle extends DBObject
         $this->stopTimer();
 
         // Show Result Stats if the battle started
-        if ($this->active) {
+        if ($this->_battle->active) {
             $this->showResultStats();
         }
 
@@ -1390,11 +1475,11 @@ class Battle extends DBObject
      */
     public function getTimer()
     {
-        if (!($this->_timer instanceof Timer)) {
-            $this->_timer = new Timer($this->battletimer);
+        if (!($this->_battleTimerControl instanceof Timer)) {
+            $this->_battleTimerControl = new Timer($this->_battle->timer->name);
         }
 
-        return $this->_timer->get();
+        return $this->_battleTimerControl->get();
     }
 
     /**
@@ -1404,15 +1489,13 @@ class Battle extends DBObject
     {
         global $config;
 
-        $timername = uniqid("battle_");
-        $this->_timer = new Timer($timername);
-        $this->battletimer = $timername;
+        $this->_battleTimerControl = new Timer($this->_battle->timer->name);
 
         // Set Roundtime
-        $this->_timer->set($config->get("battle_roundtime", 120));
+        $this->_battleTimerControl->set($config->get("battle_roundtime", 120));
 
         // Stop timer for now
-        $this->_timer->stop();
+        $this->_battleTimerControl->stop();
     }
 
     /**
@@ -1422,11 +1505,11 @@ class Battle extends DBObject
     {
         global $config;
 
-        if (!($this->_timer instanceof Timer)) {
-            $this->_timer = new Timer($this->battletimer);
+        if (!($this->_battleTimerControl instanceof Timer)) {
+            $this->_battleTimerControl = new Timer($this->_battle->timer->name);
         }
 
-        $this->_timer->set($config->get("battle_roundtime", 120), 0, 0, true);
+        $this->_battleTimerControl->set($config->get("battle_roundtime", 120), 0, 0, true);
     }
 
     /**
@@ -1434,11 +1517,11 @@ class Battle extends DBObject
      */
     public function startTimer()
     {
-        if (!($this->_timer instanceof Timer)) {
-            $this->_timer = new Timer($this->battletimer);
+        if (!($this->_battleTimerControl instanceof Timer)) {
+            $this->_battleTimerControl = new Timer($this->_battle->timer->name);
         }
 
-        $this->_timer->start();
+        $this->_battleTimerControl->start();
     }
 
     /**
@@ -1446,11 +1529,11 @@ class Battle extends DBObject
      */
     public function stopTimer()
     {
-        if (!($this->_timer instanceof Timer)) {
-            $this->_timer = new Timer($this->battletimer);
+        if (!($this->_battleTimerControl instanceof Timer)) {
+            $this->_battleTimerControl = new Timer($this->_battle->timer->name);
         }
 
-        $this->_timer->stop();
+        $this->_battleTimerControl->stop();
     }
 
     /**
@@ -1459,18 +1542,16 @@ class Battle extends DBObject
     public function resetActionFlag()
     {
         // Check if this Battle is initialized
-        if (!$this->initialized) {
+        if (!$this->_battle) {
             return false;
         }
 
-        $this->_dbqt->clear();
+        $qb = getQueryBuilder();
 
-        $data = array( "actiondone" => false );
-
-        $this->_dbqt->update("battlemembers")
-                    ->where("battleid=".$this->id)
-                    ->data($data)
-                    ->exec();
+        $qb ->update("Entities\BatteMember", "bm")
+            ->set("actiondone", false)
+            ->where("battle = 1")->setParameter(1, $this->_battle)
+            ->getQuery()->execute();
     }
 
     /**
@@ -1479,24 +1560,15 @@ class Battle extends DBObject
     public function resetBattleTable()
     {
         // Check if this Battle is initialized
-        if (!$this->initialized) {
+        if (!$this->_battle) {
             return false;
         }
 
-        $this->_dbqt->clear();
+        $qb = getQueryBuilder();
 
-        $this->_dbqt->deletefrom("battletable")
-                    ->where("battleid=".$this->id)
-                    ->exec();
-    }
-
-    /**
-     * @see includes/classes/BaseObject#mod_postload()
-     */
-    public function mod_postload()
-    {
-        // an existing, loaded Battle is alway initialized
-        $this->initialized = true;
+        $qb ->delete("Entities\BattleAction", "ba")
+            ->where("battle = ?1")->setParameter(1, $this->_battle)
+            ->getQuery()->execute();
     }
 }
 ?>

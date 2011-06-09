@@ -62,7 +62,7 @@ class Character extends EntityBase
 
     /**
      * @ManyToMany(targetEntity="Group", inversedBy="character")
-     * @JoinTable(name="character_groups",
+     * @JoinTable(name="characters__groups",
      *      joinColumns={@JoinColumn(name="character_id", referencedColumnName="id")},
      *      inverseJoinColumns={@JoinColumn(name="group_id", referencedColumnName="id")}
      *      )
@@ -139,6 +139,12 @@ class Character extends EntityBase
     {
         if ($this->money instanceof Money)
             $this->money = $this->money->endLayer();
+    }
+
+    public function getSpeed()
+    {
+        // FIXME: Calculate Speed based on Dexterity and Race
+        return 5;
     }
 }
 ?>

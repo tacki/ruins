@@ -25,8 +25,7 @@
  * Namespaces
  */
 namespace Controller;
-use Entities\Timer,
-    DateTime;
+use DateTime;
 
 /**
  * Timer Class
@@ -74,7 +73,7 @@ class Timer
 
     /**
      * Timer Object
-     * @var Entities\Timer
+     * @var \Entities\Timer
      */
     private $_timer;
 
@@ -111,9 +110,10 @@ class Timer
     {
         global $em;
 
-        $newtimer = new Entities\Timer;
+        $newtimer = new \Entities\Timer;
         $newtimer->name = $timername;
         $em->persist($newtimer);
+        $em->flush();
 
         $this->_timer = $newtimer;
     }
