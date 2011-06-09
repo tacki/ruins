@@ -28,7 +28,7 @@ $mt = getMicroTime();
 $page->output("Starting Config Test: `n");
 $position = "configtest";
 
-$config = new Config;
+$config = new Controller\Config;
 
 $config->set("test", "123");
 $config->set("test", "321");
@@ -71,7 +71,7 @@ $mt = getMicroTime();
 $page->output("Starting Global Timer Test: `n");
 $position = "globaltimertest";
 
-$timer = new Timer("1hourtimertest");
+$timer = new Controller\Timer("1hourtimertest");
 
 switch($_GET['op'])
 {
@@ -168,7 +168,7 @@ $textsample = "`#54Das `#35i`#36s`#37t `#19ja `#99ein `bdi`#55c`#56k`#57e`#58r `
 
 $page->output("Zusammen: `n". $textsample ."`n");
 
-$page->output("Der gleiche Text nach einem purge: `n". btcode::purgeTags($textsample) . "`n");
+$page->output("Der gleiche Text nach einem purge: `n". Controller\BtCode::purgeTags($textsample) . "`n");
 
 $page->output("`n`nAJAX Examples`n");
 

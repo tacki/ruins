@@ -20,7 +20,7 @@ require_once(DIR_INCLUDES."includes.inc.php");
  */
 
 // Initialize Config-Class
-$config = new Config();
+$config = new Controller\Config();
 
 // Load User if in Session
 if ($userid = SessionStore::get('userid')) {

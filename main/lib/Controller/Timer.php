@@ -22,9 +22,11 @@
  */
 
 /**
- * Global Includes
+ * Namespaces
  */
-require_once(DIR_INCLUDES."includes.inc.php");
+namespace Controller;
+use Entities\Timer,
+    DateTime;
 
 /**
  * Timer Class
@@ -87,7 +89,7 @@ class Timer
         if ($character) {
             $timername = "_".$character->id."_".$timername;
         } elseif (substr($timername, 0, 1) == "_") {
-            throw new Error("Timers with a Name starting with '_' are not allowed");
+            throw new \Error("Timers with a Name starting with '_' are not allowed");
         }
 
         // Load or create the Timer

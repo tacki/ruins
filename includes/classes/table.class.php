@@ -487,7 +487,7 @@ class Table extends BaseHTML
                     }else if ($this->_tabAddList['class']!="" && !$this->_tabAddList['class']){
                         $this->showing .= " class='".$this->_tabAddList['class']."'";
                     }
-                    $this->showing .= ">".btCode::decode(current($this->_tabAddList['datalist'][$i]))."</td>\n";
+                    $this->showing .= ">".Controller\BtCode::decode(current($this->_tabAddList['datalist'][$i]))."</td>\n";
                     next($this->_tabAddList['datalist'][$i]);
                 }
                 $this->showing .= "</tr>\n";
@@ -548,7 +548,7 @@ class Table extends BaseHTML
                         $this->showing .= " colspan='".$this->_tabAddTableContent[$pos_row][$pos_col]['colspan']."'";
                         $this->showing .= ">";
                         // Add content
-                        $this->showing .= btCode::decode($this->_tabAddTableContent[$pos_row][$pos_col]['content']);
+                        $this->showing .= Controller\BtCode::decode($this->_tabAddTableContent[$pos_row][$pos_col]['content']);
                         // close tag
                         $this->showing .= "</td>\n";
                         $pos_col += $pos_diff;
@@ -567,7 +567,7 @@ class Table extends BaseHTML
         // Last Step: End of table
         $this->showing .= "</tbody>\n";
         $this->showing .= "</table>\n";
-        $this->showing = btCode::decodeToCSSColorClass($this->showing);
+        $this->showing = Controller\BtCode::decodeToCSSColorClass($this->showing);
         return $this->generateOutput($this->showing);
 
     } // End load();

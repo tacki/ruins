@@ -16,7 +16,7 @@ $page->set("headtitle", "Ironlance Stadtbank");
 
 $page->nav->add(new Link("Navigation"));
 
-$timer = new Timer("ironlance/citybank_interest", $user->character);
+$timer = new Controller\Timer("ironlance/citybank_interest", $user->character);
 
 if (!isset($_GET['op'])) $_GET['op']="";
 switch ($_GET['op']) {

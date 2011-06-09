@@ -19,10 +19,10 @@ $decodestring = rawurldecode($_POST['decodestring']);
 
 switch ($_GET['action']) {
     case "decode":
-        echo btCode::decode($decodestring);
+        echo Controller\BtCode::decode($decodestring);
         break;
     case "decoderaw":
-        echo btCode::decodeToCSSColorClass($decodestring);
+        echo Controller\BtCode::decodeToCSSColorClass($decodestring);
         break;
 }
 

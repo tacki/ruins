@@ -725,7 +725,7 @@ class Page extends BaseObject implements OutputObject
                 switch ($value) {
 
                     default:
-                        $snippet->assign($value, BtCode::decode($this->_char->$value));
+                        $snippet->assign($value, Controller\BtCode::decode($this->_char->$value));
                         break;
 
                     case "copper":
@@ -758,7 +758,7 @@ class Page extends BaseObject implements OutputObject
                 $userlist .= $char['displayname'] . " ";
             }
 
-            $snippet->assign("characters_here", BtCode::decode($userlist));
+            $snippet->assign("characters_here", Controller\BtCode::decode($userlist));
 
             // generate the result
             $output = $snippet->fetch("snippet_stats.tpl");
@@ -783,7 +783,7 @@ class Page extends BaseObject implements OutputObject
 
         foreach ($userlist as $username) {
             $output .= "<div class=\"item\">
-                        <div class= \"username\">" . BtCode::decode($username) . "</div>
+                        <div class= \"username\">" . Controller\BtCode::decode($username) . "</div>
                         </div>";
         }
 
@@ -801,7 +801,7 @@ class Page extends BaseObject implements OutputObject
         if (is_array($this->_bodycontent)) {
             // decode bodycontent
             foreach ($this->_bodycontent as &$line) {
-                $line = btCode::decode($line);
+                $line = Controller\BtCode::decode($line);
             }
             // merge array to string
             $text = implode("\n", $this->_bodycontent);

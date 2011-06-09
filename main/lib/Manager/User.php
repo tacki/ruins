@@ -13,6 +13,7 @@
  * Namespaces
  */
 namespace Manager;
+use Controller\BtCode;
 
 /**
  * Global Includes
@@ -88,7 +89,7 @@ class User
     public static function getCharacterID($charactername)
     {
         // purge existing btCode-Tags
-        $charactername = \btCode::purgeTags($charactername);
+        $charactername = BtCode::purgeTags($charactername);
 
         $qb = getQueryBuilder();
 

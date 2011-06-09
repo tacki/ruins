@@ -23,7 +23,7 @@ try {
     }
 
     // Prepare Systemwide Config
-    $config = new Config;
+    $config = new Controller\Config;
 
     // check for page- or popup-argument
     $outputfile = array();

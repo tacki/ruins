@@ -37,7 +37,7 @@ switch ($_GET['op']) {
         break;
 
     case "fish":
-        $timer = new Timer("dunsplee_pond_fishing", $user->character);
+        $timer = new Controller\Timer("dunsplee_pond_fishing", $user->character);
         // Don't refresh the Page, show this Button instead
         $timer->useReplacementButton("Weiter...", $page->url);
 

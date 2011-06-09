@@ -290,7 +290,7 @@ class ClassicChat
         }
 
         foreach ($words as $key=>$word) {
-            $purgedword = \btcode::purgeTags($word);
+            $purgedword = BtCode::purgeTags($word);
 
             foreach ($badwords as $badword) {
                 if (array_search($purgedword, $badword) !== false) {
@@ -487,7 +487,7 @@ class ClassicChat
                     $this->_page->$chatform->hidden($chatform."_section", $this->_section);
                     $this->_page->$chatform->hidden($chatform."_editLineID", $row->id);
                     $this->_page->$chatform->setCSS("floatleft textarea");
-                    $this->_page->$chatform->textArea($chatform."_chatline", \btCode::exclude($row->chatline), 60, 10);
+                    $this->_page->$chatform->textArea($chatform."_chatline", BtCode::exclude($row->chatline), 60, 10);
 
                     $this->_page->$chatform->setCSS("floatleft button");
                     $this->_page->$chatform->submitButton("Ändern");

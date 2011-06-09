@@ -16,7 +16,7 @@ $page->set("headtitle", "Reisen");
 
 $page->nav->add(new Link("Ruins"));
 
-$timer = new Timer("travelTimer", $user->char);
+$timer = new Controller\Timer("travelTimer", $user->character);
 
 switch ($_GET['op']) {
 
