@@ -114,7 +114,7 @@ switch ($_GET['op']) {
 
     case "checkopenid":
         $page->output("`cChecking OpenID!`c`n");
-        OpenIDSystem::checkOpenID($_POST['openid_url'], "page=common/login&op=checkopenid2");
+        Manager\OpenID::checkOpenID($_POST['openid_url'], "page=common/login&op=checkopenid2");
 
         if (SessionStore::get("openiderror")) {
             $page->nav->redirect("page=common/login");
@@ -123,28 +123,26 @@ switch ($_GET['op']) {
 
     case "checkopenid2":
         $page->output("`cChecking OpenID!`c`n");
-        $result = OpenIDSystem::evalTrustResult("page=common/login&op=checkopenid2");
-
+        $oldlevel = error_reporting(0);
+        $result = Manager\OpenID::evalTrustResult("page=common/login&op=checkopenid2");
+        error_reporting($oldlevel);
         if (is_array($result) && $result['result'] == "ok") {
-            // valid openid, now check if it belongs to one of our users
-            $dbqt = new QueryTool();
-            $userid = $dbqt->select("userid")
-                            ->from("openids")
-                            ->where("openid_url=".$dbqt->quote($result['openid']))
-                            ->exec()
-                            ->getOne();
+            $qb = getQueryBuilder();
 
-            if ($userid > 0) {
-                $user->load($userid);
+            $result = $qb   ->select("openid")
+                            ->from("Entities\OpenID", "openid")
+                            ->where("openid.urlID LIKE ?1")->setParameter(1, $result['openid'])
+                            ->getQuery()->getOneOrNullResult();
+
+            if ($result) {
+                $user = new User($result->user->id);
                 $user->login();
-                // load the current character
-                $user->loadCharacter();
-                $user->char->login();
-                $user->char->debuglog->add("Login via OpenID (".$result['openid'].")");
+
+                $user->addDebugLog("Login via OpenID (".$result->urlID.")");
                 $page->nav->redirect("page=common/portal");
             } else {
                 // OpenID is valid, but noone entered this url to his account
-                SessionStore::set("openiderror", "OpenID ". $result['openid'] ." valid, but not mapped to any User");
+                SessionStore::set("openiderror", "OpenID ". $result->urlID ." valid, but not mapped to any User");
                 $page->nav->redirect("page=common/login");
             }
         } else {

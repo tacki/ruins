@@ -6,22 +6,20 @@
  * @author Markus Schlegel <g42@gmx.net>
  * @copyright Copyright (C) 2008 Markus Schlegel
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version SVN: $Id$
  * @package Ruins
  */
 
 /**
- * Global Includes
+ * Namespaces
  */
-require_once(DIR_INCLUDES."includes.inc.php");
-
-/**
- * Class specific Includes
- */
-require_once(DIR_INCLUDES_PEAR."Auth/OpenID/Consumer.php");
-require_once(DIR_INCLUDES_PEAR."Auth/OpenID/FileStore.php");
-require_once(DIR_INCLUDES_PEAR."Auth/OpenID/SReg.php");
-require_once(DIR_INCLUDES_PEAR."Auth/OpenID/PAPE.php");
+namespace Manager;
+use SessionStore,
+    Auth_OpenID_FileStore,
+    Auth_OpenID_Consumer,
+    Auth_OpenID_SRegRequest,
+    Auth_OpenID_SRegResponse,
+    Auth_OpenID_PAPE_Request,
+    Auth_OpenID;
 
 /**
  * Class Defines
@@ -34,7 +32,7 @@ define("OPENID_STORAGE_DIR",	DIR_TEMP."openid");
  * Class to handle OpenID-Checks etc.
  * @package Ruins
  */
-class OpenIDSystem
+class OpenID
 {
     /**
      * Get Protocol (HTTP/HTTPS)
@@ -122,6 +120,16 @@ class OpenIDSystem
 
         if ($sreg_request) {
             $auth_request->addExtension($sreg_request);
+        }
+
+        $policy_uris = null;
+        if (isset($_GET['policies'])) {
+             $policy_uris = $_GET['policies'];
+        }
+
+        $pape_request = new Auth_OpenID_PAPE_Request($policy_uris);
+        if ($pape_request) {
+            $auth_request->addExtension($pape_request);
         }
 
         // For OpenID 1, send a redirect.  For OpenID 2, use a Javascript

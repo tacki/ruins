@@ -21,3 +21,4 @@ $smarty->template_dir 	= DIR_TEMPLATES;
 $smarty->compile_dir 	= DIR_TEMP."smarty/templates_c";
 $smarty->cache_dir 		= DIR_TEMP."smarty/cache";
 $smarty->config_dir     = DIR_INCLUDES_SMARTY."configs";
+?>
