@@ -73,4 +73,9 @@ require_once(DIR_COMMON_EXTERNAL."doctrine2_init.php");
  */
 require_once(DIR_COMMON_EXTERNAL."smarty_init.php");
 
+/**
+ * PHP-OpenID Initialization
+ */
+require_once(DIR_COMMON_EXTERNAL."php-openid_init.php");
+
 ?>
