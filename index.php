@@ -11,6 +11,12 @@
  */
 
 /**
+ * Namespaces
+ */
+use Controller\Link,
+    Controller\Page;
+
+/**
  * Global Includes
  */
 require_once("config/dirconf.cfg.php");

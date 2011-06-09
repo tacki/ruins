@@ -6,14 +6,16 @@
  * @author Markus Schlegel <g42@gmx.net>
  * @copyright Copyright (C) 2007 Markus Schlegel
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version SVN: $Id: nav.class.php 326 2011-04-19 20:19:34Z tacki $
  * @package Ruins
  */
 
 /**
- * Global Includes
+ * Namespaces
  */
-require_once(DIR_INCLUDES."includes.inc.php");
+namespace Controller;
+use Entities\Character,
+    BaseObject,
+    OutputObject;
 
 /**
  * Nav Class
@@ -52,14 +54,14 @@ class Nav extends BaseObject
      * @param Character $char Character Object
      * @param OutputObject $outputobject Parent Outputobject
      */
-    function __construct($char=false, $outputobject=false)
+    function __construct($character=false, $outputobject=false)
     {
         // Call Constructor of the Parent-Class
         parent::__construct();
 
         // Attribute Init
         $this->cacheNavigation = false;
-        $this->_char = $char;
+        $this->_char = $character;
 
         // Default to enabled Validation
         if ($this->_char === false) {
@@ -94,7 +96,6 @@ class Nav extends BaseObject
         if ($this->_exists($link->displayname, $link->url)) {
             return true;
         }
-
 
         if (!$this->validationEnabled() || $link->isAllowedBy($this->_char) ) {
 
@@ -197,6 +198,7 @@ class Nav extends BaseObject
     public function save()
     {
         if ($this->isloaded && $this->_char !== false) {
+
             // Only save if this Navigation is private
             $this->_char->allowednavs = $this->properties;
 

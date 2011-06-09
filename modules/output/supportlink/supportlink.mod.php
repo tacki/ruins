@@ -6,14 +6,14 @@
  * @author Markus Schlegel <g42@gmx.net>
  * @copyright Copyright (C) 2008 Markus Schlegel
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version SVN: $Id: supportlink.mod.php 326 2011-04-19 20:19:34Z tacki $
  * @package Ruins
  */
 
 /**
- * Global Includes
+ * Namespaces
  */
-require_once(DIR_INCLUDES."includes.inc.php");
+use Controller\Nav,
+    Controller\Link;
 
 /**
  * Support Module

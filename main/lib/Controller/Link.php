@@ -11,9 +11,9 @@
  */
 
 /**
- * Global Includes
+ * Namespaces
  */
-require_once(DIR_INCLUDES."includes.inc.php");
+namespace Controller;
 
 /**
  * link Class

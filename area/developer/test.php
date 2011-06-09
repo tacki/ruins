@@ -11,10 +11,9 @@
  */
 
 /**
- * Global Includes
+ * Namespaces
  */
-require_once("config/dirconf.cfg.php");
-require_once(DIR_INCLUDES."includes.inc.php");
+use Controller\Link;
 
 // CLEAR CACHE
 SessionStore::pruneCache();

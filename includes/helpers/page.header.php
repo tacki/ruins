@@ -11,16 +11,18 @@
  */
 
 /**
- * Global Includes
+ * Namespaces
  */
-require_once(DIR_INCLUDES."includes.inc.php");
+use Controller\Link,
+    Controller\Page,
+    Controller\Config;
 
 /**
  * Page Content
  */
 
 // Initialize Config-Class
-$config = new Controller\Config();
+$config = new Config();
 
 // Load User if in Session
 if ($userid = SessionStore::get('userid')) {

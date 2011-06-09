@@ -9,9 +9,14 @@
  */
 
 /**
+ * Namespaces
+ */
+use Entities\DebugLogEntity,
+    Controller\Link;
+
+/**
  * Page Content
  */
-use Entities\DebugLogEntity;
 $page->set("pagetitle", "Login Page");
 $page->set("headtitle", "Login Page");
 

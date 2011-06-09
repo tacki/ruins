@@ -13,9 +13,7 @@
  * Namespaces
  */
 namespace Controller;
-use Page,
-    Link,
-    SimpleTable,
+use SimpleTable,
     Entities\Chat,
     Entities\Character,
     DateTime;

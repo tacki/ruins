@@ -9,6 +9,11 @@
  */
 
 /**
+ * Namespaces
+ */
+use Controller\Link;
+
+/**
  * Page Content
  */
 $page->set("pagetitle", "Thagigdash Bogoob");

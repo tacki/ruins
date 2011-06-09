@@ -32,13 +32,13 @@ $config->addPublicPage(array("popup/support"));
 
 if (array_search($_GET['popup'], $config->get("publicpages")) !== false) {
     // this is a public page!
-    $popup = new Popup();
+    $popup = new Controller\Popup();
 
     // Create the Page
     $popup->create();
 } elseif (isset($user)) {
     // this is a private page and a user is loaded
-    $popup = new Popup($user->character);
+    $popup = new Controller\Popup($user->character);
 
     // Create the Page
     $popup->create();

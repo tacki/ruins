@@ -25,7 +25,8 @@
  * Namespaces
  */
 namespace Controller;
-use DateTime;
+use DateTime,
+    Form;
 
 /**
  * Timer Class

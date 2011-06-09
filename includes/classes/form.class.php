@@ -5,16 +5,18 @@
 * @author Markus Schlegel <g42@gmx.net>
 * @copyright Copyright (C) 2007 Sebastian Meyer
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version SVN: $Id: form.class.php 326 2011-04-19 20:19:34Z tacki $
 * @package Ruins
  */
 
 /**
- * Global Includes
+ * Namespaces
  */
-require_once(DIR_INCLUDES."includes.inc.php");
+use Controller\Nav,
+    Controller\Link;
 
-
+/**
+ * Creating formulars
+ */
 class Form extends BaseHTML
 {
     /**

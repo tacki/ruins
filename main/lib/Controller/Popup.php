@@ -6,20 +6,13 @@
  * @author Markus Schlegel <g42@gmx.net>
  * @copyright Copyright (C) 2007 Markus Schlegel
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version SVN: $Id: popup.class.php 326 2011-04-19 20:19:34Z tacki $
  * @package Ruins
  */
 
 /**
- * Global Includes
+ * Namespaces
  */
-require_once(DIR_INCLUDES."includes.inc.php");
-
-/**
- * Class Defines
- */
-define("POPUP_DEFAULT_PUBLIC_TEMPLATE", 	"default");
-define("POPUP_DEFAULT_PRIVATE_TEMPLATE", 	"default");
+namespace Controller;
 
 /**
  * Popup Class
@@ -29,6 +22,12 @@ define("POPUP_DEFAULT_PRIVATE_TEMPLATE", 	"default");
  */
 class Popup extends Page
 {
+
+    /**
+     * Class Constants
+     */
+    const DEFAULT_PUBLIC_TEMPLATE    = 	"default";
+    const DEFAULT_PRIVATE_TEMPLATE   = 	"default";
 
     /**
      * Constructor - Loads the default values and initializes the attributes
@@ -72,13 +71,13 @@ class Popup extends Page
         // Load Template Name
         if ($this->_char === false) {
             // public default template
-            $this->template['name'] = POPUP_DEFAULT_PUBLIC_TEMPLATE;
+            $this->template['name'] = self::DEFAULT_PUBLIC_TEMPLATE;
         } elseif ($this->_char->template) {
             // private template
             $this->template['name'] = $this->_char->template;
         } else {
             // private template not set
-            $this->template['name'] = POPUP_DEFAULT_PRIVATE_TEMPLATE;
+            $this->template['name'] = self::DEFAULT_PRIVATE_TEMPLATE;
         }
 
         // Assign the complete Path to the Base-Template

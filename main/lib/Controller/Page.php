@@ -6,14 +6,22 @@
  * @author Markus Schlegel <g42@gmx.net>
  * @copyright Copyright (C) 2007 Markus Schlegel
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version SVN: $Id: page.class.php 326 2011-04-19 20:19:34Z tacki $
  * @package Ruins
  */
 
 /**
- * Global Includes
+ * Namespaces
  */
-require_once(DIR_INCLUDES."includes.inc.php");
+namespace Controller;
+use Smarty,
+    BaseObject,
+    OutputObject,
+    Module,
+    ModuleSystem,
+    Error,
+    Form,
+    Table,
+    SimpleTable;
 
 /**
  * Class Defines
@@ -368,7 +376,7 @@ class Page extends BaseObject implements OutputObject
         // remove whitespaces
         $name = str_replace(' ', '', $name);
 
-        $this->addProperty($name, new \Controller\ClassicChat($this, $name), true);
+        $this->addProperty($name, new ClassicChat($this, $name), true);
 
         return $name;
     }
@@ -725,7 +733,7 @@ class Page extends BaseObject implements OutputObject
                 switch ($value) {
 
                     default:
-                        $snippet->assign($value, Controller\BtCode::decode($this->_char->$value));
+                        $snippet->assign($value, BtCode::decode($this->_char->$value));
                         break;
 
                     case "copper":
@@ -735,7 +743,7 @@ class Page extends BaseObject implements OutputObject
                         break;
 
                     case "weaponname":
-                        if ($weapon = Manager\Item::getEquippedItem($this->_char, "weapon")) {
+                        if ($weapon = \Manager\Item::getEquippedItem($this->_char, "weapon")) {
                             $snippet->assign($value, $weapon->name);
                         } else {
                             $snippet->assign($value, "N/A");
@@ -743,7 +751,7 @@ class Page extends BaseObject implements OutputObject
                         break;
 
                     case "weapondamage":
-                        if ($weapon = Manager\Item::getEquippedItem($this->_char, "weapon")) {
+                        if ($weapon = \Manager\Item::getEquippedItem($this->_char, "weapon")) {
                             $snippet->assign($value, $weapon->showDamage(false));
                         } else {
                             $snippet->assign($value, "N/A");
@@ -754,11 +762,11 @@ class Page extends BaseObject implements OutputObject
 
             // get users currently here
             $userlist = "";
-            foreach (Manager\User::getCharactersAt($this->shortname) as $char) {
+            foreach (\Manager\User::getCharactersAt($this->shortname) as $char) {
                 $userlist .= $char['displayname'] . " ";
             }
 
-            $snippet->assign("characters_here", Controller\BtCode::decode($userlist));
+            $snippet->assign("characters_here", BtCode::decode($userlist));
 
             // generate the result
             $output = $snippet->fetch("snippet_stats.tpl");
@@ -775,7 +783,7 @@ class Page extends BaseObject implements OutputObject
      */
     protected function _generateUserList()
     {
-        $userlist = Manager\User::getCharactersOnline();
+        $userlist = \Manager\User::getCharactersOnline();
         $usercount = count($userlist);
 
         $output = "<div class=\"userbox\">";
@@ -783,7 +791,7 @@ class Page extends BaseObject implements OutputObject
 
         foreach ($userlist as $username) {
             $output .= "<div class=\"item\">
-                        <div class= \"username\">" . Controller\BtCode::decode($username) . "</div>
+                        <div class= \"username\">" . BtCode::decode($username) . "</div>
                         </div>";
         }
 
@@ -801,7 +809,7 @@ class Page extends BaseObject implements OutputObject
         if (is_array($this->_bodycontent)) {
             // decode bodycontent
             foreach ($this->_bodycontent as &$line) {
-                $line = Controller\BtCode::decode($line);
+                $line = BtCode::decode($line);
             }
             // merge array to string
             $text = implode("\n", $this->_bodycontent);

@@ -10,6 +10,10 @@
  * @package Ruins
  */
 
+/**
+ * Namespaces
+ */
+use Controller\Nav;
 
 /**
  * Popup Content

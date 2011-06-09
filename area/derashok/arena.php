@@ -4,9 +4,14 @@
  * @author Markus Schlegel <g42@gmx.net>
  * @copyright Copyright (C) 2009 Markus Schlegel
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version SVN: $Id: arena.php 326 2011-04-19 20:19:34Z tacki $
  * @package Ruins
  */
+
+/**
+ * Namespaces
+ */
+use Controller\Link,
+    Controller\Battle;
 
 /**
  * Page Content
@@ -17,7 +22,7 @@ $page->set("headtitle", "Derashok Kampfarena");
 $page->nav->add(new Link("Navigation"));
 $page->nav->add(new Link("Aktualisieren", $page->url));
 
-$battle = new Controller\Battle;
+$battle = new Battle;
 
 if ($battleid = Manager\Battle::getBattleID($user->character)) {
     $battle->load($battleid);

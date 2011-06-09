@@ -4,9 +4,14 @@
  * @author Markus Schlegel <g42@gmx.net>
  * @copyright Copyright (C) 2008 Markus Schlegel
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version SVN: $Id: citybank.php 326 2011-04-19 20:19:34Z tacki $
  * @package Ruins
  */
+
+/**
+ * Namespaces
+ */
+use Controller\Link,
+    Controller\Timer;
 
 /**
  * Page Content
@@ -16,7 +21,7 @@ $page->set("headtitle", "Ironlance Stadtbank");
 
 $page->nav->add(new Link("Navigation"));
 
-$timer = new Controller\Timer("ironlance/citybank_interest", $user->character);
+$timer = new Timer("ironlance/citybank_interest", $user->character);
 
 if (!isset($_GET['op'])) $_GET['op']="";
 switch ($_GET['op']) {

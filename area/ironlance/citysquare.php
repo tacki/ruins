@@ -4,9 +4,13 @@
  * @author Markus Schlegel <g42@gmx.net>
  * @copyright Copyright (C) 2008 Markus Schlegel
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version SVN: $Id: citysquare.php 294 2009-10-21 11:13:45Z tacki $
  * @package Ruins
  */
+
+/**
+ * Namespaces
+ */
+use Controller\Link;
 
 /**
  * Page Content

@@ -11,11 +11,6 @@
  */
 
 /**
- * Global Includes
- */
-require_once(DIR_INCLUDES."includes.inc.php");
-
-/**
  * Basic HTML Class
  *
  * Baseclass for all HTML-based classes
@@ -42,7 +37,7 @@ class BaseHTML
      */
     function __construct($outputclass=false)
     {
-        if ($outputclass && is_a($outputclass, "Page")) {
+        if ($outputclass instanceof OutputObject) {
             $this->_outputclass = $outputclass;
         }
 
