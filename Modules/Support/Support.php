@@ -22,7 +22,7 @@ use Main\Controller\Nav,
  * Add a Supportlink to every Page
  * @package Ruins
  */
-class Support
+class Support implements \Common\Interfaces\Module
 {
 
     /**
@@ -35,7 +35,8 @@ class Support
         $module                 = new \Main\Entities\Module;
         $module->name           = self::getModuleName();
         $module->description    = self::getModuleDescription();
-        $module->filesystemname = __CLASS__;
+        $module->namespace      = __NAMESPACE__;
+        $module->classname      = __CLASS__;
 
         $em->persist($module);
     }
@@ -56,17 +57,14 @@ class Support
      */
     public function callNavModule(Nav &$nav)
     {
-        global $page;
-
-        if ($page instanceof \Main\Controller\Page)
-            $page->nav->add(new Link("Support", "popup=popup/support", "shared", "Wenn ein Fehler oder Bug auftritt, bitte hier melden"));
+        $nav->add(new Link("Support", "popup=popup/support", "shared", "Wenn ein Fehler oder Bug auftritt, bitte hier melden"));
     }
 
     /**
      * Call Text Module
      * @param array $body The Content of the Page-Body
      */
-    public function callTextModule(&$body)
+    public function callTextModule(array &$body)
     {
     }
 

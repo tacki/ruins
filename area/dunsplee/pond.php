@@ -11,7 +11,8 @@
  * Namespaces
  */
 use Main\Controller\Link,
-    Main\Controller\Timer;
+    Main\Controller\Timer,
+    Main\Entities;
 
 /**
  * Page Content
