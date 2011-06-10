@@ -233,11 +233,7 @@ switch ($_GET['step']) {
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
                                                         "/includes/".
                                                         "\");"."\n" .
-                                                    "	define(\"DIR_INCLUDES_PEAR\", ".
-                                                        "\"".str_replace('\\', '/', dirname(__FILE__)).
-                                                        "/includes/external/pear/".
-                                                        "\");"."\n" .
-                                                     "	define(\"DIR_COMMON\", ".
+                                                    "	define(\"DIR_COMMON\", ".
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
                                                         "/common/".
                                                         "\");"."\n" .
@@ -257,10 +253,6 @@ switch ($_GET['step']) {
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
                                                         "/images/".
                                                         "\");"."\n" .
-                                                    "	define(\"DIR_LOG\", ".
-                                                        "\"".str_replace('\\', '/', dirname(__FILE__)).
-                                                        "/logs/".
-                                                        "\");"."\n" .
                                                     "	define(\"DIR_TEMPLATES\", ".
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
                                                         "/templates/".
@@ -272,9 +264,7 @@ switch ($_GET['step']) {
                                                     "	define(\"DIR_MODULES\", ".
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
                                                         "/modules/".
-                                                        "\");"."\n" .
-                                                    "	\n" .
-                                                    " 	set_include_path(DIR_INCLUDES_PEAR.PATH_SEPARATOR.get_include_path());"."\n" .
+                                                        "\");".
                                                     "?>";
 
         // To add more Files, just keep this syntax

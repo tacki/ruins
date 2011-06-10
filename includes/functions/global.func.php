@@ -399,9 +399,6 @@ function ruinsAutoload($classname) {
     $classname_elements		= explode("_", $classname);
     $classname_elements_lc	= explode("_", strtolower($classname));
 
-    // Namespaces
-    $namespaces		= explode("\\", strtolower($classname));
-
     // Initialize SessionCache
     // Makes autoloading a lot faster, cause we don't have to check the filesystem everytime
     require_once(DIR_INCLUDES."classes/sessionstore.class.php");
@@ -410,18 +407,7 @@ function ruinsAutoload($classname) {
         //return true;
     }
 
-    // Namespaces Autoloading
-    if (count($namespaces) == 2) {
-        if(file_exists(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".class.php")) {
-            require_once(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".class.php");
-        } elseif (file_exists(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".interface.php")) {
-            require_once(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".interface.php");
-        } elseif (file_exists(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".layer.php")) {
-            require_once(DIR_INCLUDES.$namespaces[0]."/".$namespaces[1].".layer.php");
-        }
-    }
-
-    if (file_exists(DIR_INCLUDES."classes/".$classname_lc.".class.php")) {
+   if (file_exists(DIR_INCLUDES."classes/".$classname_lc.".class.php")) {
         // Our own Classes
         SessionStore::writeCache("__autoload_".$classname, DIR_INCLUDES."classes/".$classname_lc.".class.php");
         require_once(DIR_INCLUDES."classes/".$classname_lc.".class.php");
@@ -433,18 +419,6 @@ function ruinsAutoload($classname) {
         // Our own BaseModules
         SessionStore::writeCache("__autoload_".$classname, DIR_BASE."modules/".$classname_lc."/".$classname_lc.".basemod.php");
         require_once(DIR_BASE."modules/".$classname_lc."/".$classname_lc.".basemod.php");
-    } elseif (count($classname_elements) == 3 && file_exists(DIR_INCLUDES_PEAR.$classname_elements[0]."/".$classname_elements[1]."/".$classname_elements[2].".php")) {
-        // PEAR Sub-Subclasses
-        SessionStore::writeCache("__autoload_".$classname, DIR_INCLUDES_PEAR.$classname_elements[0]."/".$classname_elements[1]."/".$classname_elements[2].".php");
-        require_once(DIR_INCLUDES."external/pear/".$classname_elements[0]."/".$classname_elements[1]."/".$classname_elements[2].".php");
-    } elseif (count($classname_elements) == 2 && file_exists(DIR_INCLUDES_PEAR.$classname_elements[0]."/".$classname_elements[1].".php")) {
-        // PEAR Subclasses
-        SessionStore::writeCache("__autoload_".$classname, DIR_INCLUDES."external/pear/".$classname_elements[0]."/".$classname_elements[1].".php");
-        require_once(DIR_INCLUDES_PEAR.$classname_elements[0]."/".$classname_elements[1].".php");
-    } elseif (file_exists(DIR_INCLUDES_PEAR.$classname.".php")) {
-        // Primary PEAR Classes
-        SessionStore::writeCache("__autoload_".$classname, DIR_INCLUDES."external/pear/".$classname.".php");
-        require_once(DIR_INCLUDES_PEAR.$classname.".php");
     }
 }
 ?>
