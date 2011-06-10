@@ -25,11 +25,6 @@ require_once(DIR_CONFIG."dbconnect.cfg.php");
 require_once(DIR_INCLUDES."functions/global.func.php");
 
 /**
- * File Functions
- */
-require_once(DIR_INCLUDES."functions/file.func.php");
-
-/**
  * Database Functions
  */
 require_once(DIR_INCLUDES."functions/database.func.php");

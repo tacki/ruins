@@ -85,9 +85,9 @@ class Popup extends Page
 
         // Set the correct Template-Paths inside the Template
         // For Paths that are sent to the Client (relative webbased paths)
-        $this->template['mytemplatedir'] = htmlpath($this->_smarty->template_dir . "/" . $this->template['name']);
+        $this->template['mytemplatedir'] = \Manager\System::htmlpath($this->_smarty->template_dir . "/" . $this->template['name']);
         $this->set("mytemplatedir", $this->template['mytemplatedir']);
-        $this->template['commontemplatedir'] = htmlpath($this->_smarty->template_dir . "/common");
+        $this->template['commontemplatedir'] = \Manager\System::htmlpath($this->_smarty->template_dir . "/common");
         $this->set("commontemplatedir", $this->template['commontemplatedir']);
 
         // Paths that are handled inside the templategeneration progress (full filepaths)

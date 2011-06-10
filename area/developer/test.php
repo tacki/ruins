@@ -190,7 +190,7 @@ $page->addJavaScriptFile("jquery.plugin.dimensions.js");
 
 $page->addJavaScript("
     $(function() {
-        setAutoComplete('searchField', 'results', '" . htmlpath(DIR_INCLUDES."helpers/ajax/autocomplete_charname.ajax.php?part=") ."');
+        setAutoComplete('searchField', 'results', '" . Manager\System::htmlpath(DIR_INCLUDES."helpers/ajax/autocomplete_charname.ajax.php?part=") ."');
     });
 ");
 // btcode Test END

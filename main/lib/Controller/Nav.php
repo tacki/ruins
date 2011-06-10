@@ -87,7 +87,7 @@ class Nav extends BaseObject
     {
         // Check if the Link is valid
         if ($this->validationEnabled() && $link->url) {
-            if (!validatePHPFilePath($link->url)) {
+            if (!\Manager\System::validatePHPFilePath($link->url)) {
                 return false;
             }
         }
@@ -288,7 +288,7 @@ class Nav extends BaseObject
         }
 
         // Redirect
-        $baseurl = htmlpath(DIR_BASE);
+        $baseurl = \Manager\System::htmlpath(DIR_BASE);
         if (isset($config) && $config->get("useManualRedirect", 0)) {
             echo "Forward to $url <br />";
             echo "<a href='$baseurl?" . $url ."'>Continue</a>";

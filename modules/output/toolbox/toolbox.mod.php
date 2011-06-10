@@ -51,8 +51,8 @@ class ToolBox extends Output
             // Prune Cache
             $this->outputObject->addToolBoxItem(new Link("prunecache", "prune_cache.ajax.php"),
                                                     "Session Cache leeren",
-                                                    htmlpath(DIR_TEMPLATES."/common/images/trash.png"),
-                                                    htmlpath(DIR_TEMPLATES."/common/images/accept.png"));
+                                                    \Manager\System::htmlpath(DIR_TEMPLATES."/common/images/trash.png"),
+                                                    \Manager\System::htmlpath(DIR_TEMPLATES."/common/images/accept.png"));
         }
 
     }

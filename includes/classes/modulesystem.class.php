@@ -72,7 +72,7 @@ class ModuleSystem
     public function getModuleTypes()
     {
         $moduletypes 	= array();
-        $dirlist		= getDirList(DIR_MODULES);
+        $dirlist		= Manager\System::getDirList(DIR_MODULES);
 
         return $dirlist['directories'];
     }
@@ -86,7 +86,7 @@ class ModuleSystem
     {
         $modulelist = array();
 
-        $dirlist 	= getDirList(DIR_MODULES.strtolower($moduletype), true);
+        $dirlist 	= Manager\System::getDirList(DIR_MODULES.strtolower($moduletype), true);
         $dirlist 	= $dirlist['directories'];
 
         foreach ($dirlist as $dir) {

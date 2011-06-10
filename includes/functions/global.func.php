@@ -399,25 +399,14 @@ function ruinsAutoload($classname) {
     $classname_elements		= explode("_", $classname);
     $classname_elements_lc	= explode("_", strtolower($classname));
 
-    // Initialize SessionCache
-    // Makes autoloading a lot faster, cause we don't have to check the filesystem everytime
-    require_once(DIR_INCLUDES."classes/sessionstore.class.php");
-    if ($fromcache = SessionStore::readCache("__autoload_".$classname)) {
-        //require_once($fromcache);
-        //return true;
-    }
-
    if (file_exists(DIR_INCLUDES."classes/".$classname_lc.".class.php")) {
         // Our own Classes
-        SessionStore::writeCache("__autoload_".$classname, DIR_INCLUDES."classes/".$classname_lc.".class.php");
         require_once(DIR_INCLUDES."classes/".$classname_lc.".class.php");
     } elseif (file_exists(DIR_INCLUDES."interfaces/".$classname_lc.".interface.php")) {
         // Our own Interfaces
-        SessionStore::writeCache("__autoload_".$classname, DIR_INCLUDES."interfaces/".$classname_lc.".interface.php");
         require_once(DIR_INCLUDES."interfaces/".$classname_lc.".interface.php");
     } elseif (file_exists(DIR_BASE."modules/".$classname_lc."/".$classname_lc.".basemod.php")) {
         // Our own BaseModules
-        SessionStore::writeCache("__autoload_".$classname, DIR_BASE."modules/".$classname_lc."/".$classname_lc.".basemod.php");
         require_once(DIR_BASE."modules/".$classname_lc."/".$classname_lc.".basemod.php");
     }
 }
