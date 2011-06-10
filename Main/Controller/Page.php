@@ -833,7 +833,8 @@ class Page extends BaseObject implements OutputObject
         }
 
         foreach(Manager\Module::getModuleListFromDatabase() as $module) {
-            call_user_func($module->filesystemname."::callNavModule", &$this->nav);
+            $classname = $module->filesystemname;
+            $classname::callNavModule($this->nav);
         }
     }
 
@@ -850,7 +851,8 @@ class Page extends BaseObject implements OutputObject
         }
 
         foreach(Manager\Module::getModuleListFromDatabase() as $module) {
-            call_user_func($module->filesystemname."::callTextModule", &$this->_bodycontent);
+            $classname = $module->filesystemname;
+            $classname::callTextModule($this->_bodycontent);
         }
     }
 

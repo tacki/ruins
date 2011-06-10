@@ -2,7 +2,8 @@
 /**
  * Namespaces
  */
-use Main\Manager;
+use Main\Manager,
+    Main\Entities;
 
 global $em;
 

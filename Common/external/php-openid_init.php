@@ -7,7 +7,7 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @package Ruins
  */
-
+$oldlevel = error_reporting(0);
 $path_extra = dirname(__FILE__) . "/php-openid";
 $path = ini_get('include_path');
 $path = $path_extra . PATH_SEPARATOR . $path;
@@ -24,4 +24,5 @@ $pape_policy_uris = array(
     PAPE_AUTH_MULTI_FACTOR,
     PAPE_AUTH_PHISHING_RESISTANT
 );
+error_reporting($oldlevel);
 ?>
