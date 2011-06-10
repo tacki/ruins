@@ -10,8 +10,8 @@
 /**
  * Namespaces
  */
-use Controller\Link,
-    Controller\Timer;
+use Main\Controller\Link,
+    Main\Controller\Timer;
 
 /**
  * Page Content

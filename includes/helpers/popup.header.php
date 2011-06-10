@@ -6,25 +6,26 @@
  * @author Markus Schlegel <g42@gmx.net>
  * @copyright Copyright (C) 2007 Markus Schlegel
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version SVN: $Id: popup.header.php 326 2011-04-19 20:19:34Z tacki $
  * @package Ruins
  */
 
 /**
- * Global Includes
+ * Namespaces
  */
-require_once(DIR_INCLUDES."includes.inc.php");
+use Common\Controller\Error,
+    Main\Controller\Config,
+    Main\Controller\Popup;
 
 /**
  * Popup Content
  */
 
 // Initialize Config-Class
-$config = new Controller\Config();
+$config = new Config();
 
 // Load User if in Session
 if ($userid = SessionStore::get('userid')) {
-    $user = new User($userid);
+    $user = $em->find("Main:User",$userid);
 }
 
 // Page preparation
@@ -32,13 +33,13 @@ $config->addPublicPage(array("popup/support"));
 
 if (array_search($_GET['popup'], $config->get("publicpages")) !== false) {
     // this is a public page!
-    $popup = new Controller\Popup();
+    $popup = new Popup();
 
     // Create the Page
     $popup->create();
 } elseif (isset($user)) {
     // this is a private page and a user is loaded
-    $popup = new Controller\Popup($user->character);
+    $popup = new Popup($user->character);
 
     // Create the Page
     $popup->create();

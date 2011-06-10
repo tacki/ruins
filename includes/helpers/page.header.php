@@ -13,9 +13,9 @@
 /**
  * Namespaces
  */
-use Controller\Link,
-    Controller\Page,
-    Controller\Config;
+use Main\Controller\Link,
+    Main\Controller\Page,
+    Main\Controller\Config;
 
 /**
  * Page Content
@@ -26,7 +26,7 @@ $config = new Config();
 
 // Load User if in Session
 if ($userid = SessionStore::get('userid')) {
-    $user = new User($userid);
+    $user = $em->find("Main:User",$userid);
 }
 
 // Page preparation

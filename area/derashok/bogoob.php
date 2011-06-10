@@ -11,7 +11,8 @@
 /**
  * Namespaces
  */
-use Controller\Link;
+use Main\Controller\Link,
+    Main\Manager;
 
 /**
  * Page Content
@@ -99,7 +100,7 @@ switch ($_GET['op']) {
         $price 	= $_POST['price'];
 
         foreach($ids as $itemid) {
-            $item = $em->find("Entities\Items\Common", $itemid);
+            $item = $em->find("Main:Items\Common", $itemid);
 
             $em->remove($item);
             $em->flush();

@@ -13,8 +13,10 @@
 /**
  * Namespaces
  */
-use Controller\Link,
-    Controller\Page;
+use Main\Manager,
+    Main\Controller\Link,
+    Main\Controller\Page,
+    Main\Controller\Config;
 
 /**
  * Global Includes
@@ -29,7 +31,7 @@ try {
     }
 
     // Prepare Systemwide Config
-    $config = new Controller\Config;
+    $config = new Config;
 
     // check for page- or popup-argument
     $outputfile = array();

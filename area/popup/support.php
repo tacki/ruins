@@ -10,8 +10,8 @@
 /**
  * Namespaces
  */
-use Controller\Link,
-    Controller\Page;
+use Main\Controller\Link,
+    Main\Controller\Page;
 
 /**
  * Page Content
@@ -144,8 +144,8 @@ switch ($_GET['op']) {
         $data = new Entities\SupportRequests;
 
         if ($loggedin) {
-            $data->user = $user->getEntity();
-        } elseif ($user = $em->getRepository("Entities\User")->findByLogin($_POST['userlogin'])) {
+            $data->user = $user;
+        } elseif ($user = $em->getRepository("Main:User")->findByLogin($_POST['userlogin'])) {
             $data->user = $user;
         }
 

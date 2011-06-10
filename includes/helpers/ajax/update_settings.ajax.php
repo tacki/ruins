@@ -25,7 +25,7 @@ if ($userid = SessionStore::get('userid')) {
     $qb = getQueryBuilder();
 
     $userconfig = $qb   ->select("settings")
-                        ->from("Entities\UserSetting", "settings")
+                        ->from("Main:UserSetting", "settings")
                         ->where("settings.user = ?1")->setParameter(1, $userid)
                         ->getQuery()
                         ->getOneOrNullResult();

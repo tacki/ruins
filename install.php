@@ -215,7 +215,7 @@ switch ($_GET['step']) {
                                                         "\");"."\n" .
                                                     "	define(\"DIR_MAIN\", ".
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
-                                                        "/main/".
+                                                        "/Main/".
                                                         "\");"."\n" .
                                                     "	define(\"DIR_AREA\", ".
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
@@ -225,33 +225,25 @@ switch ($_GET['step']) {
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
                                                         "/config/".
                                                         "\");"."\n" .
-                                                    "	define(\"DIR_LIB\", ".
-                                                        "\"".str_replace('\\', '/', dirname(__FILE__)).
-                                                        "/lib/".
-                                                        "\");"."\n" .
                                                     "	define(\"DIR_INCLUDES\", ".
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
                                                         "/includes/".
                                                         "\");"."\n" .
                                                     "	define(\"DIR_COMMON\", ".
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
-                                                        "/common/".
+                                                        "/Common/".
                                                         "\");"."\n" .
                                                     "	define(\"DIR_COMMON_EXTERNAL\", ".
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
-                                                        "/common/external/".
+                                                        "/Common/external/".
                                                         "\");"."\n" .
                                                     "	define(\"DIR_INCLUDES_DOCTRINE\", ".
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
-                                                        "/common/external/doctrine2/".
+                                                        "/Common/external/doctrine2/".
                                                         "\");"."\n" .
                                                     "	define(\"DIR_INCLUDES_SMARTY\", ".
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
-                                                        "/common/external/smarty/".
-                                                        "\");"."\n" .
-                                                    "	define(\"DIR_IMAGES\", ".
-                                                        "\"".str_replace('\\', '/', dirname(__FILE__)).
-                                                        "/images/".
+                                                        "/Common/external/smarty/".
                                                         "\");"."\n" .
                                                     "	define(\"DIR_TEMPLATES\", ".
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
@@ -400,6 +392,7 @@ switch ($_GET['step']) {
             echo "<div class='checkfor'>Try to connect using the existing Configuration File ... </div>";
 
             require_once(DIR_CONFIG."dbconnect.cfg.php");
+            require_once(DIR_INCLUDES."includes.inc.php");
             $needDBinfo = false;
 
             // CLEAR PREVIOUS CACHE

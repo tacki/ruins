@@ -8,13 +8,19 @@
  * @package Ruins
  */
 
+/**
+ * Namespaces
+ */
+use Main\Controller\Battle,
+    Main\Manager;
+
 $battle->addCreateBattleNav();
 $page->output("`nGegenwärtige Kämpfe`n");
 
 $battlelist = Manager\Battle::getBattleList();
 
 foreach ($battlelist as $activebattle) {
-    $tempbattle = new Controller\Battle;
+    $tempbattle = new Battle;
     $tempbattle->load($activebattle->id);
     $tempbattle->showBattleInformation();
 }

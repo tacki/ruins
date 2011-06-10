@@ -13,7 +13,9 @@
 /**
  * Namespaces
  */
-use Controller\Page;
+use Main\Controller\Page,
+    Common\Controller\Error,
+    Main\Manager;
 
 /**
  * Class Defines
