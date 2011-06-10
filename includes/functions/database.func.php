@@ -37,41 +37,4 @@ function getQueryBuilder()
         return $em->createQueryBuilder();
     }
 }
-
-/**
- * Return a Database Result as an instance of a given Object (Result is imported)
- * @param Querytool $dbqt QueryTool Object to get the Data from
- * @param string $objectname Name of the Object to use the Data with (must be an Instance of DBObject)
- * @return object Instance of the Object containing the Result of the Query
- */
-function dbResultAsObjects(Querytool $dbqt, $objectname)
-{
-    $result = array();
-    $objectname = ucfirst($objectname);
-
-    // First check that we have a valid objectname
-    if (class_exists($objectname)) {
-        $object = new $objectname;
-        if (!($object instanceof DBObject)) {
-            throw new Error("dbResultAsObjects(): Class $objectname is not an Instance of DBObject");
-        }
-    } else {
-        throw new Error("dbResultAsObjects(): Class $objectname is unknown");
-    }
-
-    // Fetch the Result from the Querytool-Object
-    if ($dbResult = $dbqt->exec()->fetchAll()) {
-        foreach ($dbResult as $row) {
-            $tempobject = new $objectname;
-            $tempobject->import($row);
-            // Fake the loading from Database
-            $tempobject->load(0);
-            $result[] = clone $tempobject;
-        }
-
-    } else {
-        $result = array();
-    }
-    return $result;
-}
 ?>

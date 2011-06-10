@@ -47,7 +47,7 @@ try {
     }
 
     // Check if the page-value is valid
-    validatePHPFilePath(current($outputfile));
+    Manager\System::validatePHPFilePath(current($outputfile));
 
     switch (current($outputfile)) {
         default:
