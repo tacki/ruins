@@ -135,6 +135,9 @@ class System
             if (file_exists(DIR_AREA . $filepath)) {
                 // add DIR_AREA to create the full path
                 $filepath = DIR_AREA . $filepath;
+            // FIXME:Custom Stuff
+            } elseif (file_exists(DIR_BASE . "Modules/Support/area/" . $filepath)) {
+                $filepath = DIR_BASE . "Modules/Support/area/" . $filepath;
             }
         }
 

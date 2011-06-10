@@ -30,5 +30,12 @@ class Module extends EntityBase
 
     /** @Column(type="boolean") */
     protected $enabled;
+
+    public function __construct()
+    {
+        // Default Values
+        $this->type = "";
+        $this->enabled = 0;
+    }
 }
 ?>

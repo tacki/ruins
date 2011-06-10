@@ -2,14 +2,14 @@
 /**
  * Namespaces
  */
-namespace Main\Entities;
+namespace Modules\Support\Entities;
 use DateTime;
 
 /**
  * @Entity
  * @Table(name="support")
  */
-class SupportRequests extends EntityBase
+class SupportRequests extends \Main\Entities\EntityBase
 {
     /**
      * @Id @Column(type="integer")
@@ -21,7 +21,7 @@ class SupportRequests extends EntityBase
     protected $date;
 
     /**
-     * @ManyToOne(targetEntity="User", inversedBy="debuglog")
+     * @ManyToOne(targetEntity="Main\Entities\User")
      */
     protected $user;
 
