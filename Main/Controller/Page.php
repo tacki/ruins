@@ -15,10 +15,9 @@
 namespace Main\Controller;
 use Smarty,
     BaseObject,
-    OutputObject,
     Module,
-    ModuleSystem,
     Common\Controller\Error,
+    Common\Interfaces\OutputObject,
     Main\Manager,
     Form,
     Table,
@@ -134,7 +133,6 @@ class Page extends BaseObject implements OutputObject
         $this->_isCreated		= false;
         $this->_headscripts 	= array();
         $this->_bodycontent 	= array();
-        $this->_outputmodule	= array();
         $this->_toolBoxItems	= array();
         $this->modulesenabled	= true;
 
@@ -165,11 +163,6 @@ class Page extends BaseObject implements OutputObject
 
         // Check the Navigation for correct Page-calling
         $this->_checkNav();
-
-        // Load Page Output Modules
-        if ($this->modulesenabled) {
-            ModuleSystem::loadOutputModules($this);
-        }
 
         // Set created-flag
         $this->_isCreated = true;
@@ -208,30 +201,6 @@ class Page extends BaseObject implements OutputObject
         }
 
         $this->_char = false;
-    }
-
-    /**
-     * Add an Output Module (overwrite existing)
-     * @param string $modulename Name of the Module
-     * @param Module $outputmodule The Module itself
-     */
-    public function addOutputModule($modulename, Module $outputmodule)
-    {
-        // existing Modules are overwritten
-        if ($this->modulesenabled) {
-            $this->_outputmodule[$modulename] = $outputmodule;
-        }
-    }
-
-    /**
-     * Remove an Output Module
-     * @param string $modulename Name of the Module
-     */
-    public function removeOutputModule($modulename)
-    {
-        if (isset($this->_outputmodule[$modulename])) {
-            unset ($this->_outputmodule[$modulename]);
-        }
     }
 
     /**
@@ -823,36 +792,26 @@ class Page extends BaseObject implements OutputObject
     /**
      * Call the Navigation Module of an Outputmodule
      */
-    protected function _callOutputModuleNavigation()
+    protected function _callModuleNavigation()
     {
-        if (is_array($this->_outputmodule)) {
-            // call NavigationModule of each Module
-            foreach ($this->_outputmodule as $module) {
-                $module->callNavModule($this->nav);
+        if ($this->modulesenabled) {
+            foreach(Manager\Module::getModuleListFromDatabase(true) as $module) {
+                $classname = $module->classname;
+                $classname::callNavModule($this->nav);
             }
-        }
-
-        foreach(Manager\Module::getModuleListFromDatabase() as $module) {
-            $classname = $module->filesystemname;
-            $classname::callNavModule($this->nav);
         }
     }
 
     /**
      * Call the Text Module of an Outputmodule
      */
-    protected function _callOutputModuleText()
+    protected function _callModuleBody()
     {
-        if (is_array($this->_outputmodule)) {
-            // call NavigationModule of each Module
-            foreach ($this->_outputmodule as $module) {
-                $module->callTextModule($this->_bodycontent);
+        if ($this->modulesenabled) {
+            foreach(Manager\Module::getModuleListFromDatabase(true) as $module) {
+                $classname = $module->classname;
+                $classname::callTextModule($this->_bodycontent);
             }
-        }
-
-        foreach(Manager\Module::getModuleListFromDatabase() as $module) {
-            $classname = $module->filesystemname;
-            $classname::callTextModule($this->_bodycontent);
         }
     }
 
@@ -885,10 +844,10 @@ class Page extends BaseObject implements OutputObject
 
         $this->_generateHeadScripts();
 
-        $this->_callOutputModuleNavigation();
+        $this->_callModuleNavigation();
         $this->_generateNavigation();
 
-        $this->_callOutputModuleText();
+        $this->_callModuleBody();
         $this->_generateBodyContent();
 
         $this->_generatePagegenTime();

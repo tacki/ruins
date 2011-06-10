@@ -23,10 +23,10 @@ class Module extends EntityBase
     protected $description;
 
     /** @Column(length=255) */
-    protected $filesystemname;
+    protected $namespace;
 
     /** @Column(length=255) */
-    protected $type;
+    protected $classname;
 
     /** @Column(type="boolean") */
     protected $enabled;

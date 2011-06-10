@@ -11,6 +11,11 @@
  */
 
 /**
+ * Namespaces
+ */
+use Common\Interfaces\OutputObject;
+
+/**
  * Basic HTML Class
  *
  * Baseclass for all HTML-based classes

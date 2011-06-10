@@ -71,9 +71,9 @@ function getOutputObject()
     global $page;
     global $popup;
 
-    if ($page instanceof OutputObject) {
+    if ($page instanceof \Common\Interfaces\OutputObject) {
         $outputobject =	$page;
-    } elseif ($popup instanceof OutputObject) {
+    } elseif ($popup instanceof \Common\Interfaces\OutputObject) {
         $outputobject = $popup;
     } else {
         $outputobject = false;

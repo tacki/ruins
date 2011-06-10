@@ -39,10 +39,27 @@ class Module
 
         foreach($dircontent['directories'] as $dirname) {
             // Generate the Classname of the Module-Init-File
-            $result[] = "Modules\\".$dirname."\\".$dirname;
+            $classname = "Modules\\".$dirname."\\".$dirname;
+            if (self::validateModule($classname)) {
+                $result[] = $classname;
+            }
         }
 
         return $result;
+    }
+
+    /**
+     * Validate given Module-Class
+     * @param string $initClass
+     * @return bool true if Class is valid, else false
+     */
+    public static function validateModule($initClass)
+    {
+        if (class_exists($initClass, true)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -56,7 +73,7 @@ class Module
 
         $qb ->select("module")
             ->from("Main:Module", "module");
-        if ($onlyenabled) $qb->where("enabled = ?1")->setParameter(1, true);
+        if ($onlyenabled) $qb->where("module.enabled = ?1")->setParameter(1, true);
 
         $result = $qb->getQuery()->getResult();
 
