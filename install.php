@@ -255,7 +255,7 @@ switch ($_GET['step']) {
                                                         "\");"."\n" .
                                                     "	define(\"DIR_MODULES\", ".
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
-                                                        "/modules/".
+                                                        "/Modules/".
                                                         "\");".
                                                     "?>";
 
@@ -576,45 +576,21 @@ switch ($_GET['step']) {
         require_once("config/dirconf.cfg.php");
         require_once(DIR_INCLUDES."includes.inc.php");
 
-        // Set Autoloader
-        spl_autoload_register("ruinsAutoload");
-
         echo "<div class='checkfor'>Sync ModuleList to Database ... </div>";
 
         // Generate Module List
-        if (ModuleSystem::syncModuleListToDatabase()) {
+        if (Main\Manager\Module::syncModuleListToDatabase()) {
             echo "<div class='ok'>OK!</div>";
-        } else {
-            echo "<div class='notok'>NOT OK! Failure during initial ModuleList Sync!</div>";
-            echo "<form action='install.php?step=" . ($_GET['step']) . "&import=true' method='post'>
-                    <input type='submit' value='Retry' class='retry'></form>";
-            break;
         }
 
-        echo "<div class='checkfor'>Initialize Modules ... </div>";
-
-        // Initialize Modules
-        if ($moduleList = ModuleSystem::getModuleListFromDatabase()) {
-            if (is_array($moduleList)) {
-                foreach ($moduleList as $module) {
-                    if (ModuleSystem::installModule($module['type'], $module['filesystemname'])) {
-                        echo "<div class='ok'>" . $module['name'] . " ... OK!</div>";
-                    } else {
-                        echo "<div class='notok'>Module Initialization Error: " . $module['name'] . "</div>";
-                    }
-                }
-            }
-            echo "<div class='continue'>Continue to the next Step</div>";
-            echo "<form action='install.php?step=" . ($_GET['step']+1) .  "' method='post'>
-                    <input type='submit' value='Continue' class='continue'></form>";
-        } else {
-            echo "<div class='ask'>No Modules found! Continue?</div>";
-            echo "<form action='install.php?step=" . ($_GET['step']) . "&import=true' method='post'>
-                    <input type='submit' value='Retry' class='retry'></form>";
-            echo "<form action='install.php?step=" . ($_GET['step']+1) .  "' method='post'>
-                    <input type='submit' value='Continue' class='continue'></form>";
-            break;
+        echo "<div class='checkfor'>Modules found ... </div>";
+        foreach(Main\Manager\Module::getModuleListFromDatabase() as $module) {
+            echo "<div class='ok'>" . $module->name . "</div>";
         }
+
+        echo "<div class='continue'>Continue to the next Step</div>";
+        echo "<form action='install.php?step=" . ($_GET['step']+1) .  "' method='post'>
+              <input type='submit' value='Continue' class='continue'></form>";
 
         break;
 

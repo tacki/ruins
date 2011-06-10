@@ -26,8 +26,13 @@ if ($applicationMode == "development") {
 }
 $config->setQueryCacheImpl($cache);
 
+// FIXME:Custom Stuff
+$entityPaths = array();
+$entityPaths[] = DIR_MAIN."Entities";
+$entityPaths[] = DIR_BASE."Modules/Support/Entities";
+
 // Load Annotation Driver
-$driverImpl = $config->newDefaultAnnotationDriver(DIR_MAIN."Entities");
+$driverImpl = $config->newDefaultAnnotationDriver($entityPaths);
 $config->setMetadataDriverImpl($driverImpl);
 $config->setMetadataCacheImpl($cache);
 
@@ -43,6 +48,7 @@ if ($applicationMode == "development") {
 $config->setProxyDir(DIR_COMMON."Proxies");
 $config->setProxyNamespace('Proxies');
 
+// FIXME:Custom Stuff
 $config->addEntityNamespace("Main", "Main\Entities");
 
 // Get EntityManager
