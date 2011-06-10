@@ -45,23 +45,18 @@ $classLoader->register();
 $classLoader = new \Doctrine\Common\ClassLoader('Symfony', DIR_INCLUDES_DOCTRINE . 'Doctrine/');
 $classLoader->register();
 
-$classLoader = new \Doctrine\Common\ClassLoader('Entities', DIR_MAIN);
+//----
+
+$classLoader = new \Doctrine\Common\ClassLoader('Common', DIR_BASE);
 $classLoader->register();
 
-$classLoader = new \Doctrine\Common\ClassLoader('Manager', DIR_MAIN . 'lib/');
-$classLoader->register();
-
-$classLoader = new \Doctrine\Common\ClassLoader('Layers', DIR_MAIN . 'lib/');
-$classLoader->register();
-
-$classLoader = new \Doctrine\Common\ClassLoader('Controller', DIR_MAIN . 'lib/');
+$classLoader = new \Doctrine\Common\ClassLoader('Main', DIR_BASE);
 $classLoader->register();
 
 /**
  * Doctrine Initialization
  */
 require_once(DIR_COMMON_EXTERNAL."doctrine2_init.php");
-
 
 /**
  * Smarty Initialization

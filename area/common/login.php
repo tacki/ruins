@@ -11,8 +11,9 @@
 /**
  * Namespaces
  */
-use Entities\DebugLogEntity,
-    Controller\Link;
+use Main\Entities\DebugLogEntity,
+    Main\Controller\Link,
+    Main\Manager;
 
 /**
  * Page Content
@@ -100,7 +101,7 @@ switch ($_GET['op']) {
     case "checkpw":
         $page->output("`cChecking Password!`c`n");
         if ($userid = Manager\User::checkPassword($_POST['username'], $_POST['password'])) {
-            $user = new User($userid);
+            $user = $em->find("Main:User",$userid);
             $user->login();
 
             $user->addDebugLog("Login via User/Pass");
@@ -130,12 +131,12 @@ switch ($_GET['op']) {
             $qb = getQueryBuilder();
 
             $result = $qb   ->select("openid")
-                            ->from("Entities\OpenID", "openid")
+                            ->from("Main:OpenID", "openid")
                             ->where("openid.urlID LIKE ?1")->setParameter(1, $result['openid'])
                             ->getQuery()->getOneOrNullResult();
 
             if ($result) {
-                $user = new User($result->user->id);
+                $user = $result->user;
                 $user->login();
 
                 $user->addDebugLog("Login via OpenID (".$result->urlID.")");

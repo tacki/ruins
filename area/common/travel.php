@@ -11,7 +11,8 @@
 /**
  * Namespaces
  */
-use Controller\Link;
+use Main\Controller\Link,
+    Main\Controller\Timer;
 
 /**
  * Page Content
@@ -21,7 +22,7 @@ $page->set("headtitle", "Reisen");
 
 $page->nav->add(new Link("Ruins"));
 
-$timer = new Controller\Timer("travelTimer", $user->character);
+$timer = new Timer("travelTimer", $user->character);
 
 switch ($_GET['op']) {
 

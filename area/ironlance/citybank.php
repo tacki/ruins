@@ -10,8 +10,10 @@
 /**
  * Namespaces
  */
-use Controller\Link,
-    Controller\Timer;
+use Main\Controller\Link,
+    Main\Controller\Timer,
+    Main\Layers\Money,
+    Main\Manager;
 
 /**
  * Page Content
@@ -103,7 +105,7 @@ switch ($_GET['op']) {
         break;
 
     case "deposit2":
-        $temp_wallet = new \Layers\Money();
+        $temp_wallet = new Money();
 
         $temp_wallet->receive(abs($_POST['gold']), "gold");
         $temp_wallet->receive(abs($_POST['silver']), "silver");
@@ -145,7 +147,7 @@ switch ($_GET['op']) {
         break;
 
     case "withdraw2":
-        $temp_wallet = new \Layers\Money();
+        $temp_wallet = new Money();
 
         $temp_wallet->receive(abs($_POST['gold']), "gold");
         $temp_wallet->receive(abs($_POST['silver']), "silver");

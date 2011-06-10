@@ -13,7 +13,7 @@
 /**
  * Namespaces
  */
-use Controller\Nav;
+use Main\Controller\Nav;
 
 /**
  * Page Content
