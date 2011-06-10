@@ -53,6 +53,9 @@ $classLoader->register();
 $classLoader = new \Doctrine\Common\ClassLoader('Main', DIR_BASE);
 $classLoader->register();
 
+$classLoader = new \Doctrine\Common\ClassLoader('Modules', DIR_BASE);
+$classLoader->register();
+
 /**
  * Doctrine Initialization
  */

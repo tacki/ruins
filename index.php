@@ -49,7 +49,7 @@ try {
     }
 
     // Check if the page-value is valid
-    Manager\System::validatePHPFilePath(current($outputfile));
+    $realpath = Manager\System::validatePHPFilePath(current($outputfile));
 
     switch (current($outputfile)) {
         default:
@@ -70,7 +70,7 @@ try {
             /**
              * Page Content
              */
-            include(DIR_AREA.current($outputfile) . ".php");
+            include($realpath);
 
             /**
              * Page Footer
