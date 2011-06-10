@@ -248,7 +248,7 @@ class Page extends BaseObject implements OutputObject
      */
     public function addJavaScriptFile($script)
     {
-        $this->_headscripts[] = "<script src='".htmlpath(DIR_INCLUDES)."/javascript/".$script."' type='text/javascript'></script>";
+        $this->_headscripts[] = "<script src='".\Manager\System::htmlpath(DIR_INCLUDES)."/javascript/".$script."' type='text/javascript'></script>";
     }
 
     /**
@@ -257,7 +257,7 @@ class Page extends BaseObject implements OutputObject
      */
     public function addCommonCSS($script)
     {
-        $this->_headscripts[] = "<link href='".htmlpath(DIR_TEMPLATES)."/common/styles/".$script."' rel='stylesheet' type='text/css' />";
+        $this->_headscripts[] = "<link href='".\Manager\System::htmlpath(DIR_TEMPLATES)."/common/styles/".$script."' rel='stylesheet' type='text/css' />";
     }
 
     /**
@@ -266,7 +266,7 @@ class Page extends BaseObject implements OutputObject
      */
     public function addTemplateCSS($script)
     {
-        $this->_headscripts[] = "<link href='".htmlpath(DIR_TEMPLATES)."/". $this->template['name'] ."/".$script."' rel='stylesheet' type='text/css' />";
+        $this->_headscripts[] = "<link href='".\Manager\System::htmlpath(DIR_TEMPLATES)."/". $this->template['name'] ."/".$script."' rel='stylesheet' type='text/css' />";
     }
 
     /**
@@ -424,9 +424,9 @@ class Page extends BaseObject implements OutputObject
 
         // Set the correct Template-Paths inside the Template
         // For Paths that are sent to the Client (relative webbased paths)
-        $this->template['mytemplatedir'] = htmlpath($this->_smarty->template_dir . "/" . $this->template['name']);
+        $this->template['mytemplatedir'] = \Manager\System::htmlpath($this->_smarty->template_dir . "/" . $this->template['name']);
         $this->set("mytemplatedir", $this->template['mytemplatedir']);
-        $this->template['commontemplatedir'] = htmlpath($this->_smarty->template_dir . "/common");
+        $this->template['commontemplatedir'] = \Manager\System::htmlpath($this->_smarty->template_dir . "/common");
         $this->set("commontemplatedir", $this->template['commontemplatedir']);
 
         // Paths that are handled inside the templategeneration progress (full filepaths)
@@ -446,8 +446,8 @@ class Page extends BaseObject implements OutputObject
         $snippet->compile_dir 		= $this->_smarty->compile_dir;
         $snippet->cache_dir 		= $this->_smarty->cache_dir;
         $snippet->config_dir 		= $this->_smarty->config_dir;
-        $snippet->assign("mytemplatedir", htmlpath($snippet->template_dir));
-        $snippet->assign("commontemplatedir", htmlpath($this->_smarty->template_dir . "/common"));
+        $snippet->assign("mytemplatedir", \Manager\System::htmlpath($snippet->template_dir));
+        $snippet->assign("commontemplatedir", \Manager\System::htmlpath($this->_smarty->template_dir . "/common"));
         $snippet->assign("myfulltemplatedir", $snippet->template_dir);
 
         return $snippet;
@@ -547,7 +547,7 @@ class Page extends BaseObject implements OutputObject
      */
     protected function _addJQuerySupport()
     {
-        array_unshift($this->_headscripts, "<script src='".htmlpath(DIR_INCLUDES)."/javascript/jquery-1.3.2.min.js' type='text/javascript'></script>");
+        array_unshift($this->_headscripts, "<script src='".\Manager\System::htmlpath(DIR_INCLUDES)."/javascript/jquery-1.3.2.min.js' type='text/javascript'></script>");
         $this->addJavaScriptFile("jquery-ui-1.7.2.custom.min.js");
         $this->addJavaScriptFile("jquery.plugin.timers.js");
     }
@@ -678,7 +678,7 @@ class Page extends BaseObject implements OutputObject
             $toolBoxJS 		.= "$('#".$toolItem['link']->displayname."').click(function() {
                                     $.ajax({
                                       type: 'GET',
-                                      url: '".htmlpath(DIR_INCLUDES)."/helpers/ajax/".$toolItem['link']->url."',
+                                      url: '".\Manager\System::htmlpath(DIR_INCLUDES)."/helpers/ajax/".$toolItem['link']->url."',
                                       dataType: 'script'
                                     });
                                     $(this).replaceWith('<img src=".$toolItem['replaceimagesrc']." />');
