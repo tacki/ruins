@@ -30,7 +30,7 @@ require_once(DIR_INCLUDES."functions/global.func.php");
 require_once(DIR_INCLUDES."functions/database.func.php");
 
 /**
- * Set Autoloader
+ * Set Autoloader for old Classes
  */
 spl_autoload_register("ruinsAutoload");
 
@@ -44,8 +44,6 @@ $classLoader->register();
 
 $classLoader = new \Doctrine\Common\ClassLoader('Symfony', DIR_INCLUDES_DOCTRINE . 'Doctrine/');
 $classLoader->register();
-
-//----
 
 $classLoader = new \Doctrine\Common\ClassLoader('Common', DIR_BASE);
 $classLoader->register();
@@ -70,5 +68,12 @@ require_once(DIR_COMMON_EXTERNAL."smarty_init.php");
  * PHP-OpenID Initialization
  */
 require_once(DIR_COMMON_EXTERNAL."php-openid_init.php");
+
+/**
+ * Tree Initialization
+ */
+require_once(DIR_COMMON."Init.php");
+require_once(DIR_MAIN."Init.php");
+require_once(DIR_MODULES."Init.php");
 
 ?>

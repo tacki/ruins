@@ -8,12 +8,21 @@
  * @package Ruins
  */
 
+/**
+ * Namespaces
+ */
 use Doctrine\Common\Cache\ArrayCache,
     Doctrine\Common\Cache\ApcCache,
+    Doctrine\Common\ClassLoader,
     Doctrine\ORM\EntityManager,
     Doctrine\ORM\Configuration,
     Doctrine\DBAL\Types\Type;
 
+/**
+ * Doctrine Bootstrap
+ */
+
+// Application Mode
 $applicationMode = "development";
 
 $config = new Configuration;
@@ -26,13 +35,8 @@ if ($applicationMode == "development") {
 }
 $config->setQueryCacheImpl($cache);
 
-// FIXME:Custom Stuff
-$entityPaths = array();
-$entityPaths[] = DIR_MAIN."Entities";
-$entityPaths[] = DIR_BASE."Modules/Support/Entities";
-
 // Load Annotation Driver
-$driverImpl = $config->newDefaultAnnotationDriver($entityPaths);
+$driverImpl = $config->newDefaultAnnotationDriver(DIR_MAIN."Entities");
 $config->setMetadataDriverImpl($driverImpl);
 $config->setMetadataCacheImpl($cache);
 
@@ -48,9 +52,6 @@ if ($applicationMode == "development") {
 $config->setProxyDir(DIR_COMMON."Proxies");
 $config->setProxyNamespace('Proxies');
 
-// FIXME:Custom Stuff
-$config->addEntityNamespace("Main", "Main\Entities");
-
 // Get EntityManager
 global $dbconnect;
 $em = EntityManager::create($dbconnect, $config);
@@ -64,5 +65,4 @@ if ($applicationMode == "development") {
     $error = $validator->validateMapping();
     if($error) var_dump($error);
 }
-
 ?>
