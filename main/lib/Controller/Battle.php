@@ -13,7 +13,6 @@
  */
 namespace Controller;
 use Entities\Character,
-    Link,
     Error,
     SessionStore;
 
@@ -903,8 +902,8 @@ class Battle
         $outputobject 	= getOutputObject();
         $battleopstr 	= $this->_getBattleOpString();
 
-        $outputobject->nav->add(new \Link("Kampf"));
-        $outputobject->nav->add(new \Link("Anfangen", $outputobject->url->base."&{$battleopstr}=create"));
+        $outputobject->nav->add(new Link("Kampf"));
+        $outputobject->nav->add(new Link("Anfangen", $outputobject->url->base."&{$battleopstr}=create"));
     }
 
     /**
