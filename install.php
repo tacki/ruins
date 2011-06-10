@@ -341,55 +341,6 @@ switch ($_GET['step']) {
 
         }
 
-        // ***************************************************************************************** //
-
-        echo "<h4>Checking for required Libraries</h4>";
-
-        // Load the Config generated in Step 2
-        require_once("config/dirconf.cfg.php");
-
-        $libraries = array();
-
-        $libraries["PEAR Basic Package"] 					= "PEAR.php";
-        $libraries["PEAR MDB2 Database Abstraction Layer"] 	= "MDB2.php";
-        $libraries["PEAR MDB2 Database Schema Manager"] 	= "MDB2/Schema.php";
-        $libraries["PEAR Log"]								= "Log.php";
-
-        // To add more Libraries, just keep this syntax
-        // $libraries['librarydescription']					= "libraryfile.php";
-
-        // Do the voodoo
-        foreach ($libraries as $description => $filename) {
-            echo "<div class='checkfor'>" . $description . " ... </div>";
-
-            $moduleok = false;
-            $includepaths = explode(PATH_SEPARATOR, get_include_path());
-
-            foreach ($includepaths as $include) {
-                if (file_exists($include . "/" . $filename)) {
-                    if (is_readable($include . "/" . $filename)) {
-                        echo "<div class='ok'>OK!</div>";
-                        $moduleok = true;
-                        break;
-                    } else {
-                        echo "<div class='notok'>Not OK! Library found, but not readable!
-                                Please make sure " . $filename .  " is readable by the Webserver.</div>";
-                        echo "<form action='install.php?step=" . ($_GET['step']) .  "' method='post'>
-                                <input type='submit' value='Retry' class='retry'></form>";
-                        break 2;
-                    }
-                }
-            }
-
-            if (!$moduleok) {
-                echo "<div class='notok'>Not OK! Library not found!
-                            Please install '" . $description .  "'.</div>";
-                echo "<form action='install.php?step=" . ($_GET['step']) .  "' method='post'>
-                        <input type='submit' value='Retry' class='retry'></form>";
-                break 2;
-            }
-        }
-
         echo "<div class='continue'>Continue to the next Step</div>";
         echo "<form action='install.php?step=" . ($_GET['step']+1) .  "' method='post'>
                 <input type='submit' value='Continue' class='continue'></form>";
