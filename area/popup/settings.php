@@ -10,7 +10,8 @@
 /**
  * Namespaces
  */
-use Controller\Link;
+use Main\Controller\Link,
+    Main\Manager;
 
 /**
  * Page Content
@@ -117,7 +118,7 @@ switch ($_GET['op']) {
                 // Default Character
                 if (is_numeric($_POST['default_character'])) {
                     global $em;
-                    $user->settings->default_character = $em->find("Entities\Character",$_POST['default_character']);
+                    $user->settings->default_character = $em->find("Main:Character",$_POST['default_character']);
                 } else {
                     $user->settings->default_character = NULL;
                 }

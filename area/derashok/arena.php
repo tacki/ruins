@@ -10,8 +10,9 @@
 /**
  * Namespaces
  */
-use Controller\Link,
-    Controller\Battle;
+use Main\Controller\Link,
+    Main\Controller\Battle,
+    Main\Manager;
 
 /**
  * Page Content

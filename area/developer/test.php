@@ -13,7 +13,12 @@
 /**
  * Namespaces
  */
-use Controller\Link;
+use Main\Controller\Link,
+    Main\Controller\Config,
+    Main\Controller\Timer,
+    Main\Controller\BtCode,
+    Main\Controller\Travel,
+    Main\Manager;
 
 // CLEAR CACHE
 SessionStore::pruneCache();
@@ -27,7 +32,7 @@ $mt = getMicroTime();
 $page->output("Starting Config Test: `n");
 $position = "configtest";
 
-$config = new Controller\Config;
+$config = new Config;
 
 $config->set("test", "123");
 $config->set("test", "321");
@@ -51,7 +56,7 @@ $mt = getMicroTime();
 $page->output("Starting User Test: `n");
 $position = "usertest";
 
-$user = new User(1);
+$user = $em->find("Main:User",1);
 
 if ($user->login == "anonymous") {
     $page->output("Usertest successful `n");
@@ -70,7 +75,7 @@ $mt = getMicroTime();
 $page->output("Starting Global Timer Test: `n");
 $position = "globaltimertest";
 
-$timer = new Controller\Timer("1hourtimertest");
+$timer = new Timer("1hourtimertest");
 
 switch($_GET['op'])
 {
@@ -167,7 +172,7 @@ $textsample = "`#54Das `#35i`#36s`#37t `#19ja `#99ein `bdi`#55c`#56k`#57e`#58r `
 
 $page->output("Zusammen: `n". $textsample ."`n");
 
-$page->output("Der gleiche Text nach einem purge: `n". Controller\BtCode::purgeTags($textsample) . "`n");
+$page->output("Der gleiche Text nach einem purge: `n". BtCode::purgeTags($textsample) . "`n");
 
 $page->output("`n`nAJAX Examples`n");
 
@@ -211,7 +216,7 @@ $page->output("Geordnet nach Gold:`n");
 $qb = getQueryBuilder();
 
 $result = $qb   ->select("char.displayname, char.id, char.money, char.lifepoints, char.healthpoints")
-                ->from("Entities\Character", "char")
+                ->from("Main:Character", "char")
                 ->where("char.money >= 0")
                 ->orderBy("char.money", "DESC")
                 ->addorderBy("char.lifepoints", "ASC")
@@ -339,7 +344,7 @@ $mt = getMicroTime();
 $position = "link&rightstest";
 $page->output("Starting Links+Rights Test:`n");
 
-$user = new User(1);
+$user = $em->find("Main:User",1);
 
 // Adding Group
 Manager\Rights::createGroup("TempGroup");
@@ -396,7 +401,7 @@ $mt = getMicroTime();
 $position = "moneytest";
 $page->output("Starting Money+Manager-Module Test:`n");
 
-$user = new User(1);
+$user = $em->find("Main:User",1);
 
 $page->output("`nStarting Money from {$user->character->displayname}:`n");
 
@@ -567,7 +572,7 @@ $mt = getMicroTime();
 $page->output("Starting Message Test: `n");
 $position = "messagetest";
 
-$user = new User(1);
+$user = $em->find("Main:User",1);
 
 $page->output("Sending Message from {$user->character->displayname} to {$user->character->displayname}`n");
 Manager\Message::write($user->character, $user->character, "du...", "...idiota!");
@@ -719,7 +724,7 @@ $position = "QueryBuildertest";
 $qb = getQueryBuilder();
 
 $result = $qb ->select("char.id, char.displayname")
-                ->from("Entities\Character", "char")
+                ->from("Main:Character", "char")
                 ->where("char.id > 0")
                 ->orderBy("char.id", "DESC")
                 ->getQuery()->getResult();
@@ -800,7 +805,7 @@ $mt = getMicroTime();
 $page->output("Race Definition Start: `n");
 $position = "racedefinitiontest";
 
-$user = new User();
+$user = $em->find("Main:User",1);
 $user->load(1);
 $user->loadCharacter();
 
@@ -826,7 +831,7 @@ $mt = getMicroTime();
 $page->output("Item Handling Start: `n");
 $position = "itemhandling";
 
-$item = $em->getRepository("Entities\Item")->findOneByClass("fish");
+$item = $em->getRepository("Main:Item")->findOneByClass("fish");
 
 if ($item) {
     $page->output("`n");
@@ -835,7 +840,7 @@ if ($item) {
     $page->output("`n");
 }
 
-$weapon = $em->getRepository("Entities\Items\Weapon")->findOneByClass("weapon");
+$weapon = $em->getRepository("Main:Items\Weapon")->findOneByClass("weapon");
 
 if ($weapon) {
     $page->output("`n");
@@ -845,7 +850,7 @@ if ($weapon) {
     $page->output("`n");
 }
 
-$armorset = $em->find("Entities\ArmorSet", 1);
+$armorset = $em->find("Main:ArmorSet", 1);
 
 if ($armorset) {
     $page->output("`n");
@@ -910,13 +915,13 @@ $mt = getMicroTime();
 
 // Waypoint Traveling System Start
 
-$travel = new Controller\Travel;
+$travel = new Travel;
 $page->output("Der Startpunkt ist Ironlance. `n");
 $page->output("Der Zielort ist Derashok.`n");
 
-$ironlance = $em->getRepository("Entities\Waypoint")->findOneByName("ironlance");
-$dunsplee  = $em->getRepository("Entities\Waypoint")->findOneByName("dunsplee");
-$derashok  = $em->getRepository("Entities\Waypoint")->findOneByName("derashok");
+$ironlance = $em->getRepository("Main:Waypoint")->findOneByName("ironlance");
+$dunsplee  = $em->getRepository("Main:Waypoint")->findOneByName("dunsplee");
+$derashok  = $em->getRepository("Main:Waypoint")->findOneByName("derashok");
 
 if ($travel->isConnected($ironlance, $derashok)){
     $page->output("Sind verbunden. Die Reisedauer betraegt: ");

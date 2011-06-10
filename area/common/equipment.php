@@ -10,7 +10,8 @@
 /**
  * Namespaces
  */
-use Controller\Link;
+use Main\Controller\Link,
+    Main\Manager;
 
 /**
  * Page Content

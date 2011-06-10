@@ -11,7 +11,7 @@
 /**
  * Namespaces
  */
-use Controller\Link;
+use Main\Controller\Link;
 
 /**
  * Page Content

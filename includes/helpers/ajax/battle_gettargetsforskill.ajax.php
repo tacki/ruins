@@ -11,6 +11,11 @@
  */
 
 /**
+ * Namespaces
+ */
+use Main\Manager;
+
+/**
  * Global Includes
  */
 require_once("../../../config/dirconf.cfg.php");

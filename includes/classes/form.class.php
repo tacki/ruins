@@ -11,8 +11,8 @@
 /**
  * Namespaces
  */
-use Controller\Nav,
-    Controller\Link;
+use Main\Controller\Nav,
+    Main\Controller\Link;
 
 /**
  * Creating formulars

@@ -4,14 +4,14 @@
  * @author Sebastian Meyer <greatiz@arcor.de>
  * @copyright Copyright (C) 2007 Sebastian Meyer
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version SVN: $Id: table.class.php 326 2011-04-19 20:19:34Z tacki $
  * @package Ruins
  */
 
 /**
- * Global Includes
+ * Namespaces
  */
-require_once(DIR_INCLUDES."includes.inc.php");
+use Common\Controller\Error,
+    Main\Controller\BtCode;
 
 class Table extends BaseHTML
 {
@@ -487,7 +487,7 @@ class Table extends BaseHTML
                     }else if ($this->_tabAddList['class']!="" && !$this->_tabAddList['class']){
                         $this->showing .= " class='".$this->_tabAddList['class']."'";
                     }
-                    $this->showing .= ">".Controller\BtCode::decode(current($this->_tabAddList['datalist'][$i]))."</td>\n";
+                    $this->showing .= ">".BtCode::decode(current($this->_tabAddList['datalist'][$i]))."</td>\n";
                     next($this->_tabAddList['datalist'][$i]);
                 }
                 $this->showing .= "</tr>\n";
@@ -548,7 +548,7 @@ class Table extends BaseHTML
                         $this->showing .= " colspan='".$this->_tabAddTableContent[$pos_row][$pos_col]['colspan']."'";
                         $this->showing .= ">";
                         // Add content
-                        $this->showing .= Controller\BtCode::decode($this->_tabAddTableContent[$pos_row][$pos_col]['content']);
+                        $this->showing .= BtCode::decode($this->_tabAddTableContent[$pos_row][$pos_col]['content']);
                         // close tag
                         $this->showing .= "</td>\n";
                         $pos_col += $pos_diff;
@@ -567,7 +567,7 @@ class Table extends BaseHTML
         // Last Step: End of table
         $this->showing .= "</tbody>\n";
         $this->showing .= "</table>\n";
-        $this->showing = Controller\BtCode::decodeToCSSColorClass($this->showing);
+        $this->showing = BtCode::decodeToCSSColorClass($this->showing);
         return $this->generateOutput($this->showing);
 
     } // End load();
