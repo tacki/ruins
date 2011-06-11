@@ -4,7 +4,6 @@
  * @author Markus Schlegel <g42@gmx.net>
  * @copyright Copyright (C) 2009 Markus Schlegel
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version SVN: $Id: battle.class.php 326 2011-04-19 20:19:34Z tacki $
  * @package Ruins
  */
 
@@ -12,11 +11,11 @@
  * Namespaces
  */
 namespace Main\Controller;
-use Main\Entities\Character,
-    Main\Entities,
+use Common\Controller\SessionStore,
     Common\Controller\Error,
-    Main\Manager,
-    SessionStore;
+    Main\Entities\Character,
+    Main\Entities,
+    Main\Manager;
 
 
 /**

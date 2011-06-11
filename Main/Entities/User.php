@@ -4,7 +4,7 @@
  */
 namespace Main\Entities;
 use DateTime,
-    SessionStore;
+    Common\Controller\SessionStore;
 
 /**
  * @Entity

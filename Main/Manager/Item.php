@@ -13,7 +13,7 @@
  * Namespaces
  */
 namespace Main\Manager;
-use SessionStore,
+use Common\Controller\SessionStore,
     Main\Entities\Character;
 
 /**

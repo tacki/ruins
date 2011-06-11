@@ -14,7 +14,7 @@
  */
 namespace Main\Manager;
 use Main\Entities,
-    SessionStore;
+    Common\Controller\SessionStore;
 
 /**
  * MessageSystem Class

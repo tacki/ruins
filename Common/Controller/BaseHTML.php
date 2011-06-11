@@ -13,6 +13,7 @@
 /**
  * Namespaces
  */
+namespace Common\Controller;
 use Common\Interfaces\OutputObject;
 
 /**

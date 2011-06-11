@@ -13,7 +13,7 @@
  * Namespaces
  */
 namespace Main\Manager;
-use SessionStore,
+use Common\Controller\SessionStore,
     Auth_OpenID_FileStore,
     Auth_OpenID_Consumer,
     Auth_OpenID_SRegRequest,

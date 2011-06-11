@@ -15,9 +15,9 @@
 namespace Main\Controller;
 use Main\Entities\Character,
     Common\Controller\Error,
+    Common\Controller\BaseObject,
     Main\Manager,
-    BaseObject,
-    OutputObject;
+    Common\Interfaces\OutputObject;
 
 /**
  * Nav Class

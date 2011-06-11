@@ -18,6 +18,11 @@ use Main\Controller\Link,
     Main\Controller\Timer,
     Main\Controller\BtCode,
     Main\Controller\Travel,
+    Main\Controller\Dice,
+    Common\Controller\SessionStore,
+    Common\Controller\StackObject,
+    Common\Controller\Form,
+    Common\Controller\Table,
     Main\Manager;
 
 // CLEAR CACHE

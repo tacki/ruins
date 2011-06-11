@@ -11,6 +11,7 @@
 /**
  * Namespaces
  */
+namespace Common\Controller;
 use Main\Controller\Nav,
     Main\Controller\Link;
 

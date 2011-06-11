@@ -11,7 +11,8 @@
 /**
  * Namespaces
  */
-use Main\Entities\DebugLogEntity,
+use Common\Controller\SessionStore,
+    Main\Entities\DebugLogEntity,
     Main\Controller\Link,
     Main\Manager;
 

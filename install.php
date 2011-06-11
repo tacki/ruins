@@ -347,9 +347,6 @@ switch ($_GET['step']) {
         require_once(DIR_INCLUDES."functions/global.func.php");
         require_once(DIR_INCLUDES."functions/database.func.php");
 
-        // Set Autoloader
-        spl_autoload_register("ruinsAutoload");
-
         if (isset($_GET['updateDBinfo'])) {
             echo "<div class='checkfor'>Updating Database Settings ... </div>";
 
@@ -396,7 +393,7 @@ switch ($_GET['step']) {
             $needDBinfo = false;
 
             // CLEAR PREVIOUS CACHE
-            SessionStore::pruneCache();
+            Common\Controller\SessionStore::pruneCache();
 
             // Try to connect using the given Data
             try {
@@ -498,9 +495,6 @@ switch ($_GET['step']) {
         require_once("config/dirconf.cfg.php");
         require_once(DIR_INCLUDES."includes.inc.php");
         require_once(DIR_COMMON_EXTERNAL."doctrine2_init.php");
-
-        // Set Autoloader
-        spl_autoload_register("ruinsAutoload");
 
         if (isset($_GET['import'])) {
             echo "<div class='checkfor'>Import Initial Database ... </div>";

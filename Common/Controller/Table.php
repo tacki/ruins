@@ -10,6 +10,7 @@
 /**
  * Namespaces
  */
+namespace Common\Controller;
 use Common\Controller\Error,
     Main\Controller\BtCode;
 

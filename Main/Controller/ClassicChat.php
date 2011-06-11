@@ -13,9 +13,10 @@
  * Namespaces
  */
 namespace Main\Controller;
-use SimpleTable,
-    Entities\Chat,
-    Entities\Character,
+use Common\Controller\SimpleTable,
+    Common\Controller\SessionStore,
+    Main\Entities\Chat,
+    Main\Entities\Character,
     DateTime;
 
 /**
