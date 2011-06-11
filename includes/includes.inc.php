@@ -30,11 +30,6 @@ require_once(DIR_INCLUDES."functions/global.func.php");
 require_once(DIR_INCLUDES."functions/database.func.php");
 
 /**
- * Set Autoloader for old Classes
- */
-spl_autoload_register("ruinsAutoload");
-
-/**
  * Doctrine ClassLoaders
  */
 require_once(DIR_INCLUDES_DOCTRINE."Doctrine/Common/ClassLoader.php");

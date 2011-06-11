@@ -6,14 +6,14 @@
  * @author Markus Schlegel <g42@gmx.net>
  * @copyright Copyright (C) 2007 Markus Schlegel
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version SVN: $Id: battle_gettargetsforskill.ajax.php 326 2011-04-19 20:19:34Z tacki $
  * @package Ruins
  */
 
 /**
  * Namespaces
  */
-use Main\Manager;
+use Common\Controller\SessionStore,
+    Main\Manager;
 
 /**
  * Global Includes

@@ -6,13 +6,13 @@
  * @author Markus Schlegel <g42@gmx.net>
  * @copyright Copyright (C) 2006 Markus Schlegel
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version SVN: $Id: baseobject.class.php 326 2011-04-19 20:19:34Z tacki $
  * @package Ruins
  */
 
 /**
  * Namespaces
  */
+namespace Common\Controller;
 use Common\Controller\Error;
 
 /**

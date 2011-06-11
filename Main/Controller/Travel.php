@@ -14,7 +14,7 @@
  */
 namespace Main\Controller;
 use Main\Entities\Waypoint,
-    StackObject;
+    Common\Controller\StackObject;
 
 /**
  * Traveling Class

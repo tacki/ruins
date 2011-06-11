@@ -14,14 +14,14 @@
  */
 namespace Main\Controller;
 use Smarty,
-    BaseObject,
     Module,
-    Common\Controller\Error,
-    Common\Interfaces\OutputObject,
     Main\Manager,
-    Form,
-    Table,
-    SimpleTable;
+    Common\Interfaces\OutputObject,
+    Common\Controller\BaseObject,
+    Common\Controller\Error,
+    Common\Controller\Form,
+    Common\Controller\Table,
+    Common\Controller\SimpleTable;
 
 /**
  * Class Defines

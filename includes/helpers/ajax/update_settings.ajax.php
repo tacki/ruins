@@ -6,9 +6,13 @@
  * @author Markus Schlegel <g42@gmx.net>
  * @copyright Copyright (C) 2007 Markus Schlegel
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version SVN: $Id: update_settings.ajax.php 326 2011-04-19 20:19:34Z tacki $
  * @package Ruins
  */
+
+/**
+ * Namespaces
+ */
+use Common\Controller\SessionStore;
 
 /**
  * Global Includes

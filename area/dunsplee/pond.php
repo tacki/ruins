@@ -12,6 +12,7 @@
  */
 use Main\Controller\Link,
     Main\Controller\Timer,
+    Main\Controller\Dice,
     Main\Entities;
 
 /**

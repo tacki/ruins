@@ -13,7 +13,8 @@
 /**
  * Namespaces
  */
-use Main\Controller\Link,
+use Common\Controller\SessionStore,
+    Main\Controller\Link,
     Main\Controller\Page,
     Main\Controller\Config;
 

@@ -26,7 +26,7 @@
  */
 namespace Main\Controller;
 use DateTime,
-    Form,
+    Common\Controller\Form,
     Main\Entities;
 
 /**

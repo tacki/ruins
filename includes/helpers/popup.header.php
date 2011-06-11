@@ -13,6 +13,7 @@
  * Namespaces
  */
 use Common\Controller\Error,
+    Common\Controller\SessionStore,
     Main\Controller\Config,
     Main\Controller\Popup;
 

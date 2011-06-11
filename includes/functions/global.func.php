@@ -385,29 +385,4 @@ function getRequestTrueIP()
         }
     }
 }
-
-/**
- * Classes Autoloader - includes all Class-Files on the Fly
- * @param string $class_name Name of the class to load
- */
-function ruinsAutoload($classname) {
-    // Ower own Classes are all lowercase
-    $classname_lc			= strtolower($classname);
-
-    // Underscored Classnames
-    // HTML_Table => HTML/Table.php
-    $classname_elements		= explode("_", $classname);
-    $classname_elements_lc	= explode("_", strtolower($classname));
-
-   if (file_exists(DIR_INCLUDES."classes/".$classname_lc.".class.php")) {
-        // Our own Classes
-        require_once(DIR_INCLUDES."classes/".$classname_lc.".class.php");
-    } elseif (file_exists(DIR_INCLUDES."interfaces/".$classname_lc.".interface.php")) {
-        // Our own Interfaces
-        require_once(DIR_INCLUDES."interfaces/".$classname_lc.".interface.php");
-    } elseif (file_exists(DIR_BASE."modules/".$classname_lc."/".$classname_lc.".basemod.php")) {
-        // Our own BaseModules
-        require_once(DIR_BASE."modules/".$classname_lc."/".$classname_lc.".basemod.php");
-    }
-}
 ?>

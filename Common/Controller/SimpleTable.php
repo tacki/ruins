@@ -4,15 +4,19 @@
 * @author Sebastian Meyer <greatiz@arcor.de>
 * @copyright Copyright (C) 2007 Sebastian Meyer
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version SVN: $Id: simpletable.class.php 326 2011-04-19 20:19:34Z tacki $
 * @package Ruins
  */
 
 /**
- * Global Includes
+ * Namespaces
  */
-require_once(DIR_INCLUDES."includes.inc.php");
+namespace Common\Controller;
 
+/**
+ * simple table creating like&for form.class
+ * @author Sebastian Meyer <greatiz@arcor.de>
+ * @package Ruins
+ */
 class SimpleTable extends BaseHTML
 {
     /**
