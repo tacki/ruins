@@ -134,28 +134,36 @@ class System
             // Check if this is a pathdescription to a file inside the area-tree
             if (file_exists(DIR_AREA . $filepath)) {
                 // add DIR_AREA to create the full path
-                $filepath = DIR_AREA . $filepath;
-            // FIXME:Custom Stuff
-            } elseif (file_exists(DIR_BASE . "Modules/Support/area/" . $filepath)) {
-                $filepath = DIR_BASE . "Modules/Support/area/" . $filepath;
+                $treepath = DIR_AREA . $filepath;
+            }
+
+            // Fetch Modules
+            $moduleList = Module::getModuleListFromDatabase(true);
+
+            // Modulepages overwrite Common
+            foreach($moduleList as $module) {
+                $path = str_replace("\\", "/", $module->namespace);
+                if (file_exists(DIR_BASE . $path . "/area/" . $filepath)) {
+                    $treepath = DIR_BASE . $path . "/area/" . $filepath;
+                }
             }
         }
 
         // create realpath
-        $filepath = realpath($filepath);
+        $realpath = realpath($treepath);
 
         // Windoof Fix
-        $filepath = str_replace("\\","/", $filepath);
+        $realpath = str_replace("\\","/", $realpath);
 
         // Add last / for directories and the parameters (if any) for files
-        if (is_dir($filepath) && substr($filepath, 0, -1) != "/") {
-            $filepath .= "/";
+        if (is_dir($realpath) && substr($realpath, 0, -1) != "/") {
+            $realpath .= "/";
         } elseif ($parameters) {
-            $filepath = $filepath . "&" . $parameters;
+            $realpath = $realpath . "&" . $parameters;
         }
 
         // return the complete Path
-        return $filepath;
+        return $realpath;
     }
 
     /**

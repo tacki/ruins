@@ -22,24 +22,28 @@ if (isset($battleid) && is_numeric($battleid)) {
 
     $result = array();
 
-    $dbqt = new QueryTool;
+    $qb = getQueryBuilder();
 
-    // Get List of all Battlemembers
-    $result['battlemembers'] = $dbqt	->select("characterid")
-                                    ->from("battlemembers")
-                                    ->where("side != ". $dbqt->quote("neutral"))
-                                    ->where("battleid = " . $dbqt->quote($battleid))
-                                    ->exec()
-                                    ->fetchCol("characterid");
+    $res = $qb	->select("bm")
+                ->from("Main:BattleMember", "bm")
+                ->where("bm.side != ?1")->setParameter(1, "neutral")
+                ->andWhere("bm.battle = ?2")->setParameter(2, $battleid)
+                ->getQuery()->getResult();
 
-    $dbqt->clear();
+    foreach ($res as $entry) {
+        $result['battlemembers'][] = $entry->character->id;
+    }
 
-    // Get List of Battlemembers which made a move
-    $result['actiondone'] = $dbqt	->select("initiatorid")
-                                ->from("battletable")
-                                ->where("battleid = " . $dbqt->quote($battleid))
-                                ->exec()
-                                ->fetchCol("initiatorid");
+    $qb = getQueryBuilder();
+
+    $res = $qb	->select("ba")
+                ->from("Main:BattleAction", "ba")
+                ->andWhere("ba.battle = ?1")->setParameter(1, $battleid)
+                ->getQuery()->getResult();
+
+    foreach ($res as $entry) {
+        $result['actiondone'][] = $entry->initiator->id;
+    }
 
     // Calc List of Battlemembers which didn't made a move
     $result['waitingfor'] = array_diff($result['battlemembers'], $result['actiondone']);

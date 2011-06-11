@@ -20,15 +20,14 @@ $characterid = rawurldecode($_GET['characterid']);
 
 if (isset($characterid) && is_numeric($characterid)) {
 
-    $dbqt = new QueryTool;
+    $qb = getQueryBuilder();
 
-    $result = $dbqt	->select("round")
-                    ->from("battles")
-                    ->from("battlemembers")
-                    ->where("battlemembers.battleid = battles.id")
-                    ->where("battlemembers.characterid = " . $characterid)
-                    ->exec()
-                    ->fetchOne();
+    $result = $qb   ->select("bt.round")
+                    ->from("Main:Battle", "bt")
+                    ->from("Main:BattleMember", "bm")
+                    ->where("bm.battle = bt")
+                    ->andWhere("bm.character = ?1")->setParameter(1, $characterid)
+                    ->getQuery()->getOneOrNullResult();
 
     echo json_encode((int)$result);
 }
