@@ -25,16 +25,18 @@ if(isset($_GET['part']))
 
     // Use the global Database-Connection
     if (!$result = SessionStore::readCache("ajax_autocomplete_".$_GET['part'])) {
-        $dbqt = new QueryTool;
+        $qb = getQueryBuilder();
 
-        $result = $dbqt	->select("name")
-                        ->from("characters")
-                        ->where("name LIKE " . $dbqt->quote($_GET['part'] . "%"))
-                        ->where("id > 1") // ignore user SYSTEM
-                        ->order("name")
-                        ->limit(5, 0)
-                        ->exec()
-                        ->fetchCol("name");
+        $res = $qb->select("character.name")
+                  ->from("Main:Character", "character")
+                  ->where("character.name LIKE ?1")->setParameter(1, $_GET['part']."%")
+                  ->orderBy("character.name", "ASC")
+                  ->setMaxResults(5)
+                  ->getQuery()->getResult();
+
+        foreach ($res as $entry) {
+            $result[] = $entry['name'];
+        }
 
         SessionStore::writeCache("ajax_autocomplete_".$_GET['part'], $result);
     }

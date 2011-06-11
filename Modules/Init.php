@@ -5,7 +5,7 @@
 
 // Add Module Entities
 foreach (\Main\Manager\Module::getModuleListFromDatabase(true) as $module) {
-    $em->getConfiguration()->newDefaultAnnotationDriver($module->namespace."/Entities");
-    $entityPaths[] = DIR_BASE."Modules/Support/Entities";
+    $path = str_replace("\\", "/", $module->namespace);
+    $em->getConfiguration()->newDefaultAnnotationDriver($path."/Entities");
 }
 ?>

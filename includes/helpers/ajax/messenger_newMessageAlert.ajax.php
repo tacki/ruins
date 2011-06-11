@@ -19,14 +19,15 @@ require_once(DIR_INCLUDES."includes.inc.php");
 $userid = rawurldecode($_GET['userid']);
 
 if (isset($userid) && is_numeric($userid)) {
-    $dbqt = new QueryTool;
-    $result = $dbqt	->select("id")
-                    ->table("messages_references")
-                    ->where("receiver=".$userid)
-                    ->where("status=0")
-                    ->exec()
-                    ->numRows();
-    echo json_encode($result);
+    $qb = getQueryBuilder();
+
+    $result = $qb->select("message.id")
+                    ->from("Main:Message", "message")
+                    ->where("message.receiver = ?1")->setParameter(1, $userid)
+                    ->andWhere("message.status = 0")
+                    ->getQuery()->getResult();
+
+    echo json_encode(count($result));
 }
 
 ?>
