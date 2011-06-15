@@ -357,6 +357,13 @@ Manager\Rights::createGroup("TempGroup");
 // Adding User to Group
 Manager\Rights::addToGroup("TempGroup", $user->character);
 
+$page->output("Is Character {$user->character->name} in Group TempGroup?`n");
+if (Manager\Rights::isInGroup("TempGroup", $user->character)) {
+    $page->output("Yes!`n");
+} else {
+    $page->output("No!`n");
+}
+
 foreach($user->character->groups as $group) {
     $page->output("Character ".$user->character->name." is in Group:" . $group->name . "`n");
 }

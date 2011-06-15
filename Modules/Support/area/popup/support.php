@@ -12,7 +12,8 @@
  */
 use Common\Controller\SessionStore,
     Main\Controller\Link,
-    Main\Controller\Page;
+    Main\Controller\Page,
+    Main\Entities;
 
 /**
  * Page Content
@@ -114,7 +115,7 @@ switch ($_GET['op']) {
         // Captcha Check
         if ($_POST['captcha'] !== SessionStore::get("support_captcha")) {
             $popup->output("Falscher Botschutz-Code eingegeben!`n`n");
-            $popup->nav->addTextLink(new Link("Zurück", "popup=popup/support"));
+            $popup->nav->addTextLink("Zurück", "popup=popup/support");
             break;
         }
         SessionStore::remove("support_captcha");
@@ -123,7 +124,7 @@ switch ($_GET['op']) {
         if (!$loggedin) {
             if (!$_POST['userlogin'] || !$_POST['email'] || !$_POST['text']) {
                 $popup->output("Bitte alle Felder ausfüllen!`n`n");
-                $popup->nav->addTextLink(new Link("Zurück", "popup=popup/support"));
+                $popup->nav->addTextLink("Zurück", "popup=popup/support");
                 break;
             }
         }

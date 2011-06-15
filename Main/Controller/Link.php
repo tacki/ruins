@@ -14,7 +14,8 @@
  * Namespaces
  */
 namespace Main\Controller;
-use Common\Controller\Error;
+use Common\Controller\Error,
+    Main\Entities;
 
 /**
  * link Class
@@ -52,15 +53,14 @@ class Link
      * Array of Groups allowed to access this Link
      * @var array
      */
-    private $_rights;
+    private $_groups;
 
     /**
      * Constructor - Loads the default values and initializes the attributes
      * @param string $url URL the Link points to, Default false for Navigation-Header
      * @param string $position Position of the Link e.g. left|top|right
-     * @param mixed $rights Groups who are allowed to access this Link
      */
-    function __construct($displayname, $url=false, $position="main", $description="", $rights=false)
+    function __construct($displayname, $url=false, $position="main", $description="")
     {
         $this->displayname 	= $displayname;
 
@@ -72,26 +72,22 @@ class Link
         $this->position 	= $position;
         $this->description	= $description;
 
-        $this->setRestriction($rights);
+        $this->_groups      = array();
     }
 
     /**
      * Set Restrictions for the Link
      * @param string $url URL the Link points to
      */
-    public function setRestriction($rights)
+    public function setRestriction($groups)
     {
         switch (true) {
-            case $rights === false:
-                $this->_rights = array();
+            case $groups instanceof Entities\Group:
+                $this->_groups[] = $groups;
                 break;
 
-            case is_string($rights):
-                $this->_rights[] = $rights;
-                break;
-
-            case is_array($rights):
-                $this->_rights = $rights;
+            case is_array($groups):
+                $this->_groups = $groups;
                 break;
 
             default:
@@ -107,11 +103,15 @@ class Link
      */
     public function isAllowedBy($char)
     {
-        if (count( array_intersect($this->_rights, $char->groups->toArray()) )) {
-            // Needed rights for this link are also in the rights-object
-            return true;
-        } elseif (!count($this->_rights)) {
-            // This link doesn't need any rights (public link)
+        if (count($this->_groups)) {
+            foreach ($this->_groups as $group) {
+                // Check if the Character is in one of the Groups
+                if ($character->groups->contains($group)) {
+                    return true;
+                }
+            }
+        } else {
+            // No Restriction set
             return true;
         }
 

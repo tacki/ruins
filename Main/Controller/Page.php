@@ -547,7 +547,7 @@ class Page extends BaseObject implements OutputObject
         $navShared = "";;
         $boxOpen = false;
 
-        foreach ($this->nav->export() as $linklist) {
+        foreach ($this->nav->getLinkList() as $linklist) {
 
             if ($linklist['displayname']) {
                 // Get linktype (page or popup)

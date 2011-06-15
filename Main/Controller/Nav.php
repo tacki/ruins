@@ -13,7 +13,7 @@
  * Namespaces
  */
 namespace Main\Controller;
-use Main\Entities\Character,
+use Main\Entities,
     Common\Controller\Error,
     Common\Controller\BaseObject,
     Main\Manager,
@@ -25,7 +25,7 @@ use Main\Entities\Character,
  * Navigation Class which cares about the Navigation between the Pages
  * @package Ruins
  */
-class Nav extends BaseObject
+class Nav
 {
     /**
      * Flag to save Navigation to cache
@@ -35,7 +35,7 @@ class Nav extends BaseObject
 
     /**
      * Character Object
-     * @var Character
+     * @var Entities\Character
      */
     private $_char;
 
@@ -52,18 +52,29 @@ class Nav extends BaseObject
     private $_validationEnabled;
 
     /**
+     * Allowed Navigation List
+     * @var array
+     */
+    private $_linkList;
+
+    /**
+     * Last Navigation added status
+     * @var bool
+     */
+    private $_lastNavAddedStatus;
+
+    /**
      * constructor - load the default values and initialize the attributes
-     * @param Character $char Character Object
+     * @param Entities\Character $char Character Object
      * @param OutputObject $outputobject Parent Outputobject
      */
     function __construct($character=false, $outputobject=false)
     {
-        // Call Constructor of the Parent-Class
-        parent::__construct();
-
         // Attribute Init
         $this->cacheNavigation = false;
         $this->_char = $character;
+        $this->_linkList = array();
+        $this->_lastNavAddedStatus = false;
 
         // Default to enabled Validation
         if ($this->_char === false) {
@@ -80,6 +91,82 @@ class Nav extends BaseObject
     }
 
     /**
+     * Add Navigation Head
+     * @param string $title Title
+     * @param string $linkcontainer Name of the Container this Link is shown in
+     * @param Entities\Group $restriction Group the Link is restricted to
+     * @return Nav This Object
+     */
+    public function addHead($title, $linkcontainer="main", Entities\Group $restriction=NULL)
+    {
+        $link = new Link($title, false, $linkcontainer);
+
+        if ($restriction) $link->setRestriction($restriction);
+
+        $this->add($link);
+        return $this;
+    }
+
+
+    /**
+     * Add Navigation Link
+     * @param string $name Shown Linkname
+     * @param string $url URL
+     * @param string $linkcontainer Name of the Container this Link is shown in
+     * @param Entities\Group $restriction Group the Link is restricted to
+     * @return Nav This Object
+     */
+    public function addLink($name, $url, $linkcontainer="main", Entities\Group $restriction=NULL)
+    {
+        $link = new Link($name, $url, $linkcontainer);
+
+        if ($restriction) $link->setRestriction($restriction);
+
+        $this->add($link);
+        return $this;
+    }
+
+    /**
+     * Add a hidden Link to allow HTML-Forms in protected Areas
+     * @param string $url URL
+     * @param Entities\Group $restriction Group the Link is restricted to
+     * @return Nav This Object
+     */
+    public function addHiddenLink($url, Entities\Group $restriction=NULL)
+    {
+        $link = new Link(false, $url);
+
+        if ($restriction) $link->setRestriction($restriction);
+
+        $this->add($link);
+        return $this;
+    }
+
+    /**
+     * Add Navigation Link inside a Text
+     * @param string $text Shown linked Text
+     * @param string $url URL
+     * @param Entities\Group $restriction Group the Link is restricted to
+     * @return Nav This Object
+     */
+    public function addTextLink($text, $url, Entities\Group $restriction=NULL)
+    {
+        // Add Hidden Link
+        $this->addHiddenLink($url, $restriction);
+
+        // Output Link
+        if ($this->_lastNavAddedStatus === true) {
+            if ($this->_outputObject) {
+                $this->_outputObject->output("<a href='?". $url . "'>" . $text . "</a>", true);
+            } else {
+                throw new Error("\$this->_outputObject is not usable here, because it's not an instance of OutputObject!");
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * Add a Link to the Linklist
      * @param Link $link Linkobject to add
      * @param int $linklistid Absolute Position of the Link
@@ -90,12 +177,14 @@ class Nav extends BaseObject
         // Check if the Link is valid
         if ($this->validationEnabled() && $link->url) {
             if (!Manager\System::validatePHPFilePath($link->url)) {
+                $this->_lastNavAddedStatus = false;
                 return false;
             }
         }
 
         // Check if Link already exists
         if ($this->_exists($link->displayname, $link->url)) {
+            $this->_lastNavAddedStatus = true;
             return true;
         }
 
@@ -109,60 +198,18 @@ class Nav extends BaseObject
 
             if ($linklistid > 0) {
                 // insert the nav at the given position
-                array_splice($this->properties, $linklistid-1, 0, array($linkdescription));
+                array_splice($this->_linkList, $linklistid-1, 0, array($linkdescription));
             } else {
                 // add the nav to the end of the array
-                $this->properties[] = $linkdescription;
+                $this->_linkList[] = $linkdescription;
             }
-            $this->isloaded = true;
+            $this->_lastNavAddedStatus = true;
             return true;
         } else {
+            $this->_lastNavAddedStatus = false;
             return false;
         }
     }
-
-    /**
-     * Add a Textlink to the Page
-     * @param Link $link Linkobject to add
-     * @return bool true if successful, else false
-     */
-    public function addTextLink(Link $link)
-    {
-        // Extract Displayname
-        $linktext 			= $link->displayname;
-        $link->displayname 	= "";
-        $link->position 	= "";
-
-        // Add the (now) simple Link
-        $this->add($link, true);
-
-        // Output Link
-        if ($this->_outputObject) {
-            $this->_outputObject->output("<a href='?". $link->url . "'>" . $linktext . "</a>", true);
-        } else {
-            throw new Error("\$this->_outputObject is not usable here, because it's not an instance of OutputObject!");
-        }
-    }
-
-    public function addHead($title)
-    {
-        $this->add(new Link($title));
-        return $this;
-    }
-
-
-    public function addLink($name, $url, $position=false)
-    {
-        $this->add(new Link($name, $url, $position));
-        return $this;
-    }
-
-    public function addHiddenLink($url)
-    {
-        $this->add(new Link("", $url));
-    }
-
-
 
     /**
      * Remove a Link from the Linklist
@@ -171,9 +218,9 @@ class Nav extends BaseObject
     public function remove($entry)
     {
         // Run through the Properties...
-        foreach ($this->properties as $linkarray) {
+        foreach ($this->_linkList as $linkarray) {
             if ($linkarray['displayname'] == $entry || $linkarray['url'] == $entry) {
-                unset ($this->properties[$displayname]);
+                unset ($this->_linkList[$displayname]);
             }
         }
     }
@@ -185,16 +232,14 @@ class Nav extends BaseObject
     {
         if ($this->_char === false) {
             // public navigation
-            $this->properties = array();
+            $this->_linkList = array();
         } elseif (is_array($this->_char->allowednavs)) {
             // existing private navigation
-            $this->properties = $this->_char->allowednavs;
+            $this->_linkList = $this->_char->allowednavs;
         } else {
             // new private navigation
-            $this->properties = array();
+            $this->_linkList = array();
         }
-
-        $this->isloaded = true;
     }
 
     /**
@@ -203,10 +248,7 @@ class Nav extends BaseObject
     public function loadFromCache()
     {
         // existing private navigation from cache
-        $this->properties = $this->_char->allowednavs_cache;
-
-        // Set loaded Flag
-        $this->isloaded = true;
+        $this->_linkList = $this->_char->allowednavs_cache;
 
         // Disable cacheNavigation for the Rest of this Page
         // and save
@@ -219,15 +261,31 @@ class Nav extends BaseObject
      */
     public function save()
     {
-        if ($this->isloaded && $this->_char !== false) {
+        if ($this->_char !== false) {
 
             // Only save if this Navigation is private
-            $this->_char->allowednavs = $this->properties;
+            $this->_char->allowednavs = $this->_linkList;
 
             if ($this->cacheNavigation) {
-                $this->_char->allowednavs_cache = $this->properties;
+                $this->_char->allowednavs_cache = $this->_linkList;
             }
         }
+    }
+
+    /**
+     * Return Linklist
+     */
+    public function getLinkList()
+    {
+        return $this->_linkList;
+    }
+
+    /**
+     * Clear Linklist
+     */
+    public function clear()
+    {
+        $this->_linkList = array();
     }
 
     /**
@@ -356,7 +414,7 @@ class Nav extends BaseObject
     private function _exists($displayname=false, $url=false)
     {
         // Run through the Properties...
-        foreach ($this->properties as $linkarray) {
+        foreach ($this->_linkList as $linkarray) {
             if ($displayname && $url) {
                 //echo "{$displayname} == {$linkarray['displayname']} && {$url} == {$linkarray['url']} ...";
                 if ($displayname == $linkarray['displayname'] && $url == $linkarray['url']) {
