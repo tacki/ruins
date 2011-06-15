@@ -20,7 +20,7 @@ use Main\Controller\Link,
 $page->set("pagetitle", "Reisen");
 $page->set("headtitle", "Reisen");
 
-$page->nav->add(new Link("Ruins"));
+$page->nav->addHead("Ruins");
 
 $timer = new Timer("travelTimer", $user->character);
 
@@ -28,10 +28,10 @@ switch ($_GET['op']) {
 
     default:
         if (isset($_GET['return'])) {
-            $page->nav->add(new Link("Zurück", "page=" . $_GET['return']));
+            $page->nav->addLink("Zurück", "page=" . $_GET['return']);
         } else {
             $page->output("`b`g`#25This Page needs a return-Parameter! Please fix this!`n");
-            $page->nav->add(new Link("Zurück", "page=ironlance/citysquare"));
+            $page->nav->addLink("Zurück", "page=ironlance/citysquare");
         }
 
         $page->output("Wohin willst du denn reisen?`n`n");
@@ -40,7 +40,7 @@ switch ($_GET['op']) {
         $newURL = clone $page->url;
         $newURL->setParameter("op", "travel");
         $page->travelform->head("travelform", $newURL. "");
-        $page->nav->add(new Link("", $newURL));
+        $page->nav->addHiddenLink($newURL);
 
         $page->travelform->radio("travelto", "derashok/tribalcenter");
         $page->output("Derashok Stammeszentrum - Der wichtigste Treffpunkt der orkischen Clans`n`n");
@@ -67,7 +67,7 @@ switch ($_GET['op']) {
             $newURL->unsetParameter("travelto");
             $newURL->unsetParameter("op");
             $newURL->setParameter("page", $_GET['redirect']);
-            $page->nav->add(new Link("", $newURL));
+            $page->nav->addHiddenLink($newURL);
             $page->nav->redirect($newURL);
         } elseif (!$timer->get() && isset($_POST['travelto'])) {
             // First Contact to the Travelpage and every Reload
@@ -75,7 +75,7 @@ switch ($_GET['op']) {
             $newURL = clone $page->url;
             $newURL->unsetParameter("return");
             $newURL->setParameter("redirect", $_POST['travelto']);
-            $page->nav->add(new Link("", $newURL));
+            $page->nav->addHiddenLink($newURL);
             $page->nav->redirect($newURL);
         } elseif (!$timer->get() && !isset($_POST['travelto'])) {
             // No target chosen, return to select-screen
@@ -86,6 +86,6 @@ switch ($_GET['op']) {
 
 }
 
-$page->nav->add(new Link("Aktualisieren", $page->url));
+$page->nav->addLink("Aktualisieren", $page->url);
 
 ?>

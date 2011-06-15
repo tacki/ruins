@@ -18,15 +18,14 @@ use Main\Controller\Link;
 $page->set("pagetitle", "Ironlance Stadtzentrum");
 $page->set("headtitle", "Ironlance Stadtzentrum");
 
-$page->nav->add(new Link("Navigation"));
-$page->nav->add(new Link("Reisen", "page=common/travel&return={$page->url->short}"));
-$page->nav->add(new Link("Stadtbank", "page=ironlance/citybank"));
-$page->nav->add(new Link("Spielerliste", "page=common/charlist&return={$page->url->short}"));
+$page->nav->addHead("Navigation")
+          ->addLink("Reisen", "page=common/travel&return={$page->url->short}")
+          ->addLink("Stadtbank", "page=ironlance/citybank")
+          ->addLink("Spielerliste", "page=common/charlist&return={$page->url->short}")
+          ->addLink("Ausrüstung", "page=common/equipment&return={$page->url->short}");
 
-$page->nav->add(new Link("Ausrüstung", "page=common/equipment&return={$page->url->short}"));
-
-$page->nav->add(new Link("Allgemein"));
-$page->nav->add(new Link("Logout", "page=common/logout"));
+$page->nav->addHead("Allgemein")
+          ->addLink("Logout", "page=common/logout");
 
 $page->output("Willkommen im Stadtzentrum von Ironlance, dem aus Stein gebauten Stolz der menschlichen Rasse.`n");
 

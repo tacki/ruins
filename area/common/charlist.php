@@ -19,15 +19,15 @@ use Main\Controller\Link,
 $page->set("pagetitle", "Spielerliste");
 $page->set("headtitle", "Spieler von Ruins");
 
-$page->nav->add(new Link("Navigation"));
+$page->nav->addHead("Navigation");
 if (isset($_GET['return'])) {
-    $page->nav->add(new Link("Zurück", "page=" . $_GET['return']));
+    $page->nav->addLink("Zurück", "page=" . $_GET['return']);
 } else {
     $page->output("`b`g`#25This Page needs a return-Parameter! Please fix this!");
 }
 
-$page->nav->add(new Link("Spielerliste"));
-$page->nav->add(new Link("Aktualisieren", $page->url));
+$page->nav->addHead("Spielerliste")
+          ->addLink("Aktualisieren", $page->url);
 
 
 // Database Fields to get
@@ -52,7 +52,7 @@ switch ($_GET['op']) {
         }
         $newURL = clone $page->url;
         $newURL->setParameter("op", "all");
-        $page->nav->add(new Link("Alle zeigen", $newURL));
+        $page->nav->addLink("Alle zeigen", $newURL);
         break;
 
     case "all":
@@ -64,7 +64,7 @@ switch ($_GET['op']) {
         }
         $newURL = clone $page->url;
         $newURL->setParameter("op", "online");
-        $page->nav->add(new Link("Spieler Online zeigen", $newURL));
+        $page->nav->addLink("Spieler Online zeigen", $newURL);
         break;
 }
 
@@ -103,7 +103,7 @@ foreach ($headers as $link=>$linkname) {
     } else {
         $newURL->setParameter("orderDesc", 0);
     }
-    $page->nav->add(new Link("", $newURL));
+    $page->nav->addHiddenLink("", $newURL);
 }
 
 // Make Tableheaders clickable

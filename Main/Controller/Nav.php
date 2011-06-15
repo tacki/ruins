@@ -144,6 +144,26 @@ class Nav extends BaseObject
         }
     }
 
+    public function addHead($title)
+    {
+        $this->add(new Link($title));
+        return $this;
+    }
+
+
+    public function addLink($name, $url, $position=false)
+    {
+        $this->add(new Link($name, $url, $position));
+        return $this;
+    }
+
+    public function addHiddenLink($url)
+    {
+        $this->add(new Link("", $url));
+    }
+
+
+
     /**
      * Remove a Link from the Linklist
      * @param string $entry Displayname or URL of the Link to remove

@@ -383,13 +383,14 @@ $page->output("Starting Navigation Test:`n");
 $page->output("see left side ;)");
 
 $page->nav->disableValidation();
-$page->nav->add(new Link("Home"));
-$page->nav->add(new Link("Login Page", "page=common/login","main"));
-$page->nav->add(new Link("Testpage", "page=developer/test","main"));
-$page->nav->add(new Link("Dorf"));
-$page->nav->add(new Link("Ausgang", "page=common/logout","main"));
-$page->nav->add(new Link("Home", "page=developer/test","shared"));
-$page->nav->add(new Link("Logout", "page=common/logout","shared"));
+$page->nav->addHead("Home")
+          ->addLink("Login Page", "page=common/login","main")
+          ->addLink("Testpage", "page=developer/test","main");
+
+$page->nav->addHead("Dorf")
+          ->addLink("Ausgang", "page=common/logout","main")
+          ->addLink("Home", "page=developer/test","shared")
+          ->addLink("Logout", "page=common/logout","shared");
 
 $page->nav->save();
 

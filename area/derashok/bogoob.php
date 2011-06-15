@@ -20,14 +20,15 @@ use Main\Controller\Link,
 $page->set("pagetitle", "Thagigdash Bogoob");
 $page->set("headtitle", "Thagigdash Bogoob");
 
-$page->nav->add(new Link("Navigation"));
-$page->nav->add(new Link("Zum Zentrum", "page=derashok/tribalcenter"));
-$page->nav->add(new Link("Bogoob"));
+$page->nav->addHead("Navigation")
+          ->addLink("Zum Zentrum", "page=derashok/tribalcenter");
+
+$page->nav->addHead("Bogoob");
 
 switch ($_GET['op']) {
 
     default:
-        $page->nav->add(new Link("Ihm etwas zeigen", "page=common/inventorychooser&return={$page->url->short}&callop=sellask"));
+        $page->nav->addLink("Ihm etwas zeigen", "page=common/inventorychooser&return={$page->url->short}&callop=sellask");
 
         $page->output("Vor dir steht ein riesiger Ork mit Pranken, die locker Bäume ausreissen könnten. Und doch
                         wirken seine Augen neugierig und keinesfalls aggressiv`n`n
@@ -65,7 +66,7 @@ switch ($_GET['op']) {
         }
 
         if (empty($wanttobuy)) {
-            $page->nav->add(new Link("Etwas anderes zeigen", "page=common/inventorychooser&return={$page->url->short}&callop=sellask"));
+            $page->nav->addLink("Etwas anderes zeigen", "page=common/inventorychooser&return={$page->url->short}&callop=sellask");
 
             $page->output("`#52Neee, du nix haben was ich wolle... du verschwinden mit deine Krimskrams!`#00`n`n
                             Unhöflich dreht sich der Ork von dir weg... scheinbar will er wirklich etwas anderes
@@ -86,7 +87,7 @@ switch ($_GET['op']) {
 
             $page->addForm("sellform", true);
             $page->sellform->head("deleteform", "page=derashok/bogoob&op=sell");
-            $page->nav->add(new Link("", "page=derashok/bogoob&op=sell"));
+            $page->nav->addHiddenLink("page=derashok/bogoob&op=sell");
             $page->sellform->hidden("ids", implode(",", $_POST['chooser']));
             $page->sellform->hidden("price", $price);
             $page->sellform->setCSS("button");
@@ -108,7 +109,7 @@ switch ($_GET['op']) {
 
         $user->character->money->receive($price);
 
-        $page->nav->add(new Link("Ihm etwas zeigen", "page=common/inventorychooser&return={$page->url->short}&callop=sellask"));
+        $page->nav->addLink("Ihm etwas zeigen", "page=common/inventorychooser&return={$page->url->short}&callop=sellask");
 
         $page->output("`#52Ohhooo, heute isse schöne Tag!`#00`n`n
                         Mit diesen Worten widmet er sich ganz seiner neu erstandenen Ware und lässt dich einfach

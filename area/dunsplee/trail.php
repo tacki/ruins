@@ -18,13 +18,13 @@ use Main\Controller\Link;
 $page->set("pagetitle", "Dunsplee Waldweg");
 $page->set("headtitle", "Dunsplee Waldweg");
 
-$page->nav->add(new Link("Navigation"));
-$page->nav->add(new Link("Reisen", "page=common/travel&return={$page->url->short}"));
-$page->nav->add(new Link("Weiher", "page=dunsplee/pond"));
-$page->nav->add(new Link("Spielerliste", "page=common/charlist&return={$page->url->short}"));
+$page->nav->addHead("Navigation")
+          ->addLink("Reisen", "page=common/travel&return={$page->url->short}")
+          ->addLink("Weiher", "page=dunsplee/pond")
+          ->addLink("Spielerliste", "page=common/charlist&return={$page->url->short}");
 
-$page->nav->add(new Link("Allgemein"));
-$page->nav->add(new Link("Logout", "page=common/logout"));
+$page->nav->addHead("Allgemein")
+          ->addLink("Logout", "page=common/logout");
 
 $page->output("Du stehst auf einem kleinen Weg, kurz bevor dieser in den dichten Dunsplee Wald verschwindet.
                 `n Die Gegend hier ist nicht sehr einladend, leicht bedrohlich. Doch einen tapferen Recken

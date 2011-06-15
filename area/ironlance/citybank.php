@@ -21,7 +21,7 @@ use Main\Controller\Link,
 $page->set("pagetitle", "Ironlance Stadtbank");
 $page->set("headtitle", "Ironlance Stadtbank");
 
-$page->nav->add(new Link("Navigation"));
+$page->nav->addHead("Navigation");
 
 $timer = new Timer("ironlance/citybank_interest", $user->character);
 
@@ -46,25 +46,25 @@ switch ($_GET['op']) {
                 $page->output("Du schuldest der Citybank `b".$bankaccount->balance->getAllCurrenciesWithPic()."`b", true);
             }
 
-            $page->nav->add(new Link("Einzahlen", "page=ironlance/citybank&op=deposit"));
-            $page->nav->add(new Link("Abheben", "page=ironlance/citybank&op=withdraw"));
+            $page->nav->addLink("Einzahlen", "page=ironlance/citybank&op=deposit")
+                      ->addLink("Abheben", "page=ironlance/citybank&op=withdraw");
 
-            $page->nav->add(new Link("Zinsen"));
+            $page->nav->addHead("Zinsen");
              if ($resttime = $timer->get()) {
-                $page->nav->add(new Link("Verfügbar in " . $resttime, $page->url));
+                $page->nav->addLink("Verfügbar in " . $resttime, $page->url);
             } else {
-                $page->nav->add(new Link("Zinsen abholen", "page=ironlance/citybank&op=get_interest"));;
+                $page->nav->addLink("Zinsen abholen", "page=ironlance/citybank&op=get_interest");
             }
         } else {
             $page->output("\"Tut mir sehr leid, aber Ihren Namen kann ich hier nicht finden.\" Er sieht zu dir herauf \"Wollen sie vielleicht ein Konto eröffnen?\"");
-            $page->nav->add(new Link("Konto eröffnen", "page=ironlance/citybank&op=openaccount"));
+            $page->nav->addLink("Konto eröffnen", "page=ironlance/citybank&op=openaccount");
         }
         break;
 
     case "openaccount":
         $page->output("Das Eröffnen kostet dich 10 Kupferstücke! Doch keine Angst, diese werden gleich auf das Konto eingezahlt.");
-        $page->nav->add(new Link("Ja, das will ich!", "page=ironlance/citybank&op=openaccount2"));
-        $page->nav->add(new Link("Nein, lieber doch nicht", "page=ironlance/citybank"));
+        $page->nav->addLink("Ja, das will ich!", "page=ironlance/citybank&op=openaccount2")
+                  ->addLink("Nein, lieber doch nicht", "page=ironlance/citybank");
         break;
 
     case "openaccount2":
@@ -79,13 +79,13 @@ switch ($_GET['op']) {
             $page->output("Oh, so viel Geld scheinst du garnicht zu haben?");
         }
 
-        $page->nav->add(new Link("Zurück", "page=ironlance/citybank"));
+        $page->nav->addLink("Zurück", "page=ironlance/citybank");
         break;
 
     case "deposit":
         $page->output("Wieviel willst du denn einzahlen?");
         $page->addForm("depositform");
-        $page->nav->add(new Link("", "page=ironlance/citybank&op=deposit2"));
+        $page->nav->addHiddenLink("page=ironlance/citybank&op=deposit2");
         $page->depositform->head("depositform", "page=ironlance/citybank&op=deposit2");
 
         $page->depositform->setCSS("moneyform_gold");
@@ -101,7 +101,7 @@ switch ($_GET['op']) {
         $page->depositform->submitButton("Einzahlen");
 
         $page->depositform->close();
-        $page->nav->add(new Link("Zurück", "page=ironlance/citybank"));
+        $page->nav->addLink("Zurück", "page=ironlance/citybank");
         break;
 
     case "deposit2":
@@ -117,17 +117,17 @@ switch ($_GET['op']) {
             $page->output("`b".$temp_wallet->getAllCurrenciesWithPic()."`b eingezahlt", true);
         } else {
             $page->output("So viel Geld hast du nicht");
-            $page->nav->add(new Link("Zurück", "page=ironlance/citybank&op=deposit"));
+            $page->nav->addLink("Zurück", "page=ironlance/citybank&op=deposit");
             break;
         }
         unset($temp_wallet);
-        $page->nav->add(new Link("Zurück", "page=ironlance/citybank"));
+        $page->nav->addLink("Zurück", "page=ironlance/citybank");
         break;
 
     case "withdraw":
         $page->output("Wieviel willst du denn abheben?");
         $page->addForm("withdrawform");
-        $page->nav->add(new Link("", "page=ironlance/citybank&op=withdraw2"));
+        $page->nav->addHiddenLink("page=ironlance/citybank&op=withdraw2");
         $page->withdrawform->head("withdrawform", "page=ironlance/citybank&op=withdraw2");
 
         $page->withdrawform->setCSS("moneyform_gold");
@@ -159,10 +159,10 @@ switch ($_GET['op']) {
             $page->output("`b".$temp_wallet->getAllCurrenciesWithPic()."`b abgehoben", true);
         } else {
             $page->output("So viel Geld hast du nicht auf deinem Konto");
-            $page->nav->add(new Link("Zurück", "page=ironlance/citybank&op=withdraw"));
+            $page->nav->addLink("Zurück", "page=ironlance/citybank&op=withdraw");
             break;
         }
-        $page->nav->add(new Link("Zurück", "page=ironlance/citybank"));
+        $page->nav->addLink("Zurück", "page=ironlance/citybank");
         break;
 
     case "get_interest":
@@ -171,10 +171,10 @@ switch ($_GET['op']) {
         $timer->set($config->get("ironlance/citybank_interestcycle", 86400));
 
         $page->output($interest->getAllCurrenciesWithPic() . " an Zinsen erhalten", true);
-        $page->nav->add(new Link("Zurück", "page=ironlance/citybank"));
+        $page->nav->addLink("Zurück", "page=ironlance/citybank");
         break;
 }
 
-$page->nav->add(new Link("Allgemein"));
-$page->nav->add(new Link("Zurück zum Zentrum", "page=ironlance/citysquare"));
+$page->nav->addHead("Allgemein")
+          ->addLink("Zurück zum Zentrum", "page=ironlance/citysquare");
 ?>

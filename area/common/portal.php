@@ -20,9 +20,9 @@ use Main\Controller\Link,
 $page->set("pagetitle", "Portal");
 $page->set("headtitle", "Portal to ruins");
 
-$page->nav->add(new Link("Allgemein"));
-$page->nav->add(new Link("Aktualisieren", $page->url));
-$page->nav->add(new Link("Logout", "page=common/logout"));
+$page->nav->addHead("Allgemein")
+          ->addLink("Aktualisieren", $page->url)
+          ->addLink("Logout", "page=common/logout");
 
 switch ($_GET['op']) {
 
@@ -43,7 +43,7 @@ switch ($_GET['op']) {
         $page->addSimpleTable("chartable");
         $page->addForm("charchooseform");
         $page->charchooseform->head("charchoose", "page=common/portal&op=forward");
-        $page->nav->add(new Link("", "page=common/portal&op=forward"));
+        $page->nav->addHiddenLink("page=common/portal&op=forward");
 
         foreach ($characters as $character) {
             $page->chartable->startRow();

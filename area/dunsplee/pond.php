@@ -21,26 +21,26 @@ use Main\Controller\Link,
 $page->set("pagetitle", "Dunsplee Weiher");
 $page->set("headtitle", "Ein Weiher im Dunsplee Wald");
 
-$page->nav->add(new Link("Navigation"));
+$page->nav->addHead("Navigation");
 
 switch ($_GET['op']) {
 
     default:
         $page->output("Tief im Dunsplee Wald hast du diesen Weiher hier gefunden. Als du dich dem Gewässer näherst,
                         erkennst du einige kleine und große Fische munter umher schwimmen. Willst du es wagen?`n");
-        $page->nav->add(new Link("Fischen", "page=dunsplee/pond&op=fishask"));
-        $page->nav->add(new Link("Zurück", "page=dunsplee/trail"));
+        $page->nav->addLink("Fischen", "page=dunsplee/pond&op=fishask")
+                  ->addLink("Zurück", "page=dunsplee/trail");
         break;
 
     case "fishask":
         $page->output("Hastig siehst du dich um, doch scheinbar ist niemand in der Nähe. Schnell wird ein Wurm
                         vom Boden aufgelesen, ein Stück Faden an einer Schnur befestigt und ein gebogenes Eisenteil
                         am anderen Ende des Fadens. Wie lange willst du es wagen, hier zu sitzen und zu angeln?`n");
-        $page->nav->add(new Link("Lieber doch nicht", "page=dunsplee/pond"));
-        $page->nav->add(new Link("1 Minute", "page=dunsplee/pond&op=fish&time=1"));
-        $page->nav->add(new Link("3 Minuten", "page=dunsplee/pond&op=fish&time=3"));
-        $page->nav->add(new Link("6 Minuten", "page=dunsplee/pond&op=fish&time=6"));
-        $page->nav->add(new Link("12 Minuten", "page=dunsplee/pond&op=fish&time=12"));
+        $page->nav->addLink("Lieber doch nicht", "page=dunsplee/pond")
+                  ->addLink("1 Minute", "page=dunsplee/pond&op=fish&time=1")
+                  ->addLink("3 Minuten", "page=dunsplee/pond&op=fish&time=3")
+                  ->addLink("6 Minuten", "page=dunsplee/pond&op=fish&time=6")
+                  ->addLink("12 Minuten", "page=dunsplee/pond&op=fish&time=12");
         break;
 
     case "fish":
@@ -161,14 +161,14 @@ switch ($_GET['op']) {
             $fish->owner	= $user->char->id;
             $fish->save();
 */
-            $page->nav->add(new Link("Ui, gleich nochmal!", "page=dunsplee/pond&op=fishask"));
+            $page->nav->addLink("Ui, gleich nochmal!", "page=dunsplee/pond&op=fishask");
         } else {
             $page->output("Da bist du nun so lange hier herumgesessen und du hast nichts, aber auch garnichts
                             gefangen! Was für eine Zeitverschwendung!");
-            $page->nav->add(new Link("Egal, nochmal!", "page=dunsplee/pond&op=fishask"));
+            $page->nav->addLink("Egal, nochmal!", "page=dunsplee/pond&op=fishask");
         }
 
-        $page->nav->add(new Link("Zurück", "page=dunsplee/pond"));
+        $page->nav->addLink("Zurück", "page=dunsplee/pond");
 
         $page->url->unsetParameter("time");
         $page->url->setParameter("op", "fishask");

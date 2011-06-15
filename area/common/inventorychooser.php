@@ -19,14 +19,14 @@ use Main\Controller\Link,
 $page->set("pagetitle", "Inventar");
 $page->set("headtitle", "Inventar");
 
-$page->nav->add(new Link("Navigation"));
+$page->nav->addHead("Navigation");
 if (isset($_GET['return'])) {
-    $page->nav->add(new Link("Zurück", "page=" . $_GET['return']));
+    $page->nav->addLink("Zurück", "page=" . $_GET['return']);
 } else {
     $page->output("`b`g`#25This Page needs a return-Parameter! Please fix this!");
 }
 
-$page->nav->add(new Link("Inventar"));
+$page->nav->addHead("Inventar");
 
 switch ($_GET['op']) {
 
@@ -41,7 +41,7 @@ switch ($_GET['op']) {
 
         $newURL = clone $page->url;
         $newURL->setParameter("op", "backpack");
-        $page->nav->add(new Link("Rucksack", $newURL));
+        $page->nav->addLink("Rucksack", $newURL);
         break;
 
     case "backpack":
@@ -54,7 +54,7 @@ switch ($_GET['op']) {
 
         $newURL = clone $page->url;
         $newURL->setParameter("op", "all");
-        $page->nav->add(new Link("Alle zeigen", $newURL));
+        $page->nav->addLink("Alle zeigen", $newURL);
         break;
 
 }
@@ -68,7 +68,7 @@ if (isset($_GET['callop'])) {
     $callbackpage = "page=".$_GET['return']."&op=".$_GET['callop'];
     $page->addForm("chooser", true);
     $page->chooser->head("chooser", $callbackpage);
-    $page->nav->add(new Link("", $callbackpage));
+    $page->nav->addHiddenLink($callbackpage);
 }
 
 if (is_array($itemlist)) {
@@ -128,7 +128,7 @@ foreach ($headers as $link=>$linkname) {
     } else {
         $newURL->setParameter("orderDesc", 0);
     }
-    $page->nav->add(new Link("", $newURL));
+    $page->nav->addHiddenLink($newURL);
 }
 
 // Make Tableheaders clickable

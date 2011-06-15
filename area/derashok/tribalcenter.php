@@ -19,14 +19,14 @@ use Main\Controller\Link;
 $page->set("pagetitle", "Derashok Stammeszentrum");
 $page->set("headtitle", "Derashok Stammeszentrum");
 
-$page->nav->add(new Link("Navigation"));
-$page->nav->add(new Link("Reisen", "page=common/travel&return={$page->url->short}"));
-$page->nav->add(new Link("Thagigdash Bogoob", "page=derashok/bogoob"));
-$page->nav->add(new Link("Spielerliste", "page=common/charlist&return={$page->url->short}"));
-$page->nav->add(new Link("Kampfarena", "page=derashok/arena"));
+$page->nav->addHead("Navigation")
+          ->addLink("Reisen", "page=common/travel&return={$page->url->short}")
+          ->addLink("Thagigdash Bogoob", "page=derashok/bogoob")
+          ->addLink("Spielerliste", "page=common/charlist&return={$page->url->short}")
+          ->addLink("Kampfarena", "page=derashok/arena");
 
-$page->nav->add(new Link("Allgemein"));
-$page->nav->add(new Link("Logout", "page=common/logout"));
+$page->nav->addHead("Allgemein")
+          ->addLink("Logout", "page=common/logout");
 
 $page->output("Willkommen auf dem Stammeszentrum in Derashok, einem wichtigen Treffpunkt aller orkischen Clans.`n");
 

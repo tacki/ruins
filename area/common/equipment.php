@@ -19,13 +19,13 @@ use Main\Controller\Link,
 $page->set("pagetitle", "Ausrüstung");
 $page->set("headtitle", "Ausrüstung");
 
-$page->nav->add(new Link("Navigation"));
+$page->nav->addHead("Navigation");
 if (isset($_GET['return'])) {
-    $page->nav->add(new Link("Zurück", "page=" . $_GET['return']));
+    $page->nav->addLink("Zurück", "page=" . $_GET['return']);
 } else {
     $page->output("`b`g`#25This Page needs a return-Parameter! Please fix this!");
 }
-$page->nav->add(new Link("Aktualisieren", $page->url));
+$page->nav->addLink("Aktualisieren", $page->url);
 
 // --------
 $page->addJavaScript("
@@ -136,7 +136,7 @@ $page->addForm("inventoryform", true);
 $newURL = clone $page->url;
 $newURL->setParameter("op", "change");
 $page->inventoryform->head("inventoryform", $newURL);
-$page->nav->add(new Link("", $newURL));
+$page->nav->addHiddenLink($newURL);
 
 $itemtypes = array (Manager\Item::CLASS_WEAPON, Manager\Item::CLASS_ARMOR);
 

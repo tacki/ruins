@@ -22,9 +22,8 @@ use Common\Controller\SessionStore,
 $page->set("pagetitle", "Login Page");
 $page->set("headtitle", "Login Page");
 
-
-$page->nav->add(new Link("Ruins"));
-$page->nav->add(new Link("Testpage", "page=developer/test"));
+$page->nav->addHead("Ruins")
+          ->addLink("Testpage", "page=developer/test");
 
 switch ($_GET['op']) {
 
