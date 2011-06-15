@@ -14,7 +14,6 @@
  */
 namespace Main\Controller;
 use Smarty,
-    Module,
     Main\Manager,
     Common\Interfaces\OutputObject,
     Common\Controller\BaseObject,
@@ -790,32 +789,6 @@ class Page extends BaseObject implements OutputObject
     }
 
     /**
-     * Call the Navigation Module of an Outputmodule
-     */
-    protected function _callModuleNavigation()
-    {
-        if ($this->modulesenabled) {
-            foreach(Manager\Module::getModuleListFromDatabase(true) as $module) {
-                $classname = $module->classname;
-                $classname::callNavModule($this->nav);
-            }
-        }
-    }
-
-    /**
-     * Call the Text Module of an Outputmodule
-     */
-    protected function _callModuleBody()
-    {
-        if ($this->modulesenabled) {
-            foreach(Manager\Module::getModuleListFromDatabase(true) as $module) {
-                $classname = $module->classname;
-                $classname::callTextModule($this->_bodycontent);
-            }
-        }
-    }
-
-    /**
      * Calculates the Pagegeneration Time
      * @access private
      * @return bool true if successful, else false
@@ -839,15 +812,15 @@ class Page extends BaseObject implements OutputObject
      */
     public function show()
     {
+        if ($this->modulesenabled) Manager\Module::callModule(Manager\Module::EVENT_PRE_PAGEGENERATION, $this);
+
         $this->_addJQuerySupport();
         $this->_generateToolBox();
 
         $this->_generateHeadScripts();
 
-        $this->_callModuleNavigation();
         $this->_generateNavigation();
 
-        $this->_callModuleBody();
         $this->_generateBodyContent();
 
         $this->_generatePagegenTime();
@@ -864,6 +837,8 @@ class Page extends BaseObject implements OutputObject
             $this->_generateStats();
             $this->set("userlist", "");
         }
+
+        if ($this->modulesenabled) Manager\Module::callModule(Manager\Module::EVENT_POST_PAGEGENERATION, $this);
 
         if ($this->_smarty->caching) {
             $this->_smarty->display($this->template['file'], $this->_char->id);

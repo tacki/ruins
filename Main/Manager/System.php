@@ -143,8 +143,8 @@ class System
             // Modulepages overwrite Common
             foreach($moduleList as $module) {
                 $path = str_replace("\\", "/", $module->namespace);
-                if (file_exists(DIR_BASE . $path . "/area/" . $filepath)) {
-                    $treepath = DIR_BASE . $path . "/area/" . $filepath;
+                if (file_exists(DIR_BASE . $path . "/Area/" . $filepath)) {
+                    $treepath = DIR_BASE . $path . "/Area/" . $filepath;
                 }
             }
         }

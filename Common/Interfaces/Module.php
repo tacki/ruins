@@ -11,7 +11,7 @@
  * Namespaces
  */
 namespace Common\Interfaces;
-use Main\Controller\Nav;
+use Main\Controller\Page;
 
 /**
  * Interface for Modules
@@ -19,14 +19,41 @@ use Main\Controller\Nav;
  */
 interface Module
 {
+    /**
+     * Module initialization
+     */
     public function init();
 
+    /**
+     * Module Name
+     */
     public function getModuleName();
 
+    /**
+     * Module Description
+     */
     public function getModuleDescription();
 
-    public function callNavModule(Nav &$nav);
+    /**
+     * Event triggered before Page Header is called
+     */
+    public function prePageHeader();
 
-    public function callTextModule(array &$body);
+    /**
+     * Event triggered before Page Content and after Page Header is called
+     */
+    public function prePageContent();
+
+    /**
+     * Event triggered before Page is generated
+     * @param Page $page Page Object
+     */
+    public function prePageGeneration(Page $page);
+
+    /**
+     * Event triggered after Page is fully generated and before Content is shown by Template Engine
+     * @param Page $page Page Object
+     */
+    public function postPageGeneration(Page $page);
 }
 ?>

@@ -29,6 +29,27 @@ require_once(DIR_INCLUDES."includes.inc.php");
 class Module
 {
     /**
+     * Class Constants
+     */
+    const EVENT_PRE_PAGEHEADER      = "prePageHeader";
+    const EVENT_PRE_PAGECONTENT     = "prePageContent";
+    const EVENT_PRE_PAGEGENERATION  = "prePageGeneration";
+    const EVENT_POST_PAGEGENERATION = "postPageGeneration";
+
+    /**
+     * Call Module
+     * @param string $functionname Name of the Module-Event to call
+     * @param object $object Optional Object
+     */
+    public static function callModule($eventname, $object=NULL)
+    {
+       foreach(self::getModuleListFromDatabase(true) as $module) {
+            $classname = $module->classname;
+            $classname::$eventname($object);
+        }
+    }
+
+    /**
      * Get the List of Modules from the Filesystem
      * @return array List of Modulenames
      */
@@ -105,8 +126,7 @@ class Module
 
         foreach($moduleFSList as $moduleFS) {
             foreach($moduleDBList as $moduleDB) {
-
-                if ($moduleDB->filesystemname == $moduleFS) {
+                if ($moduleDB->classname == $moduleFS) {
                     $addFlag = false;
                 }
             }

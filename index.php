@@ -66,11 +66,13 @@ try {
             /**
              * Page Header
              */
+            Manager\Module::callModule(Manager\Module::EVENT_PRE_PAGEHEADER);
             include(DIR_INCLUDES."helpers/".key($outputfile).".header.php");
 
             /**
              * Page Content
              */
+            Manager\Module::callModule(Manager\Module::EVENT_PRE_PAGECONTENT);
             include($realpath);
 
             /**

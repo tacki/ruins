@@ -115,7 +115,7 @@ class Popup extends Page
         $nav = "";
         $i = 0;
 
-        foreach ($this->nav->export() as $linkitem) {
+        foreach ($this->nav->getLinkList() as $linkitem) {
             if (!$linkitem['displayname']) {
                 // Ignore Items with no Displayname
                 continue;

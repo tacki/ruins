@@ -13,7 +13,7 @@
  * Namespaces
  */
 namespace Modules\Support;
-use Main\Controller\Nav,
+use Main\Controller\Page,
     Main\Controller\Link;
 
 /**
@@ -22,51 +22,24 @@ use Main\Controller\Nav,
  * Add a Supportlink to every Page
  * @package Ruins
  */
-class Support implements \Common\Interfaces\Module
+class Support extends \Modules\ModuleBase implements \Common\Interfaces\Module
 {
-
     /**
-     * Module Initialization
-     */
-    public function init()
-    {
-        global $em;
-
-        $module                 = new \Main\Entities\Module;
-        $module->name           = self::getModuleName();
-        $module->description    = self::getModuleDescription();
-        $module->namespace      = __NAMESPACE__;
-        $module->classname      = __CLASS__;
-
-        $em->persist($module);
-    }
-
-    /**
-     * Module Name
+     * @see Common\Interfaces.Module::getModuleName()
      */
     public function getModuleName() { return "Supportlink Module"; }
 
     /**
-     * Module Description
+     * @see Common\Interfaces.Module::getModuleDescription()
      */
     public function getModuleDescription() { return "Module to add a Support-Link to each Page"; }
 
     /**
-     * Call Navigation Module
-     * @param Nav $nav The Navigation-Object
+     * @see Common\Interfaces.Module::prePageGeneration()
      */
-    public function callNavModule(Nav &$nav)
+    public function prePageGeneration(Page $page)
     {
-        $nav->add(new Link("Support", "popup=popup/support", "shared", "Wenn ein Fehler oder Bug auftritt, bitte hier melden"));
+        $page->nav->add(new Link("Support", "popup=Popup/Support", "shared", "Wenn ein Fehler oder Bug auftritt, bitte hier melden"));
     }
-
-    /**
-     * Call Text Module
-     * @param array $body The Content of the Page-Body
-     */
-    public function callTextModule(array &$body)
-    {
-    }
-
 }
 ?>

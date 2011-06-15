@@ -30,7 +30,7 @@ if ($userid = SessionStore::get('userid')) {
 }
 
 // Page preparation
-$config->addPublicPage(array("popup/support"));
+$config->addPublicPage(array("Popup/Support"));
 
 if (array_search($_GET['popup'], $config->get("publicpages")) !== false) {
     // this is a public page!

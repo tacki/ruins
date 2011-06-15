@@ -7,7 +7,7 @@
  * @package Ruins
  */
 
-if ($user instanceof User) {
+if ($user instanceof Main\Entities\User) {
     $user->addDebugLog("Logout");
     $user->logout();
 }
