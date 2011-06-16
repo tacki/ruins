@@ -42,7 +42,7 @@ class MessageSystemLink extends \Modules\ModuleBase implements \Common\Interface
     {
         global $user;
 
-        if (isset($user->character) && $user->character->loggedin) {
+        if ($user->character && $user->character->loggedin) {
             // add the Supportlink to the toplist
             $page->nav->add(new Link("Messenger",
                                 "popup=popup/messenger",
