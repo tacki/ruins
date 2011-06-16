@@ -120,11 +120,12 @@ class Module
     {
         global $em;
 
-        $addFlag        = true;
         $moduleFSList	= self::getModuleListFromFilesystem();
         $moduleDBList	= self::getModuleListFromDatabase();
 
         foreach($moduleFSList as $moduleFS) {
+            $addFlag        = true;
+
             foreach($moduleDBList as $moduleDB) {
                 if ($moduleDB->classname == $moduleFS['classname'] && $moduleDB->basedir == $moduleFS['directory']) {
                     $addFlag = false;

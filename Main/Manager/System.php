@@ -142,8 +142,8 @@ class System
 
             // Modulepages overwrite Common
             foreach($moduleList as $module) {
-                if (file_exists($module->basedir . "/Area/" . $filepath)) {
-                    $treepath = $module->basedir . "/Area/" . $filepath;
+                if (file_exists(DIR_MODULES.$module->basedir . "Area/" . $filepath)) {
+                    $treepath = DIR_MODULES.$module->basedir . "Area/" . $filepath;
                 }
             }
         }
