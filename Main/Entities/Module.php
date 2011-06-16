@@ -22,8 +22,8 @@ class Module extends EntityBase
     /** @Column(type="text") */
     protected $description;
 
-    /** @Column(length=255) */
-    protected $namespace;
+    /** @Column(type="text") */
+    protected $basedir;
 
     /** @Column(length=255) */
     protected $classname;

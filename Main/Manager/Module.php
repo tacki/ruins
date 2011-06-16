@@ -62,7 +62,7 @@ class Module
             // Generate the Classname of the Module-Init-File
             $classname = "Modules\\".$dirname."\\".$dirname;
             if (self::validateModule($classname)) {
-                $result[] = $classname;
+                $result[] = array ( "directory" => $dirname . "/", "classname" => $classname );
             }
         }
 
@@ -126,14 +126,14 @@ class Module
 
         foreach($moduleFSList as $moduleFS) {
             foreach($moduleDBList as $moduleDB) {
-                if ($moduleDB->classname == $moduleFS) {
+                if ($moduleDB->classname == $moduleFS['classname'] && $moduleDB->basedir == $moduleFS['directory']) {
                     $addFlag = false;
                 }
             }
 
             if ($addFlag) {
                 // execute init()-Method of unknown Module
-                call_user_func($moduleFS."::init");
+                call_user_func($moduleFS['classname']."::init");
             }
         }
         $em->flush();

@@ -517,10 +517,6 @@ switch ($_GET['step']) {
                 }
                 $schemaTool->updateSchema($metadata);
 
-                if (file_exists("main/setup/install.php")) {
-                    include ("main/setup/install.php");
-                }
-
                 $em->flush();
             } catch (Exception $e) {
                 echo "<div class='notok'>Update failed! (" . $e->getMessage() . ") Force Overwrite (Destroy all Data and install clean Database!)?</div>";
@@ -567,7 +563,7 @@ switch ($_GET['step']) {
         break;
 
     case 4:
-        echo "<h2>Step " . $_GET['step'] .  " of 4 - Initialize Modules</h2>";
+        echo "<h2>Step " . $_GET['step'] .  " of 4 - Initialize Modules and setup initial values</h2>";
         echo "<h4>Initialize Modules</h4>";
 
         // Include Standard Header
@@ -589,6 +585,29 @@ switch ($_GET['step']) {
         echo "<div class='checkfor'>Modules found ... </div>";
         foreach(Main\Manager\Module::getModuleListFromDatabase() as $module) {
             echo "<div class='ok'>" . $module->name . "</div>";
+        }
+
+        echo "<h4>Initial Values</h4>";
+
+        echo "<div class='checkfor'>Setup initial values ... </div>";
+
+        $initFiles = array(
+                            // Main Init-Files
+                            DIR_COMMON."Setup/Initial.php",
+                            DIR_MAIN."Setup/Initial.php",
+                            DIR_MODULES."Setup/Initial.php",
+                          );
+
+        // Add possible Module-Initfiles
+        foreach(Main\Manager\Module::getModuleListFromDatabase() as $module) {
+            $initFiles[] = DIR_MODULES . $module->basedir."Setup/Initial.php";
+        }
+
+        foreach ($initFiles as $filename) {
+            if (file_exists($filename)) {
+                include_once($filename);
+                echo "<div class='ok'>Calling " . $filename . "</div>";
+            }
         }
 
         echo "<div class='continue'>Continue to the next Step</div>";

@@ -8,10 +8,10 @@ use Main\Manager,
 global $em;
 
 // Create Test-Character
-if (!($install_char = $em->getRepository("Main:Character")->findOneByName("Testuser"))) {
+if (!($install_char = $em->getRepository("Main:Character")->findOneByName("Testcharacter"))) {
     $install_char = new Entities\Character;
-    $install_char->name = "Testuser";
-    $install_char->displayname = "`#35Testuser`#00";
+    $install_char->name = "Testcharacter";
+    $install_char->displayname = "`#35Test`#67character`#00";
     $em->persist($install_char);
 }
 

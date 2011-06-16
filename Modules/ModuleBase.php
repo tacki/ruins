@@ -12,7 +12,8 @@
  * Namespaces
  */
 namespace Modules;
-use Main\Controller\Page;
+use ReflectionClass,
+    Main\Controller\Page;
 
 /**
  * Module Base Class
@@ -27,12 +28,15 @@ class ModuleBase
     public function init()
     {
         global $em;
+        $calledClass     = get_called_class();
+        $reflectionClass = new ReflectionClass($calledClass);
+        $directory       = basename(dirname($reflectionClass->getFilename())) . "/";
 
         $module                 = new \Main\Entities\Module;
         $module->name           = static::getModuleName();
         $module->description    = static::getModuleDescription();
-        $module->namespace      = substr(get_called_class(), 0, strrpos(get_called_class(), "\\"));
-        $module->classname      = get_called_class();
+        $module->basedir        = $directory;
+        $module->classname      = $calledClass;
 
         $em->persist($module);
     }
