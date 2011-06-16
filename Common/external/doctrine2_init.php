@@ -14,6 +14,8 @@
 use Doctrine\Common\Cache\ArrayCache,
     Doctrine\Common\Cache\ApcCache,
     Doctrine\Common\ClassLoader,
+    Doctrine\Common\EventManager,
+    Doctrine\ORM\Events,
     Doctrine\ORM\EntityManager,
     Doctrine\ORM\Configuration,
     Doctrine\DBAL\Types\Type;
@@ -52,9 +54,16 @@ if ($applicationMode == "development") {
 $config->setProxyDir(DIR_COMMON."Proxies");
 $config->setProxyNamespace('Proxies');
 
+// Set Table Prefix
+global $dbconnect;
+
+$evm = new EventManager;
+$tablePrefix = new \Common\DoctrineExtensions\TablePrefix($dbconnect['prefix']);
+$evm->addEventListener(Events::loadClassMetadata, $tablePrefix);
+
 // Get EntityManager
 global $dbconnect;
-$em = EntityManager::create($dbconnect, $config);
+$em = EntityManager::create($dbconnect, $config, $evm);
 
 // Default Options
 $em->getConnection()->setCharset('utf8');

@@ -105,6 +105,9 @@
 <?php
 use Doctrine\ORM\Tools\SchemaValidator;
 
+// In Installscript Flag
+$inInstallScript = true;
+
 // Set timezone
 date_default_timezone_set('Europe/Berlin');
 
@@ -388,12 +391,14 @@ switch ($_GET['step']) {
         if (file_exists("config/dbconnect.cfg.php")) {
             echo "<div class='checkfor'>Try to connect using the existing Configuration File ... </div>";
 
-            require_once(DIR_CONFIG."dbconnect.cfg.php");
+            // Include Standard Header
+            require_once("config/dirconf.cfg.php");
             require_once(DIR_INCLUDES."includes.inc.php");
+
             $needDBinfo = false;
 
             // CLEAR PREVIOUS CACHE
-            Common\Controller\SessionStore::pruneCache();
+            \Common\Controller\SessionStore::pruneCache();
 
             // Try to connect using the given Data
             try {
@@ -491,10 +496,9 @@ switch ($_GET['step']) {
         echo "<h2>Step " . $_GET['step'] .  " of 4 - Prepare Database</h2>";
         echo "<h4>Import initial Database</h4>";
 
-        // Include dirconf, global function library and database information
+        // Include Standard Header
         require_once("config/dirconf.cfg.php");
         require_once(DIR_INCLUDES."includes.inc.php");
-        require_once(DIR_COMMON_EXTERNAL."doctrine2_init.php");
 
         if (isset($_GET['import'])) {
             echo "<div class='checkfor'>Import Initial Database ... </div>";
@@ -566,9 +570,14 @@ switch ($_GET['step']) {
         echo "<h2>Step " . $_GET['step'] .  " of 4 - Initialize Modules</h2>";
         echo "<h4>Initialize Modules</h4>";
 
-        // Include dirconf, global function library and database information
+        // Include Standard Header
         require_once("config/dirconf.cfg.php");
         require_once(DIR_INCLUDES."includes.inc.php");
+
+        // Call Tree Init
+        require_once(DIR_COMMON."Init.php");
+        require_once(DIR_MAIN."Init.php");
+        require_once(DIR_MODULES."Init.php");
 
         echo "<div class='checkfor'>Sync ModuleList to Database ... </div>";
 
