@@ -226,7 +226,7 @@ class User
         $result = array();
 
         foreach ($characters as $character) {
-            $result[] = $character->displayname;
+            $result[] = $character['displayname'];
         }
 
         return $result;

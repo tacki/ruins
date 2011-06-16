@@ -9,6 +9,7 @@
 
 if ($user instanceof Main\Entities\User) {
     $user->addDebugLog("Logout");
+    $user->character->logout();
     $user->logout();
 }
 $page->nav->redirect("page=common/login");

@@ -45,6 +45,18 @@ class MainEntitiesCharacterProxy extends \Main\Entities\Character implements \Do
         return parent::getSpeed();
     }
 
+    public function login()
+    {
+        $this->__load();
+        return parent::login();
+    }
+
+    public function logout()
+    {
+        $this->__load();
+        return parent::logout();
+    }
+
     public function __get($name)
     {
         $this->__load();
@@ -60,7 +72,7 @@ class MainEntitiesCharacterProxy extends \Main\Entities\Character implements \Do
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'user', 'name', 'displayname', 'level', 'healthpoints', 'lifepoints', 'strength', 'dexterity', 'constitution', 'wisdom', 'intelligence', 'charisma', 'money', 'groups', 'current_nav', 'allowednavs', 'allowednavs_cache', 'template', 'type', 'loggedin', 'race', 'profession', 'sex', 'lastpagehit', 'debugloglevel');
+        return array('__isInitialized__', 'id', 'user', 'name', 'displayname', 'level', 'healthpoints', 'lifepoints', 'strength', 'dexterity', 'constitution', 'wisdom', 'intelligence', 'charisma', 'money', 'groups', 'current_nav', 'allowednavs', 'allowednavs_cache', 'template', 'type', 'creationdate', 'loggedin', 'lastlogin', 'race', 'profession', 'sex', 'lastpagehit', 'debugloglevel');
     }
 
     public function __clone()

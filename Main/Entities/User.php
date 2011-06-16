@@ -39,9 +39,6 @@ class User extends EntityBase
      */
     protected $debuglog;
 
-    /** @Column(type="datetime") */
-    protected $lastlogin;
-
     /**
      * @OneToMany(targetEntity="UserIP", mappedBy="user")
      */
@@ -52,15 +49,6 @@ class User extends EntityBase
      */
     protected $uniqueidlist;
 
-    /** @Column(type="boolean") */
-    protected $loggedin;
-
-    public function __construct()
-    {
-        // Default Values
-        $this->lastlogin    = new DateTime();
-        $this->loggedin     = false;
-    }
 
    /**
      * Care about everything needed for login
@@ -75,9 +63,6 @@ class User extends EntityBase
 
         // Add IP Address to the List
         $this->addIPAddress();
-
-        // set loggedin-flag
-        $this->loggedin = 1;
     }
 
     /**
@@ -90,9 +75,6 @@ class User extends EntityBase
 
         // prune Cache
         SessionStore::pruneCache();
-
-        // set loggedin-flag
-        $this->loggedin = 0;
     }
 
     /**

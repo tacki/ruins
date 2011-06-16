@@ -87,8 +87,14 @@ class Character extends EntityBase
     /** @Column(length=32, nullable=true) */
     protected $type;
 
+    /** @Column(type="datetime") */
+    protected $creationdate;
+
     /** @Column(type="boolean") */
     protected $loggedin;
+
+    /** @Column(type="datetime") */
+    protected $lastlogin;
 
     /** @Column(length=32, nullable=true) */
     protected $race;
@@ -123,7 +129,9 @@ class Character extends EntityBase
         $this->allowednavs_cache = array();
         $this->template          = "default";
         $this->type              = NULL;
+        $this->creationdate      = new DateTime();
         $this->loggedin          = false;
+        $this->lastlogin         = new DateTime();
         $this->race              = NULL;
         $this->profession        = NULL;
         $this->sex               = NULL;
@@ -149,6 +157,23 @@ class Character extends EntityBase
     {
         // FIXME: Calculate Speed based on Dexterity and Race
         return 5;
+    }
+
+    /**
+     * Care about everything needed for character login
+     */
+    public function login()
+    {
+        $this->loggedin = true;
+        $this->lastlogin = new DateTime();
+    }
+
+    /**
+     * Care about everything needed for character logout
+     */
+    public function logout()
+    {
+        $this->loggedin = false;
     }
 }
 ?>

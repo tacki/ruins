@@ -103,7 +103,7 @@ foreach ($headers as $link=>$linkname) {
     } else {
         $newURL->setParameter("orderDesc", 0);
     }
-    $page->nav->addHiddenLink("", $newURL);
+    $page->nav->addHiddenLink($newURL);
 }
 
 // Make Tableheaders clickable

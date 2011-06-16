@@ -23,7 +23,7 @@ $popup->set("headtitle", "Supportanfrage");
 
 $popup->nav->add(new Link("Anfrage", "popup=popup/messenger&op=create"));
 
-if (isset($user) && $user->loggedin) {
+if (isset($user->character) && $user->character->loggedin) {
     $loggedin = true;
 } else {
     $loggedin = false;

@@ -79,11 +79,10 @@ switch ($_GET['op']) {
         } else {
             $user->character = $user->settings->default_character;
         }
-        // load the new character
-        //$user->loadCharacter();
-        // we need to let the system know, that this user is now the loggedin one
-        //$user->char->login();
-        $user->character->loggedin = true;
+
+        // we need to let the system know, that this character is now the loggedin one
+        $user->character->login();
+
         // Write to Debuglog
         $user->addDebugLog("Character choosen: ". $user->character->name);
 

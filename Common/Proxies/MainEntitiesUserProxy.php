@@ -78,7 +78,7 @@ class MainEntitiesUserProxy extends \Main\Entities\User implements \Doctrine\ORM
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'login', 'password', 'character', 'settings', 'debuglog', 'lastlogin', 'iplist', 'uniqueidlist', 'loggedin');
+        return array('__isInitialized__', 'id', 'login', 'password', 'character', 'settings', 'debuglog', 'iplist', 'uniqueidlist');
     }
 
     public function __clone()

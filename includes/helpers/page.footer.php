@@ -19,7 +19,7 @@ use Main\Controller\Nav;
  * Page Content
  */
 // save the user - every change to $user below this line will be doomed :P
-if ($page->nav instanceof Nav && $page->nav->isloaded) $page->nav->save();
+if ($page->nav instanceof Nav) $page->nav->save();
 
 global $em;
 $em->flush();
