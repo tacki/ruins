@@ -38,7 +38,7 @@ if ($applicationMode == "development") {
 $config->setQueryCacheImpl($cache);
 
 // Load Annotation Driver
-$driverImpl = $config->newDefaultAnnotationDriver(DIR_MAIN."Entities");
+$driverImpl = $config->newDefaultAnnotationDriver(array(DIR_MAIN."Entities"));
 $config->setMetadataDriverImpl($driverImpl);
 $config->setMetadataCacheImpl($cache);
 
@@ -67,11 +67,4 @@ $em = EntityManager::create($dbconnect, $config, $evm);
 
 // Default Options
 $em->getConnection()->setCharset('utf8');
-
-// Validate Entities
-if ($applicationMode == "development") {
-    $validator = new \Doctrine\ORM\Tools\SchemaValidator($em);
-    $error = $validator->validateMapping();
-    if($error) var_dump($error);
-}
 ?>

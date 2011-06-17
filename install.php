@@ -105,9 +105,6 @@
 <?php
 use Doctrine\ORM\Tools\SchemaValidator;
 
-// In Installscript Flag
-$inInstallScript = true;
-
 // Set timezone
 date_default_timezone_set('Europe/Berlin');
 

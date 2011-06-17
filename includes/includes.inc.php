@@ -71,5 +71,4 @@ require_once(DIR_COMMON."Init.php");
 require_once(DIR_MAIN."Init.php");
 require_once(DIR_MODULES."Init.php");
 
-
 ?>

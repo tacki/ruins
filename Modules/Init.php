@@ -5,10 +5,11 @@
 
 // Add Module Entities
 $paths = array();
-foreach (\Main\Manager\Module::getModuleListFromDatabase(true) as $module) {
-    if (file_exists(DIR_MODULES.$module->basedir."Entities")) {
-        $paths[] =  DIR_MODULES.$module->basedir."Entities";
+foreach (\Main\Manager\Module::getModuleListFromFilesystem() as $module) {
+    if (file_exists(DIR_MODULES.$module['directory']."Entities")) {
+        $paths[] =  DIR_MODULES.$module['directory']."Entities";
     }
 }
+
 $em->getConfiguration()->getMetadataDriverImpl()->addPaths($paths);
 ?>
