@@ -27,13 +27,17 @@ $page->nav->addHead("Allgemein")
 switch ($_GET['op']) {
 
     default:
-        if ($user->settings->default_character->id > 0) {
+        if (!$user) {
+            $page->nav->redirect("page=common/login");
+        }
+
+        if ($user->settings->default_character) {
             $page->nav->redirect("page=common/portal&op=forward");
         }
 
         $page->output("Deine Charaktere:`n`n");
 
-        $characters = Manager\User::getUserCharactersList($user->id);
+        $characters = Manager\User::getUserCharactersList($user);
 
         if (!$characters) {
             $page->output("Keinen Charakter gefunden!");
@@ -75,7 +79,7 @@ switch ($_GET['op']) {
     case "forward":
         // set new current character
         if (isset($_POST['chooser'])) {
-            $user->current_character = $_POST['chooser'];
+            $user->character = $em->find("Main:Character", $_POST['chooser']);
         } else {
             $user->character = $user->settings->default_character;
         }
@@ -94,9 +98,9 @@ switch ($_GET['op']) {
             $page->nav->loadFromCache();
 
             // Check if the Cached Navigation has a refresh-nav
-            if ($page->nav->checkRequestURL($user->char->current_nav, true)) {
+            if ($page->nav->checkRequestURL($user->character->current_nav, true)) {
                 // Redirect to current_nav to fetch a new version of the Page
-                $page->nav->redirect($user->char->current_nav);
+                $page->nav->redirect($user->character->current_nav);
             }
         } else {
             // redirect to the last place visited

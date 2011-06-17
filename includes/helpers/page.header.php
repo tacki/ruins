@@ -28,13 +28,16 @@ $config = new Config();
 // Load User if in Session
 if ($userid = SessionStore::get('userid')) {
     $user = $em->find("Main:User",$userid);
+    if ($user->settings->default_character) {
+        $user->character = $user->settings->default_character;
+    }
 }
 
 // Page preparation
 $config->addPublicPage(array(	"common/login",
                                 "common/login&op=checkpw",
                                 "common/logout",
-                                "developer/test")
+                                "developer/test",)
                             );
 $config->addNoCachePage(array(	"common/portal" )
                             );

@@ -63,6 +63,11 @@ class User extends EntityBase
 
         // Add IP Address to the List
         $this->addIPAddress();
+
+        // add default Character (if any)
+        if ($this->settings->default_character) {
+            $this->character = $this->settings->default_character;
+        }
     }
 
     /**
@@ -70,6 +75,9 @@ class User extends EntityBase
      */
     public function logout()
     {
+        // Unload $user->character
+        $this->character = NULL;
+
         // unset Session User ID
         SessionStore::remove('userid');
 

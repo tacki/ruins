@@ -216,16 +216,16 @@ class User
 
     /**
      * Get List of Characters for given User
-     * @param int $userid User ID
-     * @return mixed Array of Character ID's if successful, else false
+     * @param Entities\User $user User Object
+     * @return mixed Array of Character Objects if successful, else false
      */
-    public static function getUserCharactersList($userid)
+    public static function getUserCharactersList(Entities\User $user)
     {
         $qb = getQueryBuilder();
 
         $result = $qb   ->select("char")
                         ->from("Main:Character", "char")
-                        ->where("char.user = ?1")->setParameter(1, $userid)
+                        ->where("char.user = ?1")->setParameter(1, $user)
                         ->getQuery()
                         ->getResult();
 
@@ -301,7 +301,7 @@ class User
      */
     public static function getCharactersAt($place)
     {
-        global $config;
+        global $config, $user;
 
         $qb = getQueryBuilder();
 
@@ -310,18 +310,19 @@ class User
                          ->andWhere("char.current_nav LIKE ?1")->setParameter(1, "page=".$place."%")
                          ->andWhere("char.lastpagehit > ?2")
                          ->setParameter(2, new \DateTime("-".$config->get("connectiontimeout", 15)." minutes"))
+                         ->andWhere("char.user != ?3")->setParameter(3, $user)
                          ->getQuery()
                          ->getResult();
 
+        $characterlist = array($user->character->displayname);
+
         if ($result) {
-            $characterlist = array();
             foreach ($result as $entry) {
                 $characterlist[] = $entry['displayname'];
             }
-            return $characterlist;
-        } else {
-            return array();
         }
+
+        return $characterlist;
     }
 }
 ?>
