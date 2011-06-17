@@ -31,6 +31,7 @@ class Rights
     /**
      * Create a Group
      * @param string $groupname
+     * @return Entities\Group
      */
     public static function createGroup($groupname)
     {
@@ -39,13 +40,25 @@ class Rights
         $group = $em->getRepository("Main:Group")
                     ->findOneBy(array("name" => $groupname));
 
-        if ($group) return false;
+        if ($group) return $group;
 
         $newgroup = new Entities\Group;
         $newgroup->name = $groupname;
 
         $em->persist($newgroup);
         $em->flush();
+
+        return $newgroup;
+    }
+
+    /**
+     * Get Group
+     * @param string|Entities\Group $groupname
+     * @return Entities\Group Group Object
+     */
+    public static function getGroup($groupname)
+    {
+        return self::_getGroupObject($groupname);
     }
 
     /**
@@ -85,9 +98,11 @@ class Rights
      */
     public static function addToGroup($groupname, Entities\Character $character)
     {
-        $group = self::_getGroupObject($groupname);
+        if (!self::isInGroup($groupname, $character)) {
+            $group = self::_getGroupObject($groupname);
 
-        $character->groups->add($group);
+            $character->groups->add($group);
+        }
     }
 
     /**

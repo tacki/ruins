@@ -18,12 +18,12 @@ use Main\Controller\Nav;
 /**
  * Page Content
  */
+// compile the page
+$page->show();
+
 // save the user - every change to $user below this line will be doomed :P
 if ($page->nav instanceof Nav) $page->nav->save();
 
 global $em;
 $em->flush();
-
-// compile the page
-$page->show();
 ?>

@@ -134,7 +134,8 @@ class Module
 
             if ($addFlag) {
                 // execute init()-Method of unknown Module
-                call_user_func($moduleFS['classname']."::init");
+                $module = new $moduleFS['classname'];
+                $module->init();
             }
         }
         $em->flush();

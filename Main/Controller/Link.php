@@ -106,7 +106,7 @@ class Link
         if (count($this->_groups)) {
             foreach ($this->_groups as $group) {
                 // Check if the Character is in one of the Groups
-                if ($character->groups->contains($group)) {
+                if ($char->groups->contains($group)) {
                     return true;
                 }
             }

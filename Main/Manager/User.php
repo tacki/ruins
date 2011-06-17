@@ -13,7 +13,8 @@
  * Namespaces
  */
 namespace Main\Manager;
-use Main\Controller\BtCode;
+use Main\Controller\BtCode,
+    Main\Entities;
 
 /**
  * Global Includes
@@ -28,6 +29,67 @@ require_once(DIR_INCLUDES."includes.inc.php");
  */
 class User
 {
+
+    /**
+     * Create Character
+     * @param string $charactername
+     * @param Entities\User $user
+     * @return Entities\Character
+     */
+    public static function createCharacter($charactername, Entities\User $user=NULL)
+    {
+        global $em;
+
+        if (!($createCharacter = $em->getRepository("Main:Character")->findOneByName($charactername))) {
+            $createCharacter = new Entities\Character;
+            $createCharacter->name = $charactername;
+            $createCharacter->displayname = $charactername;
+            if ($user) $createCharacter->user = $user;
+            $em->persist($createCharacter);
+        }
+
+        return $createCharacter;
+    }
+
+    /**
+    * Create User
+    * @param string $username
+    * @param string $password
+    * @param Entities\Character $defaultCharacter
+    * @return Entities\User
+    */
+    public static function createUser($username, $password, Entities\Character $defaultCharacter=NULL)
+    {
+        global $em;
+
+        if (!($createUser = $em->getRepository("Main:User")->findOneByLogin($username))) {
+            $createUser = new Entities\User;
+            $createUser->login = $username;
+            $createUser->password = md5($password);
+            if ($defaultCharacter) $createUser->character = $defaultCharacter;
+            $createUser->settings  = self::createUserSettings($createUser);
+            $em->persist($createUser);
+        }
+
+        return $createUser;
+    }
+
+    /**
+     * Create User Settings
+     * @param Entities\User $user
+     * @return Entities\UserSetting
+     */
+    public static function createUserSettings(Entities\User $user)
+    {
+        global $em;
+
+        $createSettings = new Entities\UserSetting;
+        $createSettings->user = $user;
+        $em->persist($createSettings);
+
+        return $createSettings;
+    }
+
     /**
      * Check User+Password
      * @param string $username Username to check
@@ -252,9 +314,13 @@ class User
                          ->getResult();
 
         if ($result) {
-            return $result;
+            $characterlist = array();
+            foreach ($result as $entry) {
+                $characterlist[] = $entry['displayname'];
+            }
+            return $characterlist;
         } else {
-            return false;
+            return array();
         }
     }
 }

@@ -7,37 +7,45 @@ use Main\Manager,
 
 global $em;
 
-// Create Test-Character
-if (!($install_char = $em->getRepository("Main:Character")->findOneByName("Testcharacter"))) {
-    $install_char = new Entities\Character;
-    $install_char->name = "Testcharacter";
-    $install_char->displayname = "`#35Test`#67character`#00";
-    $em->persist($install_char);
-}
+//*********************************
+// Create Admin User
+$install_user = Manager\User::createUser("admin", "admin");
 
 $em->flush();
 
-// Create Test-UserSettings
-if (!($install_settings = $em->getRepository("Main:UserSetting")->findOneBy(array("default_character" => $install_char->id)))) {
-    $install_settings = new Entities\UserSetting;
-    $install_settings->default_character = $install_char;
-    $em->persist($install_settings);
-}
+//*********************************
+// Create Administration Character
+$admin_char = Manager\User::createCharacter("Administrator", $install_user);
+$admin_char->displayname = "`#19`bAdministrator`b`#00";
+
+// Add Administrator Char to Admin- and User-Group
+$group = Manager\Rights::createGroup("Administrator");
+Manager\Rights::addToGroup($group, $admin_char);
+$group = Manager\Rights::createGroup("User");
+Manager\Rights::addToGroup($group, $admin_char);
 
 $em->flush();
 
-// Create Test-User
-if (!($install_user = $em->getRepository("Main:User")->findOneByLogin("test"))) {
-    $install_user = new Entities\User;
-    $install_user->login = "test";
-    $install_user->password = md5("test");
-    $install_user->character = $install_char;
-    $install_user->settings  = $install_settings;
-    $em->persist($install_user);
-}
+
+//*********************************
+// Create Test Character
+$test_char = Manager\User::createCharacter("Testcharacter", $install_user);
+$test_char->displayname = "`#59Testcharacter`#00";
+
+// Add User Char to User-Group
+$group = Manager\Rights::createGroup("User");
+Manager\Rights::addToGroup($group, $test_char);
 
 $em->flush();
 
+
+//*********************************
+// Set default Character to Admin
+$install_user->character = $admin_char;
+$install_user->settings->default_character = $admin_char;
+
+
+//*********************************
 // Create Test-Weapons
 if (!($weapon = $em->getRepository("Main:Items\Weapon")->findOneByName("Testwaffe"))) {
     $weapon             = new Entities\Items\Weapon;
@@ -46,12 +54,14 @@ if (!($weapon = $em->getRepository("Main:Items\Weapon")->findOneByName("Testwaff
     $weapon->damage_min = 5;
     $weapon->damage_max = 10;
     $weapon->location   = Manager\Item::LOCATION_BACKPACK;
-    $weapon->owner      = $install_char;
+    $weapon->owner      = $test_char;
     $em->persist($weapon);
 }
 
 $em->flush();
 
+
+//*********************************
 // Create Test-Armor
 $armors = array (
                    Manager\Item::CLASS_ARMOR_HEAD  => "Testrüstung (Kopf)",
@@ -68,13 +78,15 @@ foreach ($armors as $armorclass => $armorname) {
         $armor->name       = $armorname;
         $armor->armorclass = 1;
         $armor->location   = Manager\Item::LOCATION_BACKPACK;
-        $armor->owner      = $install_char;
+        $armor->owner      = $test_char;
         $em->persist($armor);
     }
 }
 
 $em->flush();
 
+
+//*********************************
 // Create Waypoints
 $waypoints = array (
                         "derashok"   => array(135, 170, 25),
@@ -115,9 +127,14 @@ foreach ($waypoints_conn as $connection) {
 
 $em->flush();
 
-// Reverse Mappings
-$install_char->user     = $install_user;
-$install_settings->user = $install_user;
+
+//*********************************
+// Create Adminpages
+Manager\System::addAdminPage("Ironlance", "Travel", "page=ironlance/citysquare");
+Manager\System::addAdminPage("Derashok", "Travel", "page=derashok/tribalcenter");
+Manager\System::addAdminPage("Dunsplee", "Travel", "page=dunsplee/trail");
+
+Manager\System::addAdminPage("Module", "System", "page=admin/modules");
 
 $em->flush();
 

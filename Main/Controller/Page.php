@@ -730,10 +730,7 @@ class Page extends BaseObject implements OutputObject
             }
 
             // get users currently here
-            $userlist = "";
-            foreach (Manager\User::getCharactersAt($this->shortname) as $char) {
-                $userlist .= $char['displayname'] . " ";
-            }
+            $userlist = implode(", ", Manager\User::getCharactersAt($this->shortname));
 
             $snippet->assign("characters_here", BtCode::decode($userlist));
 
@@ -806,9 +803,6 @@ class Page extends BaseObject implements OutputObject
 
     /**
      * Collect all Data and compile the Page
-     * WARNING: CHARACTERCHANGES HERE ARE NOT AUTOMATICALLY SAVED!
-     * 			$user->save() and $user->char->save() are called
-     * 			before $page->show()
      */
     public function show()
     {

@@ -31,6 +31,59 @@ require_once(DIR_INCLUDES."includes.inc.php");
 class System
 {
     /**
+     * Add an Administration Page
+     * @param string $name
+     * @param string $category
+     * @param string $page
+     */
+    public static function addAdminPage($name, $category, $page)
+    {
+        global $em;
+
+        if (!($em->getRepository("Main:Administration")->findOneBy(array("category" => $category, "page" => $page)))) {
+            $administration           = new Entities\Administration;
+            $administration->name     = (string)$name;
+            $administration->category = (string)$category;
+            $administration->page     = (string)$page;
+
+            $em->persist($administration);
+        }
+
+    }
+
+    /**
+     * Return Administration Categories
+     * @return array
+     */
+    public static function getAdminCategories()
+    {
+        $qb = getQueryBuilder();
+
+        $result = $qb   ->select("DISTINCT admin.category")
+                        ->from("Main:Administration", "admin")
+                        ->getQuery()->getResult();
+
+        $categories = array();
+        foreach ($result as $entry) {
+            $categories[] = $entry['category'];
+        }
+
+        return $categories;
+    }
+
+    /**
+     * Return Adminpages of a given category
+     * @param string $category
+     * @return array
+     */
+    public static function getAdminCategoryPages($category)
+    {
+        global $em;
+
+        return $em->getRepository("Main:Administration")->findByCategory($category);
+    }
+
+    /**
      * Creates the relative webbased path
      * @param string $file_path = filesystem path
      * @return string Relative Path

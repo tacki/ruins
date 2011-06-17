@@ -23,6 +23,12 @@ use ReflectionClass,
 class ModuleBase
 {
     /**
+     * Module Entity
+     * @var \Main\Entities\Module
+     */
+    private $moduleEntity;
+
+    /**
      * Module Initialization
      */
     public function init()
@@ -39,6 +45,28 @@ class ModuleBase
         $module->classname      = $calledClass;
 
         $em->persist($module);
+
+        $this->moduleEntity = $module;
+    }
+
+    /**
+     * Return associated Module Entity
+     * @return \Main\Entities\Module Module Entity
+     */
+    public function getModuleEntity()
+    {
+        global $em;
+
+        if (isset($this->moduleEntity)) {
+            return $this->moduleEntity;
+        } else {
+            $result = $em->getRepository("Main:Module")->findOneByName(static::getModuleName());
+            if ($result) {
+                return $result;
+            } else {
+                throw Error("Module Entity for Module ". static::getModuleName() . " not found!");
+            }
+        }
     }
 
     /**
