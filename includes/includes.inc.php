@@ -66,12 +66,10 @@ require_once(DIR_COMMON_EXTERNAL."php-openid_init.php");
 
 /**
  * Tree Initialization
- * Only available after Installation is complete
  */
-if (!isset($inInstallScript)) {
-    require_once(DIR_COMMON."Init.php");
-    require_once(DIR_MAIN."Init.php");
-    require_once(DIR_MODULES."Init.php");
-}
+require_once(DIR_COMMON."Init.php");
+require_once(DIR_MAIN."Init.php");
+require_once(DIR_MODULES."Init.php");
+
 
 ?>

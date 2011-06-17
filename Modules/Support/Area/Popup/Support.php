@@ -21,7 +21,7 @@ use Common\Controller\SessionStore,
 $popup->set("pagetitle", "Supportanfrage");
 $popup->set("headtitle", "Supportanfrage");
 
-$popup->nav->addLink("Anfrage", "popup=popup/messenger&op=create");
+$popup->nav->addLink("Anfrage", $popup->url);
 
 if (isset($user->character) && $user->character->loggedin) {
     $loggedin = true;
@@ -33,7 +33,7 @@ switch ($_GET['op']) {
 
     default:
         $popup->addForm("supportform");
-        $popup->supportform->head("supportform", "popup=popup/support&op=request");
+        $popup->supportform->head("supportform", "popup=Popup/Support&op=request");
 
         $popup->addSimpleTable("supportformtable");
         $popup->supportform->setCSS("input");
@@ -115,7 +115,7 @@ switch ($_GET['op']) {
         // Captcha Check
         if ($_POST['captcha'] !== SessionStore::get("support_captcha")) {
             $popup->output("Falscher Botschutz-Code eingegeben!`n`n");
-            $popup->nav->addTextLink("Zurück", "popup=popup/support");
+            $popup->nav->addTextLink("Zurück", "popup=Popup/Support");
             break;
         }
         SessionStore::remove("support_captcha");
@@ -124,7 +124,7 @@ switch ($_GET['op']) {
         if (!$loggedin) {
             if (!$_POST['userlogin'] || !$_POST['email'] || !$_POST['text']) {
                 $popup->output("Bitte alle Felder ausfüllen!`n`n");
-                $popup->nav->addTextLink("Zurück", "popup=popup/support");
+                $popup->nav->addTextLink("Zurück", "popup=Popup/Support");
                 break;
             }
         }
@@ -143,7 +143,7 @@ switch ($_GET['op']) {
         // Collect all Information and write it to the Database
         global $em;
 
-        $data = new Entities\SupportRequests;
+        $data = new \Modules\Support\Entities\SupportRequests;
 
         if ($loggedin) {
             $data->user = $user;
@@ -166,7 +166,7 @@ switch ($_GET['op']) {
         }
 
         $popup->addForm("supportform");
-        $popup->supportform->head("supportform", "popup=popup/support");
+        $popup->supportform->head("supportform", "popup=Popup/Support");
         $popup->output("<div class='floatclear center'>", true);
         $popup->supportform->setCSS("button");
         $popup->supportform->submitButton("Zurück");
