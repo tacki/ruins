@@ -19,9 +19,9 @@ use Main\Controller\Link,
 $popup->set("pagetitle", "Ruins Messenger");
 $popup->set("headtitle", "Messenger");
 
-$popup->nav->add(new Link("Verfassen", "popup=popup/messenger&op=create"));
-$popup->nav->add(new Link("Posteingang", "popup=popup/messenger&op=inbox"));
-$popup->nav->add(new Link("Postausgang", "popup=popup/messenger&op=outbox"));
+$popup->nav->addLink("Verfassen", "popup=popup/messenger&op=create")
+           ->addLink("Posteingang", "popup=popup/messenger&op=inbox")
+           ->addLink("Postausgang", "popup=popup/messenger&op=outbox");
 
 switch ($_GET['op']) {
 

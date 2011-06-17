@@ -143,7 +143,7 @@ switch ($_GET['op']) {
         $page->withdrawform->submitButton("Abheben");
 
         $page->withdrawform->close();
-        $page->nav->add(new Link("Zurück", "page=ironlance/citybank"));
+        $page->nav->addLink("Zurück", "page=ironlance/citybank");
         break;
 
     case "withdraw2":

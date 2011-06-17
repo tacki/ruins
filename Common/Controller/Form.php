@@ -44,7 +44,7 @@ class Form extends BaseHTML
 
         if (isset($this->_outputclass) && $this->_outputclass->nav instanceof Nav) {
             // Add Link to allowed Navs
-            $this->_outputclass->nav->add(new Link("", $action));
+            $this->_outputclass->nav->addHiddenLink($action);
         }
 
 

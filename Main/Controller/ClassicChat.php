@@ -401,7 +401,7 @@ class ClassicChat
                 $chatsnippet->assign("chatform", $chatform);
                 $chatsnippet->assign("target", (string)$this->_page->url);
                 // Nav for all Buttons (important)
-                $this->_page->nav->add(new Link("", $this->_page->url));
+                $this->_page->nav->addHiddenLink($this->_page->url);
 
                 // Get Chatpage
                 $resultpage = $this->_pageDisplayWrapper($this->_getPage(20, $this->_pagenr));
@@ -442,7 +442,7 @@ class ClassicChat
                     // Replace previous GET-Query
                     $newurl = clone $this->_page->url;
                     $newurl->setParameter($this->_section."_page", $i);
-                    $this->_page->nav->add(new Link("", $newurl));
+                    $this->_page->nav->addHiddenLink($newurl);
                     $pagesoutput .= "<a href='?".$newurl."'>". $i . "</a> ";
                 }
 
@@ -495,7 +495,7 @@ class ClassicChat
                     $this->_page->output("`n`n");
 
                     // BackButton
-                    $this->_page->nav->add(new Link("", $this->_page->url));
+                    $this->_page->nav->addHiddenLink("", $this->_page->url);
                     $this->_page->addForm("refreshbutton");
                     $this->_page->refreshbutton->head("refreshbutton", $this->_page->url);
                     $this->_page->refreshbutton->setCSS("button");
@@ -505,7 +505,7 @@ class ClassicChat
                     $this->_page->output("Editieren des letzten Eintrages nicht möglich!`n`n");
 
                     // BackButton
-                    $this->_page->nav->add(new Link("", $this->_page->url));
+                    $this->_page->nav->addHiddenLink("", $this->_page->url);
                     $this->_page->addForm("refreshbutton");
                     $this->_page->refreshbutton->head("refreshbutton", $this->_page->url);
                     $this->_page->refreshbutton->setCSS("button");

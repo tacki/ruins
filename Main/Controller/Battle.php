@@ -710,16 +710,16 @@ class Battle
         if (!$this->isActive()) {
             $target = $outputobject->url->base."&{$battleopstr}=join&side=".self::SIDE_ATTACKERS."&battleid=".$this->id;
             $output .= "<a href='?".$target."'>Angreifen</a>";
-            $outputobject->nav->add(new Link("", $target));
+            $outputobject->nav->addHiddenLink($target);
             $output .= " || ";
             $target = $outputobject->url->base."&{$battleopstr}=join&side=".self::SIDE_DEFENDERS."&battleid=".$this->id;
             $output .= "<a href='?".$target."'>Verteidigen</a>";
-            $outputobject->nav->add(new Link("", $target));
+            $outputobject->nav->addHiddenLink($target);
             $output .= " || ";
         }
         $target = $outputobject->url->base."&{$battleopstr}=join&side=".self::SIDE_NEUTRALS."&battleid=".$this->id;
         $output .= "<a href='?".$target."'>Zuschauen</a>";
-        $outputobject->nav->add(new Link("", $target));
+        $outputobject->nav->addHiddenLink($target);
         $output .= "</div>";
 
         if ($directoutput) {
@@ -756,7 +756,7 @@ class Battle
             $output .= $skillform->head("skillchooser", $outputobject->url->base."&{$battleopstr}=use_skill");
 
             // Add Nav
-            $outputobject->nav->add(new Link("", $outputobject->url->base."&{$battleopstr}=use_skill"));
+            $outputobject->nav->addHiddenLink($outputobject->url->base."&{$battleopstr}=use_skill");
 
             // TODO: Get Available Skills for this Character
             $skills = array ( "punch", "heal", "wait" );
@@ -891,8 +891,8 @@ class Battle
         $outputobject 	= getOutputObject();
         $battleopstr 	= $this->_getBattleOpString();
 
-        $outputobject->nav->add(new Link("Kampf"));
-        $outputobject->nav->add(new Link("Fliehen", $outputobject->url->base."&{$battleopstr}=flee"));
+        $outputobject->nav->addHead("Kampf")
+                          ->addLink("Fliehen", $outputobject->url->base."&{$battleopstr}=flee");
     }
 
     /**
@@ -903,8 +903,8 @@ class Battle
         $outputobject 	= getOutputObject();
         $battleopstr 	= $this->_getBattleOpString();
 
-        $outputobject->nav->add(new Link("Kampf"));
-        $outputobject->nav->add(new Link("Anfangen", $outputobject->url->base."&{$battleopstr}=create"));
+        $outputobject->nav->addHead("Kampf")
+                          ->addLink("Anfangen", $outputobject->url->base."&{$battleopstr}=create");
     }
 
     /**
@@ -915,9 +915,9 @@ class Battle
         $outputobject 	= getOutputObject();
         $battleopstr 	= $this->_getBattleOpString();
 
-        $outputobject->nav->add(new Link("Admin"));
-        $outputobject->nav->add(new Link("Kampf Beenden", $outputobject->url->base."&{$battleopstr}=admin_remove"));
-        $outputobject->nav->add(new Link("Nachrichten Löschen", $outputobject->url->base."&{$battleopstr}=admin_removemessages"));
+        $outputobject->nav->addHead("Admin")
+                          ->addLink("Kampf Beenden", $outputobject->url->base."&{$battleopstr}=admin_remove")
+                          ->addLink("Nachrichten Löschen", $outputobject->url->base."&{$battleopstr}=admin_removemessages");
     }
 
     /**

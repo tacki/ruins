@@ -44,10 +44,8 @@ class MessageSystemLink extends \Modules\ModuleBase implements \Common\Interface
 
         if ($user->character && $user->character->loggedin) {
             // add the Supportlink to the toplist
-            $page->nav->add(new Link("Messenger",
-                                "popup=popup/messenger",
-                                "shared",
-                                "Ruins Messenger zum Senden und Empfangen von Nachrichten"));
+            $page->nav->addLink("Messenger","popup=popup/messenger","shared")
+                      ->setDescription("Ruins Messenger zum Senden und Empfangen von Nachrichten");
 
 
             $page->addJavaScriptFile("jquery.plugin.timers.js");

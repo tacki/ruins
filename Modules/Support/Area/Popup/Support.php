@@ -21,7 +21,7 @@ use Common\Controller\SessionStore,
 $popup->set("pagetitle", "Supportanfrage");
 $popup->set("headtitle", "Supportanfrage");
 
-$popup->nav->add(new Link("Anfrage", "popup=popup/messenger&op=create"));
+$popup->nav->addLink("Anfrage", "popup=popup/messenger&op=create");
 
 if (isset($user->character) && $user->character->loggedin) {
     $loggedin = true;

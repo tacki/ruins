@@ -19,9 +19,9 @@ use Main\Controller\Link,
 $popup->set("pagetitle", "Einstellungen");
 $popup->set("headtitle", "Einstellungen");
 
-$popup->nav->add(new Link("Benutzer", "popup=popup/settings&op=user"));
-$popup->nav->add(new Link("Charakter", "popup=popup/settings&op=char"));
-$popup->nav->add(new Link("Sonstiges", "popup=popup/settings&op=other"));
+$popup->nav->addLink("Benutzer", "popup=popup/settings&op=user")
+           ->addLink("Charakter", "popup=popup/settings&op=char")
+           ->addLink("Sonstiges", "popup=popup/settings&op=other");
 
 $popup->addForm("settingsform");
 

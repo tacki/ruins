@@ -52,16 +52,16 @@ class Nav
     private $_validationEnabled;
 
     /**
-     * Allowed Navigation List
+     * Last Navigation added status
      * @var array
      */
     private $_linkList;
 
     /**
-     * Last Navigation added status
-     * @var bool
+     * Last Navigation added
+     * @var array
      */
-    private $_lastNavAddedStatus;
+    private $_lastNavAdded;
 
     /**
      * constructor - load the default values and initialize the attributes
@@ -74,7 +74,7 @@ class Nav
         $this->cacheNavigation = false;
         $this->_char = $character;
         $this->_linkList = array();
-        $this->_lastNavAddedStatus = false;
+        $this->_lastNavAdded = array( "status" => false, "element" => array());
 
         // Default to enabled Validation
         if ($this->_char === false) {
@@ -155,7 +155,7 @@ class Nav
         $this->addHiddenLink($url, $restriction);
 
         // Output Link
-        if ($this->_lastNavAddedStatus === true) {
+        if ($this->_lastNavAdded['status'] === true) {
             if ($this->_outputObject) {
                 $this->_outputObject->output("<a href='?". $url . "'>" . $text . "</a>", true);
             } else {
@@ -164,6 +164,17 @@ class Nav
         }
 
         return $this;
+    }
+
+    /**
+     * Add Description for the last added Link
+     * @param string $description
+     */
+    public function setDescription($description)
+    {
+        if ($this->_lastNavAdded['status'] === true) {
+            $this->_lastNavAdded['element']['description'] = $description;
+        }
     }
 
     /**
@@ -177,14 +188,15 @@ class Nav
         // Check if the Link is valid
         if ($this->validationEnabled() && $link->url) {
             if (!Manager\System::validatePHPFilePath($link->url)) {
-                $this->_lastNavAddedStatus = false;
+                $this->_lastNavAdded['status'] = false;
                 return false;
             }
         }
 
         // Check if Link already exists
-        if ($this->_exists($link->displayname, $link->url)) {
-            $this->_lastNavAddedStatus = true;
+        if ($linkelement = $this->_exists($link->displayname, $link->url)) {
+            $this->_lastNavAdded['element'] = $linkelement;
+            $this->_lastNavAdded['status'] = true;
             return true;
         }
 
@@ -203,10 +215,16 @@ class Nav
                 // add the nav to the end of the array
                 $this->_linkList[] = $linkdescription;
             }
-            $this->_lastNavAddedStatus = true;
+
+            // return last element of Linklist as a reference
+            end ($this->_linkList);
+            $this->_lastNavAdded['element'] =& $this->_linkList[key($this->_linkList)];
+            reset ($this->_linkList);
+
+            $this->_lastNavAdded['status'] = true;
             return true;
         } else {
-            $this->_lastNavAddedStatus = false;
+            $this->_lastNavAdded['status'] = false;
             return false;
         }
     }
@@ -406,12 +424,13 @@ class Nav
     }
 
     /**
-     * Check if the Link is valid
+     * Check if the Link already exists
      * @access private
+     * @param string $displayname Shown Name of the Link
      * @param string $url URL to check
-     * @return bool true if valid, else false
+     * @return array|false The linkelement if valid, else false
      */
-    private function _exists($displayname=false, $url=false)
+    private function &_exists($displayname=false, $url=false)
     {
         // Run through the Properties...
         foreach ($this->_linkList as $linkarray) {
@@ -419,7 +438,7 @@ class Nav
                 //echo "{$displayname} == {$linkarray['displayname']} && {$url} == {$linkarray['url']} ...";
                 if ($displayname == $linkarray['displayname'] && $url == $linkarray['url']) {
                     //echo "<font color='green'>ok</font><br />";
-                    return true;
+                    return $linkarray;
                 } else {
                     //echo "<font color='red'>not ok</font><br />";
                 }
@@ -427,7 +446,7 @@ class Nav
                 //echo "{$displayname} == {$linkarray['displayname']} ...";
                 if ($displayname == $linkarray['displayname']) {
                     //echo "<font color='green'>ok</font><br />";
-                    return true;
+                    return $linkarray;
                 } else {
                     //echo "<font color='red'>not ok</font><br />";
                 }
@@ -435,7 +454,7 @@ class Nav
                 //echo "{$url} == {$linkarray['url']} ...";
                 if ($url == $linkarray['url']) {
                     //echo "<font color='green'>ok</font><br />";
-                    return true;
+                    return $linkarray;
                 } else {
                     //echo "<font color='red'>not ok</font><br />";
                 }

@@ -44,10 +44,8 @@ class SettingsLink extends \Modules\ModuleBase implements \Common\Interfaces\Mod
 
         if ($user->character && $user->character->loggedin) {
             // add the Supportlink to the toplist
-            $page->nav->add(new Link("Settings",
-                                "popup=popup/settings",
-                                "shared",
-                                "Hier findest du alle Einstellungen zum Spiel"));
+            $page->nav->addLink("Settings", "popup=popup/settings", "shared")
+                      ->setDescription("Hier findest du alle Einstellungen zum Spiel");
         }
     }
 }
