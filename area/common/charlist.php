@@ -86,12 +86,12 @@ $headers = array(	"name"=>"Name",
 );
 
 $page->addTable("characterlist", true);
-$page->characterlist->setCSS("messagelist");
-$page->characterlist->setTabAttributes(false);
-$page->characterlist->addTabHeader($headers);
-$page->characterlist->addListArray($charlist, "firstrow", "firstrow");
-$page->characterlist->setSecondRowCSS("secondrow");
-$page->characterlist->load();
+$page->getTable("characterlist")->setCSS("messagelist");
+$page->getTable("characterlist")->setTabAttributes(false);
+$page->getTable("characterlist")->addTabHeader($headers);
+$page->getTable("characterlist")->addListArray($charlist, "firstrow", "firstrow");
+$page->getTable("characterlist")->setSecondRowCSS("secondrow");
+$page->getTable("characterlist")->load();
 
 // Add Navlinks for the clickable Headers
 foreach ($headers as $link=>$linkname) {

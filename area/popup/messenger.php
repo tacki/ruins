@@ -100,12 +100,12 @@ switch ($_GET['op']) {
         }
 
         $popup->addTable("messagelist", true);
-        $popup->messagelist->setCSS("messagelist");
-        $popup->messagelist->setTabAttributes(false);
-        $popup->messagelist->addTabHeader(array("", "Absender", "Betreff", "Datum", ""), false, false, "head");
-        $popup->messagelist->addListArray($showlist, "firstrow", "firstrow");
-        $popup->messagelist->setSecondRowCSS("secondrow");
-        $popup->messagelist->load();
+        $popup->getTable("messagelist")->setCSS("messagelist");
+        $popup->getTable("messagelist")->setTabAttributes(false);
+        $popup->getTable("messagelist")->addTabHeader(array("", "Absender", "Betreff", "Datum", ""), false, false, "head");
+        $popup->getTable("messagelist")->addListArray($showlist, "firstrow", "firstrow");
+        $popup->getTable("messagelist")->setSecondRowCSS("secondrow");
+        $popup->getTable("messagelist")->load();
 
         $popup->output("<div id='messagetools'>", true);
         $popup->output("<input type='button' value='Alle' onclick='checkall(\"deleteform\")' class='button' />", true);
@@ -165,12 +165,12 @@ switch ($_GET['op']) {
         }
 
         $popup->addTable("messagelist", true);
-        $popup->messagelist->setCSS("messagelist");
-        $popup->messagelist->setTabAttributes(false);
-        $popup->messagelist->addTabHeader(array("Empfänger", "Betreff", "Datum"), false, false, "head");
-        $popup->messagelist->addListArray($showlist, "firstrow", "firstrow");
-        $popup->messagelist->setSecondRowCSS("secondrow");
-        $popup->messagelist->load();
+        $popup->getTable("messagelist")->setCSS("messagelist");
+        $popup->getTable("messagelist")->setTabAttributes(false);
+        $popup->getTable("messagelist")->addTabHeader(array("Empfänger", "Betreff", "Datum"), false, false, "head");
+        $popup->getTable("messagelist")->addListArray($showlist, "firstrow", "firstrow");
+        $popup->getTable("messagelist")->setSecondRowCSS("secondrow");
+        $popup->getTable("messagelist")->load();
         break;
 }
 ?>

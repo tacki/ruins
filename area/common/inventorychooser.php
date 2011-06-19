@@ -105,12 +105,12 @@ $headers = array(	"name"=>"Name",
 );
 
 $page->addTable("itemlist_armors", true);
-$page->itemlist_armors->setCSS("messagelist");
-$page->itemlist_armors->setTabAttributes(false);
-$page->itemlist_armors->addTabHeader($headers);
-$page->itemlist_armors->addListArray($newItemList, "firstrow", "firstrow");
-$page->itemlist_armors->setSecondRowCSS("secondrow");
-$page->itemlist_armors->load();
+$page->getTable("itemlist_armors")->setCSS("messagelist");
+$page->getTable("itemlist_armors")->setTabAttributes(false);
+$page->getTable("itemlist_armors")->addTabHeader($headers);
+$page->getTable("itemlist_armors")->addListArray($newItemList, "firstrow", "firstrow");
+$page->getTable("itemlist_armors")->setSecondRowCSS("secondrow");
+$page->getTable("itemlist_armors")->load();
 
 if (isset($_GET['callop'])) {
     $page->getForm("chooser")->setCSS("delbutton");

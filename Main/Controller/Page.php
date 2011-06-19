@@ -344,6 +344,7 @@ class Page extends BaseObject implements OutputObject
      * Add a new HTMLForm to the Page
      * @param string $name Name of the HTMLForm
      * @param bool $directoutput Output directly with $page->output()
+     * @param bool $overwrite Overwrite existing
      * @return Common\Controller\Form The Form Object
      */
     public function addForm($name, $directoutput=true, $overwrite=false)
@@ -374,26 +375,27 @@ class Page extends BaseObject implements OutputObject
      * Add a new HTMLTable to the Page
      * @param string $name Name of the HTMLTable
      * @param bool $directoutput Output directly with $page->output()
-     * @return string The Name of the Table
+     * @param bool $overwrite Overwrite existing
+     * @return Common\Controller\Table The Table Object
      */
-    public function addTable($name, $directoutput=true)
+    public function addTable($name, $directoutput=true, $overwrite=false)
     {
         // remove whitespaces
         $name = str_replace(' ', '', $name);
 
         if ($directoutput) {
-            $this->addProperty($name, new Table($this), true);
+            $result = $this->addElement("Table", $name, new Table($this), $overwrite);
         } else {
-            $this->addProperty($name, new Table(), true);
+            $result = $this->addElement("Table", $name, new Table(), $overwrite);
         }
 
-        return $name;
+        return $result;
     }
 
     /**
     * Return given Table Object
     * @param string $name
-    * @return Table The Table Object
+    * @return Common\Controller\Table The Table Object
     */
     public function getTable($name)
     {

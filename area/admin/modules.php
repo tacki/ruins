@@ -56,12 +56,12 @@ $headers = array(	"name"=>"Name",
 );
 
 $page->addTable("modulelist", true);
-$page->modulelist->setCSS("messagelist");
-$page->modulelist->setTabAttributes(false);
-$page->modulelist->addTabHeader($headers);
-$page->modulelist->addListArray($moduleList, "firstrow", "firstrow");
-$page->modulelist->setSecondRowCSS("secondrow");
-$page->modulelist->load();
+$page->getTable("modulelist")->setCSS("messagelist");
+$page->getTable("modulelist")->setTabAttributes(false);
+$page->getTable("modulelist")->addTabHeader($headers);
+$page->getTable("modulelist")->addListArray($moduleList, "firstrow", "firstrow");
+$page->getTable("modulelist")->setSecondRowCSS("secondrow");
+$page->getTable("modulelist")->load();
 
 $page->getForm("chooser")->setCSS("delbutton");
 $page->output($page->getForm("chooser")->submitButton("Speichern"), true);
