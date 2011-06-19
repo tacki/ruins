@@ -39,75 +39,75 @@ switch ($_GET['op']) {
         $popup->getForm("support")->setCSS("input");
 
         // Login Name
-        $popup->supportformtable->startRow();
-        $popup->supportformtable->startData();
+        $popup->getSimpleTable("supportformtable")->startRow();
+        $popup->getSimpleTable("supportformtable")->startData();
         $popup->output("Loginname: ");
-        $popup->supportformtable->startData();
+        $popup->getSimpleTable("supportformtable")->startData();
         if ($loggedin) {
             $popup->getForm("support")->inputText("userlogin", $user->login, 20, 50, true);
         } else {
             $popup->getForm("support")->inputText("userlogin");
         }
-        $popup->supportformtable->closeRow();
+        $popup->getSimpleTable("supportformtable")->closeRow();
 
         // Email
-        $popup->supportformtable->startRow();
-        $popup->supportformtable->startData();
+        $popup->getSimpleTable("supportformtable")->startRow();
+        $popup->getSimpleTable("supportformtable")->startData();
         $popup->output("Email Addresse: ");
-        $popup->supportformtable->startData();
+        $popup->getSimpleTable("supportformtable")->startData();
         if ($loggedin) {
             $popup->getForm("support")->inputText("email", $user->email, 20, 50, true);
         } else {
             $popup->getForm("support")->inputText("email");
         }
-        $popup->supportformtable->closeRow();
+        $popup->getSimpleTable("supportformtable")->closeRow();
 
         // Character
-        $popup->supportformtable->startRow();
-        $popup->supportformtable->startData();
+        $popup->getSimpleTable("supportformtable")->startRow();
+        $popup->getSimpleTable("supportformtable")->startData();
         $popup->output("Character: ");
-        $popup->supportformtable->startData();
+        $popup->getSimpleTable("supportformtable")->startData();
         if ($loggedin) {
             $popup->getForm("support")->inputText("charname", $user->character->name, 20, 50, true);
         } else {
             $popup->getForm("support")->inputText("charname");
         }
-        $popup->supportformtable->closeRow();
+        $popup->getSimpleTable("supportformtable")->closeRow();
 
         // Supporttext
-        $popup->supportformtable->startRow();
-        $popup->supportformtable->startData();
+        $popup->getSimpleTable("supportformtable")->startRow();
+        $popup->getSimpleTable("supportformtable")->startData();
         $popup->output("Supportanfrage: ");
-        $popup->supportformtable->startData();
+        $popup->getSimpleTable("supportformtable")->startData();
         $popup->getForm("support")->textArea("text", false, 45);
-        $popup->supportformtable->closeRow();
+        $popup->getSimpleTable("supportformtable")->closeRow();
 
         // CAPTCHA
-        $popup->supportformtable->startRow();
-        $popup->supportformtable->startData();
+        $popup->getSimpleTable("supportformtable")->startRow();
+        $popup->getSimpleTable("supportformtable")->startData();
         $popup->output("Botschutz: ");
-        $popup->supportformtable->startData();
+        $popup->getSimpleTable("supportformtable")->startData();
         $popup->output("<img src='includes/helpers/captcha.php'>", true);
         $popup->getForm("support")->inputText("captcha", false, 5, 5);
-        $popup->supportformtable->closeRow();
+        $popup->getSimpleTable("supportformtable")->closeRow();
 
         // Pagedump
         if ($loggedin) {
-            $popup->supportformtable->startRow();
-            $popup->supportformtable->startData();
+            $popup->getSimpleTable("supportformtable")->startRow();
+            $popup->getSimpleTable("supportformtable")->startData();
             $popup->output("Seitenkopie`neinfügen: ");
-            $popup->supportformtable->startData();
+            $popup->getSimpleTable("supportformtable")->startData();
             $popup->getForm("support")->checkbox("pagedump");
-            $popup->supportformtable->closeRow();
+            $popup->getSimpleTable("supportformtable")->closeRow();
         }
 
         // Submitbutton
-        $popup->supportformtable->startRow();
-        $popup->supportformtable->startData(false, 2);
+        $popup->getSimpleTable("supportformtable")->startRow();
+        $popup->getSimpleTable("supportformtable")->startData(false, 2);
         $popup->getForm("support")->setCSS("button");
         $popup->getForm("support")->submitButton("Absenden");
 
-        $popup->supportformtable->close();
+        $popup->getSimpleTable("supportformtable")->close();
         $popup->getForm("support")->close();
         break;
 

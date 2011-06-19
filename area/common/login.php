@@ -49,28 +49,28 @@ switch ($_GET['op']) {
         $page->getForm("login")->head("login", "page=common/login&op=checkpw");
 
         $page->addSimpleTable("logintable");
-        $page->logintable->setCSS("login");
+        $page->getSimpleTable("logintable")->setCSS("login");
 
-        $page->logintable->startRow();
-        $page->logintable->startData();
+        $page->getSimpleTable("logintable")->startRow();
+        $page->getSimpleTable("logintable")->startData();
         $page->output("Benutzername: ");
-        $page->logintable->startData();
+        $page->getSimpleTable("logintable")->startData();
         $page->getForm("login")->setCSS("input");
         $page->getForm("login")->inputText("username");
 
-        $page->logintable->startRow();
-        $page->logintable->startData();
+        $page->getSimpleTable("logintable")->startRow();
+        $page->getSimpleTable("logintable")->startData();
         $page->output("Passwort: ");
-        $page->logintable->startData();
+        $page->getSimpleTable("logintable")->startData();
         $page->getForm("login")->setCSS("input");
         $page->getForm("login")->inputPassword("password");
 
-        $page->logintable->startRow();
-        $page->logintable->startData(false, 2);
+        $page->getSimpleTable("logintable")->startRow();
+        $page->getSimpleTable("logintable")->startData(false, 2);
         $page->getForm("login")->setCSS("button");
         $page->getForm("login")->submitButton("Einloggen");
 
-        $page->logintable->close();
+        $page->getSimpleTable("logintable")->close();
 
         $page->getForm("login")->close();
 
@@ -83,16 +83,16 @@ switch ($_GET['op']) {
         $page->getForm("openid")->setCSS("openid");
 
         $page->addSimpleTable("openidtable");
-        $page->openidtable->setCSS("login");
+        $page->getSimpleTable("openidtable")->setCSS("login");
 
-        $page->openidtable->startRow();
-        $page->openidtable->startData();
+        $page->getSimpleTable("openidtable")->startRow();
+        $page->getSimpleTable("openidtable")->startData();
         $page->getForm("openid")->inputText("openid_url");
 
         $page->getForm("openid")->setCSS("button");
         $page->getForm("openid")->submitButton("Einloggen");
 
-        $page->openidtable->close();
+        $page->getSimpleTable("openidtable")->close();
 
         $page->getForm("openid")->close();
 

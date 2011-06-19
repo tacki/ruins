@@ -50,11 +50,11 @@ switch ($_GET['op']) {
         $page->nav->addHiddenLink("page=common/portal&op=forward");
 
         foreach ($characters as $character) {
-            $page->chartable->startRow();
-            $page->chartable->startData();
+            $page->getSimpleTable("chartable")->startRow();
+            $page->getSimpleTable("chartable")->startData();
             $page->getForm("charchooseform")->radio("chooser", $character->id, ($user->current_character == $character?true:false));
 
-            $page->chartable->startData();
+            $page->getSimpleTable("chartable")->startData();
 
             $page->output("Name: " . $character->displayname . "`n");
             $page->output("Rasse: " . $character->race . "`n");
@@ -66,10 +66,10 @@ switch ($_GET['op']) {
 
             $page->output("`n");
 
-            $page->chartable->closeRow();
+            $page->getSimpleTable("chartable")->closeRow();
         }
 
-        $page->chartable->close();
+        $page->getSimpleTable("chartable")->close();
 
         $page->getForm("charchooseform")->setCSS("button");
         $page->getForm("charchooseform")->submitButton("Weiter");

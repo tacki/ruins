@@ -34,7 +34,7 @@ define("PAGE_DEFAULT_PRIVATE_TEMPLATE", "default");
  * Page-Class, the Heart of the Template-System
  * @package Ruins
  */
-class Page extends BaseObject implements OutputObject
+class Page implements OutputObject
 {
     /**
      * Navigation Class
@@ -141,10 +141,6 @@ class Page extends BaseObject implements OutputObject
         $this->_toolBoxItems	= array();
         $this->_elements        = array();
         $this->modulesenabled	= true;
-
-        // This Class is always 'loaded'
-        parent::__construct();
-        $this->isloaded 	= true;
 
         // Initialize Navigation
         $this->nav = new Nav($char, $this);
@@ -432,20 +428,31 @@ class Page extends BaseObject implements OutputObject
      * Add a new simple HTMLTable to the Page
      * @param string $name Name of the simple HTMLTable
      * @param bool $directoutput Output directly with $page->output()
+     * @param bool $overwrite Overwrite existing
      * @return string The Name of the Table
      */
-    public function addSimpleTable($name, $directoutput=true)
+    public function addSimpleTable($name, $directoutput=true, $overwrite=false)
     {
         // remove whitespaces
         $name = str_replace(' ', '', $name);
 
         if ($directoutput) {
-            $this->addProperty($name, new SimpleTable($this));
+            $result = $this->addElement("SimpleTable", $name, new SimpleTable($this), $overwrite);
         } else {
-            $this->addProperty($name, new SimpleTable());
+            $result = $this->addElement("SimpleTable", $name, new SimpleTable(), $overwrite);
         }
 
-        return $name;
+        return $result;
+    }
+
+    /**
+    * Return given SimpleTable Object
+    * @param string $name
+    * @return Common\Controller\SimpleTable The Chat Object
+    */
+    public function getSimpleTable($name)
+    {
+        return $this->getElement("SimpleTable", $name);
     }
 
     /**
