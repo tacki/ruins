@@ -217,11 +217,29 @@ class Page implements OutputObject
 
     /**
      * Adds a JavaScript-file as an include to the Header
-     * @param string $script Script Filename (has to be inside of includes/javascript/
+     * @param string $script Script Filename
+     * @return bool true if javascriptfile is found, else false
      */
     public function addJavaScriptFile($script)
     {
-        $this->_headscripts[] = "<script src='".Manager\System::htmlpath(DIR_INCLUDES)."/javascript/".$script."' type='text/javascript'></script>";
+        // Module-Directory is prefered
+        foreach (\Main\Manager\Module::getModuleListFromFilesystem() as $module) {
+            if (file_exists(DIR_MODULES.$module['directory']."View/Javascript/".$script)) {
+                $this->_headscripts[] = "<script src='".Manager\System::htmlpath(DIR_MODULES.$module['directory']."View/Javascript/".$script)."' type='text/javascript'></script>";
+                return true;
+            }
+        }
+
+        // Next is Common-Directory
+        if (file_exists(DIR_COMMON."View/Javascript/".$script)) {
+            $this->_headscripts[] = "<script src='".Manager\System::htmlpath(DIR_COMMON."View/JavaScript/".$script)."' type='text/javascript'></script>";
+            return true;
+        } elseif (file_exists(DIR_MAIN."View/Javascript/".$script)) {
+            $this->_headscripts[] = "<script src='".Manager\System::htmlpath(DIR_MAIN."View/JavaScript/".$script)."' type='text/javascript'></script>";
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -602,7 +620,7 @@ class Page implements OutputObject
      */
     protected function _addJQuerySupport()
     {
-        array_unshift($this->_headscripts, "<script src='".Manager\System::htmlpath(DIR_INCLUDES)."/javascript/jquery-1.3.2.min.js' type='text/javascript'></script>");
+        array_unshift($this->_headscripts, "<script src='".Manager\System::htmlpath(DIR_COMMON."View/JavaScript/jquery-1.3.2.min.js")."' type='text/javascript'></script>");
         $this->addJavaScriptFile("jquery-ui-1.7.2.custom.min.js");
         $this->addJavaScriptFile("jquery.plugin.timers.js");
     }
@@ -733,7 +751,7 @@ class Page implements OutputObject
             $toolBoxJS 		.= "$('#".$toolItem['link']->displayname."').click(function() {
                                     $.ajax({
                                       type: 'GET',
-                                      url: '".Manager\System::htmlpath(DIR_INCLUDES)."/helpers/ajax/".$toolItem['link']->url."',
+                                      url: '".Manager\System::htmlpath(DIR_MAIN)."/Helpers/ajax/".$toolItem['link']->url."',
                                       dataType: 'script'
                                     });
                                     $(this).replaceWith('<img src=".$toolItem['replaceimagesrc']." />');

@@ -66,7 +66,7 @@ try {
              * Page Header
              */
             Manager\Module::callModule(Manager\Module::EVENT_PRE_PAGEHEADER);
-            include(DIR_INCLUDES."helpers/".key($outputfile).".header.php");
+            include(DIR_MAIN."Helpers/".key($outputfile).".header.php");
 
             /**
              * Page Content
@@ -77,7 +77,7 @@ try {
             /**
              * Page Footer
              */
-            include(DIR_INCLUDES."helpers/".key($outputfile).".footer.php");
+            include(DIR_MAIN."Helpers/".key($outputfile).".footer.php");
 
             /**
              * Commit Database Transaction

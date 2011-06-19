@@ -27,10 +27,10 @@ $battle = new Battle;
 
 if ($battleid = Manager\Battle::getBattleID($user->character)) {
     $battle->load($battleid);
-    include (DIR_INCLUDES."helpers/battle.running.php");
+    include (DIR_MAIN."Helpers/battle.running.php");
 } elseif (Manager\Battle::getBattleList()) {
     $page->nav->addLink("Zurück", "page=derashok/tribalcenter");
-    include (DIR_INCLUDES."helpers/battle.list.php");
+    include (DIR_MAIN."Helpers/battle.list.php");
 } else {
     $page->nav->addLink("Zurück", "page=derashok/tribalcenter");
 

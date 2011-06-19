@@ -113,7 +113,7 @@ class System
             $document_root = substr($document_root, 0, -1);
         }
 
-        $htmlpath = str_replace(strtolower($document_root) , '', strtolower($realpath));
+        $htmlpath = str_replace($document_root , '', $realpath);
 
         return $htmlpath.(isset($args)?"?".$args:"");
     }

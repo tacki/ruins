@@ -1,6 +1,6 @@
 function setColorPreview(input_id, preview_id)
 {
-    var callURL			= "includes/helpers/ajax/btcode.ajax.php";
+    var callURL			= "Common/Helpers/ajax/btcode.ajax.php";
 
     var cpInputId 		= "#" + input_id;
     var cpPreviewId 		= "#" + preview_id;

@@ -14,7 +14,8 @@
  */
 namespace Modules\MessageSystemLink;
 use Main\Controller\Page,
-    Main\Controller\Link;
+    Main\Controller\Link,
+    Main\Manager;
 
 /**
  * MessageSystem Module
@@ -53,7 +54,7 @@ class MessageSystemLink extends \Modules\ModuleBase implements \Common\Interface
                  $(document).ready(function() {
                     var timerCycle 	= '60s';
                     var result 		= 0;
-                    var jsonURL		= 'includes/helpers/ajax/messenger_newMessageAlert.ajax.php?userid=".$user->character->id."';
+                    var jsonURL		= '".Manager\System::htmlpath(DIR_MAIN."/Helpers/ajax/messenger_newMessageAlert.ajax.php")."?userid=".$user->character->id."';
 
                     $.getJSON(jsonURL, function(json) {
                         if (json > 0) {

@@ -13,7 +13,8 @@
  * Namespaces
  */
 namespace Main\Controller;
-use Common\Controller\SimpleTable,
+use Common\Controller\BtCode,
+    Common\Controller\SimpleTable,
     Common\Controller\SessionStore,
     Main\Entities\Chat,
     Main\Entities\Character,

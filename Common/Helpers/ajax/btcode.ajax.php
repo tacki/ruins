@@ -17,7 +17,7 @@ use Common\Controller\BtCode;
 /**
  * Includes
  */
-require_once("../../../Main/Controller/BtCode.php");
+require_once("../../../Common/Controller/BtCode.php");
 
 $decodestring = rawurldecode($_POST['decodestring']);
 
