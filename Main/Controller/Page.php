@@ -405,16 +405,27 @@ class Page extends BaseObject implements OutputObject
     /**
      * Add a new Chat to the Page
      * @param string $name Name of the Chat
-     * @return string The Name of the Chat
+     * @return Common\Controller\Chat The Chat Object
      */
     public function addChat($name)
     {
         // remove whitespaces
         $name = str_replace(' ', '', $name);
 
-        $this->addProperty($name, new ClassicChat($this, $name), true);
+        // always overwrite Chat
+        $result = $this->addElement("Chat", $name, new ClassicChat($this, $name), true);
 
-        return $name;
+        return $result;
+    }
+
+    /**
+    * Return given Chat Object
+    * @param string $name
+    * @return Common\Controller\Chat The Chat Object
+    */
+    public function getChat($name)
+    {
+        return $this->getElement("Chat", $name);
     }
 
     /**

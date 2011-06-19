@@ -701,8 +701,7 @@ $mt = getMicroTime();
 $page->output("Classic Chat Start: `n");
 $position = "classicchattest";
 
-$page->addChat("testchat");
-$page->testchat->show();
+$page->addChat("testchat")->show();
 
 // Classic Chat End
 

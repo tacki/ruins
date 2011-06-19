@@ -32,6 +32,5 @@ $page->output("Du stehst auf einem kleinen Weg, kurz bevor dieser in den dichten
 
 $page->output("`n`n`n");
 
-$page->addChat("dunsplee_trail");
-$page->dunsplee_trail->show();
+$page->addChat("dunsplee_trail")->show();
 ?>

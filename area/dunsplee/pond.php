@@ -178,6 +178,5 @@ switch ($_GET['op']) {
 
 $page->output("`n`n`n");
 
-$page->addChat("dunsplee_pond");
-$page->dunsplee_pond->show();
+$page->addChat("dunsplee_pond")->show();
 ?>

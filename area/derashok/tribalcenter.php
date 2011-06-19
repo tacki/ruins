@@ -32,6 +32,5 @@ $page->output("Willkommen auf dem Stammeszentrum in Derashok, einem wichtigen Tr
 
 $page->output("`n`n");
 
-$page->addChat("derashok_tribalcenter");
-$page->derashok_tribalcenter->show();
+$page->addChat("derashok_tribalcenter")->show();
 ?>

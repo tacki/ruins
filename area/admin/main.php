@@ -39,7 +39,6 @@ $page->nav->addHead("System")
 Manager\System::getAdminCategories();
 
 
-$page->addChat("administration_mainchat");
-$page->administration_mainchat->show();
+$page->addChat("administration_mainchat")->show();
 
 ?>

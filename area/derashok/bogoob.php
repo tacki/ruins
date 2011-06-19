@@ -38,8 +38,7 @@ switch ($_GET['op']) {
 
         $page->output("`n`n`n");
 
-        $page->addChat("bogoob");
-        $page->bogoob->show();
+        $page->addChat("bogoob")->show();
         break;
 
     case "sellask":

@@ -29,6 +29,5 @@ $page->nav->addHead("Allgemein")
 
 $page->output("Willkommen im Stadtzentrum von Ironlance, dem aus Stein gebauten Stolz der menschlichen Rasse.`n");
 
-$page->addChat("ironlance_citysquare");
-$page->ironlance_citysquare->show();
+$page->addChat("ironlance_citysquare")->show();
 ?>
