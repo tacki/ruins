@@ -18,7 +18,7 @@ use Common\Controller\SessionStore;
  * Global Includes
  */
 require_once("../../../config/dirconf.cfg.php");
-require_once(DIR_INCLUDES."includes.inc.php");
+require_once(DIR_BASE."main.inc.php");
 
 $decodestring = rawurldecode($_GET['part']);
 

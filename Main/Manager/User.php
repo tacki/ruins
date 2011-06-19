@@ -19,7 +19,7 @@ use Common\Controller\BtCode,
 /**
  * Global Includes
  */
-require_once(DIR_INCLUDES."includes.inc.php");
+require_once(DIR_BASE."main.inc.php");
 
 /**
  * User Manager Class

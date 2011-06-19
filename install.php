@@ -386,7 +386,7 @@ switch ($_GET['step']) {
 
             // Include Standard Header
             require_once("config/dirconf.cfg.php");
-            require_once(DIR_INCLUDES."includes.inc.php");
+            require_once(DIR_BASE."main.inc.php");
 
             $needDBinfo = false;
 
@@ -491,7 +491,7 @@ switch ($_GET['step']) {
 
         // Include Standard Header
         require_once("config/dirconf.cfg.php");
-        require_once(DIR_INCLUDES."includes.inc.php");
+        require_once(DIR_BASE."main.inc.php");
 
         if (isset($_GET['import'])) {
             echo "<div class='checkfor'>Import Initial Database ... </div>";
@@ -561,7 +561,7 @@ switch ($_GET['step']) {
 
         // Include Standard Header
         require_once("config/dirconf.cfg.php");
-        require_once(DIR_INCLUDES."includes.inc.php");
+        require_once(DIR_BASE."main.inc.php");
 
         // Call Tree Init
         require_once(DIR_COMMON."Init.php");

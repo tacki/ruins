@@ -18,7 +18,7 @@ use Main\Entities;
 /**
  * Global Includes
  */
-require_once(DIR_INCLUDES."includes.inc.php");
+require_once(DIR_BASE."main.inc.php");
 
 /**
  * Modulesystem Class

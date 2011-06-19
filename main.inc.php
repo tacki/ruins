@@ -22,12 +22,12 @@ require_once(DIR_CONFIG."dbconnect.cfg.php");
 /**
  * Global Functions
  */
-require_once(DIR_INCLUDES."functions/global.func.php");
+require_once(DIR_COMMON."Functions/global.func.php");
 
 /**
  * Database Functions
  */
-require_once(DIR_INCLUDES."functions/database.func.php");
+require_once(DIR_COMMON."Functions/database.func.php");
 
 /**
  * Doctrine ClassLoaders
