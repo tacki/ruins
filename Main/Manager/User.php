@@ -17,11 +17,6 @@ use Common\Controller\BtCode,
     Main\Entities;
 
 /**
- * Global Includes
- */
-require_once(DIR_BASE."main.inc.php");
-
-/**
  * User Manager Class
  *
  * Class to manage User- and Characteraccounts

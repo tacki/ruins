@@ -18,11 +18,6 @@ use Common\Controller\SessionStore,
     Main\Entities;
 
 /**
- * Global Includes
- */
-require_once(DIR_BASE."main.inc.php");
-
-/**
  * System Class
  *
  * Class to manage Cities and other Environmentals

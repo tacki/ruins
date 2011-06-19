@@ -16,11 +16,6 @@ namespace Main\Manager;
 use Main\Entities;
 
 /**
- * Global Includes
- */
-require_once(DIR_BASE."main.inc.php");
-
-/**
  * Modulesystem Class
  *
  * Class to manage Modules
