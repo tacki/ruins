@@ -73,7 +73,7 @@ class ClassicChat
     {
         $chatform = $this->_getChatFormName();
 
-        $this->_page->addJavaScriptFile("btcode.js");
+        //$this->_page->addJavaScriptFile("btcode.js");
         $this->_page->addJavaScriptFile("colorpreview.func.js");
         $this->_page->addJavaScriptFile("settings.func.js");
 

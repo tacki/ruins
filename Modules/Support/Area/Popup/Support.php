@@ -88,7 +88,7 @@ switch ($_GET['op']) {
         $popup->getSimpleTable("supportformtable")->startData();
         $popup->output("Botschutz: ");
         $popup->getSimpleTable("supportformtable")->startData();
-        $popup->output("<img src='".Manager\System::htmlpath(DIR_MAIN."/Helpers/captcha.php")."'>", true);
+        $popup->output("<img src='".Manager\System::getOverloadedFilePath("/Helpers/captcha.php", true)."'>", true);
         $popup->getForm("support")->inputText("captcha", false, 5, 5);
         $popup->getSimpleTable("supportformtable")->closeRow();
 

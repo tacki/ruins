@@ -222,22 +222,7 @@ class Page implements OutputObject
      */
     public function addJavaScriptFile($script)
     {
-        // Module-Directory is prefered
-        foreach (\Main\Manager\Module::getModuleListFromFilesystem() as $module) {
-            if (file_exists(DIR_MODULES.$module['directory']."View/Javascript/".$script)) {
-                $this->_headscripts[] = "<script src='".Manager\System::htmlpath(DIR_MODULES.$module['directory']."View/Javascript/".$script)."' type='text/javascript'></script>";
-                return true;
-            }
-        }
-
-        // Next is Common-Directory
-        if (file_exists(DIR_COMMON."View/Javascript/".$script)) {
-            $this->_headscripts[] = "<script src='".Manager\System::htmlpath(DIR_COMMON."View/JavaScript/".$script)."' type='text/javascript'></script>";
-            return true;
-        } elseif (file_exists(DIR_MAIN."View/Javascript/".$script)) {
-            $this->_headscripts[] = "<script src='".Manager\System::htmlpath(DIR_MAIN."View/JavaScript/".$script)."' type='text/javascript'></script>";
-            return true;
-        }
+        $this->_headscripts[] = "<script src='".Manager\System::getOverloadedFilePath("View/Javascript/".$script, true)."' type='text/javascript'></script>";
 
         return false;
     }
@@ -497,7 +482,7 @@ class Page implements OutputObject
 
         // Set the correct Template-Paths inside the Template
         // For Paths that are sent to the Client (relative webbased paths)
-        $this->template['mytemplatedir'] = Manager\System::htmlpath(DIR_BASE . $this->template['name']);
+        $this->template['mytemplatedir'] = Manager\System::getOverloadedFilePath($this->template['name'], true);
         $this->set("mytemplatedir", $this->template['mytemplatedir']);
         $this->template['commontemplatedir'] = Manager\System::htmlpath(DIR_COMMON . "View");
         $this->set("commontemplatedir", $this->template['commontemplatedir']);
@@ -519,7 +504,7 @@ class Page implements OutputObject
         $snippet->compile_dir 		= $this->_smarty->compile_dir;
         $snippet->cache_dir 		= $this->_smarty->cache_dir;
         $snippet->config_dir 		= $this->_smarty->config_dir;
-        $snippet->assign("mytemplatedir", Manager\System::htmlpath(DIR_BASE . $template));
+        $snippet->assign("mytemplatedir", Manager\System::getOverloadedFilePath($template, true));
         $snippet->assign("commontemplatedir", Manager\System::htmlpath(DIR_COMMON . "View"));
         $snippet->assign("myfulltemplatedir", DIR_BASE . $template);
 
@@ -620,7 +605,7 @@ class Page implements OutputObject
      */
     protected function _addJQuerySupport()
     {
-        array_unshift($this->_headscripts, "<script src='".Manager\System::htmlpath(DIR_COMMON."View/JavaScript/jquery-1.3.2.min.js")."' type='text/javascript'></script>");
+        array_unshift($this->_headscripts, "<script src='".Manager\System::getOverloadedFilePath("View/JavaScript/jquery-1.3.2.min.js", true)."' type='text/javascript'></script>");
         $this->addJavaScriptFile("jquery-ui-1.7.2.custom.min.js");
         $this->addJavaScriptFile("jquery.plugin.timers.js");
     }
@@ -751,10 +736,10 @@ class Page implements OutputObject
             $toolBoxJS 		.= "$('#".$toolItem['link']->displayname."').click(function() {
                                     $.ajax({
                                       type: 'GET',
-                                      url: '".Manager\System::htmlpath(DIR_MAIN)."/Helpers/ajax/".$toolItem['link']->url."',
+                                      url: '".Manager\System::getOverloadedFilePath(DIR_MAIN."/Helpers/ajax/".$toolItem['link']->url, true)."',
                                       dataType: 'script'
                                     });
-                                    $(this).replaceWith('<img src=".$toolItem['replaceimagesrc']." />');
+                                    $(this).replaceWith('<img src='".$toolItem['replaceimagesrc']."' />');
                                 });";
         }
 

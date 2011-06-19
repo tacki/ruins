@@ -48,8 +48,8 @@ class ToolBox extends \Modules\ModuleBase implements \Common\Interfaces\Module
 
             $page->addToolBoxItem(new Link("prunecache", "prune_cache.ajax.php"),
                                   "Session Cache leeren",
-                                  \Main\Manager\System::htmlpath(DIR_COMMON."View/Images/trash.png"),
-                                  \Main\Manager\System::htmlpath(DIR_COMMON."View/Images/accept.png")
+                                  \Main\Manager\System::getOverloadedFilePath("View/Images/trash.png", true),
+                                  \Main\Manager\System::getOverloadedFilePath("View/Images/accept.png", true)
                                 );
         }
     }

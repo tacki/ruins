@@ -79,6 +79,48 @@ class System
     }
 
     /**
+     * Get Filepath of an overloaded File
+     * @param string $path Relative Filepath (e.g. View/Images/trash.png)
+     * @param bool $htmlpath Return as htmlpath (relative to Doctree)
+     * @return string Full Path of the overloaded File (e.g. .../ruins/Common/View/trash.png)
+     */
+    public static function getOverloadedFilePath($path, $htmlpath=false)
+    {
+        if (!($result = SessionStore::get("overloadedFilePath_".md5($path)))) {
+            // First Check Module-Directory
+            foreach (\Main\Manager\Module::getModuleListFromFilesystem() as $module) {
+                if (file_exists(DIR_MODULES.$module['directory'].$path)) {
+                    $result = DIR_MODULES.$module['directory'].$path;
+                    SessionStore::set("overloadedFilePath_".md5($path), $result);
+                    return $htmlpath?\Main\Manager\System::htmlpath($result):$result;
+                }
+            }
+
+
+            if (file_exists(DIR_MAIN.$path)) {
+                // No Result? Check Main-Tree
+                $result = DIR_MAIN.$path;
+            } elseif (file_exists(DIR_COMMON.$path)) {
+                // Hmm - Common-Tree?
+                $result = DIR_COMMON.$path;
+            } elseif (file_exists(DIR_BASE.$path)) {
+                // Last Chance - Tree is already in path
+                $result = DIR_BASE.$path;
+            }
+
+            if (isset($result)) {
+                SessionStore::set("overloadedFilePath_".md5($path), $result);
+                return $htmlpath?\Main\Manager\System::htmlpath($result):$result;
+            } else {
+                throw new Error("Cannot find $path in any known Directory");
+            }
+        } else {
+            // Use SessionStore
+            return $htmlpath?\Main\Manager\System::htmlpath($result):$result;
+        }
+    }
+
+    /**
      * Creates the relative webbased path
      * @param string $file_path = filesystem path
      * @return string Relative Path

@@ -199,7 +199,7 @@ $page->addJavaScriptFile("jquery.plugin.dimensions.js");
 
 $page->addJavaScript("
     $(function() {
-        setAutoComplete('searchField', 'results', '" . Manager\System::htmlpath(DIR_MAIN."Helpers/ajax/autocomplete_charname.ajax.php?part=") ."');
+        setAutoComplete('searchField', 'results', '" . Manager\System::getOverloadedFilePath("Helpers/ajax/autocomplete_charname.ajax.php", true)."?part=');
     });
 ");
 // btcode Test END
@@ -349,6 +349,7 @@ $position = "link&rightstest";
 $page->output("Starting Links+Rights Test:`n");
 
 $user = $em->find("Main:User",1);
+$user->login();
 
 // Adding Group
 Manager\Rights::createGroup("TempGroup");
