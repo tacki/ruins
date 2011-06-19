@@ -24,9 +24,9 @@ $text = generateRandomString(5, true, false, true);
 SessionStore::set("support_captcha", $text);
 
 header("Content-type: image/png");
-$img = ImageCreateFromPNG(DIR_TEMPLATES."common/images/captcha.png"); // Background
+$img = ImageCreateFromPNG(DIR_COMMON."View/Fonts/captcha.png"); // Background
 $color = ImageColorAllocate($img, 0, 0, 0); // Textcolor
-$font = DIR_TEMPLATES."common/fonts/DejaVuSans.ttf";
+$font = DIR_COMMON."View/Fonts/DejaVuSans.ttf";
 $fontsize = 25; //Schriftgrsse
 $angle = rand(0,5);
 $t_x = rand(5,15);

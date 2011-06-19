@@ -17,7 +17,7 @@ $smarty = new \Smarty();
 $smarty->caching        = 1;
 $smarty->cache_lifetime = -1;
 
-$smarty->template_dir 	= DIR_TEMPLATES;
+$smarty->setTemplateDir(DIR_BASE. Main\Controller\Page::DEFAULT_PUBLIC_TEMPLATE);
 $smarty->compile_dir 	= DIR_TEMP."smarty/templates_c";
 $smarty->cache_dir 		= DIR_TEMP."smarty/cache";
 $smarty->config_dir     = DIR_INCLUDES_SMARTY."configs";

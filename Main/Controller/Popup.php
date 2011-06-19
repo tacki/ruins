@@ -23,13 +23,6 @@ use Main\Manager;
  */
 class Popup extends Page
 {
-
-    /**
-     * Class Constants
-     */
-    const DEFAULT_PUBLIC_TEMPLATE    = 	"default";
-    const DEFAULT_PRIVATE_TEMPLATE   = 	"default";
-
     /**
      * Constructor - Loads the default values and initializes the attributes
      * @param Character $char Character Object we build this page for
@@ -69,32 +62,10 @@ class Popup extends Page
      */
     protected function _loadTemplateInformation()
     {
-        // Load Template Name
-        if ($this->_char === false) {
-            // public default template
-            $this->template['name'] = self::DEFAULT_PUBLIC_TEMPLATE;
-        } elseif ($this->_char->template) {
-            // private template
-            $this->template['name'] = $this->_char->template;
-        } else {
-            // private template not set
-            $this->template['name'] = self::DEFAULT_PRIVATE_TEMPLATE;
-        }
+        parent::_loadTemplateInformation();
 
         // Assign the complete Path to the Base-Template
         $this->template['file']	= $this->template['name']. "/" . "index_popup.tpl";
-
-        // Set the correct Template-Paths inside the Template
-        // For Paths that are sent to the Client (relative webbased paths)
-        $this->template['mytemplatedir'] = Manager\System::htmlpath($this->_smarty->template_dir . "/" . $this->template['name']);
-        $this->set("mytemplatedir", $this->template['mytemplatedir']);
-        $this->template['commontemplatedir'] = Manager\System::htmlpath($this->_smarty->template_dir . "/common");
-        $this->set("commontemplatedir", $this->template['commontemplatedir']);
-
-        // Paths that are handled inside the templategeneration progress (full filepaths)
-        $this->template['myfulltemplatedir'] = $this->_smarty->template_dir . "/" . $this->template['name'];
-        $this->set("myfulltemplatedir", $this->template['myfulltemplatedir']);
-
     }
 
     /**

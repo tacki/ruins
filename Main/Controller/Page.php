@@ -17,16 +17,11 @@ use Smarty,
     Main\Manager,
     Common\Interfaces\OutputObject,
     Common\Controller\BaseObject,
+    Common\Controller\BtCode,
     Common\Controller\Error,
     Common\Controller\Form,
     Common\Controller\Table,
     Common\Controller\SimpleTable;
-
-/**
- * Class Defines
- */
-define("PAGE_DEFAULT_PUBLIC_TEMPLATE", 	"default");
-define("PAGE_DEFAULT_PRIVATE_TEMPLATE", "default");
 
 /**
  * Page Class
@@ -36,6 +31,12 @@ define("PAGE_DEFAULT_PRIVATE_TEMPLATE", "default");
  */
 class Page implements OutputObject
 {
+    /**
+    * Class constants
+    */
+    const DEFAULT_PUBLIC_TEMPLATE    = "Main/View/Templates/Default";
+    const DEFAULT_PRIVATE_TEMPLATE   = "Main/View/Templates/Default";
+
     /**
      * Navigation Class
      * @var nav
@@ -229,7 +230,7 @@ class Page implements OutputObject
      */
     public function addCommonCSS($script)
     {
-        $this->_headscripts[] = "<link href='".Manager\System::htmlpath(DIR_TEMPLATES)."/common/styles/".$script."' rel='stylesheet' type='text/css' />";
+        $this->_headscripts[] = "<link href='".Manager\System::htmlpath(DIR_COMMON)."/View/Styles/".$script."' rel='stylesheet' type='text/css' />";
     }
 
     /**
@@ -238,7 +239,7 @@ class Page implements OutputObject
      */
     public function addTemplateCSS($script)
     {
-        $this->_headscripts[] = "<link href='".Manager\System::htmlpath(DIR_TEMPLATES)."/". $this->template['name'] ."/".$script."' rel='stylesheet' type='text/css' />";
+        $this->_headscripts[] = "<link href='". $this->template['name'] ."/".$script."' rel='stylesheet' type='text/css' />";
     }
 
     /**
@@ -464,13 +465,13 @@ class Page implements OutputObject
         // Load Template Name
         if ($this->_char === false) {
             // public default template
-            $this->template['name'] = PAGE_DEFAULT_PUBLIC_TEMPLATE;
+            $this->template['name'] = self::DEFAULT_PUBLIC_TEMPLATE;
         } elseif ($this->_char->template) {
             // private template
             $this->template['name'] = $this->_char->template;
         } else {
             // private template not set
-            $this->template['name'] = PAGE_DEFAULT_PRIVATE_TEMPLATE;
+            $this->template['name'] = self::DEFAULT_PRIVATE_TEMPLATE;
         }
 
         // Assign the complete Path to the Base-Template
@@ -478,13 +479,13 @@ class Page implements OutputObject
 
         // Set the correct Template-Paths inside the Template
         // For Paths that are sent to the Client (relative webbased paths)
-        $this->template['mytemplatedir'] = Manager\System::htmlpath($this->_smarty->template_dir . "/" . $this->template['name']);
+        $this->template['mytemplatedir'] = Manager\System::htmlpath(DIR_BASE . $this->template['name']);
         $this->set("mytemplatedir", $this->template['mytemplatedir']);
-        $this->template['commontemplatedir'] = Manager\System::htmlpath($this->_smarty->template_dir . "/common");
+        $this->template['commontemplatedir'] = Manager\System::htmlpath(DIR_COMMON . "View");
         $this->set("commontemplatedir", $this->template['commontemplatedir']);
 
         // Paths that are handled inside the templategeneration progress (full filepaths)
-        $this->template['myfulltemplatedir'] = $this->_smarty->template_dir . "/" . $this->template['name'];
+        $this->template['myfulltemplatedir'] = DIR_BASE . $this->template['name'];
         $this->set("myfulltemplatedir", $this->template['myfulltemplatedir']);
 
     }
@@ -493,16 +494,16 @@ class Page implements OutputObject
      * Create a new Template Snippet
      * @return Smarty Smarty Instance for the new Snippet
      */
-    public function createTemplateSnippet()
+    public function createTemplateSnippet($template=self::DEFAULT_PUBLIC_TEMPLATE)
     {
-        $snippet = new Smarty();
-        $snippet->template_dir 		= $this->_smarty->template_dir . $this->template['name'];
+        $snippet = new \Smarty();
+        $snippet->template_dir 		= $this->_smarty->template_dir;
         $snippet->compile_dir 		= $this->_smarty->compile_dir;
         $snippet->cache_dir 		= $this->_smarty->cache_dir;
         $snippet->config_dir 		= $this->_smarty->config_dir;
-        $snippet->assign("mytemplatedir", Manager\System::htmlpath($snippet->template_dir));
-        $snippet->assign("commontemplatedir", Manager\System::htmlpath($this->_smarty->template_dir . "/common"));
-        $snippet->assign("myfulltemplatedir", $snippet->template_dir);
+        $snippet->assign("mytemplatedir", Manager\System::htmlpath(DIR_BASE . $template));
+        $snippet->assign("commontemplatedir", Manager\System::htmlpath(DIR_COMMON . "View"));
+        $snippet->assign("myfulltemplatedir", DIR_BASE . $template);
 
         return $snippet;
     }

@@ -13,7 +13,7 @@
  * Namespaces
  */
 namespace Main\Manager;
-use Main\Controller\BtCode,
+use Common\Controller\BtCode,
     Main\Entities;
 
 /**

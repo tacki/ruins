@@ -12,7 +12,7 @@
  */
 namespace Common\Controller;
 use Common\Controller\Error,
-    Main\Controller\BtCode;
+    Common\Controller\BtCode;
 
 class Table extends BaseHTML
 {

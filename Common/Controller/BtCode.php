@@ -12,7 +12,7 @@
 /**
  * Namespaces
  */
-namespace Main\Controller;
+namespace Common\Controller;
 
 /**
  * btCode2 Class

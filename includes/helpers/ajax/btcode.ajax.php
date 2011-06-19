@@ -12,7 +12,7 @@
 /**
  * Namespaces
  */
-use Main\Controller\BtCode;
+use Common\Controller\BtCode;
 
 /**
  * Includes

@@ -81,7 +81,7 @@ class Character extends EntityBase
     /** @Column(type="array") */
     protected $allowednavs_cache;
 
-    /** @Column(length=32) */
+    /** @Column(length=255) */
     protected $template;
 
     /** @Column(length=32, nullable=true) */
@@ -128,7 +128,7 @@ class Character extends EntityBase
         $this->current_nav       = "page=ironlance/citysquare";
         $this->allowednavs       = array();
         $this->allowednavs_cache = array();
-        $this->template          = "default";
+        $this->template          = "Main\View\Templates\Default";
         $this->type              = NULL;
         $this->creationdate      = new DateTime();
         $this->loggedin          = false;

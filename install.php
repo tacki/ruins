@@ -245,10 +245,6 @@ switch ($_GET['step']) {
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
                                                         "/Common/external/smarty/".
                                                         "\");"."\n" .
-                                                    "	define(\"DIR_TEMPLATES\", ".
-                                                        "\"".str_replace('\\', '/', dirname(__FILE__)).
-                                                        "/templates/".
-                                                        "\");"."\n" .
                                                     "	define(\"DIR_TEMP\", ".
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
                                                         "/tmp/".
