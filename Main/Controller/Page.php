@@ -736,10 +736,10 @@ class Page implements OutputObject
             $toolBoxJS 		.= "$('#".$toolItem['link']->displayname."').click(function() {
                                     $.ajax({
                                       type: 'GET',
-                                      url: '".Manager\System::getOverloadedFilePath(DIR_MAIN."/Helpers/ajax/".$toolItem['link']->url, true)."',
+                                      url: '".Manager\System::getOverloadedFilePath("/Helpers/ajax/".$toolItem['link']->url, true)."',
                                       dataType: 'script'
                                     });
-                                    $(this).replaceWith('<img src='".$toolItem['replaceimagesrc']."' />');
+                                    $(this).replaceWith('<img src=\"".$toolItem['replaceimagesrc']."\" />');
                                 });";
         }
 

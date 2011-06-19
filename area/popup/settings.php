@@ -61,7 +61,7 @@ switch ($_GET['op']) {
 
         // Default Character
         $defaultchar 	= $user->settings->default_character;
-        $charlist		= Manager\User::getUserCharactersList($user->id);
+        $charlist		= Manager\User::getUserCharactersList($user);
 
         $popup->output("<div class='floatclear floatleft'>", true);
         $popup->output("Standard Charakter: ");
