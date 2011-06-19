@@ -23,14 +23,14 @@ $popup->nav->addLink("Benutzer", "popup=popup/settings&op=user")
            ->addLink("Charakter", "popup=popup/settings&op=char")
            ->addLink("Sonstiges", "popup=popup/settings&op=other");
 
-$popup->addForm("settingsform");
+$popup->addForm("settings");
 
 switch ($_GET['op']) {
 
     default:
     case "user":
-        $popup->settingsform->head("settingsform", "popup=popup/settings&op=change");
-        $popup->settingsform->hidden("section", "user");
+        $popup->getForm("settings")->head("settingsform", "popup=popup/settings&op=change");
+        $popup->getForm("settings")->hidden("section", "user");
 
         // Login Name
         $popup->output("<div class='floatclear floatleft'>", true);
@@ -43,21 +43,21 @@ switch ($_GET['op']) {
         $popup->output("<div class='floatclear floatleft'>", true);
         $popup->output("EMail: ");
         $popup->output("</div><div class='floatright'>", true);
-        $popup->settingsform->inputText("email", $user->email, 20, 50);
+        $popup->getForm("settings")->inputText("email", $user->email, 20, 50);
         $popup->output("</div>", true);
 
         // Password
         $popup->output("<div class='floatclear floatleft'>", true);
         $popup->output("Passwort: ");
         $popup->output("</div><div class='floatright'>", true);
-        $popup->settingsform->inputPassword("password", "", 20, 50);
+        $popup->getForm("settings")->inputPassword("password", "", 20, 50);
         $popup->output("</div>", true);
 
         break;
 
     case "char":
-        $popup->settingsform->head("settingsform", "popup=popup/settings&op=change");
-        $popup->settingsform->hidden("section", "char");
+        $popup->getForm("settings")->head("settingsform", "popup=popup/settings&op=change");
+        $popup->getForm("settings")->hidden("section", "char");
 
         // Default Character
         $defaultchar 	= $user->settings->default_character;
@@ -66,36 +66,36 @@ switch ($_GET['op']) {
         $popup->output("<div class='floatclear floatleft'>", true);
         $popup->output("Standard Charakter: ");
         $popup->output("</div><div class='floatright'>", true);
-        $popup->settingsform->selectStart("default_character", 1);
-        $popup->settingsform->selectOption("Keiner", 0);
+        $popup->getForm("settings")->selectStart("default_character", 1);
+        $popup->getForm("settings")->selectOption("Keiner", 0);
         foreach ($charlist as $character) {
             if ($character === $defaultchar) {
-                $popup->settingsform->selectOption($character->name, $character->id, true);
+                $popup->getForm("settings")->selectOption($character->name, $character->id, true);
             } else {
-                $popup->settingsform->selectOption($character->name, $character->id);
+                $popup->getForm("settings")->selectOption($character->name, $character->id);
             }
         }
-        $popup->settingsform->selectEnd();
+        $popup->getForm("settings")->selectEnd();
         $popup->output("</div>", true);
 
         break;
 
     case "other":
-        $popup->settingsform->head("settingsform", "popup=popup/settings&op=change");
-        $popup->settingsform->hidden("section", "other");
+        $popup->getForm("settings")->head("settingsform", "popup=popup/settings&op=change");
+        $popup->getForm("settings")->hidden("section", "other");
 
         // Chatcensorship
         $popup->output("<div class='floatclear floatleft'>", true);
         $popup->output("Chat Zensur: ");
         $popup->output("</div><div class='floatright'>", true);
-        $popup->settingsform->checkbox("chat_censorship", false, false, $user->settings->chat_censorship);
+        $popup->getForm("settings")->checkbox("chat_censorship", false, false, $user->settings->chat_censorship);
         $popup->output("</div>", true);
 
         // Chatdateformat
         $popup->output("<div class='floatclear floatleft'>", true);
         $popup->output("Chat Datums Format: ");
         $popup->output("</div><div class='floatright'>", true);
-        $popup->settingsform->inputText("chat_dateformat", $user->settings->chat_dateformat, 20, 50);
+        $popup->getForm("settings")->inputText("chat_dateformat", $user->settings->chat_dateformat, 20, 50);
         $popup->output("</div>", true);
 
         break;
@@ -137,11 +137,11 @@ switch ($_GET['op']) {
 
         $popup->output("Einstellungen angepasst!");
 
-        $popup->settingsform->head("settingsform", "popup=popup/settings");
+        $popup->getForm("settings")->head("settingsform", "popup=popup/settings");
         $popup->output("<div class='floatclear center'>", true);
-        $popup->settingsform->setCSS("button");
-        $popup->settingsform->submitButton("Zurück");
-        $popup->settingsform->close();
+        $popup->getForm("settings")->setCSS("button");
+        $popup->getForm("settings")->submitButton("Zurück");
+        $popup->getForm("settings")->close();
         $popup->output("</div>", true);
         break;
 }
@@ -149,10 +149,10 @@ switch ($_GET['op']) {
 if ($_GET['op'] != "change") {
     // Submitbutton
     $popup->output("<div class='floatclear center'>", true);
-    $popup->settingsform->setCSS("button");
-    $popup->settingsform->submitButton("Speichern");
+    $popup->getForm("settings")->setCSS("button");
+    $popup->getForm("settings")->submitButton("Speichern");
     $popup->output("</div>", true);
 
-    $popup->settingsform->close();
+    $popup->getForm("settings")->close();
 }
 ?>

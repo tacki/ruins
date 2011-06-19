@@ -493,81 +493,19 @@ $mt = getMicroTime();
 
 $position = "formtest";
 
-/*
-$page->output("Formulartest!`n1.Formular:`nName");
-$page->addform(true,"head","form","test.php","post");
-$page->addform(true,"selectStart","selectform",false,1);
-$page->addform(true,"selectOption","Jack",false);
-$page->addform(true,"selectOption","Jim",false,false,true);
-$page->addform(true,"selectOption","Johnny",false);
-$page->addform(true,"selectEnd");
-$page->output("`nBegründung`n");
-$page->addform(true,"textArea","textareaform","Hier kannst du deine Auswahl begründen!");
-$page->output("`n");
-$page->addform(true,"submitButton","subbiname","Absenden");
-$page->addform(true,"close");
-if ($_POST['textareaform']!="") $page->output("Wenn Formular 1 ausgeführt wurde, steht im folgenden die Begründung:`n`25".$_POST['textareaform']."`n",true);
-$page->output("`n2.Formular:`nName");
-$page->addform(true,"head","form","test.php","post");
-$page->addform(true,"selectStart","selectform",false,1);
-$page->addform(true,"selectOption","DF",false);
-$page->addform(true,"selectOption","Ruins",false,false,true);
-$page->addform(true,"selectOption","SN",false);
-$page->addform(true,"selectEnd");
-$page->output("`nBegründung?`n");
-$page->addform(true,"textArea","textareaform2","Auch hier kannst du deine Auswahl begründen!");
-$page->output("`n");
-$page->addform(true,"submitButton","submitname","Absenden");
-$page->addform(true,"resetButton","resetname","Abbrechen");
-    $page->addform(true,"close");
-if (!empty($_POST['textareaform2'])) $page->output("Wenn Formular 2 ausgeführt wurde, steht im folgenden die Begründung:`n`25".$_POST['textareaform2']."`n",true);
-*/
-/*	// lange form
-$page->output("Formulartest!`n1.Formular:`nName");
-$formular = $page->addForm();
-$formular->head("form", "test.php", "post");
-$formular->selectStart("selectform", 1);
-$formular->selectOption("Jack", false);
-$formular->selectOption("Jim", false, false, true);
-$formular->selectOption("Johnny", false);
-$formular->selectEnd();
-$page->output("`nBegründung`n");
-$formular->textArea("textareaform","Hier kannst du deine Auswahl begründen!", 50, 10);
-$page->output("`n");
-$formular->submitButton("Absenden");
-$formular->close();
-if ($_POST['textareaform']!="") $page->output("Wenn Formular 1 ausgeführt wurde, steht im folgenden die Begründung:`n`25".$_POST['textareaform']."`n",true);
-
-// kurze form
-$page->output("Formulartest!`n1.Formular:`nName");
-$formular = $page->addForm();
-$formular->head("form", "test.php");
-$formular->selectStart("selectform");
-$formular->selectOption("Jack");
-$formular->selectOption("Jim", false, false, true);
-$formular->selectOption("Johnny");
-$formular->selectEnd();
-$page->output("`nBegründung`n");
-$formular->textArea("textareaform","Hier kannst du deine Auswahl begründen!");
-$page->output("`n");
-$formular->submitButton();
-$formular->close();
-if ($_POST['textareaform']!="") $page->output("Wenn Formular 1 ausgeführt wurde, steht im folgenden die Begründung:`n`25".$_POST['textareaform']."`n",true);
-*/
-
 $page->output("Formulartest!`n1.Formular:`nName");
 $page->addForm("testformular");
-$page->testformular->head("form", "test.php");
-$page->testformular->selectStart("selectform");
-$page->testformular->selectOption("Jack");
-$page->testformular->selectOption("Jim", false, true);
-$page->testformular->selectOption("Johnny");
-$page->testformular->selectEnd();
+$page->getForm("testformular")->head("form", "test.php");
+$page->getForm("testformular")->selectStart("selectform");
+$page->getForm("testformular")->selectOption("Jack");
+$page->getForm("testformular")->selectOption("Jim", false, true);
+$page->getForm("testformular")->selectOption("Johnny");
+$page->getForm("testformular")->selectEnd();
 $page->output("`nBegründung`n");
-$page->testformular->textArea("textareaform","Hier kannst du deine Auswahl begründen!");
+$page->getForm("testformular")->textArea("textareaform","Hier kannst du deine Auswahl begründen!");
 $page->output("`n");
-$page->testformular->submitButton("Absenden");
-$page->testformular->close();
+$page->getForm("testformular")->submitButton("Absenden");
+$page->getForm("testformular")->close();
 
 if (isset($_POST['textareaform'])) $page->output("Wenn Formular 1 ausgeführt wurde, steht im folgenden die Begründung:`n`#25".$_POST['textareaform']."`n",true);
 
@@ -779,10 +717,11 @@ $mt = getMicroTime();
 
 $page->output("Enter your OpenID: `n");
 
-$page->addForm("openidform");
-$page->openidform->head("login", "page=developer/test&op=checkopenid");
-$page->openidform->inputText("openid_identifier");
-$page->openidform->submitButton("Check");
+$page->addForm("openid");
+$page->getForm("openid")->head("login", "page=developer/test&op=checkopenid");
+$page->getForm("openid")->inputText("openid_identifier");
+$page->getForm("openid")->submitButton("Check");
+$page->getForm("openid")->close();
 
 if ($_GET['op'] == "checkopenid") {
     OpenIDSystem::checkOpenID($_POST['openid_identifier'], "page=developer/test&op=returnopenid");

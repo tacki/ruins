@@ -32,11 +32,11 @@ if (isset($user->character) && $user->character->loggedin) {
 switch ($_GET['op']) {
 
     default:
-        $popup->addForm("supportform");
-        $popup->supportform->head("supportform", "popup=Popup/Support&op=request");
+        $popup->addForm("support");
+        $popup->getForm("support")->head("supportform", "popup=Popup/Support&op=request");
 
         $popup->addSimpleTable("supportformtable");
-        $popup->supportform->setCSS("input");
+        $popup->getForm("support")->setCSS("input");
 
         // Login Name
         $popup->supportformtable->startRow();
@@ -44,9 +44,9 @@ switch ($_GET['op']) {
         $popup->output("Loginname: ");
         $popup->supportformtable->startData();
         if ($loggedin) {
-            $popup->supportform->inputText("userlogin", $user->login, 20, 50, true);
+            $popup->getForm("support")->inputText("userlogin", $user->login, 20, 50, true);
         } else {
-            $popup->supportform->inputText("userlogin");
+            $popup->getForm("support")->inputText("userlogin");
         }
         $popup->supportformtable->closeRow();
 
@@ -56,9 +56,9 @@ switch ($_GET['op']) {
         $popup->output("Email Addresse: ");
         $popup->supportformtable->startData();
         if ($loggedin) {
-            $popup->supportform->inputText("email", $user->email, 20, 50, true);
+            $popup->getForm("support")->inputText("email", $user->email, 20, 50, true);
         } else {
-            $popup->supportform->inputText("email");
+            $popup->getForm("support")->inputText("email");
         }
         $popup->supportformtable->closeRow();
 
@@ -68,9 +68,9 @@ switch ($_GET['op']) {
         $popup->output("Character: ");
         $popup->supportformtable->startData();
         if ($loggedin) {
-            $popup->supportform->inputText("charname", $user->character->name, 20, 50, true);
+            $popup->getForm("support")->inputText("charname", $user->character->name, 20, 50, true);
         } else {
-            $popup->supportform->inputText("charname");
+            $popup->getForm("support")->inputText("charname");
         }
         $popup->supportformtable->closeRow();
 
@@ -79,7 +79,7 @@ switch ($_GET['op']) {
         $popup->supportformtable->startData();
         $popup->output("Supportanfrage: ");
         $popup->supportformtable->startData();
-        $popup->supportform->textArea("text", false, 45);
+        $popup->getForm("support")->textArea("text", false, 45);
         $popup->supportformtable->closeRow();
 
         // CAPTCHA
@@ -88,7 +88,7 @@ switch ($_GET['op']) {
         $popup->output("Botschutz: ");
         $popup->supportformtable->startData();
         $popup->output("<img src='includes/helpers/captcha.php'>", true);
-        $popup->supportform->inputText("captcha", false, 5, 5);
+        $popup->getForm("support")->inputText("captcha", false, 5, 5);
         $popup->supportformtable->closeRow();
 
         // Pagedump
@@ -97,18 +97,18 @@ switch ($_GET['op']) {
             $popup->supportformtable->startData();
             $popup->output("Seitenkopie`neinfügen: ");
             $popup->supportformtable->startData();
-            $popup->supportform->checkbox("pagedump");
+            $popup->getForm("support")->checkbox("pagedump");
             $popup->supportformtable->closeRow();
         }
 
         // Submitbutton
         $popup->supportformtable->startRow();
         $popup->supportformtable->startData(false, 2);
-        $popup->supportform->setCSS("button");
-        $popup->supportform->submitButton("Absenden");
+        $popup->getForm("support")->setCSS("button");
+        $popup->getForm("support")->submitButton("Absenden");
 
         $popup->supportformtable->close();
-        $popup->supportform->close();
+        $popup->getForm("support")->close();
         break;
 
     case "request":
@@ -165,12 +165,12 @@ switch ($_GET['op']) {
             $popup->output("Fehler beim Speichern der Supportanfrage! :(`n`n");
         }
 
-        $popup->addForm("supportform");
-        $popup->supportform->head("supportform", "popup=Popup/Support");
+        $popup->addForm("support");
+        $popup->getForm("support")->head("supportform", "popup=Popup/Support");
         $popup->output("<div class='floatclear center'>", true);
-        $popup->supportform->setCSS("button");
-        $popup->supportform->submitButton("Zurück");
-        $popup->supportform->close();
+        $popup->getForm("support")->setCSS("button");
+        $popup->getForm("support")->submitButton("Zurück");
+        $popup->getForm("support")->close();
         $popup->output("</div>", true);
         break;
 }

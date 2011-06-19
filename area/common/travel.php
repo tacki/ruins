@@ -36,24 +36,24 @@ switch ($_GET['op']) {
 
         $page->output("Wohin willst du denn reisen?`n`n");
 
-        $page->addForm("travelform", true);
+        $page->addForm("travel", true);
         $newURL = clone $page->url;
         $newURL->setParameter("op", "travel");
-        $page->travelform->head("travelform", $newURL. "");
+        $page->getForm("travel")->head("travelform", $newURL. "");
         $page->nav->addHiddenLink($newURL);
 
-        $page->travelform->radio("travelto", "derashok/tribalcenter");
+        $page->getForm("travel")->radio("travelto", "derashok/tribalcenter");
         $page->output("Derashok Stammeszentrum - Der wichtigste Treffpunkt der orkischen Clans`n`n");
 
-        $page->travelform->radio("travelto", "ironlance/citysquare");
+        $page->getForm("travel")->radio("travelto", "ironlance/citysquare");
         $page->output("Ironlance Stadtplatz - Der Platz mitten in Ironlance, dem Stolz der Menschen`n`n");
 
-        $page->travelform->radio("travelto", "dunsplee/trail");
+        $page->getForm("travel")->radio("travelto", "dunsplee/trail");
         $page->output("Dunsplee Wald - Weg zum sagenumwobenen Wald`n`n");
 
-        $page->travelform->submitButton("Reise beginnen");
+        $page->getForm("travel")->submitButton("Reise beginnen");
 
-        $page->travelform->close();
+        $page->getForm("travel")->close();
         break;
 
     case "travel":

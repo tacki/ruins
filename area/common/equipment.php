@@ -132,10 +132,10 @@ if ($_GET['op'] == 'change' && isset($_POST['equipped'])) {
 
 // ---------
 
-$page->addForm("inventoryform", true);
+$page->addForm("inventory", true);
 $newURL = clone $page->url;
 $newURL->setParameter("op", "change");
-$page->inventoryform->head("inventoryform", $newURL);
+$page->getForm("inventory")->head("inventoryform", $newURL);
 $page->nav->addHiddenLink($newURL);
 
 $itemtypes = array (Manager\Item::CLASS_WEAPON, Manager\Item::CLASS_ARMOR);
@@ -222,8 +222,8 @@ foreach ($backpack as $item) {
 
 $page->output("<div class='floatclear'></div>", true);
 
-$page->inventoryform->setCSS("floatright");
-$page->inventoryform->submitButton("Änderung Speichern");
-$page->inventoryform->close();
+$page->getForm("inventory")->setCSS("floatright");
+$page->getForm("inventory")->submitButton("Änderung Speichern");
+$page->getForm("inventory")->close();
 
 ?>

@@ -67,7 +67,7 @@ switch ($_GET['op']) {
 if (isset($_GET['callop'])) {
     $callbackpage = "page=".$_GET['return']."&op=".$_GET['callop'];
     $page->addForm("chooser", true);
-    $page->chooser->head("chooser", $callbackpage);
+    $page->getForm("chooser")->head("chooser", $callbackpage);
     $page->nav->addHiddenLink($callbackpage);
 }
 
@@ -113,9 +113,9 @@ $page->itemlist_armors->setSecondRowCSS("secondrow");
 $page->itemlist_armors->load();
 
 if (isset($_GET['callop'])) {
-    $page->chooser->setCSS("delbutton");
-    $page->chooser->submitButton("Weiter");
-    $page->chooser->close();
+    $page->getForm("chooser")->setCSS("delbutton");
+    $page->getForm("chooser")->submitButton("Weiter");
+    $page->getForm("chooser")->close();
 }
 
 // Add Navlinks for the clickable Headers

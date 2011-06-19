@@ -34,7 +34,7 @@ if (isset($_POST['chooser'])) {
 }
 
 $page->addForm("chooser", false);
-$page->output($page->chooser->head("modulelist", $page->url), true);
+$page->output($page->getForm("chooser")->head("modulelist", $page->url), true);
 $page->nav->addHiddenLink($page->url);
 
 $moduleList = array();
@@ -44,7 +44,7 @@ foreach ($moduleListFromDB as $module) {
     $showModule['name']         = $module->name;
     $showModule['description']  = $module->description;
 
-    $showModule['enabled']       = $page->chooser->checkbox("chooser[]", $module->id, false, $module->enabled);
+    $showModule['enabled']       = $page->getForm("chooser")->checkbox("chooser[]", $module->id, false, $module->enabled);
 
     $moduleList[] = $showModule;
 }
@@ -63,8 +63,8 @@ $page->modulelist->addListArray($moduleList, "firstrow", "firstrow");
 $page->modulelist->setSecondRowCSS("secondrow");
 $page->modulelist->load();
 
-$page->chooser->setCSS("delbutton");
-$page->output($page->chooser->submitButton("Speichern"), true);
-$page->output($page->chooser->close(), true);
+$page->getForm("chooser")->setCSS("delbutton");
+$page->output($page->getForm("chooser")->submitButton("Speichern"), true);
+$page->output($page->getForm("chooser")->close(), true);
 
 ?>

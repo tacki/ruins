@@ -84,23 +84,23 @@ switch ($_GET['op']) {
 
     case "deposit":
         $page->output("Wieviel willst du denn einzahlen?");
-        $page->addForm("depositform");
+        $page->addForm("deposit");
         $page->nav->addHiddenLink("page=ironlance/citybank&op=deposit2");
-        $page->depositform->head("depositform", "page=ironlance/citybank&op=deposit2");
+        $page->getForm("deposit")->head("depositform", "page=ironlance/citybank&op=deposit2");
 
-        $page->depositform->setCSS("moneyform_gold");
-        $page->depositform->inputText("gold", 0, false, 2);
+        $page->getForm("deposit")->setCSS("moneyform_gold");
+        $page->getForm("deposit")->inputText("gold", 0, false, 2);
 
-        $page->depositform->setCSS("moneyform_silver");
-        $page->depositform->inputText("silver", 0, false, 2);
+        $page->getForm("deposit")->setCSS("moneyform_silver");
+        $page->getForm("deposit")->inputText("silver", 0, false, 2);
 
-        $page->depositform->setCSS("moneyform_copper");
-        $page->depositform->inputText("copper", 0, false, 2);
+        $page->getForm("deposit")->setCSS("moneyform_copper");
+        $page->getForm("deposit")->inputText("copper", 0, false, 2);
 
-        $page->depositform->setCSS("button");
-        $page->depositform->submitButton("Einzahlen");
+        $page->getForm("deposit")->setCSS("button");
+        $page->getForm("deposit")->submitButton("Einzahlen");
 
-        $page->depositform->close();
+        $page->getForm("deposit")->close();
         $page->nav->addLink("Zurück", "page=ironlance/citybank");
         break;
 
@@ -126,23 +126,23 @@ switch ($_GET['op']) {
 
     case "withdraw":
         $page->output("Wieviel willst du denn abheben?");
-        $page->addForm("withdrawform");
+        $page->addForm("withdraw");
         $page->nav->addHiddenLink("page=ironlance/citybank&op=withdraw2");
-        $page->withdrawform->head("withdrawform", "page=ironlance/citybank&op=withdraw2");
+        $page->getForm("withdraw")->head("withdrawform", "page=ironlance/citybank&op=withdraw2");
 
-        $page->withdrawform->setCSS("moneyform_gold");
-        $page->withdrawform->inputText("gold", 0, false, 2);
+        $page->getForm("withdraw")->setCSS("moneyform_gold");
+        $page->getForm("withdraw")->inputText("gold", 0, false, 2);
 
-        $page->withdrawform->setCSS("moneyform_silver");
-        $page->withdrawform->inputText("silver", 0, false, 2);
+        $page->getForm("withdraw")->setCSS("moneyform_silver");
+        $page->getForm("withdraw")->inputText("silver", 0, false, 2);
 
-        $page->withdrawform->setCSS("moneyform_copper");
-        $page->withdrawform->inputText("copper", 0, false, 2);
+        $page->getForm("withdraw")->setCSS("moneyform_copper");
+        $page->getForm("withdraw")->inputText("copper", 0, false, 2);
 
-        $page->withdrawform->setCSS("button");
-        $page->withdrawform->submitButton("Abheben");
+        $page->getForm("withdraw")->setCSS("button");
+        $page->getForm("withdraw")->submitButton("Abheben");
 
-        $page->withdrawform->close();
+        $page->getForm("withdraw")->close();
         $page->nav->addLink("Zurück", "page=ironlance/citybank");
         break;
 

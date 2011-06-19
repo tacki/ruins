@@ -85,14 +85,14 @@ switch ($_GET['op']) {
 
             $page->output(implode(", ", $fishnames)."`n`n");
 
-            $page->addForm("sellform", true);
-            $page->sellform->head("deleteform", "page=derashok/bogoob&op=sell");
+            $page->addForm("sell", true);
+            $page->getForm("sell")->head("deleteform", "page=derashok/bogoob&op=sell");
             $page->nav->addHiddenLink("page=derashok/bogoob&op=sell");
-            $page->sellform->hidden("ids", implode(",", $_POST['chooser']));
-            $page->sellform->hidden("price", $price);
-            $page->sellform->setCSS("button");
-            $page->sellform->submitButton("Ja, weg damit!");
-            $page->sellform->close();
+            $page->getForm("sell")->hidden("ids", implode(",", $_POST['chooser']));
+            $page->getForm("sell")->hidden("price", $price);
+            $page->getForm("sell")->setCSS("button");
+            $page->getForm("sell")->submitButton("Ja, weg damit!");
+            $page->getForm("sell")->close();
         }
         break;
 

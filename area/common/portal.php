@@ -46,13 +46,13 @@ switch ($_GET['op']) {
 
         $page->addSimpleTable("chartable");
         $page->addForm("charchooseform");
-        $page->charchooseform->head("charchoose", "page=common/portal&op=forward");
+        $page->getForm("charchooseform")->head("charchoose", "page=common/portal&op=forward");
         $page->nav->addHiddenLink("page=common/portal&op=forward");
 
         foreach ($characters as $character) {
             $page->chartable->startRow();
             $page->chartable->startData();
-            $page->charchooseform->radio("chooser", $character->id, ($user->current_character == $character?true:false));
+            $page->getForm("charchooseform")->radio("chooser", $character->id, ($user->current_character == $character?true:false));
 
             $page->chartable->startData();
 
@@ -71,9 +71,9 @@ switch ($_GET['op']) {
 
         $page->chartable->close();
 
-        $page->charchooseform->setCSS("button");
-        $page->charchooseform->submitButton("Weiter");
-        $page->charchooseform->close();
+        $page->getForm("charchooseform")->setCSS("button");
+        $page->getForm("charchooseform")->submitButton("Weiter");
+        $page->getForm("charchooseform")->close();
         break;
 
     case "forward":

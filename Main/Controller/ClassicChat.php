@@ -481,36 +481,36 @@ class ClassicChat
                     // Editfield
                     $output .= $chattable->startData();
                     $this->_page->addForm($chatform, true);
-                    $this->_page->$chatform->head($chatform, $this->_page->url);
-                    $this->_page->$chatform->hidden($chatform."_op", "editLine");
-                    $this->_page->$chatform->hidden($chatform."_section", $this->_section);
-                    $this->_page->$chatform->hidden($chatform."_editLineID", $row->id);
-                    $this->_page->$chatform->setCSS("floatleft textarea");
-                    $this->_page->$chatform->textArea($chatform."_chatline", BtCode::exclude($row->chatline), 60, 10);
+                    $this->_page->getForm($chatform)->head($chatform, $this->_page->url);
+                    $this->_page->getForm($chatform)->hidden($chatform."_op", "editLine");
+                    $this->_page->getForm($chatform)->hidden($chatform."_section", $this->_section);
+                    $this->_page->getForm($chatform)->hidden($chatform."_editLineID", $row->id);
+                    $this->_page->getForm($chatform)->setCSS("floatleft textarea");
+                    $this->_page->getForm($chatform)->textArea($chatform."_chatline", BtCode::exclude($row->chatline), 60, 10);
 
-                    $this->_page->$chatform->setCSS("floatleft button");
-                    $this->_page->$chatform->submitButton("Ändern");
-                    $this->_page->$chatform->close();
+                    $this->_page->getForm($chatform)->setCSS("floatleft button");
+                    $this->_page->getForm($chatform)->submitButton("Ändern");
+                    $this->_page->getForm($chatform)->close();
 
                     $this->_page->output("`n`n");
 
                     // BackButton
                     $this->_page->nav->addHiddenLink("", $this->_page->url);
                     $this->_page->addForm("refreshbutton");
-                    $this->_page->refreshbutton->head("refreshbutton", $this->_page->url);
-                    $this->_page->refreshbutton->setCSS("button");
-                    $this->_page->refreshbutton->submitButton("Zurück");
-                    $this->_page->refreshbutton->close();
+                    $this->_page->getForm("refreshbutton")->head("refreshbutton", $this->_page->url);
+                    $this->_page->getForm("refreshbutton")->setCSS("button");
+                    $this->_page->getForm("refreshbutton")->submitButton("Zurück");
+                    $this->_page->getForm("refreshbutton")->close();
                 } else {
                     $this->_page->output("Editieren des letzten Eintrages nicht möglich!`n`n");
 
                     // BackButton
                     $this->_page->nav->addHiddenLink("", $this->_page->url);
                     $this->_page->addForm("refreshbutton");
-                    $this->_page->refreshbutton->head("refreshbutton", $this->_page->url);
-                    $this->_page->refreshbutton->setCSS("button");
-                    $this->_page->refreshbutton->submitButton("Zurück");
-                    $this->_page->refreshbutton->close();
+                    $this->_page->getForm("refreshbutton")->head("refreshbutton", $this->_page->url);
+                    $this->_page->getForm("refreshbutton")->setCSS("button");
+                    $this->_page->getForm("refreshbutton")->submitButton("Zurück");
+                    $this->_page->getForm("refreshbutton")->close();
                 }
                 break;
         }

@@ -92,6 +92,12 @@ class Page extends BaseObject implements OutputObject
     protected $_bodycontent;
 
     /**
+     * Page Elements (chat, table, forms, ...)
+     * @var array
+     */
+    protected $_elements;
+
+    /**
      * Outputmodules
      * @var array
      */
@@ -133,6 +139,7 @@ class Page extends BaseObject implements OutputObject
         $this->_headscripts 	= array();
         $this->_bodycontent 	= array();
         $this->_toolBoxItems	= array();
+        $this->_elements        = array();
         $this->modulesenabled	= true;
 
         // This Class is always 'loaded'
@@ -296,23 +303,71 @@ class Page extends BaseObject implements OutputObject
     }
 
     /**
+     * Add a new Element to _element-array
+     * @param string $type Element-Type
+     * @param string $name Element-Name
+     * @param object $object The Element
+     * @param bool $overwrite Force overwrite of existing
+     * @throws Error
+     * @return object The added object
+     */
+    public function addElement($type, $name, $object, $overwrite=false)
+    {
+        if (!is_array($this->_elements[$type])) $this->_elements[$type] = array();
+
+        if (!isset($this->_elements[$type][$name]) || $overwrite) {
+            $this->_elements[$type][$name] = $object;
+        } else {
+            throw new Error("Element ".$type."->".$name." already exists.");
+        }
+
+        return $object;
+    }
+
+    /**
+     *
+     * Return the given Element
+     * @param string $name
+     * @throws Error
+     * @return object
+     */
+    public function getElement($type, $name)
+    {
+        if (isset($this->_elements[$type][$name])) {
+            return $this->_elements[$type][$name];
+        } else {
+            throw new Error ("Element ".$type."->".$name." does not exist");
+        }
+    }
+
+    /**
      * Add a new HTMLForm to the Page
      * @param string $name Name of the HTMLForm
      * @param bool $directoutput Output directly with $page->output()
-     * @return string The Name of the Form
+     * @return Common\Controller\Form The Form Object
      */
-    public function addForm($name, $directoutput=true)
+    public function addForm($name, $directoutput=true, $overwrite=false)
     {
         // remove whitespaces
         $name = str_replace(' ', '', $name);
 
         if ($directoutput) {
-            $this->addProperty($name, new Form($this), true);
+            $result = $this->addElement("Form", $name, new Form($this), $overwrite);
         } else {
-            $this->addProperty($name, new Form(), true);
+            $result = $this->addElement("Form", $name, new Form(), $overwrite);
         }
 
-        return $name;
+        return $result;
+    }
+
+    /**
+     * Return given Form Object
+     * @param string $name
+     * @return Common\Controller\Form The Form Object
+     */
+    public function getForm($name)
+    {
+        return $this->getElement("Form", $name);
     }
 
     /**
@@ -333,6 +388,16 @@ class Page extends BaseObject implements OutputObject
         }
 
         return $name;
+    }
+
+    /**
+    * Return given Table Object
+    * @param string $name
+    * @return Table The Table Object
+    */
+    public function getTable($name)
+    {
+        return $this->getElement("Table", $name);
     }
 
     /**

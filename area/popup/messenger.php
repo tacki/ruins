@@ -78,8 +78,8 @@ switch ($_GET['op']) {
         break;
 
     case "inbox":
-        $popup->addForm("deleteform", true);
-        $popup->deleteform->head("deleteform", "popup=popup/messenger&op=delete");
+        $popup->addForm("delete", true);
+        $popup->getForm("delete")->head("deleteform", "popup=popup/messenger&op=delete");
 
         $messagelist = Manager\Message::getInbox($user->character);
         $showlist = array();
@@ -109,10 +109,10 @@ switch ($_GET['op']) {
 
         $popup->output("<div id='messagetools'>", true);
         $popup->output("<input type='button' value='Alle' onclick='checkall(\"deleteform\")' class='button' />", true);
-        $popup->deleteform->setCSS("delbutton");
-        $popup->deleteform->submitButton("Löschen");
+        $popup->getForm("delete")->setCSS("delbutton");
+        $popup->getForm("delete")->submitButton("Löschen");
         $popup->output("</div>", true);
-        $popup->deleteform->close();
+        $popup->getForm("delete")->close();
         break;
 
     case "read":
@@ -138,12 +138,12 @@ switch ($_GET['op']) {
     case "delete":
         if (isset($_POST['chooser'])) {
             $popup->output("Willst du wirklich " . count($_POST['chooser']) . " Nachrichten löschen?");
-            $popup->addForm("deleteform", true);
-            $popup->deleteform->head("deleteform", "popup=popup/messenger&op=delete&ask=yes");
-            $popup->deleteform->hidden("ids", implode(",", $_POST['chooser']));
-            $popup->deleteform->setCSS("button");
-            $popup->deleteform->submitButton("Ja, Löschen");
-            $popup->deleteform->close();
+            $popup->addForm("delete", true);
+            $popup->getForm("delete")->head("deleteform", "popup=popup/messenger&op=delete&ask=yes");
+            $popup->getForm("delete")->hidden("ids", implode(",", $_POST['chooser']));
+            $popup->getForm("delete")->setCSS("button");
+            $popup->getForm("delete")->submitButton("Ja, Löschen");
+            $popup->getForm("delete")->close();
         } elseif (isset($_POST['ids'])) {
             Manager\Message::delete($_POST['ids']);
 
