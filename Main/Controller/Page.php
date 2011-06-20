@@ -218,13 +218,10 @@ class Page implements OutputObject
     /**
      * Adds a JavaScript-file as an include to the Header
      * @param string $script Script Filename
-     * @return bool true if javascriptfile is found, else false
      */
     public function addJavaScriptFile($script)
     {
-        $this->_headscripts[] = "<script src='".Manager\System::getOverloadedFilePath("View/Javascript/".$script, true)."' type='text/javascript'></script>";
-
-        return false;
+        $this->_headscripts[] = "<script src='".Manager\System::getOverloadedFilePath("View/JavaScript/".$script, true)."' type='text/javascript'></script>";
     }
 
     /**

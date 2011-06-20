@@ -108,7 +108,7 @@ class System
                 $result = DIR_BASE.$path;
             }
 
-            if (isset($result)) {
+            if ($result) {
                 SessionStore::set("overloadedFilePath_".md5($path), $result);
                 return $htmlpath?\Main\Manager\System::htmlpath($result):$result;
             } else {
