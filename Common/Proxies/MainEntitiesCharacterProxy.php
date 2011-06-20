@@ -15,7 +15,8 @@ class MainEntitiesCharacterProxy extends \Main\Entities\Character implements \Do
         $this->_entityPersister = $entityPersister;
         $this->_identifier = $identifier;
     }
-    private function __load()
+    /** @private */
+    public function __load()
     {
         if (!$this->__isInitialized__ && $this->_entityPersister) {
             $this->__isInitialized__ = true;
@@ -25,7 +26,7 @@ class MainEntitiesCharacterProxy extends \Main\Entities\Character implements \Do
             unset($this->_entityPersister, $this->_identifier);
         }
     }
-
+    
     
     public function initLayers()
     {

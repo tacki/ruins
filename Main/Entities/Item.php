@@ -12,13 +12,14 @@ use Main\Layers\Money,
  * @InheritanceType("JOINED")
  * @DiscriminatorColumn(name="discr", type="string")
  * @DiscriminatorMap({
- * 					   "armors" = "Main\Entities\Items\Armor",
+ * 					   "items"   = "Main\Entities\Item",
+ * 					   "armors"  = "Main\Entities\Items\Armor",
  * 					   "commons" = "Main\Entities\Items\Common",
  *                     "weapons" = "Main\Entities\Items\Weapon"
  *                   })
  * @Table(name="items")
  */
-class Item extends EntityBase
+abstract class Item extends EntityBase
 {
     /**
      * @Id @Column(type="integer")

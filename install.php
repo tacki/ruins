@@ -338,10 +338,8 @@ switch ($_GET['step']) {
         echo "<h2>Step " . $_GET['step'] .  " of 4 - Database Settings</h2>";
         echo "<h4>Checking for Database Information</h4>";
 
-        // Include dirconf and global function library
+        // Include dirconf
         require_once("config/dirconf.cfg.php");
-        require_once(DIR_INCLUDES."functions/global.func.php");
-        require_once(DIR_INCLUDES."functions/database.func.php");
 
         if (isset($_GET['updateDBinfo'])) {
             echo "<div class='checkfor'>Updating Database Settings ... </div>";
@@ -385,7 +383,6 @@ switch ($_GET['step']) {
             echo "<div class='checkfor'>Try to connect using the existing Configuration File ... </div>";
 
             // Include Standard Header
-            require_once("config/dirconf.cfg.php");
             require_once(DIR_BASE."main.inc.php");
 
             $needDBinfo = false;
@@ -396,9 +393,7 @@ switch ($_GET['step']) {
             // Try to connect using the given Data
             try {
                 $database = getDBInstance();
-            } catch (Doctrine\DBAL\DBALException $e) {
-                $database = $e;
-            } catch (PDOException $e) {
+            } catch (Exception $e) {
                 $database = $e;
             }
 
@@ -562,11 +557,6 @@ switch ($_GET['step']) {
         // Include Standard Header
         require_once("config/dirconf.cfg.php");
         require_once(DIR_BASE."main.inc.php");
-
-        // Call Tree Init
-        require_once(DIR_COMMON."Init.php");
-        require_once(DIR_MAIN."Init.php");
-        require_once(DIR_MODULES."Init.php");
 
         echo "<div class='checkfor'>Sync ModuleList to Database ... </div>";
 
