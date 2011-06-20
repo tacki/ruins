@@ -27,15 +27,6 @@ foreach (Manager\System::getAdminCategories() as $category) {
     }
 }
 
-/*
-$page->nav->addHead("Admintravel")
-          ->addLink("Ironlance", "page=ironlance/citysquare")
-          ->addLink("Derashok", "page=derashok/tribalcenter")
-          ->addLink("Dunsplee", "page=dunsplee/trail");
-
-$page->nav->addHead("System")
-          ->addLink("Module", "page=admin/modules&return={$page->url->short}");
-*/
 Manager\System::getAdminCategories();
 
 

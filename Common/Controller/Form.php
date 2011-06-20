@@ -326,12 +326,13 @@ class Form extends BaseHTML
      * @param string $value value of the radio
      * @return string html string
      */
-    public function radio($name, $value, $checked=false)
+    public function radio($name, $value, $checked=false, $disabled=false)
     {
         if ($name != "")
         {
             $output = "<input type='radio' name='".$name."' value='".$value."'";
             if ($checked) $output .= " checked='checked'";
+            if ($disabled) $output .= " disabled='disabled'";
             $output .= "/>";
         } else {
             return "\$name ist nicht gesetzt,";

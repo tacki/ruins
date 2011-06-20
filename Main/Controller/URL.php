@@ -79,6 +79,7 @@ class URL
     /**
      * Unset a given Parameter from the URL
      * @param string $parameter Name of the GET-Parameter
+     * @return URL
      */
     public function unsetParameter($parameter)
     {
@@ -87,12 +88,15 @@ class URL
             // Remove the Parameter
             $this->_url = str_replace("&".$parameter."=".$oldvalue, "", $this->_url);
         }
+
+        return $this;
     }
 
     /**
      * Change or add a Parameter to the URL
      * @param string $parameter Name of the GET-Parameter
      * @param string $value Value of the GET-Parameter
+     * @return URL
      */
     public function setParameter($parameter, $value)
     {
@@ -104,6 +108,8 @@ class URL
             // Add the Parameter
             $this->_url = $this->_url."&".$parameter."=".$value;
         }
+
+        return $this;
     }
 }
 ?>

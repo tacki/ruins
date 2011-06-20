@@ -221,21 +221,8 @@ class System
 
         // check if filepath consists of dirname+"/"+filename (path to content)
         if (strpos($filepath, "/")) {
-            // Check if this is a pathdescription to a file inside the area-tree
-            if (file_exists(DIR_AREA . $filepath)) {
-                // add DIR_AREA to create the full path
-                $treepath = DIR_AREA . $filepath;
-            }
-
-            // Fetch Modules
-            $moduleList = Module::getModuleListFromDatabase(true);
-
-            // Modulepages overwrite Common
-            foreach($moduleList as $module) {
-                if (file_exists(DIR_MODULES.$module->basedir . "Area/" . $filepath)) {
-                    $treepath = DIR_MODULES.$module->basedir . "Area/" . $filepath;
-                }
-            }
+            // Get Overloaded Filepath
+            $treepath = \Main\Manager\System::getOverloadedFilePath("Area/".$filepath);
         }
 
         // create realpath
