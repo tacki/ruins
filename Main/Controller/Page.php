@@ -602,8 +602,8 @@ class Page implements OutputObject
      */
     protected function _addJQuerySupport()
     {
-        array_unshift($this->_headscripts, "<script src='".Manager\System::getOverloadedFilePath("View/JavaScript/jquery-1.3.2.min.js", true)."' type='text/javascript'></script>");
-        $this->addJavaScriptFile("jquery-ui-1.7.2.custom.min.js");
+        array_unshift($this->_headscripts, "<script src='".Manager\System::getOverloadedFilePath("View/JavaScript/jquery-1.5.1.min.js", true)."' type='text/javascript'></script>");
+        $this->addJavaScriptFile("jquery-ui-1.8.13.custom.min.js");
         $this->addJavaScriptFile("jquery.plugin.timers.js");
     }
 

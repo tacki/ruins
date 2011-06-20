@@ -165,6 +165,7 @@ switch ($_GET['step']) {
         $createdirs = array();
 
         // dirconfig-file
+        $createdirs['Dummy Dir'] 	            = "tmp/dummy";
         $createdirs['Smarty Temp Base Dir'] 	= "tmp/smarty";
         $createdirs['Smarty Temp Cache Dir']	= "tmp/smarty/cache";
         $createdirs['Smarty Temp Compile Dir']	= "tmp/smarty/templates_c";

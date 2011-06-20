@@ -37,8 +37,8 @@ if ($applicationMode == "development") {
 }
 $config->setQueryCacheImpl($cache);
 
-// Load Annotation Driver
-$driverImpl = $config->newDefaultAnnotationDriver(array(DIR_MAIN."Entities"));
+// Load Annotation Driver (using a dummy Annotation Directory)
+$driverImpl = $config->newDefaultAnnotationDriver(array(DIR_TEMP."dummy"));
 $config->setMetadataDriverImpl($driverImpl);
 $config->setMetadataCacheImpl($cache);
 

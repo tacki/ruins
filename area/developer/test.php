@@ -195,7 +195,6 @@ $page->output("<label for='searchField'>Charnames: </label>", true);
 $page->output("<input type='text' id='searchField' name='searchField'>", true);
 $page->addCommonCSS("autocomplete.css");
 $page->addJavaScriptFile("autocomplete.func.js");
-$page->addJavaScriptFile("jquery.plugin.dimensions.js");
 
 $page->addJavaScript("
     $(function() {

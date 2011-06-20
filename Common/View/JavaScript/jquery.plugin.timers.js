@@ -2,17 +2,17 @@
  * jQuery.timers - Timer abstractions for jQuery
  * Written by Blair Mitchelmore (blair DOT mitchelmore AT gmail DOT com)
  * Licensed under the WTFPL (http://sam.zoy.org/wtfpl/).
- * Date: 2009/02/08
+ * Date: 2009/10/16
  *
  * @author Blair Mitchelmore
- * @version 1.1.2
+ * @version 1.2
  *
  **/
 
 jQuery.fn.extend({
-    everyTime: function(interval, label, fn, times, belay) {
+    everyTime: function(interval, label, fn, times) {
         return this.each(function() {
-            jQuery.timer.add(this, interval, label, fn, times, belay);
+            jQuery.timer.add(this, interval, label, fn, times);
         });
     },
     oneTime: function(interval, label, fn) {
@@ -26,8 +26,6 @@ jQuery.fn.extend({
         });
     }
 });
-
-jQuery.event.special
 
 jQuery.extend({
     timer: {
@@ -57,7 +55,7 @@ jQuery.extend({
                 return value;
             }
         },
-        add: function(element, interval, label, fn, times, belay) {
+        add: function(element, interval, label, fn, times) {
             var counter = 0;
 
             if (jQuery.isFunction(label)) {
@@ -69,16 +67,13 @@ jQuery.extend({
 
             interval = jQuery.timer.timeParse(interval);
 
-            if (typeof interval != 'number' || isNaN(interval) || interval <= 0)
+            if (typeof interval != 'number' || isNaN(interval) || interval < 0)
                 return;
 
-            if (times && times.constructor != Number) {
-                belay = !!times;
+            if (typeof times != 'number' || isNaN(times) || times < 0)
                 times = 0;
-            }
 
             times = times || 0;
-            belay = belay || false;
 
             var timers = jQuery.data(element, this.dataKey) || jQuery.data(element, this.dataKey, {});
 
@@ -88,12 +83,8 @@ jQuery.extend({
             fn.timerID = fn.timerID || this.guid++;
 
             var handler = function() {
-                if (belay && this.inProgress)
-                    return;
-                this.inProgress = true;
                 if ((++counter > times && times !== 0) || fn.call(element, counter) === false)
                     jQuery.timer.remove(element, label, fn);
-                this.inProgress = false;
             };
 
             handler.timerID = fn.timerID;
