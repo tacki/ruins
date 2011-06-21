@@ -19,13 +19,20 @@ class BattleMessage extends EntityBase
 
     /**
      * @ManyToOne(targetEntity="Battle")
+     * @var Main\Entities\Battle
      */
     protected $battle;
 
-    /** @Column(type="datetime") */
+    /**
+     * @Column(type="datetime")
+     * @var DateTime
+     */
     protected $date;
 
-    /** @Column(type="text") */
+    /**
+     * @Column(type="text")
+     * @var string
+     */
     protected $message;
 
     public function __construct()

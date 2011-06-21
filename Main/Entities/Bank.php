@@ -15,20 +15,26 @@ class Bank extends EntityBase
     /**
      * @Id @Column(type="integer")
      * @GeneratedValue
+     * @var int
      */
     protected $id;
 
-    /** @Column(length=255) */
+    /**
+     * @Column(length=255)
+     * @var string
+     */
     protected $name;
 
     /**
      * @ManyToOne(targetEntity="Character")
+     * @var Main\Entities\Character
      */
     protected $depositor;
 
     /**
      * Layer (Main\Layers\Money)
      * @Column(type="integer")
+     * @var Main\Layers\Money
      */
     protected $balance;
 

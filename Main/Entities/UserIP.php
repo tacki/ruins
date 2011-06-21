@@ -14,18 +14,26 @@ class UserIP extends EntityBase
     /**
      * @Id @Column(type="integer")
      * @GeneratedValue
+     * @var int
      */
     protected $id;
 
     /**
      * @ManyToOne(targetEntity="User", inversedBy="iplist")
+     * @var Main\Entities\User
      */
     protected $user;
 
-    /** @Column(type="datetime") */
+    /**
+     * @Column(type="datetime")
+     * @var DateTime
+     */
     protected $date;
 
-    /** @Column(length=32) */
+    /**
+     * @Column(length=32)
+     * @var string
+     */
     protected $ip;
 
     public function __construct()

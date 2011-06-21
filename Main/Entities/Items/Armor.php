@@ -13,6 +13,7 @@ class Armor extends Item
 {
     /**
      * @Column(type="integer")
+     * @var int
      */
     protected $armorclass;
 

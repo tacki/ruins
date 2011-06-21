@@ -15,37 +15,49 @@ class User extends EntityBase
     /**
      * @Id @Column(type="integer")
      * @GeneratedValue
+     * @var int
      */
     protected $id;
 
-    /** @Column(length=32, unique=true) */
+    /**
+     * @Column(length=32, unique=true)
+     * @var string
+     */
     protected $login;
 
-    /** @Column(length=32) */
+    /**
+     * @Column(length=32)
+     * @var string
+     */
     protected $password;
 
     /**
      * @OneToOne(targetEntity="Character")
+     * @var Main\Entities\Character
      */
     protected $character;
 
     /**
      * @OneToOne(targetEntity="UserSetting")
+     * @var Main\Entities\UserSetting
      */
     protected $settings;
 
     /**
      * @OneToMany(targetEntity="DebugLog", mappedBy="user")
+     * @var Main\Entities\DebugLog
      */
     protected $debuglog;
 
     /**
      * @OneToMany(targetEntity="UserIP", mappedBy="user")
+     * @var Main\Entities\UserIP
      */
     protected $iplist;
 
     /**
      * @OneToMany(targetEntity="UserUniqueID", mappedBy="user")
+     * @var Main\Entities\UserUniqueID
      */
     protected $uniqueidlist;
 

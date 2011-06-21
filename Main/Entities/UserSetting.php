@@ -13,26 +13,38 @@ class UserSetting extends EntityBase
     /**
      * @Id @Column(type="integer")
      * @GeneratedValue
+     * @var int
      */
     protected $id;
 
     /**
      * @OneToOne(targetEntity="User")
+     * @var Main\Entities\User
      */
     protected $user;
 
     /**
      * @OneToOne(targetEntity="Character")
+     * @var Main\Entities\Character
      */
     protected $default_character;
 
-    /** @Column(length=32) */
+    /**
+     * @Column(length=32)
+     * @var string
+     */
     protected $chat_dateformat;
 
-    /** @Column(type="boolean") */
+    /**
+     * @Column(type="boolean")
+     * @var bool
+     */
     protected $chat_censorship;
 
-    /** @Column(type="array") */
+    /**
+     * @Column(type="array")
+     * @var array
+     */
     protected $chat_hide;
 
     public function __construct()

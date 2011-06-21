@@ -16,50 +16,86 @@ class Character extends EntityBase
     /**
      * @Id @Column(type="integer")
      * @GeneratedValue
+     * @var int
      */
     protected $id;
 
     /**
      * @ManyToOne(targetEntity="User")
+     * @var Main\Entities\User
      */
     protected $user;
 
-    /** @Column(length=255) */
+    /**
+     * @Column(length=255)
+     * @var string
+     */
     protected $name;
 
-    /** @Column(length=255) */
+    /**
+     * @Column(length=255)
+     * @var string
+     */
     protected $displayname;
 
-    /** @Column(type="integer") */
+    /**
+     * @Column(type="integer")
+     * @var int
+     */
     protected $level;
 
-    /** @Column(type="integer") */
+    /**
+     * @Column(type="integer")
+     * @var int
+     */
     protected $healthpoints;
 
-    /** @Column(type="integer") */
+    /**
+     * @Column(type="integer")
+     * @var int
+     */
     protected $lifepoints;
 
-    /** @Column(type="integer") */
+    /**
+     * @Column(type="integer")
+     * @var int
+     */
     protected $strength;
 
-    /** @Column(type="integer") */
+    /**
+     * @Column(type="integer")
+     * @var int
+     */
     protected $dexterity;
 
-    /** @Column(type="integer") */
+    /**
+     * @Column(type="integer")
+     * @var int
+     */
     protected $constitution;
 
-    /** @Column(type="integer") */
+    /**
+     * @Column(type="integer")
+     * @var int
+     */
     protected $wisdom;
 
-    /** @Column(type="integer") */
+    /**
+     * @Column(type="integer")
+     * @var int
+     */
     protected $intelligence;
 
-    /** @Column(type="integer") */
+    /**
+     * @Column(type="integer")
+     * @var int
+     */
     protected $charisma;
 
     /**
      * Layer (Main\Layers\Money)
      * @Column(type="integer")
+     * @var Main\Layers\Money
      */
     protected $money;
 
@@ -69,46 +105,86 @@ class Character extends EntityBase
      *      joinColumns={@JoinColumn(name="character_id", referencedColumnName="id")},
      *      inverseJoinColumns={@JoinColumn(name="group_id", referencedColumnName="id")}
      *      )
+     * @var Doctrine\Common\Collections\ArrayCollection
      */
     protected $groups;
 
-    /** @Column(type="text") */
+    /**
+     * @Column(type="text")
+     * @var string
+     */
     protected $current_nav;
 
-    /** @Column(type="array") */
+    /**
+     * @Column(type="array")
+     * @var array
+     */
     protected $allowednavs;
 
-    /** @Column(type="array") */
+    /**
+     * @Column(type="array")
+     * @var array
+     */
     protected $allowednavs_cache;
 
-    /** @Column(length=255) */
+    /**
+     * @Column(length=255)
+     * @var string
+     */
     protected $template;
 
-    /** @Column(length=32, nullable=true) */
+    /**
+     * @Column(length=32, nullable=true)
+     * @var string
+     */
     protected $type;
 
-    /** @Column(type="datetime") */
+    /**
+     * @Column(type="datetime")
+     * @var DateTime
+     */
     protected $creationdate;
 
-    /** @Column(type="boolean") */
+    /**
+     * @Column(type="boolean")
+     * @var bool
+     */
     protected $loggedin;
 
-    /** @Column(type="datetime") */
+    /**
+     * @Column(type="datetime")
+     * @var DateTime
+     */
     protected $lastlogin;
 
-    /** @Column(length=32, nullable=true) */
+    /**
+     * @Column(length=32, nullable=true)
+     * @var string
+     */
     protected $race;
 
-    /** @Column(length=32, nullable=true) */
+    /**
+     * @Column(length=32, nullable=true)
+     * @var string
+     */
     protected $profession;
 
-    /** @Column(length=32, nullable=true) */
+    /**
+     * @Column(length=32, nullable=true)
+     * @var string
+     */
     protected $sex;
 
-    /** @Column(type="datetime") */
+    /**
+     * @Column(type="datetime")
+     * @var DateTime
+     */
     protected $lastpagehit;
 
-    /** @Column(type="integer", nullable=true) */
+    /**
+     * @Column(type="integer", nullable=true)
+     * @var int
+     */
     protected $debugloglevel;
 
     public function __construct()

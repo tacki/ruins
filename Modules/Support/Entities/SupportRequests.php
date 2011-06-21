@@ -14,27 +14,44 @@ class SupportRequests extends \Main\Entities\EntityBase
     /**
      * @Id @Column(type="integer")
      * @GeneratedValue
+     * @var int
      */
     protected $id;
 
-    /** @Column(type="datetime") */
+    /**
+     * @Column(type="datetime")
+     * @var DateTime
+     */
     protected $date;
 
     /**
      * @ManyToOne(targetEntity="Main\Entities\User")
+     * @var Main\Entities\User
      */
     protected $user;
 
-    /** @Column(length=255) */
+    /**
+     * @Column(length=255)
+     * @var string
+     */
     protected $email;
 
-    /** @Column(length=255) */
+    /**
+     * @Column(length=255)
+     * @var string
+     */
     protected $charactername;
 
-    /** @Column(type="text") */
+    /**
+     * @Column(type="text")
+     * @var string
+     */
     protected $text;
 
-    /** @Column(type="text") */
+    /**
+     * @Column(type="text")
+     * @var string
+     */
     protected $pagedump;
 
     public function __construct()

@@ -14,16 +14,26 @@ class Timer extends EntityBase
     /**
      * @Id @Column(type="integer")
      * @GeneratedValue
+     * @var int
      */
     protected $id;
 
-    /** @Column(length=64, unique=true) */
+    /**
+     * @Column(length=64, unique=true)
+     * @var string
+     */
     protected $name;
 
-    /** @Column(type="datetime") */
+    /**
+     * @Column(type="datetime")
+     * @var DateTime
+     */
     protected $completiontime;
 
-    /** @Column(type="integer") */
+    /**
+     * @Column(type="integer")
+     * @var int
+     */
     protected $backup_ttc;
 
     public function __construct() {

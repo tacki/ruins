@@ -14,6 +14,7 @@ class Vote extends \Main\Entities\EntityBase
     /**
      * @Id @Column(type="integer")
      * @GeneratedValue
+     * @var int
      */
     protected $id;
 
@@ -25,16 +26,19 @@ class Vote extends \Main\Entities\EntityBase
 
     /**
     * @ManyToOne(targetEntity="Main\Entities\Character")
+    * @var Main\Entities\Character
     */
     protected $voter;
 
     /**
     * @ManyToOne(targetEntity="Poll")
+    * @var Modules\Survey\Entities\Poll
     */
     protected $poll;
 
     /**
      * @ManytoOne(targetEntity="Answer", inversedBy="votes")
+     * @var Modules\Survey\Entities\Answer
      */
     protected $answer;
 

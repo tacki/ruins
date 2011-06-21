@@ -13,11 +13,13 @@ class Weapon extends Item
 {
     /**
      * @Column(type="integer")
+     * @var int
      */
     protected $damage_min;
 
     /**
      * @Column(type="integer")
+     * @var int
      */
     protected $damage_max;
 

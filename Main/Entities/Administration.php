@@ -13,16 +13,26 @@ class Administration extends EntityBase
     /**
      * @Id @Column(type="integer")
      * @GeneratedValue
+     * @var int
      */
     protected $id;
 
-    /** @Column(length=64) */
+    /**
+     * @Column(length=64)
+     * @var string
+     */
     protected $name;
 
-    /** @Column(length=32) */
+    /**
+     * @Column(length=32)
+     * @var string
+     */
     protected $category;
 
-    /** @Column(length=255) */
+    /**
+     * @Column(length=255)
+     * @var string
+     */
     protected $page;
 }
 ?>

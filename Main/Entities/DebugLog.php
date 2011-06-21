@@ -18,10 +18,14 @@ class DebugLog extends EntityBase
 
     /**
      * @ManyToOne(targetEntity="User", inversedBy="debuglog")
+     * @var Main\Entities\User
      */
     protected $user;
 
-    /** @Column(length=255) */
+    /**
+     * @Column(length=255)
+     * @var string
+     */
     protected $text;
 }
 ?>

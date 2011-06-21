@@ -24,32 +24,55 @@ abstract class Item extends EntityBase
     /**
      * @Id @Column(type="integer")
      * @GeneratedValue
+     * @var int
      */
     protected $id;
 
-    /** @Column(length=64) */
+    /**
+     * @Column(length=64)
+     * @var string
+     */
     protected $class;
 
-    /** @Column(length=255) */
+    /**
+     * @Column(length=255)
+     * @var string
+     */
     protected $name;
 
-    /** @Column(type="integer") */
+    /**
+     * @Column(type="integer")
+     * @var int
+     */
     protected $level;
 
-    /** @Column(type="integer") */
+    /**
+     * @Column(type="integer")
+     * @var int
+     */
     protected $requirement;
 
-    /** @Column(type="integer") */
+    /**
+     * @Column(type="integer")
+     * @var int
+     */
     protected $weight;
 
-    /** @Column(type="integer") */
+    /**
+     * @Column(type="integer")
+     * @var int
+     */
     protected $value;
 
-    /** @Column(length=64) */
+    /**
+     * @Column(length=64)
+     * @var string
+     */
     protected $location;
 
     /**
      * @ManyToOne(targetEntity="Character")
+     * @var Main\Entities\Character
      */
     protected $owner;
 

@@ -14,19 +14,25 @@ class Answer extends \Main\Entities\EntityBase
     /**
      * @Id @Column(type="integer")
      * @GeneratedValue
+     * @var int
      */
     protected $id;
 
     /**
      * @ManyToOne(targetEntity="Poll", inversedBy="answers")
+     * @var Modules\Survey\Entities\Poll
      */
     protected $poll;
 
-    /** @Column(length=255) */
+    /**
+     * @Column(length=255)
+     * @var string
+     */
     protected $text;
 
     /**
      * @OneToMany(targetEntity="Vote", mappedBy="answer", cascade={"all"}, fetch="LAZY")
+     * @var Doctrine\Common\Collections\ArrayCollection
      */
     protected $votes;
 
