@@ -37,6 +37,7 @@ class SimpleTable extends BaseHTML
         $this->_open = array(
                                 'table' => 0,
                                 'tr' => 0,
+                                'th' => 0,
                                 'td' => 0
                             );
     }
@@ -90,7 +91,11 @@ class SimpleTable extends BaseHTML
     */
     public function startRow()
     {
-        $output = "<tr>";
+        $output = "<tr";
+
+        if ($this->CSSclass) $output .= " class=".$this->CSSclass;
+
+        $output .= ">";
 
         $this->_closeOpenTags("tr");
         $this->_open['tr']++;
@@ -112,6 +117,49 @@ class SimpleTable extends BaseHTML
 
         return $this->generateOutput($output);
     } // END closeRow();
+
+    /**
+    * start a head field
+    * @param mixed $width
+    * @param int $colspan Default value $colspan=1
+    * @param int $ rowspan Default value $rowspan=1
+    * @return html string
+    */
+    public function startHead($width=false,$colspan=1,$rowspan=1)
+    {
+        $output = "<th ";
+        // checking width
+        if ($width!=false && $width!="") $output .= " width='".$width."' ";
+        // checking colspan
+        if (is_int($colspan) && $colspan>=1) $output .= "colspan='".$colspan."' ";
+        // checking rowspan
+        if (is_int($rowspan) && $rowspan>=1) $output .= "rowspan='".$rowspan."' ";
+        // checking CSSclass
+        if (strlen($this->CSSclass)) $output .= "class='".$this->CSSclass."' ";
+        // close data
+        $output .= ">";
+
+        $this->_closeOpenTags("th");
+        $this->_open['th']++;
+        $this->_checkNeededTags();
+
+        return $this->generateOutput($output);
+
+    } // END startData($width,$colspan,$rowspan);
+
+    /**
+     * close the head field
+     * @return html string
+     */
+    public function closeHead()
+    {
+        $output = "</th>";
+
+        $this->_open['th']--;
+        $this->_closeOpenTags("th");
+
+        return $this->generateOutput($output);
+    } // END closeData();
 
     /**
     * start a data field
@@ -182,6 +230,10 @@ class SimpleTable extends BaseHTML
                     $this->closeData();
                 }
 
+                if ($this->_open['th'] > 0) {
+                    $this->closeHead();
+                }
+
                 if ($this->_open['tr'] > 0) {
                     $this->closeRow();
                 }
@@ -196,6 +248,10 @@ class SimpleTable extends BaseHTML
                     $this->closeData();
                 }
 
+                if ($this->_open['th'] > 0) {
+                    $this->closeHead();
+                }
+
                 if ($this->_open['tr'] > 0) {
                     $this->closeRow();
                 }
@@ -205,6 +261,13 @@ class SimpleTable extends BaseHTML
                 if ($this->_open['td'] > 0) {
                     $this->closeData();
                 }
+                break;
+
+            case "th":
+                if ($this->_open['th']) {
+                    $this->closeHead();
+                }
+
                 break;
         }
     }

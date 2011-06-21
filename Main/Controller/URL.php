@@ -81,12 +81,16 @@ class URL
      * @param string $parameter Name of the GET-Parameter
      * @return URL
      */
-    public function unsetParameter($parameter)
+    public function unsetParameter($parameter=false)
     {
-        $oldvalue = $this->getParameter($parameter);
-        if ($oldvalue !== false) {
-            // Remove the Parameter
-            $this->_url = str_replace("&".$parameter."=".$oldvalue, "", $this->_url);
+        if ($parameter) {
+            $oldvalue = $this->getParameter($parameter);
+            if ($oldvalue !== false) {
+                // Remove the Parameter
+                $this->_url = str_replace("&".$parameter."=".$oldvalue, "", $this->_url);
+            }
+        } else {
+            $this->_url = $this->base;
         }
 
         return $this;

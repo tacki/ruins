@@ -29,7 +29,6 @@ class Survey extends \Modules\ModuleBase implements \Common\Interfaces\Module
      */
     public function init()
     {
-        echo "muh";
         // Call init of Parent
         parent::init();
 
@@ -53,7 +52,7 @@ class Survey extends \Modules\ModuleBase implements \Common\Interfaces\Module
     {
         global $user;
 
-        if ($user->character) {
+        if ($user->character && $user->character->loggedin) {
             $page->nav->addLink("Umfragen", "popup=Popup/Survey", "shared")
                       ->setDescription("Aktuelle Umfragen");
         }

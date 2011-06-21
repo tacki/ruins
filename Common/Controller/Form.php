@@ -40,6 +40,9 @@ class Form extends BaseHTML
             return "\$method wurde falsch gesetzt.";
         }
 
+        // checking CSSclass
+        if (strlen($this->CSSclass)) $output .= "class='".$this->CSSclass."' ";
+
         $output .= ">";
 
         if (isset($this->_outputclass) && $this->_outputclass->nav instanceof Nav) {
@@ -300,7 +303,8 @@ class Form extends BaseHTML
             } else {
                 $output = "<option value='".$value."' ";
             }
-            if ($selected) $output .= "selected='selected'";
+            if ($selected) $output .= "selected='selected' ";
+            if (strlen($this->CSSclass)) $output .= "class='".$this->CSSclass."' ";
             $output .= ">".$name."</option>";
         } else {
             return "\$name ist nicht gesetzt,";
@@ -332,7 +336,9 @@ class Form extends BaseHTML
         {
             $output = "<input type='radio' name='".$name."' value='".$value."'";
             if ($checked) $output .= " checked='checked'";
-            if ($disabled) $output .= " disabled='disabled'";
+            if ($disabled) $output .= " disabled='disabled' ";
+            // checking CSSclass
+            if (strlen($this->CSSclass)) $output .= " class='".$this->CSSclass."'";
             $output .= "/>";
         } else {
             return "\$name ist nicht gesetzt,";

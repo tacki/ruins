@@ -55,9 +55,11 @@ class Survey
         $qb ->select("poll")
             ->from("Modules\Survey\Entities\Poll", "poll");
         if ($active) {
-            $qb ->where("poll.deadline > ?1")
+            $qb ->where("poll.deadline >= ?1")
                 ->andWhere("poll.creationdate < ?1")
-                ->setParameter(1, new DateTime());
+                ->andWhere("poll.active = ?2")
+                ->setParameter(1, new DateTime())
+                ->setParameter(2, true);
         }
 
         return $qb->getQuery()->getResult();
@@ -70,13 +72,12 @@ class Survey
      */
     public static function getAnswers(\Modules\Survey\Entities\Poll $poll)
     {
-        $qb = getQueryBuilder();
+        return $poll->answers;
+    }
 
-        $qb ->select("answer")
-            ->from("Modules\Survey\Entities\Answer", "answer")
-            ->where("answer.poll = ?1")->setParameter(1, $poll);
-
-        return $qb->getQuery()->getResult();
+    public static function getNrOfAnswers(\Modules\Survey\Entities\Poll $poll)
+    {
+        return self::getAnswers($poll)->count();
     }
 
     /**
@@ -86,13 +87,27 @@ class Survey
      */
     public static function getAllVotes(\Modules\Survey\Entities\Poll $poll)
     {
-        $qb = getQueryBuilder();
+        $result = array();
+        foreach ($poll->answers as $answer) {
+            $result[$answer->id] = $answer->votes;
+        }
 
-        $qb ->select("vote")
-            ->from("Modules\Survey\Entities\Vote", "vote")
-            ->where("vote.poll = ?1")->setParameter(1, $poll);
+        return $result;
+    }
 
-        return $qb->getQuery()->getResult();
+    /**
+     * Get Total Number of Votes for a poll
+     * @param \Modules\Survey\Entities\Poll $poll
+     * @return int # of Votes
+     */
+    public static function getTotalNrOfVotes(\Modules\Survey\Entities\Poll $poll)
+    {
+        $result = 0;
+        foreach ($poll->answers as $answer) {
+            $result += $answer->votes->count();
+        }
+
+        return $result;
     }
 
     /**
@@ -102,11 +117,9 @@ class Survey
      */
     public static function getSurveyResult(\Modules\Survey\Entities\Poll $poll)
     {
-        global $em;
-
         $result = array();
         foreach ($poll->answers as $answer) {
-            $result[$answer->text] = self::getNrOfVotes($answer);
+            $result[$answer->text] = $answer->count();
         }
 
         return $result;
@@ -119,17 +132,7 @@ class Survey
      */
     public static function getNrOfVotes(\Modules\Survey\Entities\Answer $answer)
     {
-        $qb = getQueryBuilder();
-
-        $qb ->select("COUNT(vote)")
-            ->from("Modules\Survey\Entities\Vote", "vote")
-            ->where("vote.answer = ?1")->setParameter(1, $answer);
-
-        $result = $qb->getQuery()->getOneOrNullResult();
-
-        if(is_array($result)) $result = array_shift($result);
-
-        return (int)$result;
+        return $answer->count();
     }
 
     /**
@@ -138,12 +141,13 @@ class Survey
      * @param DateTime $deadline
      * @return \Modules\Survey\Entities\Poll
      */
-    public static function addPoll($question, DateTime $deadline)
+    public static function addPoll($question, $description, DateTime $deadline)
     {
         global $em, $user;
 
         $poll = new \Modules\Survey\Entities\Poll;
         $poll->question = $question;
+        $poll->description = $description;
         $poll->deadline = $deadline;
 
         if ($user->character instanceof \Main\Entities\Character) $poll->creator = $user->character;
@@ -154,20 +158,54 @@ class Survey
     }
 
     /**
+    * Delete a Poll and all of its Answers and Votes
+    * @param integer $pollId
+    */
+    public static function deletePoll($pollId)
+    {
+        global $em;
+
+        $poll = $em->find("Modules\Survey\Entities\Poll", $pollId);
+
+        if ($poll) {
+            // Remove is cascaded to Answers and to Votes
+            $em->remove($poll);
+        }
+    }
+
+    /**
      * Add an Answer to a given Poll
      * @param \Modules\Survey\Entities\Poll $poll
      * @param string $answer
      */
     public static function addAnswer(\Modules\Survey\Entities\Poll $poll, $answer)
     {
-        $poll->answers->add($answer);
+        global $em;
+
+        $answerObject = new \Modules\Survey\Entities\Answer();
+        $answerObject->poll = $poll;
+        $answerObject->text = $answer;
+
+        $em->persist($answerObject);
+
+        $poll->answers->add($answerObject);
+    }
+
+    /**
+    * Remove an Answer from a given Poll
+    * @param \Modules\Survey\Entities\Poll $poll
+    * @param string $answer
+    */
+    public static function removeAnswer(\Modules\Survey\Entities\Poll $poll, $answer)
+    {
+        $poll->answers->removeElement($answer);
     }
 
     /**
      * Check if a character has already voted
      * @param \Main\Entities\Character $character
      * @param \Modules\Survey\Entities\Poll $poll
-     * @return int|flase Answer-ID or false
+     * @return Modules\Survey\Entities\Answer Answer he voted for
      */
     public static function hasVoted(\Main\Entities\Character $character, \Modules\Survey\Entities\Poll $poll)
     {
@@ -179,9 +217,9 @@ class Survey
             ->andWhere("vote.voter = ?2")->setParameter(2, $character);
 
         if ($result = $qb->getQuery()->getOneOrNullResult()) {
-            return $result->answer->id;
+            return $result->answer;
         } else {
-            return false;
+            return NULL;
         }
     }
 
@@ -194,17 +232,32 @@ class Survey
     {
         global $em, $user;
 
-        if (self::hasVoted($user->character, self::getSurvey($pollId))) {
+        if (self::hasVoted($user->character, self::getPoll($pollId))) {
             return false;
         }
 
         $vote = new \Modules\Survey\Entities\Vote;
         $vote->voter  = $user->character;
-        $vote->poll   = self::getSurvey($pollId);
+        $vote->poll   = self::getPoll($pollId);
         $vote->answer = self::getAnswer($answerId);
 
         $em->persist($vote);
         $em->flush();
+    }
+
+    /**
+     * We are Dictator, we can remove votes
+     * @param integer $voteID
+     */
+    public static function removeVote($voteID)
+    {
+        global $em;
+
+        $result = $em->find("Modules\Survey\Entities\Vote", "vote", $voteID);
+
+        if ($result) {
+            $em->remove($result);
+        }
     }
 }
 ?>

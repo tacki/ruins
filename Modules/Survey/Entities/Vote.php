@@ -17,7 +17,10 @@ class Vote extends \Main\Entities\EntityBase
      */
     protected $id;
 
-    /** @Column(type="datetime") */
+    /**
+     * @Column(type="datetime")
+     * @var DateTime
+     */
     protected $votedate;
 
     /**
@@ -31,7 +34,7 @@ class Vote extends \Main\Entities\EntityBase
     protected $poll;
 
     /**
-     * @ManytoOne(targetEntity="Answer")
+     * @ManytoOne(targetEntity="Answer", inversedBy="votes")
      */
     protected $answer;
 

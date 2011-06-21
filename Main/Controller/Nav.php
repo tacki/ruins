@@ -194,9 +194,7 @@ class Nav
         }
 
         // Check if Link already exists
-        if ($linkelement = $this->_exists($link->displayname, $link->url)) {
-            $this->_lastNavAdded['element'] = $linkelement;
-            $this->_lastNavAdded['status'] = true;
+        if ($this->_exists($link->displayname, $link->url)) {
             return true;
         }
 
@@ -430,7 +428,7 @@ class Nav
      * @param string $url URL to check
      * @return array|false The linkelement if valid, else false
      */
-    private function &_exists($displayname=false, $url=false)
+    private function _exists($displayname=false, $url=false)
     {
         // Run through the Properties...
         foreach ($this->_linkList as $linkarray) {

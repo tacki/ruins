@@ -17,6 +17,9 @@ class Poll extends \Main\Entities\EntityBase
      */
     protected $id;
 
+    /** @Column(type="boolean") */
+    protected $active;
+
     /** @Column(type="datetime") */
     protected $creationdate;
 
@@ -31,8 +34,11 @@ class Poll extends \Main\Entities\EntityBase
     /** @Column(length=255) */
     protected $question;
 
+    /** @Column(length=255) */
+    protected $description;
+
     /**
-     * @OneToMany(targetEntity="Answer", mappedBy="poll")
+     * @OneToMany(targetEntity="Answer", mappedBy="poll", cascade={"all"}, fetch="LAZY")
      */
     protected $answers;
 
@@ -40,8 +46,9 @@ class Poll extends \Main\Entities\EntityBase
     public function __construct()
     {
         // Default Values
-        $this->creationdate = new DateTime;
-        $this->answers = new \Doctrine\Common\Collections\ArrayCollection;
+        $this->active         = true;
+        $this->creationdate   = new DateTime;
+        $this->answers        = new \Doctrine\Common\Collections\ArrayCollection;
     }
 }
 ?>

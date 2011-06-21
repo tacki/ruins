@@ -43,7 +43,7 @@ class ModulesSurveyEntitiesAnswerProxy extends \Modules\Survey\Entities\Answer i
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'poll', 'text');
+        return array('__isInitialized__', 'id', 'poll', 'text', 'votes');
     }
 
     public function __clone()

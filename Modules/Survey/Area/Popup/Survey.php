@@ -10,45 +10,58 @@
 /**
  * Namespaces
  */
-
+use Modules\Survey\Manager;
 
 /**
  * Page Content
  */
+$popup->addCSS("Survey.css");
+
 $popup->set("pagetitle", "Supportanfrage");
 $popup->set("headtitle", "Supportanfrage");
 
 $popup->nav->addLink("Umfrage", $popup->url);
 
-$surveys = \Modules\Survey\Manager\Survey::getAllPolls(false);
+$polls = Manager\Survey::getAllPolls();
 
-if (isset($_GET['poll_id']) && isset($_POST['chooser'])) {
-    \Modules\Survey\Manager\Survey::vote($_GET['poll_id'], $_POST['chooser']);
+if (!count($polls)) {
+    $popup->output("Zur Zeit gibt es keine aktiven Umfragen");
 }
 
-foreach ($surveys as $survey) {
-    $hasVoted = \Modules\Survey\Manager\Survey::hasVoted($user->character, $survey);
+if (isset($_GET['poll_id']) && isset($_POST['chooser'])) {
+    Manager\Survey::vote($_GET['poll_id'], $_POST['chooser']);
+}
 
-    $popup->addSimpleTable("survey");
-    $popup->addForm("survey");
+foreach ($polls as $poll) {
+    $hasVoted = Manager\Survey::hasVoted($user->character, $poll);
 
-    $popup->getForm("survey")->head("survey", $popup->url->setParameter("poll_id", $survey->id));
-    $popup->getSimpleTable("survey")->head(400, 1, 1);
+    $popup->addSimpleTable("survey")->setCSS("survey");
+    $popup->addForm("survey")->setCSS("survey");
+
+    $popup->getForm("survey")->head("survey", $popup->url->setParameter("poll_id", $poll->id));
+    $popup->getSimpleTable("survey")->head(400);
 
     // Question
     $popup->getSimpleTable("survey")->startRow();
-    $popup->getSimpleTable("survey")->startData(false, 2);
-    $popup->output("`c`b".$survey->question."`b`c");
+    $popup->getSimpleTable("survey")->startHead(false, 2);
+    $popup->output($poll->question);
     $popup->getSimpleTable("survey")->closeRow();
 
-    foreach ($survey->answers as $answer) {
+    // Description
+    $popup->getSimpleTable("survey")->startRow();
+    $popup->getSimpleTable("survey")->startData(false, 2);
+    $popup->output($poll->description."`n");
+    $popup->getSimpleTable("survey")->closeRow();
+
+
+    foreach ($poll->answers as $answer) {
         $popup->getSimpleTable("survey")->startRow();
         $popup->getSimpleTable("survey")->startData();
         $popup->output($answer->text);
         $popup->getSimpleTable("survey")->startData(20);
-        if ($hasVoted == $answer->id) {
+        if ($hasVoted == $answer) {
             $popup->getForm("survey")->radio("chooser", $answer->id, true, true);
-        } elseif ($hasVoted !== false) {
+        } elseif ($hasVoted) {
             $popup->getForm("survey")->radio("chooser", $answer->id, false, true);
         } else {
             $popup->getForm("survey")->radio("chooser", $answer->id);
@@ -56,23 +69,22 @@ foreach ($surveys as $survey) {
         $popup->getSimpleTable("survey")->closeRow();
     }
 
+    $popup->getSimpleTable("survey")->close();
+    $popup->closeSimpleTable("survey");
+
     // Submit
-    if ($hasVoted !== false) {
-        $popup->getSimpleTable("survey")->startRow();
-        $popup->getSimpleTable("survey")->startData(false, 2);
+    if ($hasVoted) {
         $popup->output("Du hast bereits abgestimmt!");
-        $popup->getSimpleTable("survey")->closeRow();
-
-        $popup->getSimpleTable("survey")->close();
-        $popup->getForm("survey")->close();
     } else {
-        $popup->getSimpleTable("survey")->startRow();
-        $popup->getSimpleTable("survey")->startData(false, 2);
+        $popup->getForm("survey")->setCSS("submit");
         $popup->getForm("survey")->submitButton("Absenden");
-        $popup->getSimpleTable("survey")->closeRow();
-
-        $popup->getSimpleTable("survey")->close();
-        $popup->getForm("survey")->close();
     }
+    $popup->getForm("survey")->close();
+    $popup->closeForm("survey");
+
+
+    $popup->output("`s`c".Manager\Survey::getTotalNrOfVotes($poll)." Stimme(n) insgesamt.`c`s");
+
+    $popup->output("`n`n");
 }
 ?>

@@ -45,7 +45,7 @@ class Page implements OutputObject
 
     /**
      * Page URL
-     * @var string
+     * @var Main\Controller\URL
      */
     public $url;
 
@@ -225,12 +225,21 @@ class Page implements OutputObject
     }
 
     /**
+    * Adds a CSS-file as an include to the Header
+    * @param string $script Script Filename (has to be inside of templates/common/styles)
+    */
+    public function addCSS($script)
+    {
+        $this->_headscripts[] = "<link href='".Manager\System::getOverloadedFilePath("View/Styles/".$script, true)."' rel='stylesheet' type='text/css' />";
+    }
+
+    /**
      * Adds a CSS-file as an include to the Header
      * @param string $script Script Filename (has to be inside of templates/common/styles)
      */
     public function addCommonCSS($script)
     {
-        $this->_headscripts[] = "<link href='".Manager\System::htmlpath(DIR_COMMON)."/View/Styles/".$script."' rel='stylesheet' type='text/css' />";
+        $this->_headscripts[] = "<link href='". Manager\System::htmlpath(DIR_COMMON) ."/View/Styles/".$script."' rel='stylesheet' type='text/css' />";
     }
 
     /**
@@ -322,7 +331,6 @@ class Page implements OutputObject
     }
 
     /**
-     *
      * Return the given Element
      * @param string $name
      * @throws Error
@@ -332,6 +340,19 @@ class Page implements OutputObject
     {
         if (isset($this->_elements[$type][$name])) {
             return $this->_elements[$type][$name];
+        } else {
+            throw new Error ("Element ".$type."->".$name." does not exist");
+        }
+    }
+
+    /**
+     * Close Form Object
+     * @param string $name
+     */
+    public function deleteElement($type, $name)
+    {
+        if (isset($this->_elements[$type][$name])) {
+            unset ($this->_elements[$type][$name]);
         } else {
             throw new Error ("Element ".$type."->".$name." does not exist");
         }
@@ -369,6 +390,15 @@ class Page implements OutputObject
     }
 
     /**
+     * Close Form Object
+     * @param string $name
+     */
+    public function closeForm($name)
+    {
+        return $this->deleteElement("Form", $name);
+    }
+
+    /**
      * Add a new HTMLTable to the Page
      * @param string $name Name of the HTMLTable
      * @param bool $directoutput Output directly with $page->output()
@@ -390,13 +420,22 @@ class Page implements OutputObject
     }
 
     /**
-    * Return given Table Object
-    * @param string $name
-    * @return Common\Controller\Table The Table Object
-    */
+     * Return given Table Object
+     * @param string $name
+     * @return Common\Controller\Table The Table Object
+     */
     public function getTable($name)
     {
         return $this->getElement("Table", $name);
+    }
+
+    /**
+     * Close Table Object
+     * @param string $name
+     */
+    public function closeTable($name)
+    {
+        return $this->deleteElement("Table", $name);
     }
 
     /**
@@ -416,13 +455,22 @@ class Page implements OutputObject
     }
 
     /**
-    * Return given Chat Object
-    * @param string $name
-    * @return Common\Controller\Chat The Chat Object
-    */
+     * Return given Chat Object
+     * @param string $name
+     * @return Common\Controller\Chat The Chat Object
+     */
     public function getChat($name)
     {
         return $this->getElement("Chat", $name);
+    }
+
+    /**
+     * Close Chat Object
+     * @param string $name
+     */
+    public function closeChat($name)
+    {
+        return $this->deleteElement("Chat", $name);
     }
 
     /**
@@ -430,7 +478,7 @@ class Page implements OutputObject
      * @param string $name Name of the simple HTMLTable
      * @param bool $directoutput Output directly with $page->output()
      * @param bool $overwrite Overwrite existing
-     * @return string The Name of the Table
+     * @return Common\Controller\SimpleTable The Table Object
      */
     public function addSimpleTable($name, $directoutput=true, $overwrite=false)
     {
@@ -447,13 +495,22 @@ class Page implements OutputObject
     }
 
     /**
-    * Return given SimpleTable Object
-    * @param string $name
-    * @return Common\Controller\SimpleTable The Chat Object
-    */
+     * Return given SimpleTable Object
+     * @param string $name
+     * @return Common\Controller\SimpleTable The Chat Object
+     */
     public function getSimpleTable($name)
     {
         return $this->getElement("SimpleTable", $name);
+    }
+
+    /**
+     * Close SimpleTable Object
+     * @param string $name
+     */
+    public function closeSimpleTable($name)
+    {
+        return $this->deleteElement("SimpleTable", $name);
     }
 
     /**
