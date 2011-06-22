@@ -44,6 +44,9 @@ class BtCode
     {
         $opentags = array();
 
+        // cast to string
+        $decodestring = (string)$decodestring;
+
         // Handle Exclude-Tags
         if (strpos($decodestring, self::BTID.self::EXCLUDESUBID) !== false) {
             // exclude-tag present

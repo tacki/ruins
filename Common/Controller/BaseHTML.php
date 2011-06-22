@@ -32,15 +32,20 @@ class BaseHTML
     /**
      * Output class
      * @var Page
-     * @access private
      */
     protected $_outputclass;
+
+    /**
+     * Output Buffer
+     * @var string
+     */
+    protected $_outputBuffer;
 
     /**
      * Constructor - Loads the default values and initializes the attributes
      * @param mixed $outputclass Class which handles the output
      */
-    function __construct($outputclass=false)
+    public function __construct($outputclass=false)
     {
         if ($outputclass instanceof OutputObject) {
             $this->_outputclass = $outputclass;
@@ -51,9 +56,17 @@ class BaseHTML
     }
 
     /**
+     * Use getHTML() if cast to string
+     */
+    public function __toString()
+    {
+        return $this->getHTML();
+    }
+
+    /**
      * Set CSS-Class for the following Element(s)
      * @param string $class
-     * @return object $this;
+     * @return Common\Controller\BaseHTML
      */
     public function setCSS($class)
     {
@@ -65,16 +78,31 @@ class BaseHTML
     /**
      * Send to outputclass if outputclass is set
      * @param string $output Output to work with
-     * @return string|object the output-string or the Object if successful
+     * @return Common\Controller\BaseHTML
      */
     protected function generateOutput($output)
     {
         if (isset($this->_outputclass)) {
             $this->_outputclass->output($output, true);
-            return $this;
         } else {
-            return $output;
+            $this->_outputBuffer .= $output;
         }
+
+        return $this;
+    }
+
+    /**
+     * Return OutputBuffer which is not sent to Page::output()
+     * @return string
+     */
+    public function getHTML()
+    {
+        $result = $this->_outputBuffer;
+
+        // Clear Buffer
+        $this->_outputBuffer = "";
+
+        return $result;
     }
 }
 

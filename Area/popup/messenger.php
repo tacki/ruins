@@ -78,7 +78,7 @@ switch ($_GET['op']) {
         break;
 
     case "inbox":
-        $popup->addForm("delete", true);
+        $popup->addForm("delete");
         $popup->getForm("delete")->head("deleteform", "popup=popup/messenger&op=delete");
 
         $messagelist = Manager\Message::getInbox($user->character);
@@ -138,7 +138,7 @@ switch ($_GET['op']) {
     case "delete":
         if (isset($_POST['chooser'])) {
             $popup->output("Willst du wirklich " . count($_POST['chooser']) . " Nachrichten löschen?");
-            $popup->addForm("delete", true);
+            $popup->addForm("delete");
             $popup->getForm("delete")->head("deleteform", "popup=popup/messenger&op=delete&ask=yes");
             $popup->getForm("delete")->hidden("ids", implode(",", $_POST['chooser']));
             $popup->getForm("delete")->setCSS("button");

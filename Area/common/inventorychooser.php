@@ -66,7 +66,7 @@ switch ($_GET['op']) {
 // Results into call: ?page=ironlance/merchant&op=sell
 if (isset($_GET['callop'])) {
     $callbackpage = "page=".$_GET['return']."&op=".$_GET['callop'];
-    $page->addForm("chooser", true);
+    $page->addForm("chooser");
     $page->getForm("chooser")->head("chooser", $callbackpage);
     $page->nav->addHiddenLink($callbackpage);
 }

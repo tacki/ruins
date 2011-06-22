@@ -119,11 +119,12 @@ class Table extends BaseHTML
     //*************************
 
     /**
-    * Set table attributes: Border, Background, Class, Width
-    * @param mixed $width String or Int "100%" or "100" pixel [optional]
-    * @param int $border Wide of the Border [optional]
-    * @param string $name Name of the table
-    */
+     * Set table attributes: Border, Background, Class, Width
+     * @param mixed $width String or Int "100%" or "100" pixel [optional]
+     * @param int $border Wide of the Border [optional]
+     * @param string $name Name of the table
+     * @return Common\Controller\Table
+     */
     public function setTabAttributes ($width=false,$border=false,$name=false)
     {
         // Adding the Attributes if the aren't FALSE
@@ -131,23 +132,29 @@ class Table extends BaseHTML
         if (isset($this->CSSclass)) $this->_tabAttributes['class'] = $this->CSSclass;
         if ($border!=false) $this->_tabAttributes['border'] = $border;
         if ($name) $this->_tabAttributes['name'] = $name;
+
+        return $this;
     }	// End setTabAttributes($width,$class,$border)
 
     /**
      * Set a second CSS for changing rowbackgrounds
      * @param String $class From defined ClassTypes in file.css
+     * @return Common\Controller\Table
      */
     public function setSecondRowCSS($class) {
         if (is_string($class)) {
             $this->_secondRow = $class;
         }else {
-            return "SecondRowCSS falsch gesetzt!";
+            throw Error("SecondRowCSS falsch gesetzt!");
         }
+
+        return $this;
     }
 
     /**
      * Set the highlight status on/off
      * @param true or false
+     * @return Common\Controller\Table
      */
     public function setHighlightStatus($status=false) {
         if ($status==true) {
@@ -155,21 +162,26 @@ class Table extends BaseHTML
         }else {
             $this->_setHighlight = false;
         }
+
+        return $this;
     }
 
     /**
-    * Add the Header to the Tab
-    * @param array $titles The titles for the headrow
-    * @param array $colWidth Array with String or Int "100%" or "100" pixel [optional]
-    * @param array $colClass colors, fontcolors, bold, center, ...like array("`19~`37`c`b",..)[optional]
-    * @param String $trClass From defined ClassTypes in file.css [optional]
-    */
+     * Add the Header to the Tab
+     * @param array $titles The titles for the headrow
+     * @param array $colWidth Array with String or Int "100%" or "100" pixel [optional]
+     * @param array $colClass colors, fontcolors, bold, center, ...like array("`19~`37`c`b",..)[optional]
+     * @param String $trClass From defined ClassTypes in file.css [optional]
+     * @return Common\Controller\Table
+     */
     public function addTabHeader ($titles,$colWidth=false,$colClass=false,$trClass=false)
     {
         $this->_tabHeader['titles'] = $titles;
         if ($colWidth!=false) $this->_tabHeader['width'] = $colWidth;
         if ($colClass!=false) $this->_tabHeader['class'] = $colClass;
         if ($trClass!=false) $this->_tabHeader['trclass']= $trClass;
+
+        return $this;
     } // End addTabHeader ($titles,$attributes,$colWidth,$colClass)
 
     //*************************
@@ -177,11 +189,12 @@ class Table extends BaseHTML
     //*************************
 
     /**
-    * Adding rows from a direct dbinput like
-    * @param mixed $datarow Input data
-    * @param mixed $class colors, fontcolors, bold, center, ...like array("`19~`37`c`b",..)[optional]
-    * @param string $trclass colors, fontcolors, bold, center, ...like array("`19~`37`c`b",..)[optional]
-    */
+     * Adding rows from a direct dbinput like
+     * @param mixed $datarow Input data
+     * @param mixed $class colors, fontcolors, bold, center, ...like array("`19~`37`c`b",..)[optional]
+     * @param string $trclass colors, fontcolors, bold, center, ...like array("`19~`37`c`b",..)[optional]
+     * @return Common\Controller\Table
+     */
     public function addTabRow ($datarow,$class=false,$trclass=false)
     {
         // Set flag 1 for DirectDBInput
@@ -207,6 +220,8 @@ class Table extends BaseHTML
         }
         array_push($this->_tabAddRows['class'],$class);
         if ($trclass!=false) $this->_tabAddRows['trclass']=$trclass;
+
+        return $this;
     } // End addTabRow($datarow)
 
     //*************************
@@ -214,11 +229,12 @@ class Table extends BaseHTML
     //*************************
 
     /**
-    * DataInput by QueryToolArray
-    * @param array $datalist QueryTool->_listRes
-    * @param array $class Defined ClassTypes in file.css [optional]
-    * @param String $trclass Defined ClassTypes in file.css [optional]
-    */
+     * DataInput by QueryToolArray
+     * @param array $datalist QueryTool->_listRes
+     * @param array $class Defined ClassTypes in file.css [optional]
+     * @param String $trclass Defined ClassTypes in file.css [optional]
+     * @return Common\Controller\Table
+     */
     public function addListArray ($datalist,$class=false,$trclass=false)
     {
         // Set flag 2 for QueryToolInput
@@ -231,6 +247,8 @@ class Table extends BaseHTML
             $this->_tabAddList['class']= $class;
         }
         if ($trclass!=false) $this->_tabAddList['trclass']= $trclass;
+
+        return $this;
     } // End addListArray($datalist,$trclass)
 
     //*************************
@@ -238,10 +256,11 @@ class Table extends BaseHTML
     //*************************
 
     /**
-    * Set the size of the table (number of cols & rows)
-    * @param int $rows number of rows
-    * @param int $cols number of cols
-    */
+     * Set the size of the table (number of cols & rows)
+     * @param int $rows number of rows
+     * @param int $cols number of cols
+     * @return Common\Controller\Table
+     */
 
     public function addTabSize($rows,$cols)
     {
@@ -259,20 +278,23 @@ class Table extends BaseHTML
         }else{
             $this->_cols = 1;
         }
+
+        return $this;
     }
 
 
 
     /**
-    * Adding preference and content to a specific field
-    * @param int $row the number of the column
-    * @param int $col  the number of the column
-    * @param mixed $content content of the field
-    * @param mixed $width String/INT "25%" or "25"
-    * @param string $class colors, fontcolors, bold, center, ...like array("`19~`37`c`b",..)[optional]
-    * @param int $rowspan number of rows
-    * @param int $colspan number of cols
-    */
+     * Adding preference and content to a specific field
+     * @param int $row the number of the column
+     * @param int $col  the number of the column
+     * @param mixed $content content of the field
+     * @param mixed $width String/INT "25%" or "25"
+     * @param string $class colors, fontcolors, bold, center, ...like array("`19~`37`c`b",..)[optional]
+     * @param int $rowspan number of rows
+     * @param int $colspan number of cols
+     * @return Common\Controller\Table
+     */
     public function addFieldContent($row,$col,$content,$width=false,$class=false,$rowspan=false,$colspan=false)
     {
         if (is_int($row) && $row>0)
@@ -307,6 +329,8 @@ class Table extends BaseHTML
             // Out of range
             throw new Error("Gewählte Feld liegt nicht in der Tabelle!");
         }
+
+        return $this;
     }
 
     //*************************
@@ -314,8 +338,9 @@ class Table extends BaseHTML
     //*************************
 
     /**
-    * Load the table finally
-    */
+     * Load the table finally
+     * @return Common\Controller\Table
+     */
     public function load()
     {
         global $user;

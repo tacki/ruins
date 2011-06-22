@@ -83,7 +83,7 @@ switch ($_GET['op']) {
 
             $page->output(implode(", ", $fishnames)."`n`n");
 
-            $page->addForm("sell", true);
+            $page->addForm("sell");
             $page->getForm("sell")->head("deleteform", "page=derashok/bogoob&op=sell");
             $page->nav->addHiddenLink("page=derashok/bogoob&op=sell");
             $page->getForm("sell")->hidden("ids", implode(",", $_POST['chooser']));

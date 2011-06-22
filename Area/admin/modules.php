@@ -33,8 +33,8 @@ if (isset($_POST['chooser'])) {
     }
 }
 
-$page->addForm("chooser", false);
-$page->output($page->getForm("chooser")->head("modulelist", $page->url), true);
+$chooserForm = $page->addForm("chooser", false);
+$page->output($chooserForm->head("modulelist", $page->url)->getHTML(), true);
 $page->nav->addHiddenLink($page->url);
 
 $moduleList = array();
@@ -44,7 +44,7 @@ foreach ($moduleListFromDB as $module) {
     $showModule['name']         = $module->name;
     $showModule['description']  = $module->description;
 
-    $showModule['enabled']       = $page->getForm("chooser")->checkbox("chooser[]", $module->id, false, $module->enabled);
+    $showModule['enabled']       = $chooserForm->checkbox("chooser[]", $module->id, false, $module->enabled)->getHTML();
 
     $moduleList[] = $showModule;
 }
@@ -55,7 +55,7 @@ $headers = array(	"name"=>"Name",
                     "enabled"=>"Aktiviert"
 );
 
-$page->addTable("modulelist", true);
+$page->addTable("modulelist");
 $page->getTable("modulelist")->setCSS("messagelist");
 $page->getTable("modulelist")->setTabAttributes(false);
 $page->getTable("modulelist")->addTabHeader($headers);
@@ -64,7 +64,7 @@ $page->getTable("modulelist")->setSecondRowCSS("secondrow");
 $page->getTable("modulelist")->load();
 
 $page->getForm("chooser")->setCSS("delbutton");
-$page->output($page->getForm("chooser")->submitButton("Speichern"), true);
-$page->output($page->getForm("chooser")->close(), true);
+$page->output($chooserForm->submitButton("Speichern")->getHTML(), true);
+$page->output($chooserForm->close()->getHTML(), true);
 
 ?>

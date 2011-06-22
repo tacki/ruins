@@ -35,7 +35,7 @@ switch ($_GET['op']) {
 
         $page->output("Wohin willst du denn reisen?`n`n");
 
-        $page->addForm("travel", true);
+        $page->addForm("travel");
         $newURL = clone $page->url;
         $newURL->setParameter("op", "travel");
         $page->getForm("travel")->head("travelform", $newURL. "");

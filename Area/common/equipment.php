@@ -132,7 +132,7 @@ if ($_GET['op'] == 'change' && isset($_POST['equipped'])) {
 
 // ---------
 
-$page->addForm("inventory", true);
+$page->addForm("inventory");
 $newURL = clone $page->url;
 $newURL->setParameter("op", "change");
 $page->getForm("inventory")->head("inventoryform", $newURL);

@@ -235,7 +235,7 @@ $thetable->addTabHeader(array("Name","ID","Gold","LP","HP"),false,array("`b","`b
 // This following addTabRow will put the array in the first position of the table behind the header
 $thetable->addTabRow(array("teruk","7","2300","34","12"));
 $thetable->addListArray($result, false, "`~35");
-$page->output($thetable->load(),true);
+$page->output($thetable->load()->getHTML(),true);
 
 $page->output("`nGeordnet nach HP:`n");
 $result = $qb	->orderBy("char.healthpoints")
@@ -247,7 +247,7 @@ $newtab = new Table;
 $newtab->setTabAttributes(false,2);
 $newtab->addTabHeader(array("Name","ID","Gold","LP","HP"),false,array("`b","`b`c","`b`c","`b`c","`b`c"));
 $newtab->addListArray($result);
-$page->output($newtab->load(),true);
+$page->output($newtab->load()->getHTML(),true);
 
 // Case 3:
 $page->output("`n`n");
@@ -296,7 +296,7 @@ for ($i=1;$i<21;$i++)
 {
     $design->addFieldContent($i,7,"Zeile:".$i);
 }
-$page->output($design->load(),true);
+$page->output($design->load()->getHTML(),true);
 
 $page->output("`n`n");
 //$page->addform(true,"head","name","test.php","post");
@@ -314,7 +314,7 @@ $design1->addFieldContent(3,1,"Unten links",false,false,2,1);
 $design1->addFieldContent(3,4,"Unten oben rechts",false,false,1,1);
 $design1->addFieldContent(4,4,"Unten rechts",false,false,1,1);
 $design1->addFieldContent(4,2,"Unten",false,false,1,2);
-$page->output($design1->load(),true);
+$page->output($design1->load()->getHTML(),true);
 //$page->addform(true,"close");
 // Querytool & Table Test end
 
@@ -473,7 +473,7 @@ if (!($newslist = Manager\System::getNews())) {
 } else {
     $newstab->addListArray($newslist);
 }
-$page->output($newstab->load(),true);
+$page->output($newstab->load()->getHTML(),true);
 /*
 $news = new News;
 $news->setNewsAttributes(3,"80%","`~35","`~35","`~35");
@@ -546,7 +546,7 @@ $newtab->setCSS("`~9f");
 $newtab->setTabAttributes(false,0);
 $newtab->addTabHeader(array("id","sender","receiver","subject","date","status"),false,array("`b","`b`c","`b`c","`b`c","`b`c","`b`c"));
 $newtab->addListArray($showlist);
-$page->output($newtab->load(),true);
+$page->output($newtab->load()->getHTML(),true);
 
 $page->output("Deleting last Message`n");
 $lastMessage = Manager\Message::getInbox($user->character, 1, false);
@@ -574,7 +574,7 @@ $newtab->setCSS("`~9f");
 $newtab->setTabAttributes(false,0);
 $newtab->addTabHeader(array("id","sender","receiver","subject","date","status"),false,array("`b","`b`c","`b`c","`b`c","`b`c","`b`c"));
 $newtab->addListArray($showlist);
-$page->output($newtab->load(),true);
+$page->output($newtab->load()->getHTML(),true);
 
 // Message Test End
 
@@ -684,7 +684,7 @@ $table = new Table();
 $table->setTabAttributes(false,2);
 $table->addTabHeader(array("id","displayname"),false,array("`b","`b`c"));
 $table->addListArray($result);
-$page->output($table->load(),true);
+$page->output($table->load()->getHTML(),true);
 
 // QueryBuilder End
 

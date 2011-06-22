@@ -43,13 +43,13 @@ class SimpleTable extends BaseHTML
     }
 
     /**
-    * beginning of the table
-    * @param mixed $width of the table
-    * @param int $border width of the tableborder
-    * @param int $cellspacing
-    * @param int $cellpading
-    * @return html string
-    */
+     * beginning of the table
+     * @param mixed $width of the table
+     * @param int $border width of the tableborder
+     * @param int $cellspacing
+     * @param int $cellpading
+     * @return Common\Controller\SimpleTable
+     */
     public function head($width=false,$border=0,$cellspacing=0,$cellpadding=0)
     {
         $output = "<table ";
@@ -72,9 +72,9 @@ class SimpleTable extends BaseHTML
     } // End head($width,$border,$cellspacing,$cellpadding);
 
     /**
-    * close the table
-    * @return html string
-    */
+     * close the table
+     * @return Common\Controller\SimpleTable
+     */
     public function close()
     {
         $output = "</table>";
@@ -86,9 +86,9 @@ class SimpleTable extends BaseHTML
     } // END close();
 
     /**
-    * start a table row
-    * @return html string
-    */
+     * start a table row
+     * @return Common\Controller\SimpleTable
+     */
     public function startRow()
     {
         $output = "<tr";
@@ -105,9 +105,9 @@ class SimpleTable extends BaseHTML
     } // END startRow();
 
     /**
-    * close a table row
-    * @return html string
-    */
+     * close a table row
+     * @return Common\Controller\SimpleTable
+     */
     public function closeRow()
     {
         $output = "</tr>";
@@ -119,12 +119,12 @@ class SimpleTable extends BaseHTML
     } // END closeRow();
 
     /**
-    * start a head field
-    * @param mixed $width
-    * @param int $colspan Default value $colspan=1
-    * @param int $ rowspan Default value $rowspan=1
-    * @return html string
-    */
+     * start a head field
+     * @param mixed $width
+     * @param int $colspan Default value $colspan=1
+     * @param int $ rowspan Default value $rowspan=1
+     * @return Common\Controller\SimpleTable
+     */
     public function startHead($width=false,$colspan=1,$rowspan=1)
     {
         $output = "<th ";
@@ -149,7 +149,7 @@ class SimpleTable extends BaseHTML
 
     /**
      * close the head field
-     * @return html string
+     * @return Common\Controller\SimpleTable
      */
     public function closeHead()
     {
@@ -162,12 +162,12 @@ class SimpleTable extends BaseHTML
     } // END closeData();
 
     /**
-    * start a data field
-    * @param mixed $width
-    * @param int $colspan Default value $colspan=1
-    * @param int $ rowspan Default value $rowspan=1
-    * @return html string
-    */
+     * start a data field
+     * @param mixed $width
+     * @param int $colspan Default value $colspan=1
+     * @param int $ rowspan Default value $rowspan=1
+     * @return Common\Controller\SimpleTable
+     */
     public function startData($width=false,$colspan=1,$rowspan=1)
     {
         $output = "<td ";
@@ -191,9 +191,9 @@ class SimpleTable extends BaseHTML
     } // END startData($width,$colspan,$rowspan);
 
     /**
-    * close the data field
-    * @return html string
-    */
+     * close the data field
+     * @return Common\Controller\SimpleTable
+     */
     public function closeData()
     {
         $output = "</td>";

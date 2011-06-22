@@ -21,12 +21,12 @@ use Main\Controller\Nav,
 class Form extends BaseHTML
 {
     /**
-    * beginning of the formular set name, method and target page
-    * @param string $name
-    * @param string $action the target page e.g. action='test.php'
-    * @param string $method use GET|POST
-    * @return html string
-    */
+     * beginning of the formular set name, method and target page
+     * @param string $name
+     * @param string $action the target page e.g. action='test.php'
+     * @param string $method use GET|POST
+     * @return Common\Controller\Form
+     */
     public function head($name, $action, $method='post')
     {
         // Checking the file type and the length
@@ -55,9 +55,9 @@ class Form extends BaseHTML
     }	// END head($method,$action,$name)
 
     /**
-    * Close the formular
-    * @return html string
-    */
+     * Close the formular
+     * @return Common\Controller\Form
+     */
     public function close()
     {
         $output = "</form>";
@@ -66,14 +66,14 @@ class Form extends BaseHTML
     }
 
     /**
-    * input text function
-    * @param string $name Name of the field to request it after submitting
-    * @param string $value To set a default fieldvalue
-    * @param int $size Size of the field
-    * @param int $maxlength Maximun length
-    * @param bool $readonly Set to true to make the Field readonly
-    * @return html string
-    */
+     * input text function
+     * @param string $name Name of the field to request it after submitting
+     * @param string $value To set a default fieldvalue
+     * @param int $size Size of the field
+     * @param int $maxlength Maximun length
+     * @param bool $readonly Set to true to make the Field readonly
+     * @return Common\Controller\Form
+     */
     public function inputText($name,$value=false,$size=20,$maxlength=50,$readonly=false)
     {
         // checking if $name is set
@@ -116,13 +116,13 @@ class Form extends BaseHTML
 
 
     /**
-    * input password function
-    * @param string $name Name of the field to request it after submitting
-    * @param string $value To set a default fieldvalue
-    * @param int $size Size of the field
-    * @param int $maxlength Maximun length
-    * @return html string
-    */
+     * input password function
+     * @param string $name Name of the field to request it after submitting
+     * @param string $value To set a default fieldvalue
+     * @param int $size Size of the field
+     * @param int $maxlength Maximun length
+     * @return Common\Controller\Form
+     */
     public function inputPassword($name,$value=false,$size=20,$maxlength=50)
     {
         // checking if $name is set
@@ -159,10 +159,10 @@ class Form extends BaseHTML
 
 
     /**
-    * Creating the SubmitButton
-    * @param string $value Text on the button
-    * @return html string
-    */
+     * Creating the SubmitButton
+     * @param string $value Text on the button
+     * @return Common\Controller\Form
+     */
     public function submitButton($value="")
     {
         $output  = "<input type='submit' ";
@@ -176,10 +176,10 @@ class Form extends BaseHTML
     } // END submitButton($value)
 
     /**
-    * Creating the ResetButton
-    * @param string $value Text on the button
-    * @return html string
-    */
+     * Creating the ResetButton
+     * @param string $value Text on the button
+     * @return Common\Controller\Form
+     */
     public function resetButton($value="")
     {
         $output  = "<input type='reset' value='".$value."' ";
@@ -192,13 +192,13 @@ class Form extends BaseHTML
     } // END resetButton($value)
 
     /**
-    * input textarea function
-    * @param string $name name of the field
-    * @param string $value value of the field
-    * @param int $cols number of cols
-    * @param int $rows number of rows
-    * @return html string
-    */
+     * input textarea function
+     * @param string $name name of the field
+     * @param string $value value of the field
+     * @param int $cols number of cols
+     * @param int $rows number of rows
+     * @return Common\Controller\Form
+     */
     public function textArea($name,$value=false,$cols=50,$rows=10)
     {
         if ($name!="")
@@ -236,13 +236,13 @@ class Form extends BaseHTML
     } // END textarea($name,$value, $cols, $rows)
 
     /**
-    * checkbox function
-    * @param string $name name of the checkbox
-    * @param string $value value of the checkbox
-    * @param boolean $onclick true|false
-    * @param boolean $checked true|false
-    * @return html string
-    */
+     * checkbox function
+     * @param string $name name of the checkbox
+     * @param string $value value of the checkbox
+     * @param boolean $onclick true|false
+     * @param boolean $checked true|false
+     * @return Common\Controller\Form
+     */
     public function checkbox($name,$value=false,$onclick=false,$checked=false)
     {
         if ($name != "")
@@ -261,12 +261,12 @@ class Form extends BaseHTML
     } // END checkbox($name,$value,$onclick,$checked)
 
     /**
-    * Beginning of the select function
-    * @param string $name name of the selection
-    * @param boolean $empty empty value
-    * @param int $size number of possible selection
-    * @return html string
-    */
+     * Beginning of the select function
+     * @param string $name name of the selection
+     * @param boolean $empty empty value
+     * @param int $size number of possible selection
+     * @return Common\Controller\Form
+     */
     function selectStart($name,$size=1)
     {
         if ($name != "")
@@ -288,12 +288,12 @@ class Form extends BaseHTML
     } // END selectStart($name,$size)
 
     /**
-    * select Options
-    * @param string $name name of the field
-    * @param string $value pre-defined value
-    * @param boolean $selected true if preselected
-    * @return html string
-    */
+     * select Options
+     * @param string $name name of the field
+     * @param string $value pre-defined value
+     * @param boolean $selected true if preselected
+     * @return Common\Controller\Form
+     */
     public function selectOption($name,$value=false,$selected=false)
     {
         if ($name != "")
@@ -314,9 +314,9 @@ class Form extends BaseHTML
     } // END selectOption($name,$value,$selected)
 
     /**
-    * End of select function
-    * @return html string
-    */
+     * End of select function
+     * @return Common\Controller\Form
+     */
     function selectEnd()
     {
         $output = "</select>";
@@ -328,7 +328,7 @@ class Form extends BaseHTML
      * Radio Button
      * @param string $name name of the group, the radio belongs to
      * @param string $value value of the radio
-     * @return string html string
+     * @return Common\Controller\Form
      */
     public function radio($name, $value, $checked=false, $disabled=false)
     {
@@ -348,11 +348,11 @@ class Form extends BaseHTML
     }
 
     /**
-    * hidden function
-    * @param string $name name of the inputfield
-    * @param string $value value of the inputfield
-    * @return html string
-    */
+     * hidden function
+     * @param string $name name of the inputfield
+     * @param string $value value of the inputfield
+     * @return Common\Controller\Form
+     */
     public function hidden($name, $value=false)
     {
         if ($name != "")

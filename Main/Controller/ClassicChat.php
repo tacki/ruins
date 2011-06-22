@@ -481,7 +481,7 @@ class ClassicChat
 
                     // Editfield
                     $output .= $chattable->startData();
-                    $this->_page->addForm($chatform, true);
+                    $this->_page->addForm($chatform);
                     $this->_page->getForm($chatform)->head($chatform, $this->_page->url);
                     $this->_page->getForm($chatform)->hidden($chatform."_op", "editLine");
                     $this->_page->getForm($chatform)->hidden($chatform."_section", $this->_section);
