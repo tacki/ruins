@@ -7,7 +7,7 @@ use DateTime;
 
 /**
  * @Entity
- * @Table(name="support")
+ * @Table(name="modules__support")
  */
 class SupportRequests extends \Main\Entities\EntityBase
 {

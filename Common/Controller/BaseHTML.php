@@ -53,22 +53,25 @@ class BaseHTML
     /**
      * Set CSS-Class for the following Element(s)
      * @param string $class
+     * @return object $this;
      */
     public function setCSS($class)
     {
         $this->CSSclass = $class;
+
+        return $this;
     }
 
     /**
      * Send to outputclass if outputclass is set
      * @param string $output Output to work with
-     * @return string|bool the output-string or true if successful
+     * @return string|object the output-string or the Object if successful
      */
     protected function generateOutput($output)
     {
         if (isset($this->_outputclass)) {
             $this->_outputclass->output($output, true);
-            return true;
+            return $this;
         } else {
             return $output;
         }
