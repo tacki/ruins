@@ -256,7 +256,7 @@ class User
         if ($onlineonly) {
             global $systemConfig;
 
-            $qb ->andWhere("char.loggedin = 1")
+            $qb ->andWhere("char.loggedin = ?1")->setParameter(1, true, \Doctrine\DBAL\Types\Type::BOOLEAN)
                 ->andWhere("char.lastpagehit > ?2")
                 ->setParameter(2, new \DateTime("-".$systemConfig->get("connectiontimeout", 15)." minutes"));
         }

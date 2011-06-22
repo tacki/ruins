@@ -99,6 +99,7 @@
     -->
     </style>
 
+    <script type="text/javascript" src="Common/View/JavaScript/jquery-1.5.1.min.js "></script>
 </head>
 <body>
 
@@ -352,16 +353,16 @@ switch ($_GET['step']) {
         // $extensions['featuredescription']	= "Extensionname";
 
         // Do the voodoo
+        $systemConfig = new Common\Controller\Config;
         foreach ($extensions as $description => $extension) {
             echo "<div class='checkfor'>" . $description . " ... </div>";
 
             if (extension_loaded($extension)) {
                 echo "<div class='ok'>OK!</div>";
-                $config = new Main\Controller\Config;
-                $config->set("option".ucfirst($extension), 1);
+                $systemConfig->set("option".ucfirst($extension), 1);
             } else {
                 echo "<div class='ask'>Not found! Extension '" . $description . "' is not available!</div>";
-                $config->set("option".ucfirst($extension), 0);
+                $systemConfig->set("option".ucfirst($extension), 0);
             }
 
         }
@@ -381,21 +382,51 @@ switch ($_GET['step']) {
         if (isset($_GET['updateDBinfo'])) {
             echo "<div class='checkfor'>Updating Database Settings ... </div>";
 
+
             $dbconnect_content	=	"<?php" . "\n" .  "// created by installscript\n" .
                                     "\$dbconnect = array(\n" .
-                                    "'driver' => '" . $_POST['driver'] . "',\n" .
-                                    "'host' => '" . $_POST['host'] . "',\n";
+                                        "'driver' => '" . $_POST['driver'] . "',\n";
 
-            if (strlen($_POST['port'])) { // port is optional
-                $dbconnect_content .= "'port' => '" . $_POST['port'] . "',\n";
+            switch ($_POST['driver']) {
+
+                case "pdo_mysql":
+                    if (strlen($_POST['unix_socket'])) {
+                        $dbconnect_content .= "'unix_socket' => '" . $_POST['unix_socket'] . "',\n";
+                    } else {
+                        $dbconnect_content .= "'host' => '" . $_POST['host'] . "',\n";
+                        if (strlen($_POST['port'])) {
+                            // port is optional
+                            $dbconnect_content .= "'port' => '" . $_POST['port'] . "',\n";
+                        }
+                    }
+                    $dbconnect_content .=   "'user' => '" . $_POST['user'] . "',\n" .
+                                            "'password' => '" . $_POST['password'] . "',\n" .
+                                            "'dbname' => '" . $_POST['dbname'] . "',\n" .
+                                            "'prefix' => '" . $_POST['prefix'] . "',\n" .
+                                            "'charset' => 'utf8',\n";
+                    break;
+
+                case "pdo_pgsql":
+                    $dbconnect_content .= "'host' => '" . $_POST['host'] . "',\n";
+                    if (strlen($_POST['port'])) {
+                        // port is optional
+                        $dbconnect_content .= "'port' => '" . $_POST['port'] . "',\n";
+                    }
+                    $dbconnect_content .=   "'user' => '" . $_POST['user'] . "',\n" .
+                                            "'password' => '" . $_POST['password'] . "',\n" .
+                                            "'dbname' => '" . $_POST['dbname'] . "',\n" .
+                                            "'prefix' => '" . $_POST['prefix'] . "',\n";
+                    break;
+
+                case "pdo_sqlite":
+                    $dbconnect_content .=   "'path' => '" . $_POST['path'] . "',\n" .
+                                            "'prefix' => '" . $_POST['prefix'] . "',\n";
+                    break;
+
+
             }
 
-            $dbconnect_content .=   "'user' => '" . $_POST['user'] . "',\n" .
-                                    "'password' => '" . $_POST['password'] . "',\n" .
-                                    "'dbname' => '" . $_POST['dbname'] . "',\n" .
-                                    "'prefix' => '" . $_POST['prefix'] . "',\n" .
-                                    "'charset' => 'utf8',\n" .
-                                    ");?>";
+            $dbconnect_content .=  ");?>";
 
             if ($filehandle = fopen(DIR_CONFIG."dbconnect.cfg.php", "w")) {
                     if (fwrite($filehandle, $dbconnect_content) !== false) {
@@ -448,12 +479,13 @@ switch ($_GET['step']) {
         }
 
         if ($needDBinfo) {
-            echo "<form action='install.php?step=" . ($_GET['step']) .  "&updateDBinfo' method='post'>
+            echo "
+                    <form action='install.php?step=" . ($_GET['step']) .  "&updateDBinfo' method='post'>
                     <table border='0'>
                     <tr>
                         <td>Databasetype:</td>
-                        <td><select name='driver'>
-                                <option value='pdo_mysql'>MySQL</option>
+                        <td><select name='driver' id='driver'>
+                                <option value='pdo_mysql' selected='selected'>MySQL</option>
                                 <option value='pdo_pgsql'>PostgreSQL</option>
                                 <option value='pdo_sqlite'>SQLite</option>
                             </select>
@@ -462,51 +494,95 @@ switch ($_GET['step']) {
                         <td colspan='2' class='description'>
                             Type of Database Server
                         </td>
-                    </tr><tr>
+                    </tr><tr class='sqlite'>
+                        <td>Path:</td>
+                        <td><input type='text' name='path'></td>
+                    </tr><tr class='sqlite'>
+                        <td colspan='2' class='description'>
+                            Path to the SQLite-Database
+                        </td>
+                    </tr><tr class='mysql pgsql'>
                         <td>Hostname:</td>
                         <td><input type='text' name='host'></td>
-                    </tr><tr>
+                    </tr><tr class='mysql pgsql'>
                         <td colspan='2' class='description'>
                             Hostname of the Database Server. For example 'localhost', 'database.example.com' or '192.168.1.5'
                         </td>
-                    </tr><tr>
+                    </tr><tr class='mysql pgsql'>
                         <td>Port:</td>
                         <td><input type='text' name='port'></td>
-                    </tr><tr>
+                    </tr><tr class='mysql pgsql'>
                         <td colspan='2' class='description'>
                             Keep empty for default
                         </td>
-                    </tr><tr>
+                    </tr><tr class='mysql'>
+                        <td>Unix Socket:</td>
+                        <td><input type='text' name='unix_socket'></td>
+                    </tr><tr class='mysql'>
+                        <td colspan='2' class='description'>
+                            Leave this empty if you're connecting via Hostname+Port
+                        </td>
+                    </tr><tr class='mysql pgsql'>
                         <td>Username:</td>
                         <td><input type='text' name='user'></td>
-                    </tr><tr>
+                    </tr><tr class='mysql pgsql'>
                         <td colspan='2' class='description'>
                             Username to connect to the Database Server
                         </td>
-                    </tr><tr>
+                    </tr><tr class='mysql pgsql'>
                         <td>Password:</td>
                         <td><input type='password' name='password'></td>
-                    </tr><tr>
+                    </tr><tr class='mysql pgsql'>
                         <td colspan='2' class='description'>
                             Password to connect to the Database Server
                         </td>
-                    </tr><tr>
+                    </tr><tr class='mysql pgsql'>
                         <td>Database:</td>
                         <td><input type='text' name='dbname'></td>
-                    </tr><tr>
+                    </tr><tr class='mysql pgsql'>
                         <td colspan='2' class='description'>
                             Database to use on the Database Server
                         </td>
-                    </tr><tr>
+                    </tr><tr class='mysql pgsql sqlite'>
                         <td>Database Table Prefix:</td>
                         <td><input type='text' name='prefix'></td>
-                    </tr><tr>
+                    </tr><tr class='mysql pgsql sqlite'>
                         <td colspan='2' class='description'>
                             Prefix of the Tables for this Project (Keep empty if not used). Examples: ruins__, ruinstest__, etc.
                         </td>
                     </tr>
                     </table>
-                    <input type='submit' value='Update' class='retry'></form>";
+                    <input type='submit' value='Update' class='retry'></form>
+
+
+                    <script>
+                        // Defaults to pdo_mysql
+                        $('.pqsql').hide();
+                        $('.sqlite').hide();
+                        $('.mysql').show();
+
+                        $('#driver').change(function() {
+                            switch ($('#driver option:selected').val()) {
+                                case 'pdo_mysql':
+                                    $('.pqsql').hide();
+                                    $('.sqlite').hide();
+                                    $('.mysql').show();
+                                    break;
+                                case 'pdo_pgsql':
+                                    $('.mysql').hide();
+                                    $('.sqlite').hide();
+                                    $('.pgsql').show();
+                                    break;
+
+                                case 'pdo_sqlite':
+                                    $('.mysql').hide();
+                                    $('.pqsql').hide();
+                                    $('.sqlite').show();
+                                    break;
+                            }
+                        });
+                    </script>
+            ";
         } else {
             echo "<div class='continue'>Continue to the next Step</div>";
             echo "<form action='install.php?step=" . ($_GET['step']+1) .  "' method='post'>

@@ -89,7 +89,7 @@ class Module
 
         $qb ->select("module")
             ->from("Main:Module", "module");
-        if ($onlyenabled) $qb->where("module.enabled = ?1")->setParameter(1, true);
+        if ($onlyenabled) $qb->where("module.enabled = ?1")->setParameter(1, true, \Doctrine\DBAL\Types\Type::BOOLEAN);
 
         $result = $qb->getQuery()->getResult();
 

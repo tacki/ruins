@@ -365,7 +365,7 @@ class Nav
      */
     public function redirect($url)
     {
-        global $em;
+        global $em, $systemConfig;
 
         // Add Link to Navigation
         $this->add(new Link("Redirection", $url));
@@ -385,7 +385,7 @@ class Nav
 
         // Redirect
         $baseurl = Manager\System::htmlpath(DIR_BASE);
-        if (isset($config) && $config->get("useManualRedirect", 0)) {
+        if (isset($systemConfig) && $systemConfig->get("useManualRedirect", 0)) {
             echo "Forward to $url <br />";
             echo "<a href='$baseurl?" . $url ."'>Continue</a>";
             exit;

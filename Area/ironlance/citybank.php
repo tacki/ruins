@@ -73,7 +73,7 @@ switch ($_GET['op']) {
             Manager\Banking::createAccount($user->character, "ironlance/citybank");
             Manager\Banking::deposit($user->character, "ironlance/citybank", 10);
             // Set initial Interest Cycle
-            $timer->set($config->get("ironlance/citybank_interestcycle", 86400));
+            $timer->set($systemConfig->get("ironlance/citybank_interestcycle", 86400));
             $page->output("Vielen Dank, das Geld ist bei uns natürlich seeehr sicher *hust* ;)");
         } else {
             $page->output("Oh, so viel Geld scheinst du garnicht zu haben?");
@@ -168,7 +168,7 @@ switch ($_GET['op']) {
     case "get_interest":
         $interest = Manager\Banking::chargeInterest($user->character, "ironlance/citybank");
         // set new interest cycle (defaults to 24h)
-        $timer->set($config->get("ironlance/citybank_interestcycle", 86400));
+        $timer->set($systemConfig->get("ironlance/citybank_interestcycle", 86400));
 
         $page->output($interest->getAllCurrenciesWithPic() . " an Zinsen erhalten", true);
         $page->nav->addLink("Zurück", "page=ironlance/citybank");

@@ -53,5 +53,5 @@ global $dbconnect;
 $em = EntityManager::create($dbconnect, $doctrineConfig, $evm);
 
 // Default Options
-$em->getConnection()->setCharset('utf8');
+//$em->getConnection()->setCharset('utf8');
 ?>

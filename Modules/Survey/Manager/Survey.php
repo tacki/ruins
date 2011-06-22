@@ -59,7 +59,7 @@ class Survey
                 ->andWhere("poll.creationdate < ?1")
                 ->andWhere("poll.active = ?2")
                 ->setParameter(1, new DateTime())
-                ->setParameter(2, true);
+                ->setParameter(2, true, \Doctrine\DBAL\Types\Type::BOOLEAN);
         }
 
         return $qb->getQuery()->getResult();

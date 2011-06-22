@@ -13,6 +13,8 @@
  * Namespaces
  */
 namespace Main\Manager;
+use Doctrine\DBAL\Types\BooleanType;
+
 use Main\Entities;
 
 /**
@@ -55,7 +57,7 @@ class Battle
 
         $result = $qb   ->select("battle")
                         ->from("Main:Battle", "battle")
-                        ->where("battle.active = ?1")->setParameter(1, $onlyactive)
+                        ->where("battle.active = ?1")->setParameter(1, $onlyactive, \Doctrine\DBAL\Types\Type::BOOLEAN)
                         ->getQuery()->getResult();
 
         return $result;
