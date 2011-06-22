@@ -21,92 +21,89 @@ use Common\Controller\SessionStore,
 require_once("../../../config/dirconf.cfg.php");
 require_once(DIR_BASE."main.inc.php");
 
+global $systemCache;
+
 $battleid	= rawurldecode($_GET['battleid']);
 $charid 	= rawurldecode($_GET['charid']);
 $skillname	= rawurldecode($_GET['skillname']);
 
 if (isset($battleid) && isset($charid) && isset($skillname)) {
 
-    if (!$result = SessionStore::readCache("targetsforskill_".$battleid."_".$charid."_".$skillname)) {
-        // Load Battleinformation
-        $battle		= new Battle;
-        $battle->load($battleid);
+    // Load Battleinformation
+    $battle		= new Battle;
+    $battle->load($battleid);
 
-        $charinfo 	= $battle->getMemberEntry($charid);
-        $side		= $charinfo['side'];
-        $otherside	= $battle->getOppositeSide($charid);
+    $charinfo 	= $battle->getMemberEntry($charid);
+    $side		= $charinfo['side'];
+    $otherside	= $battle->getOppositeSide($charid);
 
-        // Get the skill the character likes to use
-        $skill = ModuleSystem::getSkillModule($skillname);
+    // Get the skill the character likes to use
+    $skill = ModuleSystem::getSkillModule($skillname);
 
-        // Retrieve the possible side of the target
-        $targetside = "own";
+    // Retrieve the possible side of the target
+    $targetside = "own";
 
-        switch ($skill->possibletargets) {
+    switch ($skill->possibletargets) {
 
-            case SKILL_POSSIBLE_TARGET_ENEMIES:
-                $targetside = $otherside;
-                break;
+        case SKILL_POSSIBLE_TARGET_ENEMIES:
+            $targetside = $otherside;
+            break;
 
-            case SKILL_POSSIBLE_TARGET_ALLIES:
-                $targetside = $side;
-                break;
-        }
+        case SKILL_POSSIBLE_TARGET_ALLIES:
+            $targetside = $side;
+            break;
+    }
 
-        // Retrieve the number of targets
-        $target = false;
-        if ($targetside != "own") {
-            if (is_numeric($skill->nroftargets)) {
-                if ($skill->nroftargets == 1) {
-                    $target = "single";
-                } elseif ($skill->nroftargets >= 2) {
-                    $target = "multiple";
-                }
-            } elseif (is_alpha($skill->nroftargets)) {
-                if ($skill->nroftargets == 'allies') {
-                    $target	= "allies";
-                } elseif ($skill->nroftargets == "enemies") {
-                    $target = "enemies";
-                }
+    // Retrieve the number of targets
+    $target = false;
+    if ($targetside != "own") {
+        if (is_numeric($skill->nroftargets)) {
+            if ($skill->nroftargets == 1) {
+                $target = "single";
+            } elseif ($skill->nroftargets >= 2) {
+                $target = "multiple";
+            }
+        } elseif (is_alpha($skill->nroftargets)) {
+            if ($skill->nroftargets == 'allies') {
+                $target	= "allies";
+            } elseif ($skill->nroftargets == "enemies") {
+                $target = "enemies";
             }
         }
+    }
 
-        // Build the result
-        $result = array();
+    // Build the result
+    $result = array();
 
-        switch ($target) {
+    switch ($target) {
 
-            default:
-                // We target ourself
-                $result[$charid] = Manager\User::getCharacterName($charid, false);
-                break;
+        default:
+            // We target ourself
+            $result[$charid] = Manager\User::getCharacterName($charid, false);
+            break;
 
-            case "single":
-            case "multiple":
-                $memberids = array();
-                if ($skill->possibletargets == SKILL_POSSIBLE_TARGET_ENEMIES) {
-                    // We target one enemy or more
-                    $memberids = $battle->getMemberList($otherside);
-                } elseif ($skill->possibletargets == SKILL_POSSIBLE_TARGET_ALLIES) {
-                    // We target one ally or more
-                    $memberids = $battle->getMemberList($side);
-                }
-                foreach ($memberids as $id) {
-                    $result[$id] = Manager\User::getCharacterName($id, false);
-                }
-                break;
+        case "single":
+        case "multiple":
+            $memberids = array();
+            if ($skill->possibletargets == SKILL_POSSIBLE_TARGET_ENEMIES) {
+                // We target one enemy or more
+                $memberids = $battle->getMemberList($otherside);
+            } elseif ($skill->possibletargets == SKILL_POSSIBLE_TARGET_ALLIES) {
+                // We target one ally or more
+                $memberids = $battle->getMemberList($side);
+            }
+            foreach ($memberids as $id) {
+                $result[$id] = Manager\User::getCharacterName($id, false);
+            }
+            break;
 
-            case "allies":
-                $result[] = "allies";
-                break;
+        case "allies":
+            $result[] = "allies";
+            break;
 
-            case "enemies":
-                $result[] = "enemies";
+        case "enemies":
+            $result[] = "enemies";
 
-        }
-
-        // page cache
-        SessionStore::writeCache("targetsforskill_".$battleid."_".$charid."_".$skillname, $result, "page");
     }
 
     echo json_encode($result);

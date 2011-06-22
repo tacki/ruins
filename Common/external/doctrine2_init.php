@@ -17,7 +17,6 @@ use Doctrine\Common\Cache\ArrayCache,
     Doctrine\Common\EventManager,
     Doctrine\ORM\Events,
     Doctrine\ORM\EntityManager,
-    Doctrine\ORM\Configuration,
     Doctrine\DBAL\Types\Type;
 
 /**
@@ -27,32 +26,20 @@ use Doctrine\Common\Cache\ArrayCache,
 // Application Mode
 $applicationMode = "development";
 
-$config = new Configuration;
-
-// Enable Caching
-if ($applicationMode == "development") {
-    $cache = new ArrayCache;
-} else {
-    $cache = new ApcCache;
-}
-$config->setQueryCacheImpl($cache);
+$doctrineConfig = new Doctrine\ORM\Configuration;
 
 // Load Annotation Driver (using a dummy Annotation Directory)
-$driverImpl = $config->newDefaultAnnotationDriver(array(DIR_TEMP."dummy"));
-$config->setMetadataDriverImpl($driverImpl);
-$config->setMetadataCacheImpl($cache);
-
-// Enable SQL Logger
-//$config->setSQLLogger(new Doctrine\DBAL\Logging\EchoSQLLogger);
+$driverImpl = $doctrineConfig->newDefaultAnnotationDriver(array(DIR_TEMP."dummy"));
+$doctrineConfig->setMetadataDriverImpl($driverImpl);
 
 // Proxy Settings
 if ($applicationMode == "development") {
-    $config->setAutoGenerateProxyClasses(true);
+    $doctrineConfig->setAutoGenerateProxyClasses(true);
 } else {
-    $config->setAutoGenerateProxyClasses(false);
+    $doctrineConfig->setAutoGenerateProxyClasses(false);
 }
-$config->setProxyDir(DIR_COMMON."Proxies");
-$config->setProxyNamespace('Proxies');
+$doctrineConfig->setProxyDir(DIR_COMMON."Proxies");
+$doctrineConfig->setProxyNamespace('Proxies');
 
 // Set Table Prefix
 global $dbconnect;
@@ -63,7 +50,7 @@ $evm->addEventListener(Events::loadClassMetadata, $tablePrefix);
 
 // Get EntityManager
 global $dbconnect;
-$em = EntityManager::create($dbconnect, $config, $evm);
+$em = EntityManager::create($dbconnect, $doctrineConfig, $evm);
 
 // Default Options
 $em->getConnection()->setCharset('utf8');

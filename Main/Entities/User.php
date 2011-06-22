@@ -87,14 +87,16 @@ class User extends EntityBase
      */
     public function logout()
     {
+        global $systemCache;
+
         // Unload $user->character
         $this->character = NULL;
 
         // unset Session User ID
         SessionStore::remove('userid');
 
-        // prune Cache
-        SessionStore::pruneCache();
+        // Clear Cache
+        $systemCache->deleteAll();
     }
 
     /**
@@ -157,7 +159,7 @@ class User extends EntityBase
      */
     public function hasConnectionTimeout()
     {
-        global $config;
+        global $systemConfig;
 
         // return false if lastpagehit is not set
         if (!isset($this->character->lastpagehit)) {
@@ -168,7 +170,7 @@ class User extends EntityBase
         $lastpagehit = $this->character->lastpagehit->diff(new DateTime())->format("%i");
 
         // default connectiontimeout is 15 Minutes
-        if ($lastpagehitage > $config->get("connectiontimeout", 15) ) {
+        if ($lastpagehitage > $systemConfig->get("connectiontimeout", 15) ) {
             // connection timout occurred!
             // return age of last pagehit (in Minutes)
             return $lastpagehitage;

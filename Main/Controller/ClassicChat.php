@@ -274,11 +274,13 @@ class ClassicChat
      */
     private function _chatlineCensorship($text)
     {
+        global $systemCache;
+
         // We check each word separately
         $words = explode(" ", $text);
 
-        // Get List of bad words (use SessionStore to avoid unneeded dbtraffic)
-        if (!($badwords = SessionStore::readCache("badwords"))) {
+        // Get List of bad words
+        if (!($badwords = $systemCache->fetch("badwords"))) {
             $qb = getQueryBuilder();
 
             $badwords = $qb->select("bw")
@@ -286,7 +288,7 @@ class ClassicChat
                            ->getQuery()
                            ->getResult();
 
-             SessionStore::writeCache("badwords", $badwords);
+             $systemCache->save("badwords", $badwords);
         }
 
         foreach ($words as $key=>$word) {

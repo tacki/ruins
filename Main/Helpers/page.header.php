@@ -14,16 +14,11 @@
  */
 use Common\Controller\SessionStore,
     Main\Controller\Link,
-    Main\Controller\Page,
-    Main\Controller\Config;
+    Main\Controller\Page;
 
 /**
  * Page Content
  */
-
-// Initialize Config-Class
-$config = new Config();
-
 // Load User if in Session
 if ($userid = SessionStore::get('userid')) {
     $user = $em->find("Main:User",$userid);
@@ -33,15 +28,15 @@ if ($userid = SessionStore::get('userid')) {
 }
 
 // Page preparation
-$config->addPublicPage(array(	"common/login",
+$systemConfig->addPublicPage(array(	"common/login",
                                 "common/login&op=checkpw",
                                 "common/logout",
                                 "developer/test",)
                             );
-$config->addNoCachePage(array(	"common/portal" )
+$systemConfig->addNoCachePage(array(	"common/portal" )
                             );
 
-if (array_search($_GET['page'], $config->get("publicpages")) !== false) {
+if (array_search($_GET['page'], $systemConfig->get("publicpages")) !== false) {
     // this is a public page!
     $page = new Page();
 
@@ -51,7 +46,7 @@ if (array_search($_GET['page'], $config->get("publicpages")) !== false) {
     // this is a private page and a user is loaded
     $page = new Page($user->character);
 
-    if (array_search($_GET['page'], $config->get("nocachepages")) !== false) {
+    if (array_search($_GET['page'], $systemConfig->get("nocachepages")) !== false) {
         $page->disableCaching();
     }
 

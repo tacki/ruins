@@ -254,11 +254,11 @@ class User
         $qb    ->from("Main:Character", "char");
 
         if ($onlineonly) {
-            global $config;
+            global $systemConfig;
 
             $qb ->andWhere("char.loggedin = 1")
                 ->andWhere("char.lastpagehit > ?2")
-                ->setParameter(2, new \DateTime("-".$config->get("connectiontimeout", 15)." minutes"));
+                ->setParameter(2, new \DateTime("-".$systemConfig->get("connectiontimeout", 15)." minutes"));
         }
 
         $qb ->orderBy("char.".$order, $orderDir);
@@ -296,7 +296,7 @@ class User
      */
     public static function getCharactersAt($place)
     {
-        global $config, $user;
+        global $systemConfig, $user;
 
         $qb = getQueryBuilder();
 
@@ -304,7 +304,7 @@ class User
                          ->from("Main:Character", "char")
                          ->andWhere("char.current_nav LIKE ?1")->setParameter(1, "page=".$place."%")
                          ->andWhere("char.lastpagehit > ?2")
-                         ->setParameter(2, new \DateTime("-".$config->get("connectiontimeout", 15)." minutes"))
+                         ->setParameter(2, new \DateTime("-".$systemConfig->get("connectiontimeout", 15)." minutes"))
                          ->andWhere("char.user != ?3")->setParameter(3, $user)
                          ->getQuery()
                          ->getResult();

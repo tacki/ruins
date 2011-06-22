@@ -96,16 +96,16 @@ class Banking
      */
     public function chargeInterest(Entities\Character $character, $bankname)
     {
-        global $config;
+        global $systemConfig;
 
         $balance = self::getBalance($character, $bankname);
 
         if ($balance->getPlain() >= 0) {
             // we have credit - default to 3%
-            $interestrate = $config->get($bankname."_credit_interest", 3);
+            $interestrate = $systemConfig->get($bankname."_credit_interest", 3);
         } else {
             // we have debit - default to 7%
-            $interestrate = $config->get($bankname."_debit_interest", 7);
+            $interestrate = $systemConfig->get($bankname."_debit_interest", 7);
         }
 
         // if we have debit, $interest will be a negative amount

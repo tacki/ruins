@@ -28,21 +28,19 @@ if(isset($_GET['part']))
     // Get userlist from database
 
     // Use the global Database-Connection
-    if (!$result = SessionStore::readCache("ajax_autocomplete_".$_GET['part'])) {
-        $qb = getQueryBuilder();
+    $qb = getQueryBuilder();
 
-        $res = $qb->select("character.name")
-                  ->from("Main:Character", "character")
-                  ->where("character.name LIKE ?1")->setParameter(1, $_GET['part']."%")
-                  ->orderBy("character.name", "ASC")
-                  ->setMaxResults(5)
-                  ->getQuery()->getResult();
+    $res = $qb->select("character.name")
+              ->from("Main:Character", "character")
+              ->where("character.name LIKE ?1")->setParameter(1, $_GET['part']."%")
+              ->orderBy("character.name", "ASC")
+              ->setMaxResults(5)
+              ->getQuery()
+              ->setResultCacheLifetime(3600)
+              ->getResult();
 
-        foreach ($res as $entry) {
-            $result[] = $entry['name'];
-        }
-
-        SessionStore::writeCache("ajax_autocomplete_".$_GET['part'], $result);
+    foreach ($res as $entry) {
+        $result[] = $entry['name'];
     }
 
     // return the array as json with PHP 5.2

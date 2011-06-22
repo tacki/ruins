@@ -1487,12 +1487,12 @@ class Battle
      */
     public function initTimer()
     {
-        global $config;
+        global $systemConfig;
 
         $this->_battleTimerControl = new Timer($this->_battle->timer->name);
 
         // Set Roundtime
-        $this->_battleTimerControl->set($config->get("battle_roundtime", 120));
+        $this->_battleTimerControl->set($systemConfig->get("battle_roundtime", 120));
 
         // Stop timer for now
         $this->_battleTimerControl->stop();
@@ -1503,13 +1503,13 @@ class Battle
      */
     public function resetTimer()
     {
-        global $config;
+        global $systemConfig;
 
         if (!($this->_battleTimerControl instanceof Timer)) {
             $this->_battleTimerControl = new Timer($this->_battle->timer->name);
         }
 
-        $this->_battleTimerControl->set($config->get("battle_roundtime", 120), 0, 0, true);
+        $this->_battleTimerControl->set($systemConfig->get("battle_roundtime", 120), 0, 0, true);
     }
 
     /**

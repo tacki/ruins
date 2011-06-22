@@ -309,7 +309,7 @@ switch ($_GET['step']) {
         $extensions["LibXML"]					= "libxml";
         $extensions["DomXML"]					= "dom";
         $extensions["GD Lib"]        			= "gd";
-        $extensions["Multibyte String"]        = "mbstring";
+        $extensions["Multibyte String"]         = "mbstring";
 
         // To add more Extensions, just keep this syntax
         // $extensions['featuredescription']	= "Extensionname";
@@ -326,6 +326,42 @@ switch ($_GET['step']) {
                 echo "<form action='install.php?step=" . ($_GET['step']) .  "' method='post'>
                         <input type='submit' value='Retry' class='retry'></form>";
                 break 2;
+            }
+
+        }
+
+        // ***************************************************************************************** //
+
+        echo "<h4>Checking for optional PHP-Extensions</h4>";
+
+        // Include dirconf
+        require_once("config/dirconf.cfg.php");
+        // Include Global Functions
+        require_once(DIR_COMMON."Functions/global.func.php");
+        // Include Common\Controller\Config Class-Definition
+        require_once(DIR_BASE."Common/Controller/Config.php");
+
+
+        $extensions = array();
+
+        $extensions["APC Caching Driver"]       = "apc";
+        $extensions["Memcache Caching Driver"]  = "memcache";
+        $extensions["Xcache Caching Driver"]    = "xcache";
+
+        // To add more Extensions, just keep this syntax
+        // $extensions['featuredescription']	= "Extensionname";
+
+        // Do the voodoo
+        foreach ($extensions as $description => $extension) {
+            echo "<div class='checkfor'>" . $description . " ... </div>";
+
+            if (extension_loaded($extension)) {
+                echo "<div class='ok'>OK!</div>";
+                $config = new Main\Controller\Config;
+                $config->set("option".ucfirst($extension), 1);
+            } else {
+                echo "<div class='ask'>Not found! Extension '" . $description . "' is not available!</div>";
+                $config->set("option".ucfirst($extension), 0);
             }
 
         }
@@ -387,9 +423,6 @@ switch ($_GET['step']) {
             require_once(DIR_BASE."main.inc.php");
 
             $needDBinfo = false;
-
-            // CLEAR PREVIOUS CACHE
-            \Common\Controller\SessionStore::pruneCache();
 
             // Try to connect using the given Data
             try {

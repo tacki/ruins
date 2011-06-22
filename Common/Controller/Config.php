@@ -11,7 +11,7 @@
 /**
  * Namespaces
  */
-namespace Main\Controller;
+namespace Common\Controller;
 use Common\Controller\Error;
 
 /**

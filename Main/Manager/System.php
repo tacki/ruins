@@ -86,12 +86,14 @@ class System
      */
     public static function getOverloadedFilePath($path, $htmlpath=false)
     {
-        if (!($result = SessionStore::get("overloadedFilePath_".md5($path)))) {
+        global $systemCache;
+
+        if (!($result = $systemCache->fetch("overloadedFilePath_".md5($path)))) {
             // First Check Module-Directory
             foreach (\Main\Manager\Module::getModuleListFromFilesystem() as $module) {
                 if (file_exists(DIR_MODULES.$module['directory'].$path)) {
                     $result = DIR_MODULES.$module['directory'].$path;
-                    SessionStore::set("overloadedFilePath_".md5($path), $result);
+                    $systemCache->save("overloadedFilePath_".md5($path), $result);
                     return $htmlpath?\Main\Manager\System::htmlpath($result):$result;
                 }
             }
@@ -109,7 +111,7 @@ class System
             }
 
             if ($result) {
-                SessionStore::set("overloadedFilePath_".md5($path), $result);
+                $systemCache->save("overloadedFilePath_".md5($path), $result);
                 return $htmlpath?\Main\Manager\System::htmlpath($result):$result;
             } else {
                 throw new Error("Cannot find $path in any known Directory");

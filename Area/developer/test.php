@@ -13,11 +13,11 @@
  * Namespaces
  */
 use Main\Controller\Link,
-    Main\Controller\Config,
     Main\Controller\Timer,
     Main\Controller\Travel,
     Main\Controller\Dice,
     Common\Controller\BtCode,
+    Common\Controller\Config,
     Common\Controller\SessionStore,
     Common\Controller\StackObject,
     Common\Controller\Form,
@@ -25,7 +25,8 @@ use Main\Controller\Link,
     Main\Manager;
 
 // CLEAR CACHE
-SessionStore::pruneCache();
+global $systemCache;
+$systemCache->deleteAll();
 
 $page->set("headtitle", "Ruins Testpage");
 $page->set("pagetitle", "This is the Ruins Testpage");
@@ -33,14 +34,14 @@ $page->set("pagetitle", "This is the Ruins Testpage");
 $mt = getMicroTime();
 
 // Config-Test START
+global $systemConfig;
+
 $page->output("Starting Config Test: `n");
 $position = "configtest";
 
-$config = new Config;
-
-$config->set("test", "123");
-$config->set("test", "321");
-if ($config->get("test") == "321") {
+$systemConfig->set("test", "123");
+$systemConfig->set("test", "321");
+if ($systemConfig->get("test") == "321") {
     $page->output("Configtest successful `n");
 }
 

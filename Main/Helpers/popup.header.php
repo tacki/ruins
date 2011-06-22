@@ -14,15 +14,11 @@
  */
 use Common\Controller\Error,
     Common\Controller\SessionStore,
-    Main\Controller\Config,
     Main\Controller\Popup;
 
 /**
  * Popup Content
  */
-
-// Initialize Config-Class
-$config = new Config();
 
 // Load User if in Session
 if ($userid = SessionStore::get('userid')) {
@@ -30,9 +26,9 @@ if ($userid = SessionStore::get('userid')) {
 }
 
 // Page preparation
-$config->addPublicPage(array("Popup/Support"));
+$systemConfig->addPublicPage(array("Popup/Support"));
 
-if (array_search($_GET['popup'], $config->get("publicpages")) !== false) {
+if (array_search($_GET['popup'], $systemConfig->get("publicpages")) !== false) {
     // this is a public page!
     $popup = new Popup();
 

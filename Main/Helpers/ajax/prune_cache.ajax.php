@@ -19,6 +19,8 @@ use Common\Controller\SessionStore;
 require_once("../../../config/dirconf.cfg.php");
 require_once(DIR_BASE."main.inc.php");
 
-SessionStore::pruneCache();
+global $systemCache;
+
+$systemCache->deleteAll();
 ?>
 
