@@ -251,6 +251,27 @@ class Table extends BaseHTML
         return $this;
     } // End addListArray($datalist,$trclass)
 
+
+    public function addListObject (\Doctrine\ORM\QueryBuilder $queryBuilder, $class=false, $trclass=false)
+    {
+        $this->_inputStatus = 2;
+
+        $result = $queryBuilder->getQuery()->getArrayResult();
+
+        if (is_array($result)) $this->_tabAddList['datalist'] = $result;
+
+
+        if (is_array($class) && $class!=false) {
+            $this->_tabAddList['class']= $class;
+        }else if ($class!="") {
+            $this->_tabAddList['class']= $class;
+        }
+
+        if ($trclass!=false) $this->_tabAddList['trclass']= $trclass;
+
+        return $this;
+    }
+
     //*************************
     // DESIGN FUNCTIONS
     //*************************

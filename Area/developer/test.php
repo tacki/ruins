@@ -222,7 +222,7 @@ $result = $qb   ->select("char.displayname, char.id, char.money, char.lifepoints
                 ->from("Main:Character", "char")
                 ->where("char.money >= 0")
                 ->orderBy("char.money", "DESC")
-                ->addorderBy("char.lifepoints", "ASC")
+                ->addOrderBy("char.lifepoints", "ASC")
                 ->setMaxResults(10)
                 ->getQuery()
                 ->getResult();
@@ -235,8 +235,10 @@ $thetable->addTabHeader(array("Name","ID","Gold","LP","HP"),false,array("`b","`b
 // This following addTabRow will put the array in the first position of the table behind the header
 $thetable->addTabRow(array("teruk","7","2300","34","12"));
 $thetable->addListArray($result, false, "`~35");
+
 $page->output($thetable->load()->getHTML(),true);
 
+// Case 2:
 $page->output("`nGeordnet nach HP:`n");
 $result = $qb	->orderBy("char.healthpoints")
                 ->getQuery()
@@ -247,6 +249,17 @@ $newtab = new Table;
 $newtab->setTabAttributes(false,2);
 $newtab->addTabHeader(array("Name","ID","Gold","LP","HP"),false,array("`b","`b`c","`b`c","`b`c","`b`c"));
 $newtab->addListArray($result);
+$page->output($newtab->load()->getHTML(),true);
+
+// Case 2 (alternative):
+$page->output("`nGeordnet nach HP:`n");
+$qb->orderBy("char.healthpoints");
+
+$newtab = new Table;
+//$newtab->setCSS("`~35");
+$newtab ->setTabAttributes(false,2)
+        ->addTabHeader(array("Name","ID","Gold","LP","HP"),false,array("`b","`b`c","`b`c","`b`c","`b`c"))
+        ->addListObject($qb);
 $page->output($newtab->load()->getHTML(),true);
 
 // Case 3:
