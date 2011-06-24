@@ -18,7 +18,7 @@ class BattleMessage extends EntityBase
     protected $id;
 
     /**
-     * @ManyToOne(targetEntity="Battle")
+     * @ManyToOne(targetEntity="Battle", inversedBy="messages")
      * @var Main\Entities\Battle
      */
     protected $battle;
@@ -39,7 +39,6 @@ class BattleMessage extends EntityBase
     {
         // Default Values
         $this->date     = new DateTime();
-        $this->message  = "";
     }
 }
 ?>

@@ -18,20 +18,20 @@ class BattleAction extends EntityBase
     protected $id;
 
     /**
-     * @ManyToOne(targetEntity="Battle")
+     * @ManyToOne(targetEntity="Battle", inversedBy="actions")
      * @var Main\Entities\Battle
      */
     protected $battle;
 
     /**
-     * @ManyToOne(targetEntity="Character")
-     * @var Main\Entities\Character
+     * @ManyToOne(targetEntity="BattleMember")
+     * @var Main\Entities\BattleMember
      */
     protected $initiator;
 
     /**
-     * @ManyToOne(targetEntity="Character")
-     * @var Main\Entities\Character
+     * @Column(length=255)
+     * @var string
      */
     protected $target;
 

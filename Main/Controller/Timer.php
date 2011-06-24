@@ -250,7 +250,7 @@ class Timer
      */
     public function isRunning()
     {
-        if ($this->_timer->backupttc) {
+        if ($this->_timer->backup_ttc) {
             return false;
         } else {
             return true;
@@ -289,13 +289,9 @@ class Timer
      */
     private function _getTimer($name)
     {
-        $qb = getQueryBuilder();
+        global $em;
 
-        $result = $qb   ->select("timer")
-                        ->from("Main:Timer", "timer")
-                        ->where("timer.name = ?1")->setParameter(1, $name)
-                        ->getQuery()
-                        ->getOneOrNullResult();
+        $result = $em->getRepository("Main:Timer")->findOneByName($name);
 
         return $result;
     }
