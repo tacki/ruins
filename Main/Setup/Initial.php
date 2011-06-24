@@ -87,42 +87,36 @@ $em->flush();
 
 
 //*********************************
-// Create Waypoints
-$waypoints = array (
-                        "derashok"   => array(135, 170, 25),
-                        "ironlance"  => array(20, 180, 40),
-                        "dunsplee"	 => array(55, 45, 30),
-                   );
+// Create Sites+Waypoints
+$sites = array (
+                    "derashok/tribalcenter" => "Derashok Stammeszentrum - Der wichtigste Treffpunkt der orkischen Clans",
+                    "ironlance/citysquare"  => "Ironlance Stadtplatz - Der Platz mitten in Ironlance, dem Stolz der Menschen",
+                    "dunsplee/trail"		=> "Dunsplee Wald - Weg zum sagenumwobenen Wald`n`n",
+               );
 
-foreach ($waypoints as $name => $coords) {
-    if (!$em->getRepository("Main:Waypoint")->findOneByName($name)) {
-        $waypoint         = new Entities\Waypoint;
-        $waypoint->name   = $name;
-        $waypoint->x      = $coords[0];
-        $waypoint->y      = $coords[1];
-        $waypoint->z      = $coords[2];
-        $em->persist($waypoint);
-    }
+$waypoints = array (
+                        "derashok/tribalcenter"  => array(135, 170, 25),
+                        "ironlance/citysquare"   => array(20, 180, 40),
+                        "dunsplee/trail"	     => array(55, 45, 30),
+);
+
+foreach ($sites as $name => $description) {
+    Manager\System::addSite($name, $description, $waypoints[$name]);
 }
 
 $em->flush();
 
 // Create Waypoint-Connections
 $waypoints_conn = array (
-                            array("derashok","dunsplee"),
-                            array("ironlance","dunsplee"),
+                            "derashok/tribalcenter" => "dunsplee/trail",
+                            "ironlance/citysquare"  => "dunsplee/trail",
                         );
 
-foreach ($waypoints_conn as $connection) {
-    $wp_conn             = new Entities\WaypointConnection;
-    $wp_conn->start      = $em->getRepository("Main:Waypoint")->findOneByName($connection[0]);
-    $wp_conn->end        = $em->getRepository("Main:Waypoint")->findOneByName($connection[1]);
-    $wp_conn->difficulty = 0;
+foreach ($waypoints_conn as $source => $target) {
+    $site1 = $em->getRepository("Main:Site")->findOneByName($source);
+    $site2 = $em->getRepository("Main:Site")->findOneByName($target);
 
-    if (!$em->getRepository("Main:WaypointConnection")->findOneBy(array("start" => $wp_conn->start->id, "end" => $wp_conn->end->id))) {
-        $em->persist($wp_conn);
-    }
-
+    Manager\System::addSiteConnection($site1, $site2);
 }
 
 $em->flush();

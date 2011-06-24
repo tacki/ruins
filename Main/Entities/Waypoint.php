@@ -18,10 +18,10 @@ class Waypoint extends EntityBase
     protected $id;
 
     /**
-     * @Column(length=255)
-     * @var string
+     * @OneToOne(targetEntity="Site", inversedBy="waypoint")
+     * @var Main\Entities\Site
      */
-    protected $name;
+    protected $site;
 
     /**
      * @Column(type="integer")

@@ -25,6 +25,61 @@ use Common\Controller\SessionStore,
  */
 class System
 {
+
+    /**
+     * Add Site to System
+     * @param string $name
+     * @param string $description
+     * @param array $coords
+     * @return Main\Entities\Site
+     */
+    public static function addSite($name, $description, array $coords)
+    {
+        global $em;
+
+        if (!($site = $em->getRepository("Main:Site")->findOneByName($name))) {
+            $site = new Entities\Site;
+            $site->name        = $name;
+            $site->description = $description;
+
+            $waypoint          = new Entities\Waypoint;
+            $waypoint->site    = $site;
+            $waypoint->x       = $coords[0];
+            $waypoint->y       = $coords[1];
+            $waypoint->z       = $coords[2];
+
+            $site->waypoint    = $waypoint;
+
+            // Will cascade to Waypoint
+            $em->persist($site);
+        }
+
+        return $site;
+    }
+
+    /**
+     * Connect 2 Sites
+     * @param Main\Entities\Site $site1
+     * @param Main\Entities\Site $site2
+     * @param int $difficulty
+     * @return Main\Entities\WaypointConnection
+     */
+    public static function addSiteConnection(Entities\Site $site1, Entities\Site $site2, $difficulty=0)
+    {
+        global $em;
+
+        if (!($wp_conn = $em->getRepository("Main:WaypointConnection")->findOneBy(array("start" => $site1->waypoint->id, "end" => $site2->waypoint->id)))) {
+            $wp_conn             = new Entities\WaypointConnection;
+            $wp_conn->start      = $site1;
+            $wp_conn->end        = $site2;
+            $wp_conn->difficulty = $difficulty;
+
+            $em->persist($wp_conn);
+        }
+
+        return $wp_conn;
+    }
+
     /**
      * Add an Administration Page
      * @param string $name

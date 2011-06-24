@@ -71,12 +71,13 @@ class Config
      * @param string $settingname Name of the Config entry to retrieve
      * @param string $defaultvalue Specify a default value, if setting doesn't exist
      * @return mixed The requested entry
+     * @throws Error
      */
-    public function get($settingname, $defaultvalue=false)
+    public function get($settingname, $defaultvalue=NULL)
     {
-        if (!isset($this->_config[$settingname]) && $defaultvalue !== false) {
+        if (!isset($this->_config[$settingname]) && $defaultvalue !== NULL) {
             $this->_config[$settingname] = $defaultvalue;
-        } elseif (!isset($this->_config[$settingname]) && $defaultvalue === false) {
+        } elseif (!isset($this->_config[$settingname]) && $defaultvalue === NULL) {
             throw new Error("The given settingname ($settingname) for config->get() is invalid! Please correct or define a default value.");
         }
 
@@ -86,11 +87,45 @@ class Config
     /**
      * Set Config entry
      * @param string $settingname Name of the Config entry to set
-     * @param string $value New value of the Config entry
+     * @param mixed $value New value of the Config entry
      */
     public function set($settingname, $value)
     {
         $this->_config[$settingname] = $value;
+    }
+
+    /**
+     * Set a Config Subentry
+     * @param string $settingname Name of the Config entry to get
+     * @param string $subsetting Name of the Subentry to get
+     * @param string $defaultvalue Specify a default value, if setting doesn't exist
+     * @return mixed The requested entry
+     * @throws Error
+     */
+    public function getSub($settingname, $subsetting, $defaultvalue=NULL)
+    {
+        if (!isset($this->_config[$settingname][$subsetting]) && $defaultvalue !== NULL) {
+            $this->_config[$settingname][$subsetting] = $defaultvalue;
+        } elseif (!isset($this->_config[$settingname][$subsetting]) && $defaultvalue === NULL) {
+            throw new Error("The given settingname ($settingname[$subsetting]) for config->get() is invalid! Please correct or define a default value.");
+        }
+
+        return $this->_config[$settingname][$subsetting];
+    }
+
+    /**
+     * Set Config Subentry Name of the Config entry to set
+     * @param string $settingname Name of the Subentry to set
+     * @param string $subsetting New value of the Config entry
+     * @param mixed $value
+     */
+    public function setSub($settingname, $subsetting, $value)
+    {
+        if (!isset($this->_config[$settingname])) {
+            $this->_config[$settingname] = array();
+        }
+
+        $this->_config[$settingname][$subsetting] = $value;
     }
 
     /**

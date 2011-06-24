@@ -33,11 +33,11 @@ class Cache
         $cacheDriver = false;
 
         if ($systemConfig instanceof \Common\Controller\Config) {
-            if ($systemConfig->get("optionApc", 0)) {
+            if ($systemConfig->getSub("option", "apc", 0)) {
                 return self::_getCacheDriver("apc");
-            } elseif ($systemConfig->get("optionMemcache", 0)) {
+            } elseif ($systemConfig->get("option", "memcache", 0)) {
                 return self::_getCacheDriver("memcache");
-            } elseif ($systemConfig->get("optionXcache", 0)) {
+            } elseif ($systemConfig->get("option", "xcache", 0)) {
                 return self::_getCacheDriver("xcache");
             }
         }
