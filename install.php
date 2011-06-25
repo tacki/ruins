@@ -329,8 +329,6 @@ switch ($_GET['step']) {
 
         // Include dirconf
         require_once("config/dirconf.cfg.php");
-        // Include Global Functions
-        require_once(DIR_COMMON."Functions/global.func.php");
         // Include Common\Controller\Config Class-Definition
         require_once(DIR_BASE."Common/Controller/Config.php");
 

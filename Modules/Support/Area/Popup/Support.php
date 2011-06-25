@@ -23,8 +23,7 @@ $popup->set("pagetitle", "Supportanfrage");
 $popup->set("headtitle", "Supportanfrage");
 
 $popup->nav->addLink("Anfrage", $popup->url);
-
-if (isset($user->character) && $user->character->loggedin) {
+if ($user->character && $user->character->loggedin) {
     $loggedin = true;
 } else {
     $loggedin = false;

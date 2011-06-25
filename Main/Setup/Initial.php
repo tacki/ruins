@@ -9,13 +9,16 @@ global $em;
 
 //*********************************
 // Create Admin User
-$install_user = Manager\User::createUser("admin", "admin");
+$install_admin_user = Manager\User::createUser("admin", "admin");
+// Create Normal User
+$install_normal_user = Manager\User::createUser("user", "user");
 
 $em->flush();
 
+
 //*********************************
 // Create Administration Character
-$admin_char = Manager\User::createCharacter("Administrator", $install_user);
+$admin_char = Manager\User::createCharacter("Administrator", $install_admin_user);
 $admin_char->displayname = "`#19`bAdministrator`b`#00";
 
 // Add Administrator Char to Admin- and User-Group
@@ -28,8 +31,8 @@ $em->flush();
 
 
 //*********************************
-// Create Test Character
-$test_char = Manager\User::createCharacter("Testcharacter", $install_user);
+// Create Test Character for Admin User
+$test_char = Manager\User::createCharacter("Testcharacter", $install_admin_user);
 $test_char->displayname = "`#59Testcharacter`#00";
 
 // Add User Char to User-Group
@@ -40,10 +43,25 @@ $em->flush();
 
 
 //*********************************
-// Set default Character to Admin
-$install_user->character = $admin_char;
-$install_user->settings->default_character = $admin_char;
+// Create Test Character for Normal User
+$test_char2 = Manager\User::createCharacter("Testcharacter2", $install_normal_user);
+$test_char2->displayname = "`#79Testcharacter2`#00";
 
+// Add User Char to User-Group
+$group = Manager\Rights::createGroup("User");
+Manager\Rights::addToGroup($group, $test_char2);
+
+$em->flush();
+
+
+//*********************************
+// Set default Character to Administrator for Admin User
+$install_admin_user->character = $admin_char;
+$install_admin_user->settings->default_character = $admin_char;
+
+// Set default Character to Testcharacter2 for Normal User
+$install_normal_user->character = $test_char2;
+$install_normal_user->settings->default_character = $test_char2;
 
 //*********************************
 // Create Test-Weapons
