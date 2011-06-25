@@ -883,13 +883,13 @@ $travel = new Travel;
 $page->output("Der Startpunkt ist Ironlance. `n");
 $page->output("Der Zielort ist Derashok.`n");
 
-$ironlance = $em->getRepository("Main:Waypoint")->findOneByName("ironlance");
-$dunsplee  = $em->getRepository("Main:Waypoint")->findOneByName("dunsplee");
-$derashok  = $em->getRepository("Main:Waypoint")->findOneByName("derashok");
+$ironlance = $em->getRepository("Main:Site")->findOneByName("ironlance/citysquare");
+$dunsplee  = $em->getRepository("Main:Site")->findOneByName("dunsplee/trail");
+$derashok  = $em->getRepository("Main:Site")->findOneByName("derashok/tribalcenter");
 
-if ($travel->isConnected($ironlance, $derashok)){
+if ($travel->isConnected($ironlance->waypoint, $derashok->waypoint)){
     $page->output("Sind verbunden. Die Reisedauer betraegt: ");
-    $page->output($travel->findWay($ironlance, $derashok));
+    $page->output($travel->findWay($ironlance->waypoint, $derashok->waypoint));
     $page->output(" Sekunden.`n`n");
 }else {
     $page->output("Nope, sind nicht verbunden.`n`n");
@@ -897,9 +897,9 @@ if ($travel->isConnected($ironlance, $derashok)){
 
 $page->output("Der Startpunkt ist Ironlance. `n");
 $page->output("Der Zielort ist Dunsplee.`n");
-if ($travel->isConnected($ironlance, $dunsplee)){
+if ($travel->isConnected($ironlance->waypoint, $dunsplee->waypoint)){
     $page->output("Sind verbunden. Die Reisedauer betraegt: ");
-    $page->output($travel->findWay($ironlance, $dunsplee));
+    $page->output($travel->findWay($ironlance->waypoint, $dunsplee->waypoint));
     $page->output(" Sekunden.`n`n");
 }else {
     $page->output("Nope, sind nicht verbunden.`n`n");
