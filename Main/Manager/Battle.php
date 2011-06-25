@@ -27,7 +27,7 @@ class Battle
 {
     /**
      * Get current Battle ID of a given Character
-     * @param Character $char Character to check
+     * @param Main\Entities\Character $char Character to check
      * @return bool true if the char is a Member, else false
      */
     public static function getBattleID(Entities\Character $character)

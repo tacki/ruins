@@ -359,10 +359,10 @@ switch ($_GET['step']) {
 
             if (extension_loaded($extension)) {
                 echo "<div class='ok'>OK!</div>";
-                $systemConfig->set("option".ucfirst($extension), 1);
+                $systemConfig->setSub("option", $extension, 1);
             } else {
                 echo "<div class='ask'>Not found! Extension '" . $description . "' is not available!</div>";
-                $systemConfig->set("option".ucfirst($extension), 0);
+                $systemConfig->setSub("option", $extension, 0);
             }
 
         }

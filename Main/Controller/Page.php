@@ -851,7 +851,7 @@ class Page implements OutputObject
                     case "copper":
                     case "silver":
                     case "gold":
-                        $snippet->assign($value, $this->_char->money->getCurrency($value));
+                        $snippet->assign($value, $this->_char->money->getCurrencyWithPic($value));
                         break;
 
                     case "weaponname":

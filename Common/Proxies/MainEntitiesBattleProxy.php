@@ -15,7 +15,8 @@ class MainEntitiesBattleProxy extends \Main\Entities\Battle implements \Doctrine
         $this->_entityPersister = $entityPersister;
         $this->_identifier = $identifier;
     }
-    private function __load()
+    /** @private */
+    public function __load()
     {
         if (!$this->__isInitialized__ && $this->_entityPersister) {
             $this->__isInitialized__ = true;
@@ -25,8 +26,74 @@ class MainEntitiesBattleProxy extends \Main\Entities\Battle implements \Doctrine
             unset($this->_entityPersister, $this->_identifier);
         }
     }
-
     
+    
+    public function isMember(\Main\Entities\Character $character)
+    {
+        $this->__load();
+        return parent::isMember($character);
+    }
+
+    public function getMember(\Main\Entities\Character $character)
+    {
+        $this->__load();
+        return parent::getMember($character);
+    }
+
+    public function addMember(\Main\Entities\Character $character, $side)
+    {
+        $this->__load();
+        return parent::addMember($character, $side);
+    }
+
+    public function removeMember(\Main\Entities\Character $character)
+    {
+        $this->__load();
+        return parent::removeMember($character);
+    }
+
+    public function addMessage($message)
+    {
+        $this->__load();
+        return parent::addMessage($message);
+    }
+
+    public function clearMessages()
+    {
+        $this->__load();
+        return parent::clearMessages();
+    }
+
+    public function addAction(\Main\Entities\Character $character, $target, \Main\Entities\Skill $skill)
+    {
+        $this->__load();
+        return parent::addAction($character, $target, $skill);
+    }
+
+    public function setActionDone(\Main\Entities\Character $character)
+    {
+        $this->__load();
+        return parent::setActionDone($character);
+    }
+
+    public function hasActionDone(\Main\Entities\Character $character)
+    {
+        $this->__load();
+        return parent::hasActionDone($character);
+    }
+
+    public function getActionDoneList()
+    {
+        $this->__load();
+        return parent::getActionDoneList();
+    }
+
+    public function getActionNeededList()
+    {
+        $this->__load();
+        return parent::getActionNeededList();
+    }
+
     public function __get($name)
     {
         $this->__load();
@@ -42,7 +109,7 @@ class MainEntitiesBattleProxy extends \Main\Entities\Battle implements \Doctrine
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'initiator', 'timer', 'round', 'active', 'battlemembersnapshot');
+        return array('__isInitialized__', 'id', 'initiator', 'actions', 'members', 'messages', 'timer', 'round', 'active', 'battlemembersnapshot');
     }
 
     public function __clone()

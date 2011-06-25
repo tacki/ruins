@@ -14,6 +14,7 @@
  */
 namespace Main\Controller;
 use Main\Entities\Waypoint,
+    Main\Entities\Site,
     Common\Controller\StackObject;
 
 /**
@@ -72,7 +73,7 @@ class Travel {
                 array_push($visited, $fstelement);
 
                 // Check for available Connections
-                $available_waypoints = $this->getConnections($fstelement);
+                $available_waypoints = $this->getConnectedWaypoints($fstelement);
 
                 if (!in_array($target, $available_waypoints)) {
                     // Target is not in $available_waypoints
@@ -106,10 +107,28 @@ class Travel {
     }
 
     /**
+    * return the available connections from the current location
+    * @param Main\Entities\Site $current_location the location which should be checked
+    * @return array Array of Main\Entities\Site
+    */
+    public function getConnectedSites(Site $site)
+    {
+        $waypoints = $this->getConnectedWaypoints($site->waypoint);
+
+        $sites = array();
+        foreach ($waypoints as $waypoint) {
+            $sites[] = $waypoint->site;
+        }
+
+        return $sites;
+    }
+
+    /**
      * return the available connections from the current location
-     * @param Waypoint $current_location the location which should be checked
+     * @param Main\Entities\Waypoint $current_location the location which should be checked
+     * @return array Array of Main\Entities\Waypoint
      */
-    private function getConnections(Waypoint $current_location)
+    public function getConnectedWaypoints(Waypoint $current_location)
     {
         $qb = getQueryBuilder();
 
@@ -134,8 +153,9 @@ class Travel {
      * calculate the distance between two waypoints
      * @param Waypoint $start start location
      * @param Waypoint $end target location
+     * @return int Time in Seconds
      */
-    private function calcDistance(Waypoint $start, Waypoint $end){
+    public function calcDistance(Waypoint $start, Waypoint $end){
         $site_a = abs($start->x - $end->x);
         $site_b = abs($start->y - $end->y);
         $site_c = floor(sqrt(pow($site_a, 2) + pow($site_b, 2)));
@@ -162,7 +182,7 @@ class Travel {
         array_push($visited,$start);
         //echo "---- Algorithmus BEGINNT ----<br>";
         while ($act_point!=$target){
-            $available_waypoints = $this->getConnections($act_point);
+            $available_waypoints = $this->getConnectedWaypoints($act_point);
             //echo "--> Aktuelle Punkt ist: ".$act_point->name."<br>";
             //echo "Verfügbare Punkte sind: <br>";
             //var_dump($available_waypoints);

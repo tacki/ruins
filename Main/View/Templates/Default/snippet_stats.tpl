@@ -58,9 +58,9 @@
     <div class="item">
         <div class="statidentifier">Geld:</div>
         <div class="statvalue">
-            {$gold}<img src="{$commontemplatedir}/images/gold.gif" height="10" alt="g" /> /
-            {$silver}<img src="{$commontemplatedir}/images/silver.gif" height="10" alt="s" /> /
-            {$copper}<img src="{$commontemplatedir}/images/copper.gif" height="10" alt="c" />
+            {$gold}
+            {$silver}
+            {$copper}
         </div>
     </div>
 </div>

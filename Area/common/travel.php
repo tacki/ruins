@@ -11,7 +11,8 @@
  * Namespaces
  */
 use Main\Controller\Link,
-    Main\Controller\Timer;
+    Main\Controller\Timer,
+    Common\Controller\Error;
 
 /**
  * Page Content
@@ -22,6 +23,12 @@ $page->set("headtitle", "Reisen");
 $page->nav->addHead("Ruins");
 
 $timer = new Timer("travelTimer", $user->character);
+$travel = new Main\Controller\Travel;
+
+$curSite = $em->getRepository("Main:Site")->findOneByName($_GET['return']);
+
+if (!$curSite) throw new Error("Starting Site " . $_GET['return'] . " not found!");
+
 
 switch ($_GET['op']) {
 
@@ -38,9 +45,17 @@ switch ($_GET['op']) {
         $page->addForm("travel");
         $newURL = clone $page->url;
         $newURL->setParameter("op", "travel");
+        $newURL->setParameter("return", $_GET['return']);
         $page->getForm("travel")->head("travelform", $newURL. "");
         $page->nav->addHiddenLink($newURL);
 
+        $connections = $travel->getConnectedSites($curSite);
+
+        foreach ($connections as $connection) {
+            $page->getForm("travel")->radio("travelto", $connection->name);
+            $page->output($connection->description . "`n`n");
+        }
+/*
         $page->getForm("travel")->radio("travelto", "derashok/tribalcenter");
         $page->output("Derashok Stammeszentrum - Der wichtigste Treffpunkt der orkischen Clans`n`n");
 
@@ -49,7 +64,7 @@ switch ($_GET['op']) {
 
         $page->getForm("travel")->radio("travelto", "dunsplee/trail");
         $page->output("Dunsplee Wald - Weg zum sagenumwobenen Wald`n`n");
-
+*/
         $page->getForm("travel")->submitButton("Reise beginnen");
 
         $page->getForm("travel")->close();
@@ -65,14 +80,19 @@ switch ($_GET['op']) {
             $newURL->unsetParameter("redirect");
             $newURL->unsetParameter("travelto");
             $newURL->unsetParameter("op");
+            $newURL->unsetParameter("return");
             $newURL->setParameter("page", $_GET['redirect']);
             $page->nav->addHiddenLink($newURL);
             $page->nav->redirect($newURL);
         } elseif (!$timer->get() && isset($_POST['travelto'])) {
             // First Contact to the Travelpage and every Reload
-            $timer->set(10);
+            $trgtSite = $em->getRepository("Main:Site")->findOneByName($_POST['travelto']);
+            if (!$trgtSite) throw new Error("Target Site " . $_POST['travelto'] . " not found!");
+
+            $time = $travel->calcDistance($curSite->waypoint, $trgtSite->waypoint);
+            $timer->set($time);
             $newURL = clone $page->url;
-            $newURL->unsetParameter("return");
+            $newURL->setParameter("return", $_GET['return']);
             $newURL->setParameter("redirect", $_POST['travelto']);
             $page->nav->addHiddenLink($newURL);
             $page->nav->redirect($newURL);

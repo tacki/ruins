@@ -18,7 +18,7 @@ class BattleMember extends EntityBase
     protected $id;
 
     /**
-     * @ManyToOne(targetEntity="Battle")
+     * @ManyToOne(targetEntity="Battle", inversedBy="members")
      * @var Main\Entities\Battle
      */
     protected $battle;
