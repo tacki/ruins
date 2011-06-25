@@ -43,7 +43,9 @@ class Banking
      */
     public function getAccount(Entities\Character $character, $bankname)
     {
-        $qb = getQueryBuilder();
+        global $em;
+
+        $qb = $em->createQueryBuilder();
 
         $result = $qb   ->select("bank")
                         ->from("Main:Bank", "bank")

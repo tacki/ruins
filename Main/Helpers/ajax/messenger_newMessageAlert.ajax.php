@@ -15,10 +15,12 @@
 require_once("../../../config/dirconf.cfg.php");
 require_once(DIR_BASE."main.inc.php");
 
+global $em;
+
 $userid = rawurldecode($_GET['userid']);
 
 if (isset($userid) && is_numeric($userid)) {
-    $qb = getQueryBuilder();
+    $qb = $em->createQueryBuilder();
 
     $result = $qb->select("message.id")
                     ->from("Main:Message", "message")

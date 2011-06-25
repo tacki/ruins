@@ -63,12 +63,10 @@ if (isset($battleid) && isset($charid) && isset($skillname)) {
             } elseif ($skill->nroftargets >= 2) {
                 $target = "multiple";
             }
-        } elseif (is_alpha($skill->nroftargets)) {
-            if ($skill->nroftargets == 'allies') {
-                $target	= "allies";
-            } elseif ($skill->nroftargets == "enemies") {
-                $target = "enemies";
-            }
+        } elseif ($skill->nroftargets == 'allies') {
+            $target	= "allies";
+        } elseif ($skill->nroftargets == "enemies") {
+            $target = "enemies";
         }
     }
 

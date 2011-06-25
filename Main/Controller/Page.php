@@ -131,7 +131,7 @@ class Page implements OutputObject
         global $smarty;
 
         // Set microtime to meassure the page-generation time
-        $this->_pagegenerationstarttime = getMicroTime();
+        $this->_pagegenerationstarttime = microtime(true);
 
         // Initialize Properties
         $this->template 		= array();
@@ -936,7 +936,7 @@ class Page implements OutputObject
     protected function _generatePagegenTime()
     {
         if (is_float($this->_pagegenerationstarttime)) {
-            $pagegentime = round(getMicroTime() - $this->_pagegenerationstarttime,3) * 1000;
+            $pagegentime = round(microtime(true) - $this->_pagegenerationstarttime,3) * 1000;
         } else {
             $pagegentime = "failed";
         }

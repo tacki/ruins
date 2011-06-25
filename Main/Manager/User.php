@@ -93,7 +93,9 @@ class User
      */
     public static function checkPassword($username, $password)
     {
-        $qb = getQueryBuilder();
+        global $em;
+
+        $qb = $em->createQueryBuilder();
 
         $result = $qb    ->select("user.id")
                          ->from("Main:User", "user")
@@ -118,7 +120,9 @@ class User
      */
     public static function getCharacterName($charid, $btCode=true)
     {
-        $qb = getQueryBuilder();
+        global $em;
+
+        $qb = $em->createQueryBuilder();
 
         if ($btCode) {
             $result = $qb->select("char.displayname");
@@ -145,10 +149,12 @@ class User
      */
     public static function getCharacterID($charactername)
     {
+        global $em;
+
         // purge existing btCode-Tags
         $charactername = BtCode::purgeTags($charactername);
 
-        $qb = getQueryBuilder();
+        $qb = $em->createQueryBuilder();
 
         $result = $qb   ->select("char.id")
                         ->from("Main:Character", "char")
@@ -170,8 +176,10 @@ class User
      */
     public static function getCharacterType($charid)
     {
+        global $em;
+
         // check type of character
-        $qb = getQueryBuilder();
+        $qb = $em->createQueryBuilder();
 
         $result = $qb   ->select("char.type")
                         ->from("Main:Character", "char")
@@ -193,8 +201,10 @@ class User
      */
     public static function getCharacterRace($charid)
     {
+        global $em;
+
         // check type of character
-        $qb = getQueryBuilder();
+        $qb = $em->createQueryBuilder();
 
         $result = $qb   ->select("char.race")
                         ->from("Main:Character", "char")
@@ -216,7 +226,9 @@ class User
      */
     public static function getUserCharactersList(Entities\User $user)
     {
-        $qb = getQueryBuilder();
+        global $em;
+
+        $qb = $em->createQueryBuilder();
 
         $result = $qb   ->select("char")
                         ->from("Main:Character", "char")
@@ -240,7 +252,9 @@ class User
      */
     public static function getCharacterList($fields=false, $order="id", $orderDir="ASC", $onlineonly=false)
     {
-        $qb = getQueryBuilder();
+        global $em;
+
+        $qb = $em->createQueryBuilder();
 
         if (is_array($fields)) {
             foreach($fields as $key=>$column) {
@@ -296,9 +310,9 @@ class User
      */
     public static function getCharactersAt($place)
     {
-        global $systemConfig, $user;
+        global $systemConfig, $user, $em;
 
-        $qb = getQueryBuilder();
+        $qb = $em->createQueryBuilder();
 
         $result = $qb    ->select("char.displayname")
                          ->from("Main:Character", "char")

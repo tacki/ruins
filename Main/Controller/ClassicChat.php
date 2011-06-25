@@ -120,8 +120,9 @@ class ClassicChat
      */
     private function _getPage($linesperpage, $pagenr=0)
     {
+        global $em;
 
-        $qb = getQueryBuilder();
+        $qb = $em->createQueryBuilder();
 
         $result = $qb   ->select("chat")
                         ->from("Main:Chat", "chat")
@@ -147,7 +148,9 @@ class ClassicChat
      */
     private function _getLastLine($character)
     {
-        $qb = getQueryBuilder();
+        global $em;
+
+        $qb = $em->createQueryBuilder();
 
         $result = $qb   ->select("chat")
                         ->from("Main:Chat", "chat")
@@ -173,7 +176,9 @@ class ClassicChat
      */
     private function _getNumberOfPages($linesperpage)
     {
-        $qb = getQueryBuilder();
+        global $em;
+
+        $qb = $em->createQueryBuilder();
 
         $chatlines = $qb->select('COUNT(chat.id)')
                         ->from("Main:Chat", "chat")
@@ -233,7 +238,7 @@ class ClassicChat
     {
         global $em;
 
-        $qb = getQueryBuilder();
+        $qb = $em->createQueryBuilder();
 
         // Get Data from oldline
         $oldline = $em->find("Main:Chat", $id);
@@ -258,7 +263,9 @@ class ClassicChat
      */
     private function _updateMessageStatus($id, $status)
     {
-        $qb = getQueryBuilder();
+        global $em;
+
+        $qb = $em->createQueryBuilder();
 
         $qb    ->update("Main:Chat", "chat")
                ->set("chat.status", (int)$status)
@@ -274,14 +281,14 @@ class ClassicChat
      */
     private function _chatlineCensorship($text)
     {
-        global $systemCache;
+        global $systemCache, $em;
 
         // We check each word separately
         $words = explode(" ", $text);
 
         // Get List of bad words
         if (!($badwords = $systemCache->fetch("badwords"))) {
-            $qb = getQueryBuilder();
+            $qb = $em->createQueryBuilder();
 
             $badwords = $qb->select("bw")
                            ->from("Main:Badword", "bw")

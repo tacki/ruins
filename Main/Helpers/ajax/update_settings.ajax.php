@@ -19,6 +19,9 @@ use Common\Controller\SessionStore;
  */
 require_once("../../../config/dirconf.cfg.php");
 require_once(DIR_BASE."main.inc.php");
+
+global $em;
+
 $validator = new \Doctrine\ORM\Tools\SchemaValidator($em);
 $validator->validateMapping();
 
@@ -26,7 +29,7 @@ global $em;
 
 // Initialize User-Object
 if ($userid = SessionStore::get('userid')) {
-    $qb = getQueryBuilder();
+    $qb = $em->createQueryBuilder();
 
     $userconfig = $qb   ->select("settings")
                         ->from("Main:UserSetting", "settings")

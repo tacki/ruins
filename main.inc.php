@@ -20,24 +20,14 @@ date_default_timezone_set('Europe/Berlin');
 require_once(DIR_CONFIG."dbconnect.cfg.php");
 
 /**
- * Global Functions
- */
-require_once(DIR_COMMON."Functions/global.func.php");
-
-/**
- * Database Functions
- */
-require_once(DIR_COMMON."Functions/database.func.php");
-
-/**
  * Doctrine ClassLoaders
  */
-require_once(DIR_INCLUDES_DOCTRINE."Doctrine/Common/ClassLoader.php");
+require_once(DIR_EXTERNAL."Doctrine/Common/ClassLoader.php");
 
-$classLoader = new \Doctrine\Common\ClassLoader('Doctrine', DIR_INCLUDES_DOCTRINE);
+$classLoader = new \Doctrine\Common\ClassLoader('Doctrine', DIR_EXTERNAL);
 $classLoader->register();
 
-$classLoader = new \Doctrine\Common\ClassLoader('Symfony', DIR_INCLUDES_DOCTRINE . 'Doctrine/');
+$classLoader = new \Doctrine\Common\ClassLoader('Symfony', DIR_EXTERNAL . 'Doctrine/');
 $classLoader->register();
 
 $classLoader = new \Doctrine\Common\ClassLoader('Common', DIR_BASE);
@@ -52,17 +42,17 @@ $classLoader->register();
 /**
  * Doctrine Initialization
  */
-require_once(DIR_COMMON_EXTERNAL."doctrine2_init.php");
+require_once(DIR_EXTERNAL."Doctrine_init.php");
 
 /**
  * Smarty Initialization
  */
-require_once(DIR_COMMON_EXTERNAL."smarty_init.php");
+require_once(DIR_EXTERNAL."Smarty_init.php");
 
 /**
  * PHP-OpenID Initialization
  */
-require_once(DIR_COMMON_EXTERNAL."php-openid_init.php");
+require_once(DIR_EXTERNAL."php-openid_init.php");
 
 /**
  * Tree Initialization

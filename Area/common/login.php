@@ -120,7 +120,8 @@ switch ($_GET['op']) {
         $result = Manager\OpenID::evalTrustResult("page=common/login&op=checkopenid2");
         error_reporting($oldlevel);
         if (is_array($result) && $result['result'] == "ok") {
-            $qb = getQueryBuilder();
+            global $em;
+            $qb = $em->createQueryBuilder();
 
             $result = $qb   ->select("openid")
                             ->from("Main:OpenID", "openid")

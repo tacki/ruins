@@ -32,7 +32,9 @@ class Battle
      */
     public static function getBattleID(Entities\Character $character)
     {
-        $qb = getQueryBuilder();
+        global $em;
+
+        $qb = $em->createQueryBuilder();
 
         $result = $qb   ->select("battlemember")
                         ->from("Main:BattleMember", "battlemember")
@@ -53,7 +55,9 @@ class Battle
      */
     public static function getBattleList($onlyactive=false)
     {
-        $qb = getQueryBuilder();
+        global $em;
+
+        $qb = $em->createQueryBuilder();
 
         $result = $qb   ->select("battle")
                         ->from("Main:Battle", "battle")

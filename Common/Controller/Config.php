@@ -58,7 +58,7 @@ class Config
     function __destruct()
     {
         // save the content to the configfile
-        $filecontent = jsonReadable(json_encode($this->_config));
+        $filecontent = $this->_getJsonReadable(json_encode($this->_config));
 
         if ($filecontent != $this->_backup) {
             // only write if something has changed
@@ -156,6 +156,76 @@ class Config
         $this->set("nocachepages", $newncpages);
     }
 
+
+    /**
+     * Make json more readable
+     * original from damon1977 at gmail dot com (php forum)
+     * @param string $json json formated string
+     * @param book $html Output in HTML
+     * @return string Nice formated json string
+     */
+    private function _getJsonReadable($json, $html=FALSE) {
+        $tabcount = 0;
+        $result = '';
+        $inquote = false;
+        $ignorenext = false;
+
+        if ($html) {
+            $space = " ";
+            $tab = "&nbsp;&nbsp;&nbsp;&nbsp;";
+            $newline = "<br/>";
+        } else {
+            $space = " ";
+            $tab = "\t";
+            $newline = "\r\n";
+        }
+
+        for($i = 0; $i < strlen($json); $i++) {
+            $char = $json[$i];
+
+            if ($ignorenext) {
+                $result .= $char;
+                $ignorenext = false;
+            } else {
+                switch($char) {
+                    case '{':
+                        $tabcount++;
+                        $result .= $char . $newline . str_repeat($tab, $tabcount);
+                        break;
+                    case '}':
+                        $tabcount--;
+                        $result = trim($result) . $newline . str_repeat($tab, $tabcount) . $char;
+                        break;
+                    case '[':
+                        $tabcount++;
+                        $result .= $char . $newline . str_repeat($tab, $tabcount);
+                        break;
+                    case ']':
+                        $tabcount--;
+                        $result = trim($result) . $newline . str_repeat($tab, $tabcount) . $char;
+                        break;
+                    case ':':
+                        $result .= $space . $char . $space;
+                        break;
+                    case ',':
+                        $result .= $char . $newline . str_repeat($tab, $tabcount);
+                        break;
+                    case '"':
+                        $inquote = !$inquote;
+                        $result .= $char;
+                        break;
+                    case '\\':
+                        if ($inquote) $ignorenext = true;
+                        $result .= $char;
+                        break;
+                    default:
+                        $result .= $char;
+                }
+            }
+        }
+
+        return $result;
+    }
 }
 
 ?>

@@ -8,7 +8,7 @@
  * @package Ruins
  */
 
-require_once(DIR_COMMON_EXTERNAL."smarty/Smarty.class.php");
+require_once(DIR_EXTERNAL."Smarty/Smarty.class.php");
 
 // Initialize the Smarty-Class
 $smarty = new \Smarty();
@@ -20,5 +20,5 @@ $smarty->cache_lifetime = -1;
 $smarty->setTemplateDir(DIR_BASE. Main\Controller\Page::DEFAULT_PUBLIC_TEMPLATE);
 $smarty->compile_dir 	= DIR_TEMP."smarty/templates_c";
 $smarty->cache_dir 		= DIR_TEMP."smarty/cache";
-$smarty->config_dir     = DIR_INCLUDES_SMARTY."configs";
+$smarty->config_dir     = DIR_EXTERNAL."Smarty/configs";
 ?>

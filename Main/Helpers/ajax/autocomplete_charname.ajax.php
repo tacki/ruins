@@ -20,6 +20,8 @@ use Common\Controller\SessionStore;
 require_once("../../../config/dirconf.cfg.php");
 require_once(DIR_BASE."main.inc.php");
 
+global $em;
+
 $decodestring = rawurldecode($_GET['part']);
 
 // check the parameter
@@ -28,7 +30,8 @@ if(isset($_GET['part']))
     // Get userlist from database
 
     // Use the global Database-Connection
-    $qb = getQueryBuilder();
+
+    $qb = $em->createQueryBuilder();
 
     $res = $qb->select("character.name")
               ->from("Main:Character", "character")

@@ -85,7 +85,9 @@ class Module
      */
     public static function getModuleListFromDatabase($onlyenabled=false)
     {
-        $qb = getQueryBuilder();
+        global $em;
+
+        $qb = $em->createQueryBuilder();
 
         $qb ->select("module")
             ->from("Main:Module", "module");
@@ -101,7 +103,9 @@ class Module
      */
     public static function clearModuleList()
     {
-        $qb = getQueryBuilder();
+        global $em;
+
+        $qb = $em->createQueryBuilder();
 
         $qb ->delete("Main:Module")
             ->getQuery()->execute();

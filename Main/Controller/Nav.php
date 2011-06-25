@@ -376,13 +376,6 @@ class Nav
         // Flush EntityManager
         $em->flush();
 
-        // Check Transactions
-        $database = getDBInstance();
-        if ($database->isTransactionActive()) {
-            // Commit Database-Changes
-            $database->commit();
-        }
-
         // Redirect
         $baseurl = Manager\System::htmlpath(DIR_BASE);
         if (isset($systemConfig) && $systemConfig->get("useManualRedirect", 0)) {

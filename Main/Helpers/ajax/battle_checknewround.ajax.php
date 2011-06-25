@@ -15,11 +15,13 @@
 require_once("../../../config/dirconf.cfg.php");
 require_once(DIR_BASE."main.inc.php");
 
+global $em;
+
 $characterid = rawurldecode($_GET['characterid']);
 
 if (isset($characterid) && is_numeric($characterid)) {
 
-    $qb = getQueryBuilder();
+    $qb = $em->createQueryBuilder();
 
     $result = $qb   ->select("bt.round")
                     ->from("Main:Battle", "bt")

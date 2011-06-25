@@ -31,7 +31,7 @@ $systemCache->deleteAll();
 $page->set("headtitle", "Ruins Testpage");
 $page->set("pagetitle", "This is the Ruins Testpage");
 
-$mt = getMicroTime();
+$mt = microtime(true);
 
 // Config-Test START
 global $systemConfig;
@@ -48,10 +48,10 @@ if ($systemConfig->get("test") == "321") {
 // Config-Test END
 
 // *************************************
-$res = getMicroTime() - $mt;
+$res = microtime(true) - $mt;
 $page->output("`n"."Dauer: ".$res." seconds");
 $page->output("`n`n*************************************`n`n");
-$mt = getMicroTime();
+$mt = microtime(true);
 // *************************************
 
 /* Start ausklammern */
@@ -70,10 +70,10 @@ if ($user->login == "anonymous") {
 // User-Test END
 
 // *************************************
-$res = getMicroTime() - $mt;
+$res = microtime(true) - $mt;
 $page->output("`n"."Dauer: ".$res." seconds");
 $page->output("`n`n*************************************`n`n");
-$mt = getMicroTime();
+$mt = microtime(true);
 // *************************************
 
 // Global Timer-Test START
@@ -115,10 +115,10 @@ unset ($timer);
 // Global Timer-Test END
 
 // *************************************
-$res = getMicroTime() - $mt;
+$res = microtime(true) - $mt;
 $page->output("`n"."Dauer: ".$res." seconds");
 $page->output("`n`n*************************************`n`n");
-$mt = getMicroTime();
+$mt = microtime(true);
 // *************************************
 
 // btcode Test START
@@ -205,19 +205,21 @@ $page->addJavaScript("
 // btcode Test END
 
 // *************************************
-$res = getMicroTime() - $mt;
+$res = microtime(true) - $mt;
 $page->output("`n"."Dauer: ".$res." seconds");
 $page->output("`n`n*************************************`n`n");
-$mt = getMicroTime();
+$mt = microtime(true);
 // *************************************
 
 // QueryBuilder && Table Test Start
+global $em;
+
 $position = "tabletest";
 
 $page->output("Starting Lists Test:`n`n");
 $page->output("Geordnet nach Gold:`n");
 
-$qb = getQueryBuilder();
+$qb = $em->createQueryBuilder();
 
 $result = $qb   ->select("char.displayname, char.id, char.money, char.lifepoints, char.healthpoints")
                 ->from("Main:Character", "char")
@@ -351,10 +353,10 @@ $page->getTable("testtabelle")->addFieldContent(4,2,"Unten",false,false,1,2);
 $page->getTable("testtabelle")->load();
 
 // *************************************
-$res = getMicroTime() - $mt;
+$res = microtime(true) - $mt;
 $page->output("`n"."Dauer: ".$res." seconds");
 $page->output("`n`n*************************************`n`n");
-$mt = getMicroTime();
+$mt = microtime(true);
 // *************************************
 
 // Link-Class + Rights-Class Test start
@@ -390,10 +392,10 @@ Manager\Rights::removeGroup("TempGroup", $user->character);
 // Link-Class + Rights-Class Test end
 
 // *************************************
-$res = getMicroTime() - $mt;
+$res = microtime(true) - $mt;
 $page->output("`n"."Dauer: ".$res." seconds");
 $page->output("`n`n*************************************`n`n");
-$mt = getMicroTime();
+$mt = microtime(true);
 // *************************************
 
 // Navigation Test start
@@ -417,10 +419,10 @@ $page->nav->save();
 // Navigation Test end
 
 // *************************************
-$res = getMicroTime() - $mt;
+$res = microtime(true) - $mt;
 $page->output("`n"."Dauer: ".$res." seconds");
 $page->output("`n`n*************************************`n`n");
-$mt = getMicroTime();
+$mt = microtime(true);
 // *************************************
 
 // Money Test start
@@ -467,10 +469,10 @@ $page->output("Copper: ". $user->character->money->getCurrency("copper") ."`n");
 // Money Test end
 
 // *************************************
-$res = getMicroTime() - $mt;
+$res = microtime(true) - $mt;
 $page->output("`n"."Dauer: ".$res." seconds");
 $page->output("`n`n*************************************`n`n");
-$mt = getMicroTime();
+$mt = microtime(true);
 // *************************************
 
 // News Test Start
@@ -496,10 +498,10 @@ $page->output($news->load(),true);
 // News Test End
 
 // *************************************
-$res = getMicroTime() - $mt;
+$res = microtime(true) - $mt;
 $page->output("`n"."Dauer: ".$res." seconds");
 $page->output("`n`n*************************************`n`n");
-$mt = getMicroTime();
+$mt = microtime(true);
 // *************************************
 
 // Form Test Start
@@ -526,10 +528,10 @@ if (isset($_POST['textareaform'])) $page->output("Wenn Formular 1 ausgeführt wu
 // Form Test End
 
 // *************************************
-$res = getMicroTime() - $mt;
+$res = microtime(true) - $mt;
 $page->output("`n"."Dauer: ".$res." seconds");
 $page->output("`n`n*************************************`n`n");
-$mt = getMicroTime();
+$mt = microtime(true);
 // *************************************
 
 // Message Test Start
@@ -593,10 +595,10 @@ $page->output($newtab->load()->getHTML(),true);
 // Message Test End
 
 // *************************************
-$res = getMicroTime() - $mt;
+$res = microtime(true) - $mt;
 $page->output("`n"."Dauer: ".$res." seconds");
 $page->output("`n`n*************************************`n`n");
-$mt = getMicroTime();
+$mt = microtime(true);
 // *************************************
 
 // StackObject Test Start
@@ -648,10 +650,10 @@ $page->output(($stack->contains(3)?"Yes":"No") . "`n");
 // StackObject Test End
 
 // *************************************
-$res = getMicroTime() - $mt;
+$res = microtime(true) - $mt;
 $page->output("`n"."Dauer: ".$res." seconds");
 $page->output("`n`n*************************************`n`n");
-$mt = getMicroTime();
+$mt = microtime(true);
 // *************************************
 
 // Dice Test Start
@@ -674,18 +676,19 @@ $page->output(Dice::rollD100(2) . "`n");
 // Dice Test End
 
 // *************************************
-$res = getMicroTime() - $mt;
+$res = microtime(true) - $mt;
 $page->output("`n"."Dauer: ".$res." seconds");
 $page->output("`n`n*************************************`n`n");
-$mt = getMicroTime();
+$mt = microtime(true);
 // *************************************
 
 // QueryBuilder Start
+global $em;
 
 $page->output("QueryBuilder Start: `n");
 $position = "QueryBuildertest";
 
-$qb = getQueryBuilder();
+$qb = $em->createQueryBuilder();
 
 $result = $qb ->select("char.id, char.displayname")
                 ->from("Main:Character", "char")
@@ -703,10 +706,10 @@ $page->output($table->load()->getHTML(),true);
 // QueryBuilder End
 
 // *************************************
-$res = getMicroTime() - $mt;
+$res = microtime(true) - $mt;
 $page->output("`n"."Dauer: ".$res." seconds");
 $page->output("`n`n*************************************`n`n");
-$mt = getMicroTime();
+$mt = microtime(true);
 // *************************************
 
 // Classic Chat Start
@@ -719,10 +722,10 @@ $page->addChat("testchat")->show();
 // Classic Chat End
 
 // *************************************
-$res = getMicroTime() - $mt;
+$res = microtime(true) - $mt;
 $page->output("`n"."Dauer: ".$res." seconds");
 $page->output("`n`n*************************************`n`n");
-$mt = getMicroTime();
+$mt = microtime(true);
 // *************************************
 
 // OpenID Start
@@ -758,10 +761,10 @@ if ($_GET['op'] == "checkopenid") {
 // OpenID End
 
 // *************************************
-$res = getMicroTime() - $mt;
+$res = microtime(true) - $mt;
 $page->output("`n"."Dauer: ".$res." seconds");
 $page->output("`n`n*************************************`n`n");
-$mt = getMicroTime();
+$mt = microtime(true);
 // *************************************
 
 // Race Module Start
@@ -784,10 +787,10 @@ $page->output("Max. Age " . $user->char->race->generateMaxAge() . " years `n");
 // Race Module End
 
 // *************************************
-$res = getMicroTime() - $mt;
+$res = microtime(true) - $mt;
 $page->output("`n"."Dauer: ".$res." seconds");
 $page->output("`n`n*************************************`n`n");
-$mt = getMicroTime();
+$mt = microtime(true);
 // *************************************
 
 // Item Handling Start
@@ -834,10 +837,10 @@ if ($armorset) {
 // Itemhandling End
 
 // *************************************
-$res = getMicroTime() - $mt;
+$res = microtime(true) - $mt;
 $page->output("`n"."Dauer: ".$res." seconds");
 $page->output("`n`n*************************************`n`n");
-$mt = getMicroTime();
+$mt = microtime(true);
 // *************************************
 
 // Output Module Start
@@ -853,10 +856,10 @@ $mt = getMicroTime();
 // Output Module End
 
 // *************************************
-//$res = getMicroTime() - $mt;
+//$res = microtime(true) - $mt;
 //$page->output("`n"."Dauer: ".$res." seconds");
 //$page->output("`n`n*************************************`n`n");
-//$mt = getMicroTime();
+//$mt = microtime(true);
 // *************************************
 
 // page Test Start (this has to be the last test)
@@ -868,10 +871,10 @@ $page->output("looks like it's working`n");
 // page Test END
 
 // *************************************
-$res = getMicroTime() - $mt;
+$res = microtime(true) - $mt;
 $page->output("`n"."Dauer: ".$res." seconds");
 $page->output("`n`n*************************************`n`n");
-$mt = getMicroTime();
+$mt = microtime(true);
 // *************************************
 
 
@@ -908,10 +911,10 @@ if ($travel->isConnected($ironlance->waypoint, $dunsplee->waypoint)){
 // Waypoint Traveling System End
 
 // *************************************
-$res = getMicroTime() - $mt;
+$res = microtime(true) - $mt;
 $page->output("`n"."Dauer: ".$res." seconds");
 $page->output("`n`n*************************************`n`n");
-$mt = getMicroTime();
+$mt = microtime(true);
 // *************************************
 
 ?>

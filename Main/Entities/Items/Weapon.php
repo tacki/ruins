@@ -97,7 +97,7 @@ class Weapon extends Item
         $outputText .= "</span>";
 
         if ($output) {
-            $outputobject = getOutputObject();
+            $outputobject = Manager\System::getOutputObject();
             $outputobject->output($outputText, true);
         } else {
             return $outputText;

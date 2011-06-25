@@ -235,17 +235,9 @@ switch ($_GET['step']) {
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
                                                         "/Common/".
                                                         "\");"."\n" .
-                                                    "	define(\"DIR_COMMON_EXTERNAL\", ".
+                                                    "	define(\"DIR_EXTERNAL\", ".
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
-                                                        "/Common/external/".
-                                                        "\");"."\n" .
-                                                    "	define(\"DIR_INCLUDES_DOCTRINE\", ".
-                                                        "\"".str_replace('\\', '/', dirname(__FILE__)).
-                                                        "/Common/external/doctrine2/".
-                                                        "\");"."\n" .
-                                                    "	define(\"DIR_INCLUDES_SMARTY\", ".
-                                                        "\"".str_replace('\\', '/', dirname(__FILE__)).
-                                                        "/Common/external/smarty/".
+                                                        "/External/".
                                                         "\");"."\n" .
                                                     "	define(\"DIR_TEMP\", ".
                                                         "\"".str_replace('\\', '/', dirname(__FILE__)).
@@ -456,8 +448,11 @@ switch ($_GET['step']) {
             $needDBinfo = false;
 
             // Try to connect using the given Data
+            global $dbconnect;
+
             try {
-                $database = getDBInstance();
+                $database = \Doctrine\DBAL\DriverManager::getConnection($dbconnect);
+                $database->connect();
             } catch (Exception $e) {
                 $database = $e;
             }
@@ -637,7 +632,8 @@ switch ($_GET['step']) {
         $oldtablesfound = false;
 
         // Try to connect using the given Data
-        $database = getDBInstance();
+        global $dbconnect;
+        $database = \Doctrine\DBAL\DriverManager::getConnection($dbconnect);
 
         $tablelist = $database->getSchemaManager()->listTables();
 

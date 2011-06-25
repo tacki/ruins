@@ -50,7 +50,9 @@ class Survey
      */
     public static function getAllPolls($active=true)
     {
-        $qb = getQueryBuilder();
+        global $em;
+
+        $qb = $em->createQueryBuilder();
 
         $qb ->select("poll")
             ->from("Modules\Survey\Entities\Poll", "poll");
@@ -209,7 +211,9 @@ class Survey
      */
     public static function hasVoted(\Main\Entities\Character $character, \Modules\Survey\Entities\Poll $poll)
     {
-        $qb = getQueryBuilder();
+        global $em;
+
+        $qb = $em->createQueryBuilder();
 
         $qb ->select("vote")
             ->from("Modules\Survey\Entities\Vote", "vote")

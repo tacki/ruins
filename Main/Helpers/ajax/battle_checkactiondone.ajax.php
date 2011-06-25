@@ -15,13 +15,15 @@
 require_once("../../../config/dirconf.cfg.php");
 require_once(DIR_BASE."main.inc.php");
 
+global $em;
+
 $battleid 	= rawurldecode($_GET['battleid']);
 
 if (isset($battleid) && is_numeric($battleid)) {
 
     $result = array();
 
-    $qb = getQueryBuilder();
+    $qb = $em->createQueryBuilder();
 
     $res = $qb	->select("bm")
                 ->from("Main:BattleMember", "bm")
@@ -33,7 +35,7 @@ if (isset($battleid) && is_numeric($battleid)) {
         $result['battlemembers'][] = $entry->character->id;
     }
 
-    $qb = getQueryBuilder();
+    $qb = $em->createQueryBuilder();
 
     $res = $qb	->select("ba")
                 ->from("Main:BattleAction", "ba")

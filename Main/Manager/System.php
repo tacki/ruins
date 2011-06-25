@@ -107,7 +107,9 @@ class System
      */
     public static function getAdminCategories()
     {
-        $qb = getQueryBuilder();
+        global $em;
+
+        $qb = $em->createQueryBuilder();
 
         $result = $qb   ->select("DISTINCT admin.category")
                         ->from("Main:Administration", "admin")
@@ -131,6 +133,26 @@ class System
         global $em;
 
         return $em->getRepository("Main:Administration")->findByCategory($category);
+    }
+
+    /**
+    * Returns the currently active Output Object (prefers $page)
+    * @return OutputObject Instance of OutputObject
+    */
+    public static function getOutputObject()
+    {
+        global $page;
+        global $popup;
+
+        if ($page instanceof \Common\Interfaces\OutputObject) {
+            $outputobject =	$page;
+        } elseif ($popup instanceof \Common\Interfaces\OutputObject) {
+            $outputobject = $popup;
+        } else {
+            $outputobject = false;
+        }
+
+        return $outputobject;
     }
 
     /**
@@ -354,7 +376,9 @@ class System
 
     public static function getNews($area="GLOBAL", $orderDir="DESC")
     {
-        $qb = getQueryBuilder();
+        global $em;
+
+        $qb = $em->createQueryBuilder();
 
         $qb ->select("news")
             ->from("Main:News", "news")
@@ -375,8 +399,10 @@ class System
      */
     public static function translate($name, $return_unknown=false)
     {
+        global $em;
+
         // get HumanReadable from Systemname
-        $qb = getQueryBuilder();
+        $qb = $em->createQueryBuilder();
 
         $result = $qb   ->select("translate.humanreadable")
                         ->from("Main:Translation", "translate")

@@ -113,7 +113,9 @@ class Item
      */
     public function getInventoryList($character, $location, $itemclass=false, $order="id", $orderDir="ASC")
     {
-        $qb = getQueryBuilder();
+        global $em;
+
+        $qb = $em->createQueryBuilder();
 
         if (is_array ($itemclass)) {
             $result = array();

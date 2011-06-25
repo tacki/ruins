@@ -121,7 +121,9 @@ class Message
      */
     public static function updateMessageStatus($messageid, $status)
     {
-        $qb = getQueryBuilder();
+        global $em;
+
+        $qb = $em->createQueryBuilder();
 
         $qb ->update("Main:Message", "message")
             ->set("message.status", $status)
@@ -145,7 +147,7 @@ class Message
         global $em;
 
         // Delete the Messages
-        $qb = getQueryBuilder();
+        $qb = $em->createQueryBuilder();
 
         $qb ->delete("Main:Message", "message")
             ->where("message.status = ?1")->setParameter(1, self::STATUS_DELETED);
@@ -158,7 +160,7 @@ class Message
         //---
 
         // Delete orphan Messagedata
-        $qb = getQueryBuilder();
+        $qb = $em->createQueryBuilder();
         $sub = getQueryBuilder();
 
         // IDs of MessageData in use
@@ -209,7 +211,9 @@ class Message
      */
     public static function getInbox(Entities\Character $character, $limit=false, $ascending=true, $status=false)
     {
-        $qb = getQueryBuilder();
+        global $em;
+
+        $qb = $em->createQueryBuilder();
 
         $qb  ->select("message")
              ->from("Main:Message", "message")
@@ -243,7 +247,9 @@ class Message
      */
     public static function getOutbox(Entities\Character $character, $limit=false, $ascending=true, $status=false)
     {
-        $qb = getQueryBuilder();
+        global $em;
+
+        $qb = $em->createQueryBuilder();
 
         $qb ->select("message")
             ->from("Main:Message", "message")

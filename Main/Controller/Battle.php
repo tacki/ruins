@@ -55,7 +55,7 @@ class Battle
     {
         // Add the Helper Functions
         // Only if we have an OutputObject
-        if (getOutputObject()) {
+        if (Manager\System::getOutputObject()) {
             $this->_addHelper();
         }
     }
@@ -288,6 +288,8 @@ class Battle
      */
     public function setTokenOwner(Character $character)
     {
+        global $em;
+
         // Check if this Battle is initialized
         if (!$this->_battle) {
             return false;
@@ -303,7 +305,7 @@ class Battle
         $tokenOwner->token = true;
 
         // Erase old Token (if exists)
-        $qb = getQueryBuilder();
+        $qb = $em->createQueryBuilder();
 
         return true;
     }
@@ -467,7 +469,7 @@ class Battle
      */
     public function showBattleInformation($directoutput=true)
     {
-        $outputobject = getOutputObject();
+        $outputobject = Manager\System::getOutputObject();
 
         $attackerlist = $this->getAttackerList();
         $defenderlist = $this->getDefenderList();
@@ -522,7 +524,7 @@ class Battle
     {
         global $user;
         $output			= "";
-        $outputobject 	= getOutputObject();
+        $outputobject 	= Manager\System::getOutputObject();
         $battleopstr 	= $this->_getBattleOpString();
         $memberentry 	= $this->getMember($user->character);
 
@@ -584,7 +586,7 @@ class Battle
      */
     public function showBattleMemberlist($directoutput=true)
     {
-        $outputobject 	= getOutputObject();
+        $outputobject 	= Manager\System::getOutputObject();
 
         $output = "";
 
@@ -624,7 +626,7 @@ class Battle
 
     public function showResultStats($directoutput=true)
     {
-        $outputobject 	= getOutputObject();
+        $outputobject 	= Manager\System::getOutputObject();
 
         $output 	= "";
 
@@ -672,7 +674,7 @@ class Battle
      */
     public function addBattleNav()
     {
-        $outputobject 	= getOutputObject();
+        $outputobject 	= Manager\System::getOutputObject();
         $battleopstr 	= $this->_getBattleOpString();
 
         $outputobject->nav->addHead("Kampf")
@@ -684,7 +686,7 @@ class Battle
      */
     public function addCreateBattleNav()
     {
-        $outputobject 	= getOutputObject();
+        $outputobject 	= Manager\System::getOutputObject();
         $battleopstr 	= $this->_getBattleOpString();
 
         $outputobject->nav->addHead("Kampf")
@@ -696,7 +698,7 @@ class Battle
      */
     public function addAdminBattleNav()
     {
-        $outputobject 	= getOutputObject();
+        $outputobject 	= Manager\System::getOutputObject();
         $battleopstr 	= $this->_getBattleOpString();
 
         $outputobject->nav->addHead("Admin")
@@ -904,7 +906,7 @@ class Battle
         global $user;
 
         $battleop 		= $this->_getBattleOpString();
-        $outputobject 	= getOutputObject();
+        $outputobject 	= Manager\System::getOutputObject();
 
         if ($battleid = Manager\Battle::getBattleID($user->character)) {
             // Load the Battle

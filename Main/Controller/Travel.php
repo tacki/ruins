@@ -130,7 +130,9 @@ class Travel {
      */
     public function getConnectedWaypoints(Waypoint $current_location)
     {
-        $qb = getQueryBuilder();
+        global $em;
+
+        $qb = $em->createQueryBuilder();
 
         $result = $qb   ->select("waypoint")
                         ->from("Main:WaypointConnection", "connection")
