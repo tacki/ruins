@@ -15,7 +15,8 @@ class MainEntitiesUserProxy extends \Main\Entities\User implements \Doctrine\ORM
         $this->_entityPersister = $entityPersister;
         $this->_identifier = $identifier;
     }
-    private function __load()
+    /** @private */
+    public function __load()
     {
         if (!$this->__isInitialized__ && $this->_entityPersister) {
             $this->__isInitialized__ = true;
@@ -25,7 +26,7 @@ class MainEntitiesUserProxy extends \Main\Entities\User implements \Doctrine\ORM
             unset($this->_entityPersister, $this->_identifier);
         }
     }
-
+    
     
     public function login()
     {

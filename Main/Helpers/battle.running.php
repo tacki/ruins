@@ -26,7 +26,7 @@ $page->output("`n<div style='border-bottom: 1px solid;'></div>`n", true);
 
 // Skill Options
 $page->output("`bAktion: `b`n");
-//$battle->showSkillChooser();
+$battle->showSkillChooser($user->character);
 $page->output("`n");
 
 // Divider

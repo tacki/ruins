@@ -36,8 +36,8 @@ class BattleAction extends EntityBase
     protected $target;
 
     /**
-     * @Column(length=255)
-     * @var string
+     * @ManyToOne(targetEntity="Skill")
+     * @var Main\Entities\Skill
      */
     protected $skill;
 }

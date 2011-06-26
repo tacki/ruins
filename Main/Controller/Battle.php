@@ -98,42 +98,11 @@ class Battle
     }
 
     /**
-     * Check if a Character is a Member of this Battle
-     * @param Character $char Character to check
-     * @return bool true if the char is a Member, else false
-     */
-    public function isMember(Character $character)
-    {
-        return $this->_battle->isMember($character);
-    }
-
-    public function getMember(Character $character)
-    {
-        return $this->_battle->getMember($character);
-    }
-
-    /**
-     * Add a new Member to the Battle
-     * @param Character $character
-     * @param string $side The side the Character joins (attacker, defender, ...)
-     * @return bool true if successful, else false
-     */
-    public function addMember(Character $character, $side)
-    {
-       // Check if this Battle is initialized
-        if (!$this->_battle) {
-            throw new Error("Cannot add a Member to a Battle if it's not initialized");
-        }
-
-        $this->_battle->addMember($character, $side);
-    }
-
-    /**
      * Remove a Member from the Battle
      * @param Character $char The Character to remove
      * @return bool true if successful, else false
      */
-    public function removeMember(Character $character)
+    public function leaveBattle(Character $character)
     {
         // Check if this Battle is initialized
         if (!$this->_battle) {
@@ -141,7 +110,7 @@ class Battle
         }
 
         // Cycle Token if this is the token-owner
-        if ($this->getTokenOwner() === $character) {
+        if ($this->_battle->getTokenOwner() === $this->_battle->getMember($character)) {
             // Give the Token to another Battle Member
             $this->cycleToken();
         }
@@ -178,7 +147,7 @@ class Battle
      */
     public function getOppositeSide(Character $character)
     {
-        $result = $this->getMember($character);
+        $result = $this->_battle->getMember($character);
 
         if ($result->side == self::SIDE_ATTACKERS) {
             return self::SIDE_DEFENDERS;
@@ -186,36 +155,6 @@ class Battle
             return self::SIDE_ATTACKERS;
         } else {
             return self::SIDE_NEUTRALS;
-        }
-    }
-
-    /**
-     * Add a single Battle Message to the Database
-     * @param string $message
-     */
-    public function addResultMessage($message)
-    {
-        // Check if this Battle is initialized
-        if (!$this->_battle) {
-            return false;
-        }
-
-        $this->_battle->addMessage($message);
-    }
-
-    /**
-     * Write the Battle Messages to Database
-     * @param array $messages
-     */
-    public function addResultMessages(array $messages)
-    {
-        // Check if this Battle is initialized
-        if (!$this->_battle) {
-            return false;
-        }
-
-        foreach ($messages as $message) {
-            $this->addResultMessage($message);
         }
     }
 
@@ -230,124 +169,28 @@ class Battle
             return false;
         }
 
-        return $this->_battle->messages;
-    }
-
-    /**
-     * Truncate Messages
-     */
-    public function resetMessages()
-    {
-        // Check if this Battle is initialized
-        if (!$this->_battle) {
-            return false;
-        }
-
-
-        $this->_battle->messages->clear();
-
-        return $result;
-    }
-
-    /**
-     * Set Member Status
-     * @param Character $char Character ID or Character Object
-     * @param int $status New Status (see defines)
-     */
-    public function setMemberStatus(Character $character, $status)
-    {
-        // Check if this Battle is initialized
-        if (!$this->_battle) {
-            return false;
-        }
-
-        $memberEntry = $this->getMember($character);
-        $memberEntry->status = $status;
-    }
-
-    /**
-     * Set Member Side
-     * @param Character $char Character ID or Character Object
-     * @param int $status New side (attacker, defender, neutral)
-     * @return bool true if successful, else false
-     */
-    public function setMemberSide(Character $character, $side)
-    {
-        // Check if this Battle is initialized
-        if (!$this->_battle) {
-            return false;
-        }
-
-        $memberEntry = $this->getMember($character);
-        $memberEntry->side = $side;
-    }
-
-    /**
-     * Set the Battle token to the new Character
-     * @param Character $char Character Object
-     */
-    public function setTokenOwner(Character $character)
-    {
-        global $em;
-
-        // Check if this Battle is initialized
-        if (!$this->_battle) {
-            return false;
-        }
-
-        // Erase Token from all Members
-        foreach ($this->_battle->members as $member) {
-            $member->token = false;
-        }
-
-        // Set new Token
-        $tokenOwner = $this->getMember($character);
-        $tokenOwner->token = true;
-
-        // Erase old Token (if exists)
-        $qb = $em->createQueryBuilder();
-
-        return true;
-    }
-
-    /**
-     * Get Token Owner
-     * @return Character Character which owns the token
-     */
-    public function getTokenOwner()
-    {
-        // Check if this Battle is initialized
-        if (!$this->_battle) {
-            return false;
-        }
-
-        foreach ($this->_battle->members as $member) {
-            if ($member->token) {
-                return $member->character;
-            }
-        }
+        return $this->_battle->getAllMessages();
     }
 
     /**
      * Pass the Token to a new Battle Member
+     * @return bool true if successful, else false
      */
     public function cycleToken()
     {
-        $activemembers = $this->getMemberList();
+        $oldOwner = $this->_battle->getTokenOwner();
 
-        if (is_array($activemembers)) {
-            $charid	= current($activemembers);
+        $activemembers = $this->_battle->getAllMembers();
 
-            if ($charid != $this->getTokenOwner()) {
-                $this->setTokenOwner($charid);
-            } else {
-                if ($newowner = next($activemembers)) {
-                    $this->setTokenOwner($newowner);
-                } else {
-                    return false;
-                }
+        foreach ($activemembers as $member) {
+            if ($member !== $oldOwner) {
+                $this->setTokenOwner($member->character);
+                return true;
             }
-        } else {
+        }
+
+        if ($this->_battle->getTokenOwner() === $oldOwner) {
+            // Still old owner
             return false;
         }
     }
@@ -355,7 +198,6 @@ class Battle
     /**
      * Get List of all Battle Members (excluding Neutrals if $side isn't set)
      * @param bool|string $side Get List of a specific Side
-     * @param bool $names Return names instead of ids
      * @param array $status only get Members with one of the given status
      * @return array Array of all Battlemembers
      */
@@ -404,62 +246,13 @@ class Battle
 
         $result = array();
 
-        foreach ($this->_battle->members as $member) {
+        foreach ($this->_battle->getAllMembers() as $member) {
             if ($member->character->healthpoints <= 0) {
                 $result[] = $member;
             }
         }
 
         return $result;
-    }
-
-    /**
-     * Get List of Characters who made their Action
-     * @return array Array of Characters who used a Skill this round
-     */
-    public function getActionDoneList()
-    {
-        // Check if this Battle is initialized
-        if (!$this->_battle) {
-            return false;
-        }
-
-        if (is_array($this->_battle->members) && is_array($this->_battle->actions)) {
-            $result = array_intersect($this->_battle->members, $this->_battle->actions);
-        } else {
-            $result = array();
-        }
-/*
-        $result	= array ();
-
-        foreach ($this->_battle->members as $member) {
-            foreach ($this->_battle->actions as $action) {
-                if ($member->character ==) $action->character) $result[] = $member;
-            }
-        }
-*/
-
-        return $result;
-/*
-        $this->_dbqt->clear();
-
-        $this->_dbqt->select("characterid")
-                    ->from("battlemembers")
-                    ->join("battletable", "battletable.battleid = battlemembers.battleid")
-                    ->where("battlemembers.characterid = battletable.initiatorid")
-                    ->where("battlemembers.battleid=".$this->id)
-                    ->exec();
-
-        foreach ($this->_dbqt->getAll() as $battlemember) {
-            if ($names) {
-                $result[] = Manager\User::getCharacterName($battlemember['characterid']);
-            } else {
-                $result[] = $battlemember['characterid'];
-            }
-        }
-
-        return $result;
-*/
     }
 
     /**
@@ -494,16 +287,16 @@ class Battle
         $battleopstr = $this->_getBattleOpString();
 
         if (!$this->isActive()) {
-            $target = $outputobject->url->base."&{$battleopstr}=join&side=".self::SIDE_ATTACKERS."&battleid=".$this->id;
+            $target = $outputobject->url->base."&{$battleopstr}=join&side=".self::SIDE_ATTACKERS."&battleid=".$this->_battle->id;
             $output .= "<a href='?".$target."'>Angreifen</a>";
             $outputobject->nav->addHiddenLink($target);
             $output .= " || ";
-            $target = $outputobject->url->base."&{$battleopstr}=join&side=".self::SIDE_DEFENDERS."&battleid=".$this->id;
+            $target = $outputobject->url->base."&{$battleopstr}=join&side=".self::SIDE_DEFENDERS."&battleid=".$this->_battle->id;
             $output .= "<a href='?".$target."'>Verteidigen</a>";
             $outputobject->nav->addHiddenLink($target);
             $output .= " || ";
         }
-        $target = $outputobject->url->base."&{$battleopstr}=join&side=".self::SIDE_NEUTRALS."&battleid=".$this->id;
+        $target = $outputobject->url->base."&{$battleopstr}=join&side=".self::SIDE_NEUTRALS."&battleid=".$this->_battle->id;
         $output .= "<a href='?".$target."'>Zuschauen</a>";
         $outputobject->nav->addHiddenLink($target);
         $output .= "</div>";
@@ -520,60 +313,58 @@ class Battle
      * @param bool $directoutput Output via OutputObject
      * @return string HTML-Code
      */
-    public function showSkillChooser($directoutput=true)
+    public function showSkillChooser(Character $character, $directoutput=true)
     {
         global $user;
         $output			= "";
-        $outputobject 	= Manager\System::getOutputObject();
+        $outputObject 	= Manager\System::getOutputObject();
         $battleopstr 	= $this->_getBattleOpString();
-        $memberentry 	= $this->getMember($user->character);
+        $member 	= $this->_battle->getMember($user->character);
 
-        if ($memberentry['side'] == self::SIDE_NEUTRALS
-            || $memberentry['status'] == self::MEMBERSTATUS_BEATEN
-            || $memberentry['status'] == self::MEMBERSTATUS_EXCLUDED) {
+        if ($member->side == self::SIDE_NEUTRALS
+            || $member->status == self::MEMBERSTATUS_BEATEN
+            || $member->status == self::MEMBERSTATUS_EXCLUDED) {
             // Caller is Neutral
             $output .= "Beobachte den Kampf...";
-        } elseif ($memberentry['actiondone']) {
+        } elseif ($member->actiondone) {
             // Caller made his Action
             $output .= "Warte auf andere Kämpfer...";
         } else {
             // Show the Skillchooser
-            $skillform = new Form();
-            $output .= $skillform->head("skillchooser", $outputobject->url->base."&{$battleopstr}=use_skill");
+            $skillForm = $outputObject->addForm("skillchooser");
+
+            $skillForm->head("skillchooser", $outputObject->url->base."&{$battleopstr}=use_skill");
 
             // Add Nav
-            $outputobject->nav->addHiddenLink($outputobject->url->base."&{$battleopstr}=use_skill");
+            $outputObject->nav->addHiddenLink($outputObject->url->base."&{$battleopstr}=use_skill");
 
             // TODO: Get Available Skills for this Character
             $skills = array ( "punch", "heal", "wait" );
 
-            $skillform->setCSS("input");
-            $output .= $skillform->selectStart("skill");
+            $skillForm->setCSS("input");
+            $skillForm->selectStart("skill");
             foreach ($skills as $skill) {
-                $skilldata = ModuleSystem::getSkillModule($skill);
-                $output .= "<option	value='". $skill."'
-                                    title='".$skilldata->description."'
-                                    >".$skilldata->name."</option>";
+                $skillForm->selectOption($skill, $skill);
             }
-            $output .= $skillform->selectEnd();
+            $skillForm->selectEnd();
 
-            $output .= $skillform->selectStart("target");
-            $output .= $skillform->selectEnd();
+            $skillForm->selectStart("target");
+            $skillForm->selectEnd();
 
-            $output .= $skillform->submitButton("Ausführen");
-            $output .= $skillform->close();
+            $skillForm->submitButton("Ausführen");
+            $skillForm->close();
             $output .= "<span id='skilldescription' class='floatclear'></span>";
 
             // Target-Chooser
             // The third Parameter is the name of the select-Form where we choose the skill
-            // The third Parameter is the name of the select-Form where the targets appear
-            $outputobject->addJavaScript("$(function(){
-                                        getTargetList(".$this->id.", ".$user->character->id.", 'skill', 'target');
+            // The fourth Parameter is the name of the select-Form where the targets appear
+            $outputObject->addJavaScript("$(function(){
+                                        getTargetList(".$this->_battle->id.", ".$user->character->id.", 'skill', 'target');
             });");
         }
 
         if ($directoutput) {
-            $outputobject->output($output, true);
+            $outputObject->output($output, true);
         } else {
             return $output;
         }
@@ -640,7 +431,7 @@ class Battle
         foreach ($beforeSS['data'] as $memberid => $memberdata) {
             $output .= Manager\User::getCharacterName($memberid, true) . ": `n";
 
-            $bminfo	= $this->getMember($memberid);
+            $bminfo	= $this->_battle->getMember($memberid);
             $status = "";
 
             switch ($bminfo) {
@@ -711,13 +502,13 @@ class Battle
      * @param $side attackers, neutrals or defenders
      * @param bool $names Return names instead of ids
      * @param array $status Only get Members with the given status
-     * @return array of BattleMembers
+     * @return array Array of Main\Entities\BattleMember
      */
     private function _getBattleMemberList($side=false, array $status=array())
     {
         $result = array();
 
-        foreach ($this->_battle->members as $member) {
+        foreach ($this->_battle->getAllMembers() as $member) {
             if ($side && $member->side == $side) {
                 if (in_array($member->status, $status)) {
                     // Both are set and correct
@@ -731,7 +522,7 @@ class Battle
                 $result[] = $member;
             } elseif (empty($status) && $side === false) {
                 // All Battlemembers
-                $result = $this->_battle->members;
+                $result = $this->_battle->getAllMembers();
             }
         }
 
@@ -753,7 +544,7 @@ class Battle
         }
 
         // Check if the Char is Part of this Battle
-        if (!$this->isMember($character) || $this->_battle->hasActionDone($character)) {
+        if (!$this->_battle->isMember($character) || $this->_battle->hasActionDone($character)) {
             return false;
         }
 
@@ -761,35 +552,7 @@ class Battle
         $this->_battle->addAction($character, $target, $skill);
 
         // Mark Member as Active
-        $this->setMemberStatus($character, self::MEMBERSTATUS_ACTIVE);
-
-/*
-        // Add the Action to the battletable
-        $this->_dbqt->clear();
-        $data = array(
-                        "battleid" => $this->id,
-                        "initiatorid" => $char->id,
-                        "target" => $target,
-                        "skill" => get_class($skill) );
-
-        $this->_dbqt->insertinto("battletable")
-                    ->data($data)
-                    ->exec();
-
-
-        // Set actiondone-flag
-        $this->_dbqt->clear();
-        $data = array( 	"actiondone" => true,
-                        "status" => self::MEMBERSTATUS_ACTIVE );
-
-        $this->_dbqt->update("battlemembers")
-                    ->where("battleid=".$this->id)
-                    ->where("characterid=".$char->id)
-                    ->data($data)
-                    ->exec();
-
-        return true;
-*/
+        $this->_battle->setMemberStatus($character, self::MEMBERSTATUS_ACTIVE);
     }
 
     /**
@@ -801,7 +564,7 @@ class Battle
 
         foreach ($beatenlist as $member) {
             // Member is beaten
-            $this->addResultMessage($member->displayname . " wurde besiegt!");
+            $this->_battle->addMessage($member->displayname . " wurde besiegt!");
 
             // Set status to beaten
             $this->setMemberStatus($member, self::MEMBERSTATUS_BEATEN);
@@ -917,7 +680,7 @@ class Battle
             $outputobject->addJavaScriptFile("battle.func.js");
 
             // Add Autorefresher + Statuschecker
-            if ($this->getTokenOwner() == $user->character->id) {
+            if ($this->_battle->getTokenOwner() == $this->_battle->getMember($user->character)) {
                 // We own the token
                 // Refresh the Page if every Battlemember has made his move
                 $outputobject->addJavaScript("$(function(){
@@ -936,7 +699,7 @@ class Battle
             // Check if every Battlemember made his move or the time ran out
             // Calculate the Result of this Round
             if ($this->checkPremise()) {
-                if ($this->getTokenOwner() == $user->character->id) {
+                if ($this->_battle->getTokenOwner() == $this->_battle->getMember($user->character)) {
                     $this->calculate();
                 }
             }
@@ -954,7 +717,7 @@ class Battle
                 // Join a Battle
                 if (isset($_GET['battleid']) && isset($_GET['side'])) {
                     $this->load($_GET['battleid']);
-                    $this->addMember($user->character, $_GET['side']);
+                    $this->_battle->addMember($user->character, $_GET['side']);
                 }
 
                 $outputobject->refresh(true);
@@ -962,14 +725,14 @@ class Battle
 
             case "part":
                 // Part a Battle
-                $this->removeMember($user->character);
+                $this->leaveBattle($user->character);
 
                 $outputobject->refresh(true);
                 break;
 
             case "flee":
                 // Part a Battle
-                $this->removeMember($user->character);
+                $this->leaveBattle($user->character);
 
                 $outputobject->refresh(true);
                 break;
@@ -979,8 +742,8 @@ class Battle
                 $this->initialize();
 
                 // Automatically add the Creator to the attackers and give him the token
-                $this->addMember($user->character, self::SIDE_ATTACKERS);
-                $this->setTokenOwner($user->character);
+                $this->_battle->addMember($user->character, self::SIDE_ATTACKERS);
+                $this->_battle->setTokenOwner($user->character);
 
                 $outputobject->refresh(true);
                 break;
@@ -1002,7 +765,7 @@ class Battle
 
             case "admin_removemessages":
                 // Clean the Battlemessages
-                $this->resetMessages();
+                $this->_battle->clearMessages();
 
                 $outputobject->refresh(true);
                 break;
@@ -1047,8 +810,8 @@ class Battle
                     $this->setMemberStatus($member, self::MEMBERSTATUS_INACTIVE);
                 } elseif ($entry['status'] == self::MEMBERSTATUS_INACTIVE) {
                     // Second inactive Round => exclude Battlemember
-                    $this->setMemberStatus($tempchar, self::MEMBERSTATUS_EXCLUDED);
-                    $this->addResultMessage($tempchar->displayname . " wurde wegen Inaktivität vom Kampf ausgeschlossen.");
+                    $this->setMemberStatus($member, self::MEMBERSTATUS_EXCLUDED);
+                    $this->_battle->addMessage($member->displayname . " wurde wegen Inaktivität vom Kampf ausgeschlossen.");
                 }
             }
         } else {
@@ -1181,7 +944,9 @@ class Battle
             $skill->finish();
 
             // Save Result Message
-            $this->addResultMessages($skill->resultmessages);
+            foreach ($skill->resultmessages as $message) {
+                $this->_battle->addMessage($message);
+            }
         }
 
         // Check for beaten Characters
@@ -1294,7 +1059,7 @@ class Battle
             return false;
         }
 
-        foreach ($this->_battle->members as $member) {
+        foreach ($this->_battle->getAllMembers() as $member) {
             $member->actiondone = false;
         }
     }

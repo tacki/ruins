@@ -28,22 +28,25 @@ $charid 	= rawurldecode($_GET['charid']);
 $skillname	= rawurldecode($_GET['skillname']);
 
 if (isset($battleid) && isset($charid) && isset($skillname)) {
+    global $em;
 
     // Load Battleinformation
-    $battle		= new Battle;
-    $battle->load($battleid);
+    $battle = $em->find("Main:Battle", $battleid);
+    $character = $em->find("Main:Character", $charid);
 
-    $charinfo 	= $battle->getMemberEntry($charid);
-    $side		= $charinfo['side'];
-    $otherside	= $battle->getOppositeSide($charid);
+    $member = $battle->getMember($character);
+
+    $side = $member->side;
+
+    $otherside	= $battle->getOppositeSide($character);
 
     // Get the skill the character likes to use
-    $skill = ModuleSystem::getSkillModule($skillname);
+    $skill = new \Main\Controller\Skills\Heal();
 
     // Retrieve the possible side of the target
     $targetside = "own";
 
-    switch ($skill->possibletargets) {
+    switch ($skill->getPossibleTargets()) {
 
         case SKILL_POSSIBLE_TARGET_ENEMIES:
             $targetside = $otherside;

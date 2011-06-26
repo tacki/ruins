@@ -110,6 +110,15 @@ class Battle extends EntityBase
     }
 
     /**
+     * Get all Members
+     * @return array Array of Main\Entities\BattleMember
+     */
+    public function getAllMembers()
+    {
+        return $this->members;
+    }
+
+    /**
      * Add a new Member to the Battle
      * @param Character $character
      * @param string $side The side the Character joins (attacker, defender, ...)
@@ -131,15 +140,73 @@ class Battle extends EntityBase
         }
     }
 
+    /**
+     * Remove a Member from the Battle
+     * @param Character $character The Character to remove
+     */
     public function removeMember(Character $character)
     {
-        global $em;
-
         if ($member = $this->getMember($character)) {
             $this->members->remove($member);
         }
     }
 
+    /**
+     * Set Status of a BattleMember
+     * @param Character $character Character Object
+     * @param int $status
+     */
+    public function setMemberStatus(Character $character, $status)
+    {
+        $member = $this->getMember($character);
+        $member->status = $status;
+    }
+
+    /**
+    * Set Member Side
+    * @param Character $char Character Object
+    * @param int $status New side (attacker, defender, neutral)
+    */
+    public function setMemberSide(Character $character, $side)
+    {
+        $member = $this->getMember($character);
+        $member->side = $side;
+    }
+
+    /**
+    * Get Token Owner
+    * @return Main\Entities\BattleMember|false
+    */
+    public function getTokenOwner()
+    {
+        foreach ($this->members as $member) {
+            if ($member->token == true) {
+                return $member;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+    * Set the Battle token to the new Character
+    * @param Character $char Character Object
+    */
+    public function setTokenOwner(Character $character)
+    {
+        // Erase Token from old Owner
+        $oldOwner = $this->getTokenOwner();
+        $oldOwner->token = false;
+
+        // Set new Token
+        $newOwner = $this->getMember($character);
+        $newOwner->token = true;
+    }
+
+    /**
+     * Add a single Battle Message to the Database
+     * @param string $message
+     */
     public function addMessage($message)
     {
         global $em;
@@ -153,6 +220,18 @@ class Battle extends EntityBase
         $this->messages->add($newMessage);
     }
 
+    /**
+     * Return all Messages
+     * @return array Array of Main\Entities\BattleMessage
+     */
+    public function getAllMessages()
+    {
+        return $this->messages;
+    }
+
+    /**
+     * Truncate Messages
+     */
     public function clearMessages()
     {
         $this->messages->clear();
@@ -194,6 +273,10 @@ class Battle extends EntityBase
         return false;
     }
 
+    /**
+    * Get List of Characters who made their Action
+    * @return array Array of Main\Entities\BattleMember who used a Skill this round
+    */
     public function getActionDoneList()
     {
         $result = array();

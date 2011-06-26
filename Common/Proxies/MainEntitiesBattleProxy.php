@@ -40,6 +40,12 @@ class MainEntitiesBattleProxy extends \Main\Entities\Battle implements \Doctrine
         return parent::getMember($character);
     }
 
+    public function getAllMembers()
+    {
+        $this->__load();
+        return parent::getAllMembers();
+    }
+
     public function addMember(\Main\Entities\Character $character, $side)
     {
         $this->__load();
@@ -52,10 +58,40 @@ class MainEntitiesBattleProxy extends \Main\Entities\Battle implements \Doctrine
         return parent::removeMember($character);
     }
 
+    public function setMemberStatus(\Main\Entities\Character $character, $status)
+    {
+        $this->__load();
+        return parent::setMemberStatus($character, $status);
+    }
+
+    public function setMemberSide(\Main\Entities\Character $character, $side)
+    {
+        $this->__load();
+        return parent::setMemberSide($character, $side);
+    }
+
+    public function getTokenOwner()
+    {
+        $this->__load();
+        return parent::getTokenOwner();
+    }
+
+    public function setTokenOwner(\Main\Entities\Character $character)
+    {
+        $this->__load();
+        return parent::setTokenOwner($character);
+    }
+
     public function addMessage($message)
     {
         $this->__load();
         return parent::addMessage($message);
+    }
+
+    public function getAllMessages()
+    {
+        $this->__load();
+        return parent::getAllMessages();
     }
 
     public function clearMessages()
