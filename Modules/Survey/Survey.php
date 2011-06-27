@@ -36,14 +36,14 @@ class Survey extends \Modules\ModuleBase implements \Common\Interfaces\Module
     }
 
     /**
-     * @see Common\Interfaces.Module::getModuleName()
+     * @see Common\Interfaces.Module::getName()
      */
-    public function getModuleName() { return "Survey Module"; }
+    public function getName() { return "Survey Module"; }
 
     /**
-     * @see Common\Interfaces.Module::getModuleDescription()
+     * @see Common\Interfaces.Module::getDescription()
      */
-    public function getModuleDescription() { return "Create and Handle Surveys"; }
+    public function getDescription() { return "Create and Handle Surveys"; }
 
     /**
     * @see Common\Interfaces.Module::prePageGeneration()

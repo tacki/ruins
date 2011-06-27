@@ -25,14 +25,14 @@ use Main\Controller\Page,
 class ToolTip extends \Modules\ModuleBase implements \Common\Interfaces\Module
 {
     /**
-     * @see Common\Interfaces.Module::getModuleName()
+     * @see Common\Interfaces.Module::getName()
      */
-    public function getModuleName() { return "ToolTip Module"; }
+    public function getName() { return "ToolTip Module"; }
 
     /**
-     * @see Common\Interfaces.Module::getModuleDescription()
+     * @see Common\Interfaces.Module::getDescription()
      */
-    public function getModuleDescription() { return "Show Linkdescription as nice Tooltip"; }
+    public function getDescription() { return "Show Linkdescription as nice Tooltip"; }
 
     /**
      * @see Common\Interfaces.Module::prePageGeneration()

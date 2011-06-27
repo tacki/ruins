@@ -26,15 +26,15 @@ use Main\Controller\Page,
 class MessageSystemLink extends \Modules\ModuleBase implements \Common\Interfaces\Module
 {
     /**
-     * @see Common\Interfaces.Module::getModuleName()
+     * @see Common\Interfaces.Module::getName()
      */
-    public function getModuleName() { return "MessageSystemLink Module"; }
+    public function getName() { return "MessageSystemLink Module"; }
 
     /**
      * (non-PHPdoc)
-     * @see Common\Interfaces.Module::getModuleDescription()
+     * @see Common\Interfaces.Module::getDescription()
      */
-    public function getModuleDescription() { return "Enables the Messenger-Link on every Page"; }
+    public function getDescription() { return "Enables the Messenger-Link on every Page"; }
 
     /**
      * @see Common\Interfaces.Module::prePageGeneration()

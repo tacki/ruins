@@ -25,15 +25,15 @@ use Main\Controller\Page,
 class SettingsLink extends \Modules\ModuleBase implements \Common\Interfaces\Module
 {
     /**
-     * @see Common\Interfaces.Module::getModuleName()
+     * @see Common\Interfaces.Module::getName()
      */
-    public function getModuleName() { return "SettingsLink Module"; }
+    public function getName() { return "SettingsLink Module"; }
 
     /**
      * (non-PHPdoc)
-     * @see Common\Interfaces.Module::getModuleDescription()
+     * @see Common\Interfaces.Module::getDescription()
      */
-    public function getModuleDescription() { return "Enables the settings-Link on every Page"; }
+    public function getDescription() { return "Enables the settings-Link on every Page"; }
 
     /**
      * @see Common\Interfaces.Module::prePageGeneration()

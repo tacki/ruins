@@ -26,7 +26,7 @@ class ModuleBase
      * Module Entity
      * @var \Main\Entities\Module
      */
-    private $moduleEntity;
+    private $entity;
 
     /**
      * Module Initialization
@@ -46,25 +46,26 @@ class ModuleBase
 
         $em->persist($module);
 
-        $this->moduleEntity = $module;
+        $this->entity = $module;
     }
 
     /**
      * Return associated Module Entity
      * @return \Main\Entities\Module Module Entity
      */
-    public function getModuleEntity()
+    public function getEntity()
     {
         global $em;
 
-        if (isset($this->moduleEntity)) {
-            return $this->moduleEntity;
+        if (isset($this->entity)) {
+            return $this->entity;
         } else {
-            $result = $em->getRepository("Main:Module")->findOneByName(static::getModuleName());
+            $result = $em->getRepository("Main:Module")->findOneByName(static::getName());
             if ($result) {
+                $this->entity = $result;
                 return $result;
             } else {
-                throw Error("Module Entity for Module ". static::getModuleName() . " not found!");
+                throw Error("Module Entity for Module ". static::getName() . " not found!");
             }
         }
     }

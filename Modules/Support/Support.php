@@ -25,14 +25,14 @@ use Main\Controller\Page,
 class Support extends \Modules\ModuleBase implements \Common\Interfaces\Module
 {
     /**
-     * @see Common\Interfaces.Module::getModuleName()
+     * @see Common\Interfaces.Module::getName()
      */
-    public function getModuleName() { return "Supportlink Module"; }
+    public function getName() { return "Supportlink Module"; }
 
     /**
-     * @see Common\Interfaces.Module::getModuleDescription()
+     * @see Common\Interfaces.Module::getDescription()
      */
-    public function getModuleDescription() { return "Module to add a Support-Link to each Page"; }
+    public function getDescription() { return "Module to add a Support-Link to each Page"; }
 
     /**
      * @see Common\Interfaces.Module::prePageGeneration()

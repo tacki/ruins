@@ -27,12 +27,12 @@ interface Module
     /**
      * Module Name
      */
-    public function getModuleName();
+    public function getName();
 
     /**
      * Module Description
      */
-    public function getModuleDescription();
+    public function getDescription();
 
     /**
      * Event triggered before Page Header is called

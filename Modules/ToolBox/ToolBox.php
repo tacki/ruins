@@ -25,14 +25,14 @@ use Main\Controller\Page,
 class ToolBox extends \Modules\ModuleBase implements \Common\Interfaces\Module
 {
     /**
-     * @see Common\Interfaces.Module::getModuleName()
+     * @see Common\Interfaces.Module::getName()
      */
-    public function getModuleName() { return "ToolBox Module"; }
+    public function getName() { return "ToolBox Module"; }
 
     /**
-     * @see Common\Interfaces.Module::getModuleDescription()
+     * @see Common\Interfaces.Module::getDescription()
      */
-    public function getModuleDescription() { return "Add the Toolbox for all kind of usefull small tools"; }
+    public function getDescription() { return "Add the Toolbox for all kind of usefull small tools"; }
 
     /**
      * @see Common\Interfaces.Module::prePageGeneration()
