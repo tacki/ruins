@@ -292,9 +292,10 @@ class Form extends BaseHTML
      * @param string $name name of the field
      * @param string $value pre-defined value
      * @param boolean $selected true if preselected
+     * @param string $title pre-defined title
      * @return Common\Controller\Form
      */
-    public function selectOption($name,$value=false,$selected=false)
+    public function selectOption($name,$value=false,$selected=false,$title=false)
     {
         if ($name != "")
         {
@@ -304,7 +305,9 @@ class Form extends BaseHTML
                 $output = "<option value='".$value."' ";
             }
             if ($selected) $output .= "selected='selected' ";
+            if ($title) $output .= "title='".$title."' ";
             if (strlen($this->CSSclass)) $output .= "class='".$this->CSSclass."' ";
+
             $output .= ">".$name."</option>";
         } else {
             return "\$name ist nicht gesetzt,";

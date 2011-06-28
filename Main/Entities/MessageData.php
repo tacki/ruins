@@ -19,7 +19,7 @@ class MessageData extends EntityBase
     protected $id;
 
     /**
-     * @OneToMany(targetEntity="Message", mappedBy="data", orphanRemoval=true)
+     * @OneToMany(targetEntity="Message", mappedBy="data", cascade={"all"})
      * @var Main\Entities\Message
      */
     protected $messages;

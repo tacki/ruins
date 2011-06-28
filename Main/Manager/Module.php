@@ -80,7 +80,7 @@ class Module
 
     /**
      * Get the List of Modules from the Database
-     * @param string $moduletype Moduletype
+     * @param bool $onlyenabled Only enabled Modules
      * @return array List of Modules (all Properties)
      */
     public static function getModuleListFromDatabase($onlyenabled=false)

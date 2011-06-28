@@ -34,7 +34,7 @@ class AdminLink extends \Modules\ModuleBase implements \Common\Interfaces\Module
         parent::init();
 
         // Enable by default!
-        $entity = $this->getModuleEntity();
+        $entity = $this->getEntity();
         $entity->enabled = true;
     }
 

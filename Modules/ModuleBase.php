@@ -39,8 +39,8 @@ class ModuleBase
         $directory       = basename(dirname($reflectionClass->getFilename())) . "/";
 
         $module                 = new \Main\Entities\Module;
-        $module->name           = static::getModuleName();
-        $module->description    = static::getModuleDescription();
+        $module->name           = static::getName();
+        $module->description    = static::getDescription();
         $module->basedir        = $directory;
         $module->classname      = $calledClass;
 

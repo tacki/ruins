@@ -149,19 +149,23 @@ class Message
         // Delete the Messages
         $qb = $em->createQueryBuilder();
 
-        $qb ->delete("Main:Message", "message")
+        $qb ->select("message")
+            ->from("Main:Message", "message")
             ->where("message.status = ?1")->setParameter(1, self::STATUS_DELETED);
 
         if ($character instanceof Entities\Character) $qb->andWhere("message.receiver = ?2")->setParameter(2, $character);
 
-        $qb->getQuery()->execute();
-        $em->flush();
+        $messages = $qb->getQuery()->getResult();
+
+        foreach ($messages as $message) {
+            $em->remove($message);
+        }
 
         //---
 
         // Delete orphan Messagedata
         $qb = $em->createQueryBuilder();
-        $sub = getQueryBuilder();
+        $sub = $em->createQueryBuilder();
 
         // IDs of MessageData in use
         $sub ->select("sub_messagedata.id")
@@ -176,7 +180,7 @@ class Message
         $result = $qb->getQuery()->getResult();
 
         // Remove them From Database
-        $delqb = getQueryBuilder();
+        $delqb = $em->createQueryBuilder();
 
         $delqb->delete("Main:MessageData", "messagedata");
 

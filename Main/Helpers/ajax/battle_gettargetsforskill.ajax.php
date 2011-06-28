@@ -12,7 +12,7 @@
 /**
  * Namespaces
  */
-use Common\Controller\SessionStore,
+use Main\Controller,
     Main\Manager;
 
 /**
@@ -31,45 +31,49 @@ if (isset($battleid) && isset($charid) && isset($skillname)) {
     global $em;
 
     // Load Battleinformation
-    $battle = $em->find("Main:Battle", $battleid);
-    $character = $em->find("Main:Character", $charid);
+    $battle     = $em->find("Main:Battle", $battleid);
+    $character  = $em->find("Main:Character", $charid);
+    $member     = $battle->getMember($character);
 
-    $member = $battle->getMember($character);
-
-    $side = $member->side;
-
-    $otherside	= $battle->getOppositeSide($character);
+    // Get fighting Side
+    $ourside    = $member->side;
+    $otherside	= $member->getOppositeSide();
 
     // Get the skill the character likes to use
-    $skill = new \Main\Controller\Skills\Heal();
+    $skill = Manager\Battle::getSkill($skillname);
 
     // Retrieve the possible side of the target
-    $targetside = "own";
-
     switch ($skill->getPossibleTargets()) {
 
-        case SKILL_POSSIBLE_TARGET_ENEMIES:
+        case Controller\SkillBase::POSSIBLE_TARGET_OWN:
+            // Target is self
+            $targetside = Controller\SkillBase::POSSIBLE_TARGET_OWN;
+            break;
+
+        case Controller\SkillBase::POSSIBLE_TARGET_ENEMIES:
+            // Target is the opposite side
             $targetside = $otherside;
             break;
 
-        case SKILL_POSSIBLE_TARGET_ALLIES:
-            $targetside = $side;
+        case Controller\SkillBase::POSSIBLE_TARGET_ALLIES:
+            // Target is the own side
+            $targetside = $ourside;
             break;
     }
 
     // Retrieve the number of targets
     $target = false;
-    if ($targetside != "own") {
-        if (is_numeric($skill->nroftargets)) {
+    if ($targetside != Controller\SkillBase::POSSIBLE_TARGET_OWN) {
+        if (is_numeric($skill->getNrOfTargets())) {
             if ($skill->nroftargets == 1) {
                 $target = "single";
             } elseif ($skill->nroftargets >= 2) {
                 $target = "multiple";
             }
-        } elseif ($skill->nroftargets == 'allies') {
-            $target	= "allies";
-        } elseif ($skill->nroftargets == "enemies") {
-            $target = "enemies";
+        } elseif ($skill->nroftargets == Controller\SkillBase::POSSIBLE_TARGET_ALLIES) {
+            $target	= Controller\SkillBase::POSSIBLE_TARGET_ALLIES;
+        } elseif ($skill->nroftargets == Main\Controller\SkillBase::POSSIBLE_TARGET_ENEMIES) {
+            $target = Controller\SkillBase::POSSIBLE_TARGET_ENEMIES;
         }
     }
 
@@ -80,7 +84,7 @@ if (isset($battleid) && isset($charid) && isset($skillname)) {
 
         default:
             // We target ourself
-            $result[$charid] = Manager\User::getCharacterName($charid, false);
+            $result[$member->id] = $member->character->name;
             break;
 
         case "single":
@@ -88,22 +92,24 @@ if (isset($battleid) && isset($charid) && isset($skillname)) {
             $memberids = array();
             if ($skill->possibletargets == SKILL_POSSIBLE_TARGET_ENEMIES) {
                 // We target one enemy or more
-                $memberids = $battle->getMemberList($otherside);
+                $members = $battle->getMemberList($otherside);
             } elseif ($skill->possibletargets == SKILL_POSSIBLE_TARGET_ALLIES) {
                 // We target one ally or more
-                $memberids = $battle->getMemberList($side);
+                $members = $battle->getMemberList($ourside);
             }
-            foreach ($memberids as $id) {
-                $result[$id] = Manager\User::getCharacterName($id, false);
+
+            foreach ($members as $member) {
+                $result[$member->id] = $member->character->name;
             }
             break;
 
-        case "allies":
-            $result[] = "allies";
+        case Controller\SkillBase::POSSIBLE_TARGET_ALLIES:
+            $result[] = Controller\SkillBase::POSSIBLE_TARGET_ALLIES;
             break;
 
-        case "enemies":
-            $result[] = "enemies";
+        case Controller\SkillBase::POSSIBLE_TARGET_ENEMIES:
+            $result[] = Controller\SkillBase::POSSIBLE_TARGET_ENEMIES;
+            break;
 
     }
 

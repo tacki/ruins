@@ -24,20 +24,26 @@ class BattleAction extends EntityBase
     protected $battle;
 
     /**
-     * @ManyToOne(targetEntity="BattleMember")
+     * @OneToOne(targetEntity="BattleMember", inversedBy="action")
      * @var Main\Entities\BattleMember
      */
     protected $initiator;
 
     /**
-     * @Column(length=255)
-     * @var string
+     * @Column(type="array")
+     * @var Doctrine\Common\Collections\ArrayCollection
      */
-    protected $target;
+    protected $targets;
 
     /**
      * @ManyToOne(targetEntity="Skill")
      * @var Main\Entities\Skill
      */
     protected $skill;
+
+    public function __construct()
+    {
+        // Default Values
+        $this->targets = new \Doctrine\Common\Collections\ArrayCollection;
+    }
 }

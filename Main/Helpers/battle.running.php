@@ -11,7 +11,7 @@
 $battle->addBattleNav();
 
 // Show Roundnumber
-$page->output("`c`b~~~ Runde " . $battle->round . " ~~~`b`c");
+$page->output("`c`b~~~ Runde " . $battle->getRound() . " ~~~`b`c");
 
 // Battle Timer (if active)
 if ($battletimer = $battle->getTimer()) {
@@ -36,7 +36,7 @@ $page->output("`n<div style='border-bottom: 1px solid;'></div>`n", true);
 $page->output("`bNachrichten: `b`n");
 
 foreach ($battle->getResultMessages() as $resultmessage) {
-        $page->output($resultmessage->date . " " . $resultmessage->message ."`n");
+        $page->output($resultmessage->date->format("[H:i:s]") . " " . $resultmessage->message ."`n");
 }
 
 //$battle->getActionDoneList();

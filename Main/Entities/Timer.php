@@ -36,7 +36,10 @@ class Timer extends EntityBase
      */
     protected $backup_ttc;
 
-    public function __construct() {
+    public function __construct($name=false)
+    {
+        // Default Values
+        if ($name) $this->name = $name;
         $this->backup_ttc = 0;
         $this->completiontime = new DateTime;
     }

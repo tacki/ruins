@@ -662,9 +662,10 @@ switch ($_GET['step']) {
         require_once("config/dirconf.cfg.php");
         require_once(DIR_BASE."main.inc.php");
 
+        //---------
         echo "<div class='checkfor'>Sync ModuleList to Database ... </div>";
 
-        // Generate Module List
+        // Sync Module List
         if (Main\Manager\Module::syncModuleListToDatabase()) {
             echo "<div class='ok'>OK!</div>";
         }
@@ -674,6 +675,20 @@ switch ($_GET['step']) {
             echo "<div class='ok'>" . $module->name . "</div>";
         }
 
+        //---------
+        echo "<div class='checkfor'>Sync SkillList to Database ... </div>";
+
+        // Sync Skill List
+        if (Main\Manager\Battle::syncSkillListToDatabase()) {
+            echo "<div class='ok'>OK!</div>";
+        }
+
+        echo "<div class='checkfor'>Skills found ... </div>";
+        foreach(Main\Manager\Battle::getSkillListFromDatabase() as $skill) {
+            echo "<div class='ok'>" . $skill->name . "</div>";
+        }
+
+        //---------
         echo "<h4>Initial Values</h4>";
 
         echo "<div class='checkfor'>Setup initial values ... </div>";

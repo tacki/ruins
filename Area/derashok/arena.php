@@ -25,8 +25,7 @@ $page->nav->addHead("Navigation")
 
 $battle = new Battle;
 
-if ($battleid = Manager\Battle::getBattleID($user->character)) {
-    $battle->load($battleid);
+if (Manager\Battle::getBattle($user->character)) {
     include (DIR_MAIN."Helpers/battle.running.php");
 } elseif (Manager\Battle::getBattleList()) {
     $page->nav->addLink("Zurück", "page=derashok/tribalcenter");

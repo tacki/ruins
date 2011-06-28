@@ -28,6 +28,12 @@ class MainEntitiesBattleProxy extends \Main\Entities\Battle implements \Doctrine
     }
     
     
+    public function isActive()
+    {
+        $this->__load();
+        return parent::isActive();
+    }
+
     public function isMember(\Main\Entities\Character $character)
     {
         $this->__load();
@@ -44,6 +50,30 @@ class MainEntitiesBattleProxy extends \Main\Entities\Battle implements \Doctrine
     {
         $this->__load();
         return parent::getAllMembers();
+    }
+
+    public function getAllAttackers()
+    {
+        $this->__load();
+        return parent::getAllAttackers();
+    }
+
+    public function getAllDefenders()
+    {
+        $this->__load();
+        return parent::getAllDefenders();
+    }
+
+    public function getAllActiveMembers()
+    {
+        $this->__load();
+        return parent::getAllActiveMembers();
+    }
+
+    public function getMembersAtSide($side, $status = false)
+    {
+        $this->__load();
+        return parent::getMembersAtSide($side, $status);
     }
 
     public function addMember(\Main\Entities\Character $character, $side)
@@ -98,24 +128,6 @@ class MainEntitiesBattleProxy extends \Main\Entities\Battle implements \Doctrine
     {
         $this->__load();
         return parent::clearMessages();
-    }
-
-    public function addAction(\Main\Entities\Character $character, $target, \Main\Entities\Skill $skill)
-    {
-        $this->__load();
-        return parent::addAction($character, $target, $skill);
-    }
-
-    public function setActionDone(\Main\Entities\Character $character)
-    {
-        $this->__load();
-        return parent::setActionDone($character);
-    }
-
-    public function hasActionDone(\Main\Entities\Character $character)
-    {
-        $this->__load();
-        return parent::hasActionDone($character);
     }
 
     public function getActionDoneList()

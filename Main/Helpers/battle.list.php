@@ -19,8 +19,6 @@ $page->output("`nGegenwärtige Kämpfe`n");
 $battlelist = Manager\Battle::getBattleList();
 
 foreach ($battlelist as $activebattle) {
-    $tempbattle = new Battle;
-    $tempbattle->load($activebattle->id);
-    $tempbattle->showBattleInformation();
+    Manager\Battle::showBattleInformationBox($activebattle);
 }
 ?>

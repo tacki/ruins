@@ -72,9 +72,19 @@ class Battle extends EntityBase
         $this->actions              = new \Doctrine\Common\Collections\ArrayCollection;
         $this->members              = new \Doctrine\Common\Collections\ArrayCollection;
         $this->messages             = new \Doctrine\Common\Collections\ArrayCollection;
+        $this->timer                = new \Main\Entities\Timer(uniqid("battle_"));
         $this->round                = 0;
         $this->active               = false;
         $this->battlemembersnapshot = "";
+    }
+
+    /**
+     * Check if the Battle is active
+     * @return bool
+     */
+    public function isActive()
+    {
+        return $this->active;
     }
 
     /**
@@ -111,11 +121,66 @@ class Battle extends EntityBase
 
     /**
      * Get all Members
-     * @return array Array of Main\Entities\BattleMember
+     * @return Doctrine\Common\Collections\ArrayCollection Array of Main\Entities\BattleMember
      */
     public function getAllMembers()
     {
         return $this->members;
+    }
+
+    /**
+     * Get all Attackers
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getAllAttackers()
+    {
+        return $this->getMembersAtSide(\Main\Entities\BattleMember::SIDE_ATTACKERS);
+    }
+
+    /**
+     * Get All Defenders
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getAllDefenders()
+    {
+        return $this->getMembersAtSide(\Main\Entities\BattleMember::SIDE_DEFENDERS);
+    }
+
+    /**
+     * Get all Fightactive Members
+     * @return Doctrine\Common\Collections\ArrayCollection Array of Main\Entities\BattleMember
+     */
+    public function getAllActiveMembers()
+    {
+        $result = new \Doctrine\Common\Collections\ArrayCollection;
+
+        foreach ($this->members as $member) {
+            // Inactive Members are still Part of the Fight before they are excluded
+            if ($member->isActive() || $member->isInactive()) {
+                $result->add($member);
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get all Members of a given Side
+     * @param const $side
+     * @param const $status
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getMembersAtSide($side, $status=false)
+    {
+        $result = new \Doctrine\Common\Collections\ArrayCollection;
+
+        foreach ($this->members as $member) {
+            if ($member->side === $side && ($status === false || $member->status === $status)) {
+                $result->add($member);
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -146,8 +211,10 @@ class Battle extends EntityBase
      */
     public function removeMember(Character $character)
     {
+        global $em;
+
         if ($member = $this->getMember($character)) {
-            $this->members->remove($member);
+            $em->remove($member);
         }
     }
 
@@ -158,8 +225,7 @@ class Battle extends EntityBase
      */
     public function setMemberStatus(Character $character, $status)
     {
-        $member = $this->getMember($character);
-        $member->status = $status;
+        $this->getMember($character)->status = $status;
     }
 
     /**
@@ -169,13 +235,12 @@ class Battle extends EntityBase
     */
     public function setMemberSide(Character $character, $side)
     {
-        $member = $this->getMember($character);
-        $member->side = $side;
+        $this->getMember($character)->side = $side;
     }
 
     /**
     * Get Token Owner
-    * @return Main\Entities\BattleMember|false
+    * @return Main\Entities\BattleMember
     */
     public function getTokenOwner()
     {
@@ -184,8 +249,6 @@ class Battle extends EntityBase
                 return $member;
             }
         }
-
-        return false;
     }
 
     /**
@@ -195,12 +258,10 @@ class Battle extends EntityBase
     public function setTokenOwner(Character $character)
     {
         // Erase Token from old Owner
-        $oldOwner = $this->getTokenOwner();
-        $oldOwner->token = false;
+        $this->getTokenOwner()->token = false;
 
         // Set new Token
-        $newOwner = $this->getMember($character);
-        $newOwner->token = true;
+        $this->getMember($character)->token = true;
     }
 
     /**
@@ -217,12 +278,11 @@ class Battle extends EntityBase
 
         $em->persist($newMessage);
 
-        $this->messages->add($newMessage);
     }
 
     /**
      * Return all Messages
-     * @return array Array of Main\Entities\BattleMessage
+     * @return Doctrine\Common\Collections\ArrayCollection Array of Main\Entities\BattleMessage
      */
     public function getAllMessages()
     {
@@ -237,60 +297,35 @@ class Battle extends EntityBase
         $this->messages->clear();
     }
 
-    public function addAction(Character $character, $target, Skill $skill)
-    {
-        global $em;
-
-        if (!$this->actionDone($character)) {
-            $newAction             = new BattleAction;
-            $newAction->battle     = $this;
-            $newAction->initiator  = $character;
-            $newAction->target     = $target;
-            $newAction->skill      = $skill;
-
-            $em->persist($newAction);
-
-            $this->actions->add($newAction);
-
-            $this->setActionDone($character);
-        }
-    }
-
-    public function setActionDone(Character $character)
-    {
-        $member = $this->getMember($character);
-        $member->actiondone = true;
-    }
-
-    public function hasActionDone(Character $character)
-    {
-        foreach ($this->actions as $action) {
-            if ($action->character === $character) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     /**
     * Get List of Characters who made their Action
-    * @return array Array of Main\Entities\BattleMember who used a Skill this round
+    * @return Doctrine\Common\Collections\ArrayCollection Array of Main\Entities\BattleMember who used a Skill this round
     */
     public function getActionDoneList()
     {
-        $result = array();
+        $result = new \Doctrine\Common\Collections\ArrayCollection;
 
         foreach ($this->actions as $action) {
-            $result[] = $actions->initiator;
+            $result->add($action->initiator);
         }
 
         return $result;
     }
 
+    /**
+     * Get List of Character who need to make their Action
+     * @return Doctrine\Common\Collections\ArrayCollection
+     */
     public function getActionNeededList()
     {
-        $result = array_diff($this->getActionDoneList(), $this->members->toArray());
+        $result = new \Doctrine\Common\Collections\ArrayCollection;
+        $actionDoneList = $this->getActionDoneList();
+
+        foreach ($this->members as $member) {
+            if (!$actionDoneList->contains($member)) {
+                $result->add($member);
+            }
+        }
 
         return $result;
     }

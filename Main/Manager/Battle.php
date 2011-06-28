@@ -13,9 +13,8 @@
  * Namespaces
  */
 namespace Main\Manager;
-use Doctrine\DBAL\Types\BooleanType;
-
-use Main\Entities;
+use Common\Controller\Error,
+    Main\Entities;
 
 /**
  * Battlesystem Class
@@ -26,11 +25,94 @@ use Main\Entities;
 class Battle
 {
     /**
-     * Get current Battle ID of a given Character
-     * @param Main\Entities\Character $char Character to check
-     * @return bool true if the char is a Member, else false
+     * Get Skill Object
+     * @param string $skillname
+     * @throws Common\Controller\Error
+     * @return object Skill Object
      */
-    public static function getBattleID(Entities\Character $character)
+    public static function getSkill($skillname)
+    {
+        global $em;
+
+        $result = $em->getRepository("Main:Skill")->findOneByName($skillname);
+
+        if ($result) {
+            return new $result->classname;
+        } else {
+            throw new Error("Skill $skillname not found in Database");
+        }
+    }
+
+    /**
+    * Get the List of Skills from the Filesystem
+    * @return array List of Skills
+    */
+    public static function getSkillListFromFilesystem()
+    {
+        $result = array();
+        $dircontent = \Main\Manager\System::getDirList(DIR_MAIN."Controller/Skills");
+
+        foreach ($dircontent['files'] as $filename) {
+            if (strtolower(substr($filename, -4,4) == ".php")) {
+                $classname = pathinfo($filename, \PATHINFO_FILENAME);
+                $result[] = "Main\\Controller\\Skills\\".$classname;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+    * Get the List of Skills from the Database
+    * @return array List of Skills (all Properties)
+    */
+    public static function getSkillListFromDatabase()
+    {
+        global $em;
+
+        $result = $em->getRepository("Main:Skill")->findAll();
+
+        return $result;
+    }
+
+    /**
+    * Synchronize the Skills existing at the Database with the Skills existing in our Directory
+    * @return bool true if successful, else false
+    */
+    public static function syncSkillListToDatabase()
+    {
+        global $em;
+
+        $skillsFsList = self::getSkillListFromFilesystem();
+        $skillsDbList = self::getSkillListFromDatabase();
+
+        foreach($skillsFsList as $skillFS) {
+            $addFlag        = true;
+
+            foreach($skillsDbList as $skillDB) {
+                if ($skillDB->classname == $skillFS) {
+                    $addFlag = false;
+                }
+            }
+
+            if ($addFlag) {
+                // execute init()-Method of unknown Skill
+                $skill = new $skillFS;
+                $skill->init();
+            }
+        }
+
+        $em->flush();
+
+        return true;
+    }
+
+    /**
+     * Get current Battle of a given Character
+     * @param Main\Entities\Character $char Character to check
+     * @return Main\Entities\Battle
+     */
+    public static function getBattle(Entities\Character $character)
     {
         global $em;
 
@@ -41,8 +123,8 @@ class Battle
                         ->where("battlemember.character = ?2")->setParameter(2, $character)
                         ->getQuery()->getOneOrNullResult();
 
-        if ($result) {
-            return $result->battle->id;
+        if ($result->battle) {
+            return $result->battle;
         } else {
             return false;
         }
@@ -65,6 +147,49 @@ class Battle
                         ->getQuery()->getResult();
 
         return $result;
+    }
+
+    /**
+    * Returns div-box with Information about a given Battle
+    * @param Main\Entities\Battle $battle
+    */
+    public static function showBattleInformationBox(\Main\Entities\Battle $battle)
+    {
+        $attackerlist = $battle->getAllAttackers();
+        $defenderlist = $battle->getAllDefenders();
+
+        $output = "<div class='floatleft battleinfo'>";
+        if (count($attackerlist)) {
+            $output .= "Angreifer: ";
+            foreach ($attackerlist as $member) {
+                $output .= $member->character->displayname . " ";
+            }
+            $output .= "`n";
+        }
+        if (count($defenderlist)) {
+            $output .= "Verteidiger: ";
+            foreach ($defenderlist as $member) {
+                $output .= $member->character->displayname . " ";
+            }
+            $output .= "`n";
+        }
+
+        if (!$battle->isActive()) {
+            $target = \Main\Manager\System::getOutputObject()->url->base."&battle_op=join&side=".\Main\Entities\BattleMember::SIDE_ATTACKERS."&battleid=".$battle->id;
+            $output .= "<a href='?".$target."'>Angreifen</a>";
+            \Main\Manager\System::getOutputObject()->nav->addHiddenLink($target);
+            $output .= " || ";
+            $target = \Main\Manager\System::getOutputObject()->url->base."&battle_op=join&side=".\Main\Entities\BattleMember::SIDE_DEFENDERS."&battleid=".$battle->id;
+            $output .= "<a href='?".$target."'>Verteidigen</a>";
+            \Main\Manager\System::getOutputObject()->nav->addHiddenLink($target);
+            $output .= " || ";
+        }
+        $target = \Main\Manager\System::getOutputObject()->url->base."&battle_op=join&side=".\Main\Entities\BattleMember::SIDE_NEUTRALS."&battleid=".$battle->id;
+        $output .= "<a href='?".$target."'>Zuschauen</a>";
+        \Main\Manager\System::getOutputObject()->nav->addHiddenLink($target);
+        $output .= "</div>";
+
+        \Main\Manager\System::getOutputObject()->output($output, true);
     }
 }
 ?>

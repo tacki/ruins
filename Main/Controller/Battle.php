@@ -26,17 +26,6 @@ use Common\Controller\SessionStore,
 class Battle
 {
     /**
-     * Class constants
-     */
-    const SIDE_ATTACKERS        = "attackers";
-    const SIDE_DEFENDERS        = "defenders";
-    const SIDE_NEUTRALS         = "neutrals";
-    const MEMBERSTATUS_ACTIVE   = 0;
-    const MEMBERSTATUS_INACTIVE = 1;
-    const MEMBERSTATUS_EXCLUDED = 2;
-    const MEMBERSTATUS_BEATEN   = 4;
-
-    /**
      * Battle Object
      * @var Main\Entities\Battle
      */
@@ -67,34 +56,16 @@ class Battle
     {
         global $em, $user;
 
-        // Create Timer Entity
-        $battletimer               = new Entities\Timer;
-        $battletimer->name         = uniqid("battle_");
-        $em->persist($battletimer);
-
         // Create Battle Entity
         $this->_battle             = new Entities\Battle;
         $this->_battle->initiator  = $user->character;
-        $this->_battle->timer      = $battletimer;
         $this->round               = 1;
         $em->persist($this->_battle);
 
-        $em->flush();
-
-        // Initialize Battletick-Timer
+        // Create and Initialize Battletick-Timer
         $this->initTimer();
-    }
 
-    public function load($battleid)
-    {
-        global $em;
-
-        // Check if this Battle is already initialized
-        if ($this->_battle) {
-            return false;
-        }
-
-        $this->_battle = $em->find("Main:Battle", $battleid);
+        $em->flush();
     }
 
     /**
@@ -141,24 +112,6 @@ class Battle
     }
 
     /**
-     * Get the 'opposite' Side, the Character is fighting at
-     * @param Character $character Character ID or Character Object
-     * @return string defenders|attackers|neutrals
-     */
-    public function getOppositeSide(Character $character)
-    {
-        $result = $this->_battle->getMember($character);
-
-        if ($result->side == self::SIDE_ATTACKERS) {
-            return self::SIDE_DEFENDERS;
-        } elseif ($result->side == self::SIDE_DEFENDERS) {
-            return self::SIDE_ATTACKERS;
-        } else {
-            return self::SIDE_NEUTRALS;
-        }
-    }
-
-    /**
      * Retrieve the Messages from the Database
      * @return \Doctrine\Common\Collections\ArrayCollection Array of Main\Entities\BattleMessage
      */
@@ -184,7 +137,7 @@ class Battle
 
         foreach ($activemembers as $member) {
             if ($member !== $oldOwner) {
-                $this->setTokenOwner($member->character);
+                $this->_battle->setTokenOwner($member->character);
                 return true;
             }
         }
@@ -212,7 +165,7 @@ class Battle
      */
     public function getAttackerList()
     {
-        return $this->_getBattleMemberList(self::SIDE_ATTACKERS);
+        return $this->_getBattleMemberList(\Main\Entities\BattleMember::SIDE_ATTACKERS);
     }
 
     /**
@@ -221,7 +174,7 @@ class Battle
      */
     public function getNeutralList()
     {
-        return $this->_getBattleMemberList(self::SIDE_NEUTRALS);
+        return $this->_getBattleMemberList(\Main\Entities\BattleMember::SIDE_NEUTRALS);
     }
 
     /**
@@ -230,7 +183,7 @@ class Battle
      */
     public function getDefenderList()
     {
-        return $this->_getBattleMemberList(self::SIDE_DEFENDERS);
+        return $this->_getBattleMemberList(\Main\Entities\BattleMember::SIDE_DEFENDERS);
     }
 
     /**
@@ -256,59 +209,6 @@ class Battle
     }
 
     /**
-     * Returns div-box with Information about this Battle
-     * @param bool $directoutput Output via OutputObject
-     * @return string HTML-Code
-     */
-    public function showBattleInformation($directoutput=true)
-    {
-        $outputobject = Manager\System::getOutputObject();
-
-        $attackerlist = $this->getAttackerList();
-        $defenderlist = $this->getDefenderList();
-
-        $output = "<div class='floatleft battleinfo'>";
-        if (count($attackerlist)) {
-            $output .= "Angreifer: ";
-            foreach ($attackerlist as $entry) {
-                $output .= $entry->character->displayname . " ";
-            }
-            $output .= "`n";
-        }
-        if (count($defenderlist)) {
-            $output .= "Verteidiger: ";
-            foreach ($defenderlist as $entry) {
-                $output .= $entry->character->displayname . " ";
-            }
-            $output .= "`n";
-        }
-        $output .= "Timer: " . ($this->getTimer()?$this->getTimer():"inaktiv") . "`n";
-
-        $battleopstr = $this->_getBattleOpString();
-
-        if (!$this->isActive()) {
-            $target = $outputobject->url->base."&{$battleopstr}=join&side=".self::SIDE_ATTACKERS."&battleid=".$this->_battle->id;
-            $output .= "<a href='?".$target."'>Angreifen</a>";
-            $outputobject->nav->addHiddenLink($target);
-            $output .= " || ";
-            $target = $outputobject->url->base."&{$battleopstr}=join&side=".self::SIDE_DEFENDERS."&battleid=".$this->_battle->id;
-            $output .= "<a href='?".$target."'>Verteidigen</a>";
-            $outputobject->nav->addHiddenLink($target);
-            $output .= " || ";
-        }
-        $target = $outputobject->url->base."&{$battleopstr}=join&side=".self::SIDE_NEUTRALS."&battleid=".$this->_battle->id;
-        $output .= "<a href='?".$target."'>Zuschauen</a>";
-        $outputobject->nav->addHiddenLink($target);
-        $output .= "</div>";
-
-        if ($directoutput) {
-            $outputobject->output($output, true);
-        } else {
-            return $output;
-        }
-    }
-
-    /**
      * Returns skillchooser Form
      * @param bool $directoutput Output via OutputObject
      * @return string HTML-Code
@@ -321,12 +221,10 @@ class Battle
         $battleopstr 	= $this->_getBattleOpString();
         $member 	= $this->_battle->getMember($user->character);
 
-        if ($member->side == self::SIDE_NEUTRALS
-            || $member->status == self::MEMBERSTATUS_BEATEN
-            || $member->status == self::MEMBERSTATUS_EXCLUDED) {
+        if ($member->isNeutral()) {
             // Caller is Neutral
             $output .= "Beobachte den Kampf...";
-        } elseif ($member->actiondone) {
+        } elseif ($member->hasMadeAnAction()) {
             // Caller made his Action
             $output .= "Warte auf andere Kämpfer...";
         } else {
@@ -339,12 +237,13 @@ class Battle
             $outputObject->nav->addHiddenLink($outputObject->url->base."&{$battleopstr}=use_skill");
 
             // TODO: Get Available Skills for this Character
-            $skills = array ( "punch", "heal", "wait" );
+            $skills = array ( "Heilen" );
 
             $skillForm->setCSS("input");
             $skillForm->selectStart("skill");
             foreach ($skills as $skill) {
-                $skillForm->selectOption($skill, $skill);
+                $tempskill = Manager\Battle::getSkill($skill);
+                $skillForm->selectOption($tempskill->getName(), $tempskill->getName(), false, $tempskill->getDescription());
             }
             $skillForm->selectEnd();
 
@@ -381,13 +280,13 @@ class Battle
 
         $output = "";
 
-        foreach (array(self::SIDE_ATTACKERS=>"Angreifer", self::SIDE_DEFENDERS=>"Verteidiger") as $sysname=>$realname) {
+        foreach (array(\Main\Entities\BattleMember::SIDE_ATTACKERS=>"Angreifer", \Main\Entities\BattleMember::SIDE_DEFENDERS=>"Verteidiger") as $sysname=>$realname) {
             $output .= "`n$realname: `n";
 
             $temparray = array();
             foreach ($this->getMemberList($sysname) as $member) {
 
-                if ($member->actiondone) {
+                if ($member->hasMadeAnAction()) {
                     $transparentstyle = "style=\"opacity: 0.5; filter: alpha(opacity=50); filter: 'progid:DXImageTransform.Microsoft.Alpha(Opacity=50, FinishOpacity=50, Style=2)'\"";
                 } else {
                     $transparentstyle = "";
@@ -431,14 +330,14 @@ class Battle
         foreach ($beforeSS['data'] as $memberid => $memberdata) {
             $output .= Manager\User::getCharacterName($memberid, true) . ": `n";
 
-            $bminfo	= $this->_battle->getMember($memberid);
+            $member	= $this->_battle->getMember($memberid);
             $status = "";
 
-            switch ($bminfo) {
-                case self::MEMBERSTATUS_ACTIVE: $status = "Aktiv"; break;
-                case self::MEMBERSTATUS_INACTIVE: $status = "Inaktiv"; break;
-                case self::MEMBERSTATUS_EXCLUDED: $status = "Ausgeschlossen"; break;
-                case self::MEMBERSTATUS_BEATEN: $status = "Tot"; break;
+            switch ($member->status) {
+                case Entities\BattleMember::STATUS_ACTIVE: $status = "Aktiv"; break;
+                case Entities\BattleMember::STATUS_INACTIVE: $status = "Inaktiv"; break;
+                case Entities\BattleMember::STATUS_EXCLUDED: $status = "Ausgeschlossen"; break;
+                case Entities\BattleMember::STATUS_BEATEN: $status = "Tot"; break;
             }
 
             foreach ($beforeSS['description'] as $property) {
@@ -533,10 +432,10 @@ class Battle
      * Choose Skill to execute
      * @param Character $char
      * @param mixed $target
-     * @param Skill $action The Skill to use
+     * @param Main\Controller\SkillBase $action The Skill to use
      * @return bool true if successful, else false
      */
-    public function chooseSkill(Character $character, $target, Skill $skill)
+    public function chooseSkill(Character $character, $target, \Main\Controller\SkillBase $skill)
     {
         // Check if this Battle is initialized
         if (!$this->_battle) {
@@ -544,15 +443,13 @@ class Battle
         }
 
         // Check if the Char is Part of this Battle
-        if (!$this->_battle->isMember($character) || $this->_battle->hasActionDone($character)) {
-            return false;
-        }
+        $member = $this->_battle->getMember($character);
 
         // Add the Action to the battletable
-        $this->_battle->addAction($character, $target, $skill);
+        $member->setAction($target, $skill);
 
         // Mark Member as Active
-        $this->_battle->setMemberStatus($character, self::MEMBERSTATUS_ACTIVE);
+        $member->setActive();
     }
 
     /**
@@ -567,7 +464,7 @@ class Battle
             $this->_battle->addMessage($member->displayname . " wurde besiegt!");
 
             // Set status to beaten
-            $this->setMemberStatus($member, self::MEMBERSTATUS_BEATEN);
+            $member->setBeaten();
 
             // Remove Token from this Member
             if ($member->token) {
@@ -586,8 +483,8 @@ class Battle
     public function checkPremise()
     {
         // First Check if one Side has less than 1 member
-        if (count($this->getMemberList(self::SIDE_ATTACKERS)) < 1
-            || count($this->getMemberList(self::SIDE_DEFENDERS)) < 1) {
+        if (count($this->getMemberList(\Main\Entities\BattleMember::SIDE_ATTACKERS)) < 1
+            || count($this->getMemberList(\Main\Entities\BattleMember::SIDE_DEFENDERS)) < 1) {
             return false;
         }
 
@@ -596,32 +493,11 @@ class Battle
             return true;
         }
 
-        foreach($this->getMemberList() as $member) {
-            if (!$member->actiondone) {
-                return false;
-            }
+        if (count($this->_battle->getActionNeededList()) > 0) {
+            return false;
         }
 
         return true;
- /*
-        // Check if all Members made an action
-        $this->_dbqt->clear();
-
-        $result = $this->_dbqt	->select("*")
-                                ->from("battlemembers")
-                                ->where("battleid=".$this->id)
-                                ->where("actiondone=0")
-                                ->where("( status=".$this->_dbqt->quote(self::MEMBERSTATUS_ACTIVE))
-                                ->where("status=".$this->_dbqt->quote(self::MEMBERSTATUS_INACTIVE). " )", "OR")
-                                ->exec()
-                                ->numRows();
-
-        if ($result == 0) {
-            return true;
-        }
-
-        return false;
-*/
     }
 
     /**
@@ -630,7 +506,23 @@ class Battle
      */
     private function _getSortedBattleTableByCharacterSpeed()
     {
-        // TODO
+        global $em;
+
+        // This is easier with an Query than in PHP
+        $qb = $em->createQueryBuilder();
+
+        $result = $qb   ->select("ba")
+                        ->from("Main:BattleAction", "ba")
+                        ->join("ba.initiator", "bm")
+                        ->where("ba.battle = ?1")->setParameter(1, $this->_battle)
+                        ->andWhere("bm.status = ?2")
+                        ->setParameter(2, Entities\BattleMember::STATUS_ACTIVE)
+                        ->orWhere("bm.status = ?3")
+                        ->setParameter(3, Entities\BattleMember::STATUS_INACTIVE)
+                        ->orderBy("bm.speed", "DESC")
+                        ->addOrderBy("bm.side", "ASC") // attackers before defenders if speed is equal
+                        ->getQuery()->getResult();
+/*
         $this->_dbqt->clear();
 
         $result = $this->_dbqt	->select("*")
@@ -644,7 +536,7 @@ class Battle
                                 ->order("battlemembers.side") // attackers before defenders if speed is equal
                                 ->exec()
                                 ->fetchAll();
-
+*/
         if ($result) {
             return $result;
         } else {
@@ -666,14 +558,14 @@ class Battle
      */
     private function _addHelper()
     {
-        global $user;
+        global $user, $em;
 
         $battleop 		= $this->_getBattleOpString();
         $outputobject 	= Manager\System::getOutputObject();
 
-        if ($battleid = Manager\Battle::getBattleID($user->character)) {
+        if ($battle= Manager\Battle::getBattle($user->character)) {
             // Load the Battle
-            $this->load($battleid);
+            $this->_battle = $battle;
 
             // Battle JavaScript
             $outputobject->addJavaScriptFile("jquery.plugin.timers.js");
@@ -716,7 +608,9 @@ class Battle
             case "join":
                 // Join a Battle
                 if (isset($_GET['battleid']) && isset($_GET['side'])) {
-                    $this->load($_GET['battleid']);
+                    if (!$this->_battle) {
+                        $this->_battle = $em->find("Main:Battle", $_GET['battleid']);
+                    }
                     $this->_battle->addMember($user->character, $_GET['side']);
                 }
 
@@ -742,7 +636,7 @@ class Battle
                 $this->initialize();
 
                 // Automatically add the Creator to the attackers and give him the token
-                $this->_battle->addMember($user->character, self::SIDE_ATTACKERS);
+                $this->_battle->addMember($user->character, \Main\Entities\BattleMember::SIDE_ATTACKERS);
                 $this->_battle->setTokenOwner($user->character);
 
                 $outputobject->refresh(true);
@@ -750,7 +644,7 @@ class Battle
 
             case "use_skill":
                 if (isset($_POST['skill']) && isset($_POST['target'])) {
-                    $this->chooseSkill($user->character, $_POST['target'], ModuleSystem::getSkillModule($_POST['skill']));
+                    $this->chooseSkill($user->character, $_POST['target'], Manager\Battle::getSkill($_POST['skill']));
                 }
 
                 $outputobject->refresh(true);
@@ -782,36 +676,18 @@ class Battle
         // First get the Users which didn't make an action
         $battleMembers = $this->_battle->getActionNeededList();
 
-/*
-        $this->_dbqt->clear();
-
-        $subsel = new QueryTool;
-
-        $characterdata = $this->_dbqt	->select("characterid, status")
-                                        ->from("battlemembers")
-                                        ->where("battleid=".$this->id)
-                                        ->where("characterid NOT IN (" .
-                                            $subsel	->select("initiatorid")
-                                                    ->from("battletable")
-                                                    ->where("battleid=".$this->id)
-                                        . ")")
-                                        ->exec()
-                                        ->fetchAll();
-
-        if ($characterdata) {
-*/
         if ($battleMembers) {
             // Set the default action for the rest of the users
             foreach ($battleMembers as $member) {
 
-                if ($entry->status == self::MEMBERSTATUS_ACTIVE) {
+                if ($member->isActive()) {
                     // First inactive Round
                     $this->chooseSkill($member, "none", ModuleSystem::getSkillModule("wait"));
-                    $this->setMemberStatus($member, self::MEMBERSTATUS_INACTIVE);
-                } elseif ($entry['status'] == self::MEMBERSTATUS_INACTIVE) {
+                    $member->setInactive();
+                } elseif ($member->isInactive()) {
                     // Second inactive Round => exclude Battlemember
-                    $this->setMemberStatus($member, self::MEMBERSTATUS_EXCLUDED);
                     $this->_battle->addMessage($member->displayname . " wurde wegen Inaktivität vom Kampf ausgeschlossen.");
+                    $member->setExcluded();
                 }
             }
         } else {
@@ -844,16 +720,12 @@ class Battle
         // copy data-description
         $ssdata['description']	= $ssfields;
 
-        foreach ($this->getMemberList() as $memberid) {
-            $chartype = Manager\User::getCharacterType($memberid);
+        foreach ($this->getMemberList() as $member) {
 
-            $tempchar = new $chartype;
-            $tempchar->load($memberid);
-
-            $ssdata['data'][$memberid] = array();
+            $ssdata['data'][$member->id] = array();
 
             foreach ($ssfields as $property) {
-                $ssdata['data'][$memberid][$property] = $tempchar->{$property};
+                $ssdata['data'][$member->id][$property] = $member->{$property};
             }
         }
 
@@ -869,24 +741,11 @@ class Battle
     }
 
     /**
-     * Check if this Battle is active
-     * @return bool true if the battle is active, else false
-     */
-    public function isActive()
-    {
-        if ($this->isloaded && $this->active) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * Start the Battle
      */
     public function startBattle()
     {
-        if (!$this->isActive()) {
+        if (!$this->_battle->active) {
             // Create Battle Member Snapshot
             $this->_writeBattleMemberSnapshot();
 
@@ -894,7 +753,7 @@ class Battle
             $this->startTimer();
 
             // Set Active-Flag
-            $this->active = true;
+            $this->_battle->active = true;
         }
     }
 
@@ -907,9 +766,7 @@ class Battle
         $this->startBattle();
 
         // Finish the Battle if there aren't enough BattleMembers to fight
-        $fightmembers = $this->getMemberList(false, false, array(
-                                                                    self::MEMBERSTATUS_ACTIVE,
-                                                                    self::MEMBERSTATUS_INACTIVE) );
+        $fightmembers = $this->_battle->getAllActiveMembers();
 
         if (count($fightmembers) <= 1) {
             $this->finish();
@@ -929,13 +786,10 @@ class Battle
 
         foreach ($battletable as $action) {
             // Load the Skill
-            $skill = ModuleSystem::getSkillModule($action['skill']);
-
-            // Give the Skill the current Battle environment
-            $skill->setBattleEnvironment($this);
+            $skill = Manager\Battle::getSkill($action->skill->name);
 
             // Prepare the Skill
-            $skill->prepare($action);
+            $skill->prepare($this, $action);
 
             // Activate the Skill
             $skill->activate();
@@ -944,7 +798,7 @@ class Battle
             $skill->finish();
 
             // Save Result Message
-            foreach ($skill->resultmessages as $message) {
+            foreach ($skill->getMessages() as $message) {
                 $this->_battle->addMessage($message);
             }
         }
@@ -955,14 +809,11 @@ class Battle
         // Reset Battletimer
         $this->resetTimer();
 
-        // Reset ActionDone-Flag
-        $this->resetActionFlag();
-
         // Reset Battle Table
         $this->resetBattleTable();
 
         // Increase Round Number
-        $this->round = $this->round+1;
+        $this->_battle->round = $this->_battle->round+1;
     }
 
     /**
@@ -1050,31 +901,29 @@ class Battle
     }
 
     /**
-     * Reset ActionFlag
-     */
-    public function resetActionFlag()
-    {
-        // Check if this Battle is initialized
-        if (!$this->_battle) {
-            return false;
-        }
-
-        foreach ($this->_battle->getAllMembers() as $member) {
-            $member->actiondone = false;
-        }
-    }
-
-    /**
      * Reset Battle Table
      */
     public function resetBattleTable()
     {
+        global $em;
+
         // Check if this Battle is initialized
         if (!$this->_battle) {
             return false;
         }
 
-        $this->_battle->actions->clear();
+        foreach ($this->_battle->actions as $action) {
+            $em->remove($action);
+        }
+    }
+
+    /**
+     * Retrieve Battle Round Nr.
+     * @return int
+     */
+    public function getRound()
+    {
+        return $this->_battle->round;
     }
 }
 ?>

@@ -18,7 +18,7 @@ namespace Main\Controller;
  *
  * @package Ruins
  */
-class SkillBase
+abstract class SkillBase
 {
     const TYPE_DEFENSIVE          = "defensive";
     const TYPE_NEUTRAL            = "neutral";
@@ -48,9 +48,15 @@ class SkillBase
 
     /**
      * Battle Entity
-     * @var Main\Entities\Battle
+     * @var Main\Controller\Battle
      */
     protected $battle;
+
+    /**
+     * Skill Result Messages
+     * @var array
+     */
+    private $_messages = array();
 
     /**
      * Module Initialization
@@ -67,16 +73,16 @@ class SkillBase
         $skill->nrOfTargets     = static::getNrOfTargets();
         $skill->possibleTargets = static::getPossibleTargets();
 
-        $em->persist($module);
+        $em->persist($skill);
 
-        $this->entity = $module;
+        $this->entity = $skill;
     }
 
     /**
-    * Return associated Module Entity
-    * @return \Main\Entities\Module Module Entity
+    * Return associated Entity
+    * @return \Main\Entities\Skill Entity
     */
-    public function getModuleEntity()
+    public function getEntity()
     {
         global $em;
 
@@ -123,38 +129,41 @@ class SkillBase
     public function getPossibleTargets() { return parent::POSSIBLE_TARGET_OWN; }
 
     /**
-     * Prepare the skill
-     * @param Main\Entities\Battle $battle Battle Entity
-     * @param Main\Entities\BattleMember $initiator Skill Initiator
+     * Add Result Message
+     * @param string $message
      */
-    public function prepare(\Main\Entities\Battle $battle, \Main\Entities\BattleMember $initiator)
+    public function addMessage($message)
     {
+        $this->_messages[] = $message;
+    }
+
+    /**
+     * Get Result Messages
+     * @return array
+     */
+    public function getMessages()
+    {
+        return $this->_messages;
+    }
+
+    /**
+     * Prepare the skill
+     * @param Main\Controller\Battle $battle Battle Controller
+     * @param Main\Entities\BattleAction $action Battle Action
+     */
+    public function prepare(\Main\Controller\Battle $battle, \Main\Entities\BattleAction $action)
+    {
+        global $em;
+
+        // Set Battle
+        $this->battle    = $battle;
+
         // Set Initiator
-        $this->initiator = $initiator;
+        $this->initiator = $action->initiator;
 
-        // Set Targets
-        if (is_numeric($action['target'])) {
-            $this->targets[] = $action['target'];
-        } elseif ($action['target'] == self::POSSIBLE_TARGET_ALLIES) {
-            $this->targets = $this->battle->getAttackerList();
-        } elseif ($action['target'] == 'defenders') {
-            $this->targets = $this->battle->getDefenderList();
-        } elseif ($action['target'] == 'neutrals') {
-            $this->targets = $this->battle->getNeutralList();
-        } elseif ($action['target'] == 'none') {
-            $this->targets = array();
-        }
-
-        foreach ($this->targets as &$targetid) {
-            if ($user instanceof User && $user->char instanceof Character && $user->char->id == $targetid) {
-                $targetid = $user->char;
-            } else {
-                $chartype = UserSystem::getCharacterType($targetid);
-                $target = new $chartype;
-                $target->load($targetid);
-
-                $targetid = $target;
-            }
+        // Resolve Targets
+        foreach ($action->targets as $targetId) {
+            $this->targets[] = $em->find("Main:BattleMember", $targetId);
         }
 
         $this->prepared = true;
@@ -170,11 +179,6 @@ class SkillBase
     */
     public function finish()
     {
-        if ($this->prepared) {
-            foreach ($this->targets as $target) {
-                $target->save();
-            }
-        }
     }
 
 
