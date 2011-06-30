@@ -54,17 +54,43 @@ $page->output("`n`n*************************************`n`n");
 $mt = microtime(true);
 // *************************************
 
-/* Start ausklammern */
-
-
 // User-Test START
 $page->output("Starting User Test: `n");
 $position = "usertest";
 
 $user = $em->find("Main:User",1);
 
-if ($user->login == "anonymous") {
+if ($user) {
     $page->output("Usertest successful `n");
+}
+
+// User-Test END
+
+// *************************************
+$res = microtime(true) - $mt;
+$page->output("`n"."Dauer: ".$res." seconds");
+$page->output("`n`n*************************************`n`n");
+$mt = microtime(true);
+// *************************************
+
+// User-Test START
+$page->output("Generate secure Password Test: `n");
+$position = "passwordtest";
+
+if (CRYPT_SHA512) $alg = "SHA512";
+elseif (CRYPT_SHA256) $alg = "SHA256";
+elseif (CRYPT_BLOWFISH) $alg = "Blowfish";
+elseif (CRYPT_MD5) $alg = "MD5";
+
+$page->output("Using ".$alg." as hashing algorithm`n`n");
+
+$hashedPassword = $em->getRepository("Main:User")->hashPassword("password");
+
+$page->output($hashedPassword."`n`n");
+$page->output("Now checking if new Passwordhash is correct:`n");
+
+if ($em->getRepository("Main:User")->hashPassword("password", $hashedPassword)) {
+    $page->output("Yes: Passwordtest successful `n");
 }
 
 // User-Test END

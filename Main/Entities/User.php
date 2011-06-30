@@ -26,7 +26,7 @@ class User extends EntityBase
     protected $login;
 
     /**
-     * @Column(length=32)
+     * @Column(length=255)
      * @var string
      */
     protected $password;

@@ -110,7 +110,7 @@ switch ($_GET['op']) {
 
                 // Password
                 if (strlen($_POST['password']) > 0) {
-                    $user->password = md5($_POST['password']);
+                    $user->password = $em->getRepository("Main:User")->hashPassword($_POST['password']);
                 }
                 break;
 

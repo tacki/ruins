@@ -33,9 +33,9 @@ class UserRepository extends EntityRepository
     public function create($username, $password, Character $defaultCharacter=NULL)
     {
         if (!($createUser = $this->getEntityManager()->getRepository("Main:User")->findOneByLogin($username))) {
-            $createUser = new Entities\User;
+            $createUser = new User;
             $createUser->login = $username;
-            $createUser->password = md5($password);
+            $createUser->password = $this->hashPassword($password);
             if ($defaultCharacter) $createUser->character = $defaultCharacter;
             $createUser->settings  = $this->createUserSettings($createUser);
             $this->getEntityManager()->persist($createUser);
@@ -66,21 +66,44 @@ class UserRepository extends EntityRepository
      */
     public function checkPassword($username, $password)
     {
-        $qb = $this->getEntityManager()->createQueryBuilder();
+        $user = $this->getEntityManager()->getRepository("Main:User")->findOneByLogin($username);
 
-        $result = $qb   ->select("user")
-                        ->from("Main:User", "user")
-                        ->where("user.login = ?1")->setParameter(1, $username)
-                        ->andWhere("user.password = ?2")->setParameter(2, md5($password))
-                        ->getQuery()
-                        ->getOneOrNullResult();
-
-        if ($result) {
-            return $result;
+        if ($user && $this->hashPassword($password, $user->password) === $user->password) {
+            return $user;
         } else {
             return false;
         }
 
+    }
+
+    /**
+     * Generate secure, crypted Hash
+     * @param string $password
+     * @param string $salt Keep empty to generate a new Hash
+     * @return string
+     */
+    public function hashPassword($password, $salt=false)
+    {
+        if ($salt === false) {
+            // Generate a new Hash
+            $randomNumber = pow(mt_rand(mt_getrandmax()/2, mt_getrandmax()), 2);
+            $randomString = base_convert($randomNumber, 10, 36);
+
+            if (CRYPT_SHA512 == 1) {
+                return crypt($password, '$6$'.$randomString.'$');
+            }
+            if (CRYPT_SHA256 == 1) {
+                return crypt($password, '$5$'.$randomString.'$');
+            }
+            if (CRYPT_BLOWFISH == 1) {
+                return crypt($password, '$2a$'.$rand(10,30).'$'.$randomstring.'$');
+            }
+            if (CRYPT_MD5 == 1) {
+                return crypt($password, '$1$'.$randomstring.'$');
+            }
+        }
+
+        return crypt($password, $salt);
     }
 
     /**
