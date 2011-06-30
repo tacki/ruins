@@ -7,7 +7,7 @@ use DateTime,
     Main\Layers\Money;
 
 /**
- * @Entity
+ * @Entity(repositoryClass="Main\Repositories\CharacterRepository")
  * @HasLifecycleCallbacks
  * @Table(name="characters")
  */

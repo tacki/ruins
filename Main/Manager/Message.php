@@ -67,10 +67,11 @@ class Message
         } elseif (is_string($receivers) && $receivers != "all") {
             $receiverNameList = explode(",", $receivers);
             foreach ($receiverNameList as $receiver) {
-                $receiverIDlist[] = User::getCharacterID(trim($receiver));
+                $receiver = trim($receiver);
+                $receiverIDlist[] = $em->getRepository("Main:Character")->findByName($receiver)->id;
             }
         } elseif ($receivers == "all") {
-            $receiverIDlist = User::getCharacterList("id");
+            $receiverIDlist = $em->getRepository("Main:Character")->getList(array("id"));
         }
 
         // remove duplicates from List

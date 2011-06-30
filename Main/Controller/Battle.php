@@ -316,6 +316,8 @@ class Battle
 
     public function showResultStats($directoutput=true)
     {
+        global $em;
+
         $outputobject 	= Manager\System::getOutputObject();
 
         $output 	= "";
@@ -328,7 +330,7 @@ class Battle
         }
 
         foreach ($beforeSS['data'] as $memberid => $memberdata) {
-            $output .= Manager\User::getCharacterName($memberid, true) . ": `n";
+            $output .= $em->find("Main:Character", $memberid)->displayname . ": `n";
 
             $member	= $this->_battle->getMember($memberid);
             $status = "";

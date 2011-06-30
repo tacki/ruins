@@ -44,11 +44,11 @@ switch ($_GET['op']) {
 
     default:
     case "online":
-        if (isset($_GET['order']) && isset($_GET['orderDesc'])) {
-            $charlist = Manager\User::getCharacterList($fields, $_GET['order'], $_GET['orderDesc'], true);
+        if (isset($_GET['order']) && isset($_GET['orderDir'])) {
+            $charlist = $em->getRepository("Main:Character")->getList($fields, $_GET['order'], $_GET['orderDir'], true);
         } else {
             // Default to: sort by name, ascending
-            $charlist = Manager\User::getCharacterList($fields, "name", false, true);
+            $charlist = $em->getRepository("Main:Character")->getList($fields, "name", "ASC", true);
         }
         $newURL = clone $page->url;
         $newURL->setParameter("op", "all");
@@ -56,11 +56,11 @@ switch ($_GET['op']) {
         break;
 
     case "all":
-        if (isset($_GET['order']) && isset($_GET['orderDesc'])) {
-            $charlist = Manager\User::getCharacterList($fields, $_GET['order'], $_GET['orderDesc']);
+        if (isset($_GET['order']) && isset($_GET['orderDir'])) {
+            $charlist = $em->getRepository("Main:Character")->getList($fields, $_GET['order'], $_GET['orderDir']);
         } else {
             // Default to: sort by name, ascending
-            $charlist = Manager\User::getCharacterList($fields, "name");
+            $charlist = $em->getRepository("Main:Character")->getList($fields, "name");
         }
         $newURL = clone $page->url;
         $newURL->setParameter("op", "online");
@@ -97,11 +97,11 @@ $page->getTable("characterlist")->load();
 foreach ($headers as $link=>$linkname) {
     $newURL = clone $page->url;
     $newURL->setParameter("order", $link);
-    if (isset($_GET['order']) && isset($_GET['orderDesc'])
-        && $_GET['order'] == $link && $_GET['orderDesc'] == 0) {
-        $newURL->setParameter("orderDesc", 1);
+    if (isset($_GET['order']) && isset($_GET['orderDir'])
+        && $_GET['order'] == $link && $_GET['orderDir'] == "ASC") {
+        $newURL->setParameter("orderDir", "DESC");
     } else {
-        $newURL->setParameter("orderDesc", 0);
+        $newURL->setParameter("orderDir", "ASC");
     }
     $page->nav->addHiddenLink($newURL);
 }
@@ -118,10 +118,10 @@ $page->addJavaScript("
             document.body.style.cursor='default';
         });
         $('th').click(function() {
-            if ($(this).attr('id') == jQuery.query.get('order') && jQuery.query.get('orderDesc') == 0) {
-                location.href = Url.decode(jQuery.query.set('order', $(this).attr('id')).set('orderDesc', 1));
+            if ($(this).attr('id') == jQuery.query.get('order') && jQuery.query.get('orderDir') == 'ASC') {
+                location.href = Url.decode(jQuery.query.set('order', $(this).attr('id')).set('orderDir', 'DESC'));
             } else {
-                location.href = Url.decode(jQuery.query.set('order', $(this).attr('id')).set('orderDesc', 0));
+                location.href = Url.decode(jQuery.query.set('order', $(this).attr('id')).set('orderDir', 'ASC'));
             }
         });
     });

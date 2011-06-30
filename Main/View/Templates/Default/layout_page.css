@@ -57,7 +57,7 @@ body {
 }
 
 /* stats preferences */
-#stats, #userlist {
+#stats, #characterlist {
     float: right;
     width: 14%;
 }
@@ -97,7 +97,7 @@ body {
 }
 
 /* userlist preferences */
-#userlist .userbox {
+#characterlist .characterbox {
     float: right;
     width: 180px;
     margin: 5px ;
@@ -108,7 +108,7 @@ body {
     border-bottom: 2px solid #C9B979;
     border-left: none;
 }
-#userlist .userbox h3 {
+#characterlist .characterbox h3 {
     margin: 0;
     padding: 6px 8px 4px 10px;
     border-bottom: 1px solid #F9E9A9;
@@ -118,11 +118,11 @@ body {
     color: #F9E9A9;
     cursor: default;
 }
-#userlist .userbox .item {
+#characterlist .characterbox .item {
     clear: both;
 
 }
-#userlist .userbox .item .username {
+#characterlist .characterbox .item .character {
     float: left;
     font-weight: bold;
     padding: 2px 4px  0px 10px;

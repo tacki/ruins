@@ -808,6 +808,8 @@ class Page implements OutputObject
      */
     protected function _generateStats()
     {
+        global $em;
+
         // This are all Stats available for the template
         $statitems = array(	// Character
                             "Name"			=>	"displayname",
@@ -873,7 +875,7 @@ class Page implements OutputObject
             }
 
             // get users currently here
-            $userlist = implode(", ", Manager\User::getCharactersAt($this->shortname));
+            $userlist = implode(", ", $em->getRepository("Main:Character")->getListAtPlace($this->shortname));
 
             $snippet->assign("characters_here", BtCode::decode($userlist));
 
@@ -888,25 +890,27 @@ class Page implements OutputObject
     }
 
     /**
-     * Generate Userlist
+     * Generate Character list
      */
-    protected function _generateUserList()
+    protected function _generateCharacterList()
     {
-        $userlist = Manager\User::getCharactersOnline();
-        $usercount = count($userlist);
+        global $em;
 
-        $output = "<div class=\"userbox\">";
-        $output .= "<h3>" . $usercount . " User Online</h3>";
+        $characterlist = $em->getRepository("Main:Character")
+                            ->getList(array("displayname"), "displayname", "ASC", true);
 
-        foreach ($userlist as $username) {
+        $output = "<div class=\"characterbox\">";
+        $output .= "<h3>" . count($characterlist) . " User Online</h3>";
+
+        foreach ($characterlist as $character) {
             $output .= "<div class=\"item\">
-                        <div class= \"username\">" . BtCode::decode($username) . "</div>
+                        <div class= \"character\">" . BtCode::decode($character['displayname']) . "</div>
                         </div>";
         }
 
         $output .= "</div>";
 
-        $this->set("userlist", $output);
+        $this->set("characterlist", $output);
     }
 
     /**
@@ -966,13 +970,13 @@ class Page implements OutputObject
         $this->set("copyright", "");
 
         if ($this->isPublic()) {
-            // public page - generate the UserList
-            $this->_generateUserlist();
+            // public page - generate the CharacterList
+            $this->_generateCharacterList();
             $this->set("stats", "");
         } else {
             // private page - generate Userstats
             $this->_generateStats();
-            $this->set("userlist", "");
+            $this->set("characterlist", "");
         }
 
         if ($this->modulesenabled) Manager\Module::callModule(Manager\Module::EVENT_POST_PAGEGENERATION, $this);

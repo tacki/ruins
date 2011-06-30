@@ -9,16 +9,16 @@ global $em;
 
 //*********************************
 // Create Admin User
-$install_admin_user = Manager\User::createUser("admin", "admin");
+$install_admin_user = $em->getRepository("Main:User")->create("admin", "admin");
 // Create Normal User
-$install_normal_user = Manager\User::createUser("user", "user");
+$install_normal_user = $em->getRepository("Main:User")->create("user", "user");
 
 $em->flush();
 
 
 //*********************************
 // Create Administration Character
-$admin_char = Manager\User::createCharacter("Administrator", $install_admin_user);
+$admin_char = $em->getRepository("Main:Character")->create("Administrator", $install_admin_user);
 $admin_char->displayname = "`#19`bAdministrator`b`#00";
 
 // Add Administrator Char to Admin- and User-Group
@@ -32,7 +32,7 @@ $em->flush();
 
 //*********************************
 // Create Test Character for Admin User
-$test_char = Manager\User::createCharacter("Testcharacter", $install_admin_user);
+$test_char = $em->getRepository("Main:Character")->create("Testcharacter", $install_admin_user);
 $test_char->displayname = "`#59Testcharacter`#00";
 
 // Add User Char to User-Group
@@ -44,7 +44,7 @@ $em->flush();
 
 //*********************************
 // Create Test Character for Normal User
-$test_char2 = Manager\User::createCharacter("Testcharacter2", $install_normal_user);
+$test_char2 = $em->getRepository("Main:Character")->create("Testcharacter2", $install_normal_user);
 $test_char2->displayname = "`#79Testcharacter2`#00";
 
 // Add User Char to User-Group

@@ -7,7 +7,7 @@ use DateTime,
     Common\Controller\SessionStore;
 
 /**
- * @Entity
+ * @Entity(repositoryClass="Main\Repositories\UserRepository")
  * @Table(name="users")
  */
 class User extends EntityBase

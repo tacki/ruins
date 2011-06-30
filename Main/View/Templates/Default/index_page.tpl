@@ -42,10 +42,10 @@
             <!-- Stat Content End -->
         </div>
 
-        <div id="userlist">
-            <!-- Userlist Content Start -->
-            {$userlist}
-            <!-- Userlist Content End -->
+        <div id="characterlist">
+            <!-- CharacterList Content Start -->
+            {$characterlist}
+            <!-- CharacterList Content End -->
         </div>
 
     </div>

@@ -92,8 +92,7 @@ switch ($_GET['op']) {
 
     case "checkpw":
         $page->output("`cChecking Password!`c`n");
-        if ($userid = Manager\User::checkPassword($_POST['username'], $_POST['password'])) {
-            $user = $em->find("Main:User",$userid);
+        if ($user = $em->getRepository("Main:User")->checkPassword($_POST['username'], $_POST['password'])) {
             $user->login();
 
             $user->addDebugLog("Login via User/Pass");

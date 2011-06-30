@@ -37,7 +37,7 @@ switch ($_GET['op']) {
 
         $page->output("Deine Charaktere:`n`n");
 
-        $characters = Manager\User::getUserCharactersList($user);
+        $characters = $em->getRepository("Main:User")->getCharacters($user);
 
         if (!$characters) {
             $page->output("Keinen Charakter gefunden!");
