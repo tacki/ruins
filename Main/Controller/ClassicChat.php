@@ -504,7 +504,7 @@ class ClassicChat
                     $this->_page->output("`n`n");
 
                     // BackButton
-                    $this->_page->nav->addHiddenLink("", $this->_page->url);
+                    $this->_page->nav->addHiddenLink($this->_page->url);
                     $this->_page->addForm("refreshbutton");
                     $this->_page->getForm("refreshbutton")->head("refreshbutton", $this->_page->url);
                     $this->_page->getForm("refreshbutton")->setCSS("button");
@@ -514,7 +514,7 @@ class ClassicChat
                     $this->_page->output("Editieren des letzten Eintrages nicht möglich!`n`n");
 
                     // BackButton
-                    $this->_page->nav->addHiddenLink("", $this->_page->url);
+                    $this->_page->nav->addHiddenLink($this->_page->url);
                     $this->_page->addForm("refreshbutton");
                     $this->_page->getForm("refreshbutton")->head("refreshbutton", $this->_page->url);
                     $this->_page->getForm("refreshbutton")->setCSS("button");
