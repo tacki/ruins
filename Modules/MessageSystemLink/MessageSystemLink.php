@@ -16,6 +16,7 @@ namespace Modules\MessageSystemLink;
 use Main\Controller\Page,
     Main\Controller\Link,
     Main\Manager;
+use Common\Controller\Registry;
 
 /**
  * MessageSystem Module
@@ -41,7 +42,7 @@ class MessageSystemLink extends \Modules\ModuleBase implements \Common\Interface
      */
     public function prePageGeneration(Page $page)
     {
-        global $user;
+        $user = Registry::getUser();
 
         if ($user->character && $user->character->loggedin) {
             // add the Supportlink to the toplist

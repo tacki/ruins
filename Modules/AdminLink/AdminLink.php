@@ -15,6 +15,7 @@
 namespace Modules\AdminLink;
 use Main\Controller\Page,
     Main\Manager;
+use Common\Controller\Registry;
 
 /**
  * Admin Link Module
@@ -54,7 +55,7 @@ class AdminLink extends \Modules\ModuleBase implements \Common\Interfaces\Module
      */
     public function prePageGeneration(Page $page)
     {
-        global $user;
+        $user = Registry::getUser();
 
         if ($user->character && $user->character->loggedin) {
             // Link restricted to Group "Administrator"

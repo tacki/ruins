@@ -14,6 +14,7 @@
  */
 namespace Main\Manager;
 use Main\Entities;
+use Common\Controller\Registry;
 
 /**
  * Modulesystem Class
@@ -85,7 +86,7 @@ class Module
      */
     public static function getModuleListFromDatabase($onlyenabled=false)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $qb = $em->createQueryBuilder();
 
@@ -103,7 +104,7 @@ class Module
      */
     public static function clearModuleList()
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $qb = $em->createQueryBuilder();
 
@@ -117,7 +118,7 @@ class Module
      */
     public function syncModuleListToDatabase()
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $moduleFSList	= self::getModuleListFromFilesystem();
         $moduleDBList	= self::getModuleListFromDatabase();

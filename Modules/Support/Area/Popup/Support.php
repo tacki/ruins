@@ -15,6 +15,7 @@ use Common\Controller\SessionStore,
     Main\Controller\Page,
     Main\Entities,
     Main\Manager;
+use Common\Controller\Registry;
 
 /**
  * Page Content
@@ -141,7 +142,7 @@ switch ($_GET['op']) {
         }
 
         // Collect all Information and write it to the Database
-        global $em;
+        $em = Registry::getEntityManager();
 
         $data = new \Modules\Support\Entities\SupportRequests;
 

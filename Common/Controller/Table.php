@@ -13,6 +13,7 @@
 namespace Common\Controller;
 use Common\Controller\Error,
     Common\Controller\BtCode;
+use Common\Controller\Registry;
 
 class Table extends BaseHTML
 {
@@ -364,7 +365,7 @@ class Table extends BaseHTML
      */
     public function load()
     {
-        global $user;
+        $user = Registry::getUser();
 
         reset($this->_tabAttributes);
 

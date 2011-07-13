@@ -15,6 +15,7 @@
 use Common\Controller\SessionStore,
     Main\Controller\Link,
     Main\Controller\Page;
+use Common\Controller\Registry;
 
 /**
  * Page Content
@@ -25,18 +26,21 @@ if ($userid = SessionStore::get('userid')) {
     if ($user->settings->default_character) {
         $user->character = $user->settings->default_character;
     }
+
+    Registry::setUser($user);
 }
 
 // Page preparation
-$systemConfig->addPublicPage(array(	"common/login",
+$config = Registry::getMainConfig();
+$config->addPublicPage(array(	"common/login",
                                 "common/login&op=checkpw",
                                 "common/logout",
                                 "developer/test",)
                             );
-$systemConfig->addNoCachePage(array(	"common/portal" )
+$config->addNoCachePage(array(	"common/portal" )
                             );
 
-if (array_search($_GET['page'], $systemConfig->get("publicpages")) !== false) {
+if (array_search($_GET['page'], $config->get("publicpages")) !== false) {
     // this is a public page!
     $page = new Page();
 
@@ -46,7 +50,7 @@ if (array_search($_GET['page'], $systemConfig->get("publicpages")) !== false) {
     // this is a private page and a user is loaded
     $page = new Page($user->character);
 
-    if (array_search($_GET['page'], $systemConfig->get("nocachepages")) !== false) {
+    if (array_search($_GET['page'], $config->get("nocachepages")) !== false) {
         $page->disableCaching();
     }
 
@@ -92,4 +96,7 @@ $page->addJavaScriptFile("popup.func.js");
 
 // Set Servertime on Page
 $page->set("servertime", date("H:i:s"));
+
+// Add Page to Registry
+Registry::set('main.output', $page);
 ?>

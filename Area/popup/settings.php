@@ -12,6 +12,7 @@
  */
 use Main\Controller\Link,
     Main\Manager;
+use Common\Controller\Registry;
 
 /**
  * Page Content
@@ -24,6 +25,8 @@ $popup->nav->addLink("Benutzer", "popup=popup/settings&op=user")
            ->addLink("Sonstiges", "popup=popup/settings&op=other");
 
 $popup->addForm("settings");
+
+$em = Registry::getEntityManager();
 
 switch ($_GET['op']) {
 
@@ -117,7 +120,6 @@ switch ($_GET['op']) {
             case "char":
                 // Default Character
                 if (is_numeric($_POST['default_character'])) {
-                    global $em;
                     $user->settings->default_character = $em->find("Main:Character",$_POST['default_character']);
                 } else {
                     $user->settings->default_character = NULL;

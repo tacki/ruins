@@ -23,9 +23,10 @@ use Main\Controller\Link,
     Common\Controller\Form,
     Common\Controller\Table,
     Main\Manager;
+use Common\Controller\Registry;
 
 // CLEAR CACHE
-global $systemCache;
+$systemCache = Registry::get('main.cache');
 $systemCache->deleteAll();
 
 $page->set("headtitle", "Ruins Testpage");
@@ -34,7 +35,7 @@ $page->set("pagetitle", "This is the Ruins Testpage");
 $mt = microtime(true);
 
 // Config-Test START
-global $systemConfig;
+$systemConfig = Registry::getMainConfig();
 
 $page->output("Starting Config Test: `n");
 $position = "configtest";
@@ -239,7 +240,7 @@ $mt = microtime(true);
 // *************************************
 
 // QueryBuilder && Table Test Start
-global $em;
+$em = Registry::getEntityManager();
 
 $position = "tabletest";
 
@@ -710,7 +711,7 @@ $mt = microtime(true);
 // *************************************
 
 // QueryBuilder Start
-global $em;
+$em = Registry::getEntityManager();
 
 $page->output("QueryBuilder Start: `n");
 $position = "QueryBuildertest";

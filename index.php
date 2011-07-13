@@ -16,6 +16,7 @@ use Common\Controller\SessionStore,
     Main\Manager,
     Main\Controller\Link,
     Main\Controller\Page;
+use Common\Controller\Registry;
 
 /**
  * Global Includes
@@ -66,7 +67,7 @@ try {
     }
 
 } catch (Exception $e) {
-    global $systemConfig;
+    $systemConfig = Registry::getMainConfig();
 
     echo "<fieldset style='color: #000; border-color: #FF0000; background-color: #ffd0c0; border-width:thin; border-style:solid'>";
     echo "<legend style='padding:2px 5px'><strong>Exception</strong></legend>";

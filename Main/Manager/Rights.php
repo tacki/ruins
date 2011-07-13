@@ -14,6 +14,7 @@
  */
 namespace Main\Manager;
 use Main\Entities;
+use Common\Controller\Registry;
 
 /**
  * Rights Manager Class
@@ -30,7 +31,7 @@ class Rights
      */
     public static function createGroup($groupname)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $group = $em->getRepository("Main:Group")
                     ->findOneBy(array("name" => $groupname));
@@ -62,7 +63,7 @@ class Rights
      */
     public static function removeGroup($groupname)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $group = self::_getGroupObject($groupname);
 
@@ -119,7 +120,7 @@ class Rights
      */
     private static function _getGroupObject($groupname)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         if ($groupname instanceof Entities\Group) {
             $group = $groupname;

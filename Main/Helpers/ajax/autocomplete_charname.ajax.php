@@ -12,7 +12,7 @@
 /**
  * Namespaces
  */
-use Common\Controller\SessionStore;
+use Common\Controller\Registry;
 
 /**
  * Global Includes
@@ -20,7 +20,7 @@ use Common\Controller\SessionStore;
 require_once("../../../config/dirconf.cfg.php");
 require_once(DIR_BASE."main.inc.php");
 
-global $em;
+$em = Registry::getEntityManager();
 
 $decodestring = rawurldecode($_GET['part']);
 

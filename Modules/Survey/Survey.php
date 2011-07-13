@@ -14,6 +14,7 @@
  */
 namespace Modules\Survey;
 use Main\Controller\Page;
+use Common\Controller\Registry;
 
 /**
  * Survey Module
@@ -50,7 +51,7 @@ class Survey extends \Modules\ModuleBase implements \Common\Interfaces\Module
     */
     public function prePageGeneration(Page $page)
     {
-        global $user;
+        $user = Registry::getUser();
 
         if ($user->character && $user->character->loggedin) {
             $page->nav->addLink("Umfragen", "popup=Popup/Survey", "shared")

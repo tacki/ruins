@@ -16,6 +16,7 @@ use DateTime,
     Main\Entities\Character,
     Main\Entities\User,
     Doctrine\DBAL\Types\Type;
+use Common\Controller\Registry;
 
 /**
  * User Repository
@@ -52,6 +53,8 @@ class CharacterRepository extends Repository
      */
     public function getList(array $fields, $order="id", $orderDir="ASC", $onlineonly=false)
     {
+        $systemConfig = Registry::getMainConfig();
+
         $qb = $this->getEntityManager()->createQueryBuilder();
 
         // Select Fields
@@ -63,8 +66,6 @@ class CharacterRepository extends Repository
 
         // Only Online Characters
         if ($onlineonly) {
-            global $systemConfig;
-
             $qb ->andWhere("char.loggedin = ?1")->setParameter(1, true, Type::BOOLEAN)
                 ->andWhere("char.lastpagehit > ?2")
                 ->setParameter(2, new DateTime("-".$systemConfig->get("connectiontimeout", 15)." minutes"));
@@ -89,7 +90,8 @@ class CharacterRepository extends Repository
      */
     public function getListAtPlace($place)
     {
-        global $user, $systemConfig;
+        $user = Registry::getUser();
+        $systemConfig = Registry::getMainConfig();
 
         $qb = $this->getEntityManager()->createQueryBuilder();
 

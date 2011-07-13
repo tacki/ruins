@@ -15,6 +15,7 @@
 namespace Main\Manager;
 use Main\Entities,
     Common\Controller\SessionStore;
+use Common\Controller\Registry;
 
 /**
  * MessageSystem Class
@@ -40,7 +41,7 @@ class Message
      */
     public static function write(Entities\Character $sender, $receivers, $subject, $text, $status=self::STATUS_UNREAD)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         // Add MessageData (happens only once)
         $messagedata = $em ->getRepository("Main:MessageData")
@@ -122,7 +123,7 @@ class Message
      */
     public static function updateMessageStatus($messageid, $status)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $qb = $em->createQueryBuilder();
 
@@ -145,7 +146,7 @@ class Message
      */
     public static function flushDeleted(Entities\Character $character=NULL)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         // Delete the Messages
         $qb = $em->createQueryBuilder();
@@ -201,7 +202,7 @@ class Message
      */
     public static function getMessage($messageid, $fields=false)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         return $em->find("Main:Message", $messageid);
     }
@@ -216,7 +217,7 @@ class Message
      */
     public static function getInbox(Entities\Character $character, $limit=false, $ascending=true, $status=false)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $qb = $em->createQueryBuilder();
 
@@ -252,7 +253,7 @@ class Message
      */
     public static function getOutbox(Entities\Character $character, $limit=false, $ascending=true, $status=false)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $qb = $em->createQueryBuilder();
 

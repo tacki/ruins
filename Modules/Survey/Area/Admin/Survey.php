@@ -11,6 +11,7 @@
  * Namespaces
  */
 use Modules\Survey\Manager;
+use Common\Controller\Registry;
 
 /**
  * Page Content
@@ -23,6 +24,8 @@ $page->nav->addHead("Umfragen")
           ->addLink("Erstellen", $page->url->base."&op=create")
           ->addHead("Navigation")
           ->addLink("Zurück zur Administration", "page=admin/main");
+
+$em = Registry::getEntityManager();
 
 switch ($_GET['op']) {
 
@@ -173,8 +176,6 @@ switch ($_GET['op']) {
         break;
 
     case "details":
-        global $em;
-
         $poll = $em->find("Modules\Survey\Entities\Poll", $_GET['pollId']);
 
         $page->output("`bUmfragen Detail`b `n`n");
@@ -232,8 +233,6 @@ switch ($_GET['op']) {
         break;
 
     case "activate":
-        global $em;
-
         $poll = $em->find("Modules\Survey\Entities\Poll", $_GET['pollId']);
 
         $poll->active = true;
@@ -242,8 +241,6 @@ switch ($_GET['op']) {
         break;
 
     case "deactivate":
-        global $em;
-
         $poll = $em->find("Modules\Survey\Entities\Poll", $_GET['pollId']);
 
         $poll->active = false;

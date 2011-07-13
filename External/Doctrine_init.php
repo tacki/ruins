@@ -18,6 +18,7 @@ use Doctrine\Common\Cache\ArrayCache,
     Doctrine\ORM\Events,
     Doctrine\ORM\EntityManager,
     Doctrine\DBAL\Types\Type;
+use Common\Controller\Registry;
 
 /**
  * Doctrine Bootstrap
@@ -42,16 +43,17 @@ $doctrineConfig->setProxyDir(DIR_COMMON."Proxies");
 $doctrineConfig->setProxyNamespace('Proxies');
 
 // Set Table Prefix
-global $dbconnect;
+$dbconnect = Registry::get('dbconnect');
 
 $evm = new EventManager;
 $tablePrefix = new \Common\DoctrineExtensions\TablePrefix($dbconnect['prefix']);
 $evm->addEventListener(Events::loadClassMetadata, $tablePrefix);
 
 // Get EntityManager
-global $dbconnect;
+$dbconnect = Registry::get('dbconnect');
 $em = EntityManager::create($dbconnect, $doctrineConfig, $evm);
 
-// Default Options
-//$em->getConnection()->setCharset('utf8');
+// Add EntityManager to Registry
+Registry::setEntityManager($em);
+
 ?>

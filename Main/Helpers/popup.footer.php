@@ -13,6 +13,7 @@
  * Namespaces
  */
 use Main\Controller\Nav;
+use Common\Controller\Registry;
 
 /**
  * Popup Content
@@ -23,6 +24,5 @@ $popup->show();
 // save the user - every change to $user below this line will be doomed :P
 if ($popup->nav instanceof Nav && $popup->nav->isloaded) $popup->nav->save();
 
-global $em;
-$em->flush();
+Registry::getEntityManager()->flush();
 ?>

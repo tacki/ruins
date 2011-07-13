@@ -8,6 +8,11 @@
  * @package Ruins
  */
 
+/**
+ * Namespaces
+ */
+use Common\Controller\Registry;
+
 require_once(DIR_EXTERNAL."Smarty/Smarty.class.php");
 
 // Initialize the Smarty-Class
@@ -21,4 +26,7 @@ $smarty->setTemplateDir(DIR_BASE. Main\Controller\Page::DEFAULT_PUBLIC_TEMPLATE)
 $smarty->compile_dir 	= DIR_TEMP."smarty/templates_c";
 $smarty->cache_dir 		= DIR_TEMP."smarty/cache";
 $smarty->config_dir     = DIR_EXTERNAL."Smarty/configs";
+
+// Add to Registry
+Registry::set('smarty', $smarty);
 ?>

@@ -15,6 +15,7 @@
 namespace Modules\ToolBox;
 use Main\Controller\Page,
     Main\Controller\Link;
+use Common\Controller\Registry;
 
 /**
  * ToolBox Module
@@ -39,7 +40,7 @@ class ToolBox extends \Modules\ModuleBase implements \Common\Interfaces\Module
      */
     public function prePageGeneration(Page $page)
     {
-        global $user;
+        $user = Registry::getUser();
 
         // Tools
 

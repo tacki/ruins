@@ -17,6 +17,7 @@ use Common\Controller\SessionStore,
     Main\Entities\Character,
     Main\Entities,
     Main\Manager;
+use Common\Controller\Registry;
 
 
 /**
@@ -43,14 +44,14 @@ class BattleController extends Controller
      */
     public function __construct()
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         // Set default Repository
         $this->setRepository($em->getRepository("Main:Battle"));
 
         // Add the Helper Functions
         // Only if we have an OutputObject
-        if (Manager\System::getOutputObject()) {
+        if (Registry::get('main.output')) {
             $this->_addHelper();
         }
     }
@@ -60,7 +61,8 @@ class BattleController extends Controller
      */
     public function initialize()
     {
-        global $em, $user;
+        $em = Registry::getEntityManager();
+        $user = Registry::getUser();
 
         // Create Battle Entity
         $battle = $this->getRepository()->create();
@@ -100,7 +102,7 @@ class BattleController extends Controller
      */
     public function leaveBattle(Character $character)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         // Check if this Battle is initialized
         if (!$this->_battle) {
@@ -130,7 +132,7 @@ class BattleController extends Controller
      */
     public function removeBattle()
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         if ($this->_battle) {
             $em->remove($this->_battle);
@@ -200,9 +202,9 @@ class BattleController extends Controller
 
     public function showResultStats($directoutput=true)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
-        $outputobject 	= Manager\System::getOutputObject();
+        $outputobject 	= Registry::get('main.output');
 
         $output 	= "";
 
@@ -251,7 +253,7 @@ class BattleController extends Controller
      */
     public function addBattleNav()
     {
-        $outputobject 	= Manager\System::getOutputObject();
+        $outputobject 	= Registry::get('main.output');
         $battleopstr 	= $this->_getBattleOpString();
 
         $outputobject->nav->addHead("Kampf")
@@ -263,7 +265,7 @@ class BattleController extends Controller
      */
     public function addCreateBattleNav()
     {
-        $outputobject 	= Manager\System::getOutputObject();
+        $outputobject 	= Registry::get('main.output');
         $battleopstr 	= $this->_getBattleOpString();
 
         $outputobject->nav->addHead("Kampf")
@@ -275,7 +277,7 @@ class BattleController extends Controller
      */
     public function addAdminBattleNav()
     {
-        $outputobject 	= Manager\System::getOutputObject();
+        $outputobject 	= Registry::get('main.output');
         $battleopstr 	= $this->_getBattleOpString();
 
         $outputobject->nav->addHead("Admin")
@@ -312,7 +314,7 @@ class BattleController extends Controller
      */
     public function checkBeatenMembers()
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $beatenlist = $this->getBeatenList();
 
@@ -363,7 +365,7 @@ class BattleController extends Controller
      */
     private function _getSortedBattleTableByCharacterSpeed()
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         // This is easier with an Query than in PHP
         $qb = $em->createQueryBuilder();
@@ -415,10 +417,11 @@ class BattleController extends Controller
      */
     private function _addHelper()
     {
-        global $user, $em;
+        $user = Registry::getUser();
+        $em = Registry::getEntityManager();
 
         $battleop 		= $this->_getBattleOpString();
-        $outputobject 	= Manager\System::getOutputObject();
+        $outputobject 	= Registry::get('main.output');
 
         if ($battle = $em->getRepository("Main:Character")->getBattle($user->character)) {
             // Load the Battle
@@ -531,7 +534,7 @@ class BattleController extends Controller
      */
     private function _setDefaultAction()
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         // First get the Users which didn't make an action
         $battleMembers = $this->getRepository()->getActionNeededList();
@@ -622,7 +625,7 @@ class BattleController extends Controller
      */
     public function calculate()
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         // Start the Battle if it isn't already running
         $this->startBattle();
@@ -698,7 +701,7 @@ class BattleController extends Controller
      */
     public function getTimer()
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         if (!$this->_battleTimerControl) {
             $this->_battleTimerControl = $em->getRepository("Main:Timer")
@@ -713,7 +716,8 @@ class BattleController extends Controller
      */
     public function initTimer()
     {
-        global $em, $systemConfig;
+        $em = Registry::getEntityManager();
+        $systemConfig = Registry::getMainConfig();
 
         $this->_battleTimerControl = $em->getRepository("Main:Timer")
                                         ->create(uniqid("battle_"));
@@ -732,7 +736,8 @@ class BattleController extends Controller
      */
     public function resetTimer()
     {
-        global $em, $systemConfig;
+        $em = Registry::getEntityManager();
+        $systemConfig = Registry::getMainConfig();
 
         if (!$this->_battleTimerControl) {
             $this->_battleTimerControl = $em->getRepository("Main:Timer")
@@ -747,7 +752,7 @@ class BattleController extends Controller
      */
     public function startTimer()
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         if (!$this->_battleTimerControl) {
             $this->_battleTimerControl = $em->getRepository("Main:Timer")
@@ -762,7 +767,7 @@ class BattleController extends Controller
      */
     public function stopTimer()
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         if (!$this->_battleTimerControl) {
             $this->_battleTimerControl = $em->getRepository("Main:Timer")

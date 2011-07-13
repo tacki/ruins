@@ -17,6 +17,7 @@ use Main\Manager\System,
     Main\Entities\Battle,
     Main\Entities\BattleMember,
     Main\Entities\Character;
+use Commontr\Controller\Registry;
 
 /**
  * Battlesystem Class
@@ -32,7 +33,7 @@ class BattleManager
      */
     public static function showBattleInformationBox(Battle $battle)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $battleRepository = $em->getRepository("Main:Battle");
 
@@ -79,7 +80,7 @@ class BattleManager
     */
     public static function showBattleMemberlist(Battle $battle)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $battleRepository = $em->getRepository("Main:Battle");
 
@@ -123,7 +124,7 @@ class BattleManager
     */
     public static function showSkillChooser(Character $character, Battle $battle)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $battleRepository = $em->getRepository("Main:Battle");
 

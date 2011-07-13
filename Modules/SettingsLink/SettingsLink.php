@@ -15,6 +15,7 @@
 namespace Modules\SettingsLink;
 use Main\Controller\Page,
     Main\Controller\Link;
+use Common\Controller\Registry;
 
 /**
  * Settings Link Module
@@ -40,7 +41,7 @@ class SettingsLink extends \Modules\ModuleBase implements \Common\Interfaces\Mod
      */
     public function prePageGeneration(Page $page)
     {
-        global $user;
+        $user = Registry::getUser();
 
         if ($user->character && $user->character->loggedin) {
             // add the Supportlink to the toplist

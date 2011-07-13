@@ -14,6 +14,7 @@
  */
 use Main\Controller,
     Main\Manager;
+use Common\Controller\Registry;
 
 /**
  * Global Includes
@@ -21,14 +22,14 @@ use Main\Controller,
 require_once("../../../config/dirconf.cfg.php");
 require_once(DIR_BASE."main.inc.php");
 
-global $systemCache;
+$systemCache = Registry::getMainConfig();
+$em = Registry::getEntityManager();
 
 $battleid	= rawurldecode($_GET['battleid']);
 $charid 	= rawurldecode($_GET['charid']);
 $skillname	= rawurldecode($_GET['skillname']);
 
 if (isset($battleid) && isset($charid) && isset($skillname)) {
-    global $em;
 
     // Load Battleinformation
     $battle     = $em->find("Main:Battle", $battleid);

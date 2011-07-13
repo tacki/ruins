@@ -13,6 +13,7 @@
  * Namespaces
  */
 namespace Common\Controller;
+use Common\Controller\Registry;
 
 /**
  * Caching Class
@@ -28,16 +29,16 @@ class Cache
      */
     public static function retrieve()
     {
-        global $systemConfig;
+        $config = Registry::getMainConfig();
 
         $cacheDriver = false;
 
-        if ($systemConfig instanceof \Common\Controller\Config) {
-            if ($systemConfig->getSub("option", "apc", 0)) {
+        if ($config) {
+            if ($config->getSub("option", "apc", 0)) {
                 return self::_getCacheDriver("apc");
-            } elseif ($systemConfig->get("option", "memcache", 0)) {
+            } elseif ($config->get("option", "memcache", 0)) {
                 return self::_getCacheDriver("memcache");
-            } elseif ($systemConfig->get("option", "xcache", 0)) {
+            } elseif ($config->get("option", "xcache", 0)) {
                 return self::_getCacheDriver("xcache");
             }
         }

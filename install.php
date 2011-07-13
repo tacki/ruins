@@ -446,7 +446,7 @@ switch ($_GET['step']) {
             $needDBinfo = false;
 
             // Try to connect using the given Data
-            global $dbconnect;
+            $dbconnect = Registry::get('dbconnect');
 
             try {
                 $database = \Doctrine\DBAL\DriverManager::getConnection($dbconnect);
@@ -630,7 +630,7 @@ switch ($_GET['step']) {
         $oldtablesfound = false;
 
         // Try to connect using the given Data
-        global $dbconnect;
+        $dbconnect = Registry::get('dbconnect');
         $database = \Doctrine\DBAL\DriverManager::getConnection($dbconnect);
 
         $tablelist = $database->getSchemaManager()->listTables();

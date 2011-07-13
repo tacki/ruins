@@ -2,14 +2,20 @@
 /**
  * Common Tree Initialization
  */
+use Common\Controller\Registry;
+use Common\Controller\Cache;
+use Common\Controller\Config;
+
 
 // Global Config
-$systemConfig = new Common\Controller\Config;
+Registry::setMainConfig(new Config);
 
 // Global Cache
-$systemCache = Common\Controller\Cache::retrieve();
+$systemCache = Cache::retrieve();
+Registry::set("main.cache", $systemCache);
 
 // Activate Cache in Doctrine
+$em = Registry::getEntityManager();
 $em->getConfiguration()->setQueryCacheImpl($systemCache);
 $em->getConfiguration()->setMetadataCacheImpl($systemCache);
 ?>

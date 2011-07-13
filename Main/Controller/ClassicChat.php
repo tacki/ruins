@@ -19,6 +19,7 @@ use Common\Controller\BtCode,
     Main\Entities\Chat,
     Main\Entities\Character,
     DateTime;
+use Common\Controller\Registry;
 
 /**
  * Class to create a simple Chat
@@ -120,7 +121,7 @@ class ClassicChat
      */
     private function _getPage($linesperpage, $pagenr=0)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $qb = $em->createQueryBuilder();
 
@@ -148,7 +149,7 @@ class ClassicChat
      */
     private function _getLastLine($character)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $qb = $em->createQueryBuilder();
 
@@ -176,7 +177,7 @@ class ClassicChat
      */
     private function _getNumberOfPages($linesperpage)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $qb = $em->createQueryBuilder();
 
@@ -203,8 +204,8 @@ class ClassicChat
      */
     private function _addLine($text)
     {
-        global $user;
-        global $em;
+        $user = Registry::getUser();
+        $em = Registry::getEntityManager();
 
         if (!strlen($text)) {
             return false;
@@ -236,7 +237,7 @@ class ClassicChat
      */
     private function _updateLine($id, $text)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $qb = $em->createQueryBuilder();
 
@@ -263,7 +264,7 @@ class ClassicChat
      */
     private function _updateMessageStatus($id, $status)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $qb = $em->createQueryBuilder();
 
@@ -281,7 +282,8 @@ class ClassicChat
      */
     private function _chatlineCensorship($text)
     {
-        global $systemCache, $em;
+        $systemConfig = Registry::getMainConfig();
+        $em = Registry::getEntityManager();
 
         // We check each word separately
         $words = explode(" ", $text);
@@ -323,7 +325,7 @@ class ClassicChat
      */
     private function _pageDisplayWrapper($page)
     {
-        global $user;
+        $user = Registry::getUser();
 
         if (!is_array($page)) {
             return false;
@@ -394,7 +396,7 @@ class ClassicChat
      */
     public function show()
     {
-        global $user;
+        $user = Registry::getUser();
 
         $output		= "";
 

@@ -10,12 +10,17 @@
  */
 
 /**
+* Namespaces
+*/
+use Common\Controller\Registry;
+
+/**
  * Global Includes
  */
 require_once("../../../config/dirconf.cfg.php");
 require_once(DIR_BASE."main.inc.php");
 
-global $em;
+$em = Registry::getEntityManager();
 
 $battleid 	= rawurldecode($_GET['battleid']);
 

@@ -14,6 +14,7 @@ use Main\Controller\Link,
     Main\Controller\TimerController as Timer,
     Main\Controller\Dice,
     Main\Entities;
+use Common\Controller\Registry;
 
 /**
  * Page Content
@@ -22,6 +23,8 @@ $page->set("pagetitle", "Dunsplee Weiher");
 $page->set("headtitle", "Ein Weiher im Dunsplee Wald");
 
 $page->nav->addHead("Navigation");
+
+$em = Registry::getEntityManager();
 
 switch ($_GET['op']) {
 
@@ -139,8 +142,6 @@ switch ($_GET['op']) {
                             zu bewundern... :(`n");
 
             // Insert the Fish into the Database
-            global $em;
-
             $fish = new Entities\Items\Common;
             $fish->name = $fishname;
             $fish->class = "fish";

@@ -22,6 +22,7 @@ use Smarty,
     Common\Controller\Form,
     Common\Controller\Table,
     Common\Controller\SimpleTable;
+use Common\Controller\Registry;
 
 /**
  * Page Class
@@ -128,7 +129,7 @@ class Page implements OutputObject
      */
     function __construct($char=false)
     {
-        global $smarty;
+        $smarty = Registry::get('smarty');
 
         // Set microtime to meassure the page-generation time
         $this->_pagegenerationstarttime = microtime(true);
@@ -808,7 +809,7 @@ class Page implements OutputObject
      */
     protected function _generateStats()
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         // This are all Stats available for the template
         $statitems = array(	// Character
@@ -894,7 +895,7 @@ class Page implements OutputObject
      */
     protected function _generateCharacterList()
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $characterlist = $em->getRepository("Main:Character")
                             ->getList(array("displayname"), "displayname", "ASC", true);

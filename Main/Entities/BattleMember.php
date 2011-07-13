@@ -130,7 +130,10 @@ class BattleMember extends EntityBase
      */
     public function setAction($target, \Main\Controller\SkillBase $skill)
     {
-        global $em;
+/**
+ * 		THIS IS BAD!
+ *
+        $em = Registry::getEntityManager();
 
         if (!$this->hasMadeAnAction()) {
             $newAction             = new \Main\Entities\BattleAction;
@@ -147,6 +150,7 @@ class BattleMember extends EntityBase
             // Set own Action
             $this->action = $newAction;
         }
+*/
     }
 
     /**

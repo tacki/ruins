@@ -13,6 +13,7 @@
  * Namespaces
  */
 use Main\Controller\Nav;
+use Common\Controller\Registry;
 
 /**
  * Page Content
@@ -23,6 +24,5 @@ $page->show();
 // save the user - every change to $user below this line will be doomed :P
 if ($page->nav instanceof Nav) $page->nav->save();
 
-global $em;
-$em->flush();
+Registry::getEntityManager()->flush();
 ?>

@@ -5,6 +5,7 @@
 namespace Main\Entities;
 use DateTime,
     Common\Controller\SessionStore;
+use Common\Controller\Registry;
 
 /**
  * @Entity(repositoryClass="Main\Repositories\UserRepository")
@@ -87,7 +88,7 @@ class User extends EntityBase
      */
     public function logout()
     {
-        global $systemCache;
+        $systemCache = Registry::get('main.cache');
 
         // Unload $user->character
         $this->character = NULL;
@@ -104,7 +105,7 @@ class User extends EntityBase
      */
     public function addIPAddress()
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $lastIP     = $this->iplist->last()->ip;
         $requestIP  = $this->_getRequestTrueIP();
@@ -272,7 +273,7 @@ class User extends EntityBase
      */
     public function checkUniqueID()
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $lastID = $this->uniqueidlist->last()->uniqueid;
 
@@ -319,7 +320,7 @@ class User extends EntityBase
      */
     public function hasConnectionTimeout()
     {
-        global $systemConfig;
+        $systemConfig = Registry::getMainConfig();
 
         // return false if lastpagehit is not set
         if (!isset($this->character->lastpagehit)) {
@@ -342,7 +343,7 @@ class User extends EntityBase
 
     public function addDebugLog($text)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $logentry = new DebugLog;
         $logentry->user = $this;

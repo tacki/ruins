@@ -15,6 +15,7 @@
 use Common\Controller\Error,
     Common\Controller\SessionStore,
     Main\Controller\Popup;
+use Common\Controller\Registry;
 
 /**
  * Popup Content
@@ -23,6 +24,11 @@ use Common\Controller\Error,
 // Load User if in Session
 if ($userid = SessionStore::get('userid')) {
     $user = $em->find("Main:User",$userid);
+    if ($user->settings->default_character) {
+        $user->character = $user->settings->default_character;
+    }
+
+    Registry::setUser($user);
 }
 
 // Page preparation
@@ -72,4 +78,6 @@ $popup->addJavaScriptFile("global.func.js");
 // Set Servertime on Page
 $popup->set("servertime", date("H:i:s"));
 
+// Add Page to Registry
+Registry::set('main.output', $popup);
 ?>

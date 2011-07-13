@@ -15,6 +15,7 @@
 namespace Main\Manager;
 use Common\Controller\SessionStore,
     Main\Entities\Character;
+use Common\Controller\Registry;
 
 /**
  * Item Systemclass
@@ -75,7 +76,7 @@ class Item
      */
     public function getItem($itemid)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $result = $em->find("Main:Item", $itemid);
 
@@ -113,7 +114,7 @@ class Item
      */
     public function getInventoryList($character, $location, $itemclass=false, $order="id", $orderDir="ASC")
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $qb = $em->createQueryBuilder();
 

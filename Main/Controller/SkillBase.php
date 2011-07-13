@@ -12,6 +12,7 @@
  * Namespaces
  */
 namespace Main\Controller;
+use Common\Controller\Registry;
 
 /**
  * Skill Base Class
@@ -63,7 +64,7 @@ abstract class SkillBase
      */
     public function init()
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $skill                  = new \Main\Entities\Skill;
         $skill->classname       = get_called_class();
@@ -84,7 +85,7 @@ abstract class SkillBase
     */
     public function getEntity()
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         if (isset($this->entity)) {
             return $this->entity;
@@ -153,7 +154,7 @@ abstract class SkillBase
      */
     public function prepare(\Main\Controller\BattleController $battle, \Main\Entities\BattleAction $action)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         // Set Battle
         $this->battle    = $battle;

@@ -15,6 +15,7 @@ namespace Main\Repositories;
 use Main\Entities\Bank,
     Main\Entities\Character,
     Main\Layers\Money;
+use Common\Controller\Registry;
 
 /**
  * Class Name
@@ -71,7 +72,7 @@ class BankRepository extends Repository
      */
     public function chargeInterest(Character $character, $bankname)
     {
-        global $systemConfig;
+        $systemConfig = Registry::getMainConfig();
 
         $balance = $this->getAccount($character, $bankname)->balance;
 

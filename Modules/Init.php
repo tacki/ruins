@@ -3,9 +3,15 @@
  * Module Tree Initialization
  */
 
+/**
+ * Namespaces
+ */
+use Common\Controller\Registry;
+use Main\Manager\Module;
+
 // Add Module Entities
 $paths = array();
-foreach (\Main\Manager\Module::getModuleListFromFilesystem() as $module) {
+foreach (Module::getModuleListFromFilesystem() as $module) {
     if (file_exists(DIR_MODULES.$module['directory']."Entities")) {
         $paths[] =  DIR_MODULES.$module['directory']."Entities";
     }
@@ -14,11 +20,11 @@ foreach (\Main\Manager\Module::getModuleListFromFilesystem() as $module) {
 $em->getConfiguration()->getMetadataDriverImpl()->addPaths($paths);
 
 // Add Module Templates
-global $smarty;
+$smarty = Registry::get('smarty');
 
 if ($smarty instanceof \Smarty) {
     $paths = array();
-    foreach (\Main\Manager\Module::getModuleListFromFilesystem() as $module) {
+    foreach (Module::getModuleListFromFilesystem() as $module) {
         if (file_exists(DIR_MODULES.$module['directory']."View/Templates")) {
             $paths[] =  DIR_MODULES.$module['directory']."View/Templates";
         }

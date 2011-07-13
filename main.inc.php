@@ -10,34 +10,43 @@
  */
 
 /**
+ * Namespaces
+ */
+use Doctrine\Common\ClassLoader;
+use Common\Controller\Registry;
+
+/**
  * Set timezone
  */
 date_default_timezone_set('Europe/Berlin');
-
-/**
- * Database-Connection Information
- */
-require_once(DIR_CONFIG."dbconnect.cfg.php");
 
 /**
  * Doctrine ClassLoaders
  */
 require_once(DIR_EXTERNAL."Doctrine/Common/ClassLoader.php");
 
-$classLoader = new \Doctrine\Common\ClassLoader('Doctrine', DIR_EXTERNAL);
+$classLoader = new ClassLoader('Doctrine', DIR_EXTERNAL);
 $classLoader->register();
 
-$classLoader = new \Doctrine\Common\ClassLoader('Symfony', DIR_EXTERNAL . 'Doctrine/');
+$classLoader = new ClassLoader('Symfony', DIR_EXTERNAL . 'Doctrine/');
 $classLoader->register();
 
-$classLoader = new \Doctrine\Common\ClassLoader('Common', DIR_BASE);
+$classLoader = new ClassLoader('Common', DIR_BASE);
 $classLoader->register();
 
-$classLoader = new \Doctrine\Common\ClassLoader('Main', DIR_BASE);
+$classLoader = new ClassLoader('Main', DIR_BASE);
 $classLoader->register();
 
-$classLoader = new \Doctrine\Common\ClassLoader('Modules', DIR_BASE);
+$classLoader = new ClassLoader('Modules', DIR_BASE);
 $classLoader->register();
+
+/**
+ * Register Database-Connection Information
+ */
+require_once(DIR_CONFIG."dbconnect.cfg.php");
+
+Registry::set('dbconnect', $dbconnect);
+
 
 /**
  * Doctrine Initialization

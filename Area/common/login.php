@@ -14,6 +14,7 @@ use Common\Controller\SessionStore,
     Main\Entities\DebugLogEntity,
     Main\Controller\Link,
     Main\Manager;
+use Common\Controller\Registry;
 
 /**
  * Page Content
@@ -119,7 +120,7 @@ switch ($_GET['op']) {
         $result = Manager\OpenID::evalTrustResult("page=common/login&op=checkopenid2");
         error_reporting($oldlevel);
         if (is_array($result) && $result['result'] == "ok") {
-            global $em;
+            $em = Registry::getEntityManager();
             $qb = $em->createQueryBuilder();
 
             $result = $qb   ->select("openid")

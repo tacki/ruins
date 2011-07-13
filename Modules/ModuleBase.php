@@ -14,6 +14,7 @@
 namespace Modules;
 use ReflectionClass,
     Main\Controller\Page;
+use Common\Controller\Registry;
 
 /**
  * Module Base Class
@@ -33,7 +34,8 @@ class ModuleBase
      */
     public function init()
     {
-        global $em;
+        $em = Registry::getEntityManager();
+
         $calledClass     = get_called_class();
         $reflectionClass = new ReflectionClass($calledClass);
         $directory       = basename(dirname($reflectionClass->getFilename())) . "/";
@@ -55,7 +57,7 @@ class ModuleBase
      */
     public function getEntity()
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         if (isset($this->entity)) {
             return $this->entity;

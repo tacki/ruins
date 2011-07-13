@@ -4,8 +4,9 @@
  */
 use Main\Manager,
     Main\Entities;
+use Common\Controller\Registry;
 
-global $em;
+$em = Registry::getEntityManager();
 
 //*********************************
 // Create Admin User

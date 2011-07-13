@@ -13,6 +13,7 @@
  */
 namespace Modules\Survey\Manager;
 use DateTime;
+use Common\Controller\Registry;
 
 /**
  * Survey Manager
@@ -26,7 +27,7 @@ class Survey
      */
     public static function getPoll($id)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         return $em->find("Modules\Survey\Entities\Poll", $id);
     }
@@ -38,7 +39,7 @@ class Survey
     */
     public static function getAnswer($id)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         return $em->find("Modules\Survey\Entities\Answer", $id);
     }
@@ -50,7 +51,7 @@ class Survey
      */
     public static function getAllPolls($active=true)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $qb = $em->createQueryBuilder();
 
@@ -145,7 +146,8 @@ class Survey
      */
     public static function addPoll($question, $description, DateTime $deadline)
     {
-        global $em, $user;
+        $em = Registry::getEntityManager();
+        $user = Registry::getUser();
 
         $poll = new \Modules\Survey\Entities\Poll;
         $poll->question = $question;
@@ -165,7 +167,7 @@ class Survey
     */
     public static function deletePoll($pollId)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $poll = $em->find("Modules\Survey\Entities\Poll", $pollId);
 
@@ -182,7 +184,7 @@ class Survey
      */
     public static function addAnswer(\Modules\Survey\Entities\Poll $poll, $answer)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $answerObject = new \Modules\Survey\Entities\Answer();
         $answerObject->poll = $poll;
@@ -211,7 +213,7 @@ class Survey
      */
     public static function hasVoted(\Main\Entities\Character $character, \Modules\Survey\Entities\Poll $poll)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $qb = $em->createQueryBuilder();
 
@@ -234,7 +236,8 @@ class Survey
      */
     public static function vote($pollId, $answerId)
     {
-        global $em, $user;
+        $em = Registry::getEntityManager();
+        $user = Registry::getUser();
 
         if (self::hasVoted($user->character, self::getPoll($pollId))) {
             return false;
@@ -255,7 +258,7 @@ class Survey
      */
     public static function removeVote($voteID)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $result = $em->find("Modules\Survey\Entities\Vote", "vote", $voteID);
 

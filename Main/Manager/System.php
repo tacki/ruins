@@ -16,6 +16,7 @@ namespace Main\Manager;
 use Common\Controller\SessionStore,
     Common\Controller\Error,
     Main\Entities;
+use Common\Controller\Registry;
 
 /**
  * System Class
@@ -35,7 +36,7 @@ class System
      */
     public static function addSite($name, $description, array $coords)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         if (!($site = $em->getRepository("Main:Site")->findOneByName($name))) {
             $site = new Entities\Site;
@@ -66,7 +67,7 @@ class System
      */
     public static function addSiteConnection(Entities\Site $site1, Entities\Site $site2, $difficulty=0)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         if (!($wp_conn = $em->getRepository("Main:WaypointConnection")->findOneBy(array("start" => $site1->waypoint->id, "end" => $site2->waypoint->id)))) {
             $wp_conn             = new Entities\WaypointConnection;
@@ -88,7 +89,7 @@ class System
      */
     public static function addAdminPage($name, $category, $page)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         if (!($em->getRepository("Main:Administration")->findOneBy(array("category" => $category, "page" => $page)))) {
             $administration           = new Entities\Administration;
@@ -107,7 +108,7 @@ class System
      */
     public static function getAdminCategories()
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $qb = $em->createQueryBuilder();
 
@@ -130,7 +131,7 @@ class System
      */
     public static function getAdminCategoryPages($category)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         return $em->getRepository("Main:Administration")->findByCategory($category);
     }
@@ -163,7 +164,7 @@ class System
      */
     public static function getOverloadedFilePath($path, $htmlpath=false)
     {
-        global $systemCache;
+        $systemCache = Registry::get('main.cache');
 
         if (!($result = $systemCache->fetch("overloadedFilePath_".md5($path)))) {
             // First Check Module-Directory
@@ -361,8 +362,8 @@ class System
 
     public static function addNews($title, $body, $area=false)
     {
-        global $em;
-        global $user;
+        $em = Registry::getEntityManager();
+        $user = Registry::getUser();
 
         $newnews = new Entities\News;
         $newnews->title   = $title;
@@ -376,7 +377,7 @@ class System
 
     public static function getNews($area="GLOBAL", $orderDir="DESC")
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $qb = $em->createQueryBuilder();
 
@@ -399,7 +400,7 @@ class System
      */
     public static function translate($name, $return_unknown=false)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         // get HumanReadable from Systemname
         $qb = $em->createQueryBuilder();

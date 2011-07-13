@@ -18,6 +18,7 @@ use Main\Entities,
     Common\Controller\BaseObject,
     Main\Manager,
     Common\Interfaces\OutputObject;
+use Common\Controller\Registry;
 
 /**
  * Nav Class
@@ -338,7 +339,7 @@ class Nav
      */
     public function checkRequestURL($url=false, $noclear=false)
     {
-        global $user;
+        $user = Registry::getUser();
 
         if (!$url) {
             $url = $this->getRequestURL();
@@ -365,7 +366,8 @@ class Nav
      */
     public function redirect($url)
     {
-        global $em, $systemConfig;
+        $em = Registry::getEntityManager();
+        $systemConfig = Registry::getMainConfig();
 
         // Add Link to Navigation
         $this->add(new Link("Redirection", $url));

@@ -4,6 +4,7 @@
  */
 namespace Main\Entities\Items;
 use Main\Entities\Item;
+use Common\Controller\Registry;
 
 /**
  * @Entity
@@ -59,7 +60,7 @@ class Armor extends Item
         $outputText .= "</span>";
 
         if ($output) {
-            $outputobject = Manager\System::getOutputObject();
+            $outputobject = Registry::get('main.output');
             $outputobject->output($outputText, true);
         } else {
             return $outputText;

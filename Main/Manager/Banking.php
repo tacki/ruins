@@ -15,6 +15,7 @@
 namespace Main\Manager;
 use Main\Entities,
     Main\Layers\Money;
+use Common\Controller\Registry;
 
 /**
  * Banking Systemclass
@@ -43,7 +44,7 @@ class Banking
      */
     public function getAccount(Entities\Character $character, $bankname)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $qb = $em->createQueryBuilder();
 
@@ -78,7 +79,7 @@ class Banking
      */
     public function createAccount(Entities\Character $character, $bankname)
     {
-        global $em;
+        $em = Registry::getEntityManager();
 
         $newAccount = new Entities\Bank;
         $newAccount->name = $bankname;
@@ -98,7 +99,7 @@ class Banking
      */
     public function chargeInterest(Entities\Character $character, $bankname)
     {
-        global $systemConfig;
+        $systemConfig = Registry::getMainConfig();
 
         $balance = self::getBalance($character, $bankname);
 
