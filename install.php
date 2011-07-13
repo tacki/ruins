@@ -8,6 +8,12 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @package Ruins
  */
+
+/**
+ * Namespaces
+ */
+use Main\Manager\ModuleManager;
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en">
@@ -666,7 +672,7 @@ switch ($_GET['step']) {
         echo "<div class='checkfor'>Sync ModuleList to Database ... </div>";
 
         // Sync Module List
-        if (Main\Manager\Module::syncModuleListToDatabase()) {
+        if (ModuleManager::syncModuleListToDatabase()) {
             echo "<div class='ok'>OK!</div>";
         }
 
@@ -702,7 +708,7 @@ switch ($_GET['step']) {
                           );
 
         // Add possible Module-Initfiles
-        foreach(Main\Manager\Module::getModuleListFromDatabase() as $module) {
+        foreach(ModuleManager::getModuleListFromDatabase() as $module) {
             $initFiles[] = DIR_MODULES . $module->basedir."Setup/Initial.php";
         }
 

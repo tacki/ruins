@@ -13,7 +13,7 @@
  * Namespaces
  */
 namespace Common\Controller;
-use Common\Interfaces\OutputObject;
+use Common\Interfaces\OutputObjectInterface;
 
 /**
  * Basic HTML Class
@@ -47,7 +47,7 @@ class BaseHTML
      */
     public function __construct($outputclass=false)
     {
-        if ($outputclass instanceof OutputObject) {
+        if ($outputclass instanceof OutputObjectInterface) {
             $this->_outputclass = $outputclass;
         }
 

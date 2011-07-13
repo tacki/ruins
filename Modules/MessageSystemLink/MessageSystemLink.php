@@ -14,9 +14,9 @@
  */
 namespace Modules\MessageSystemLink;
 use Main\Controller\Page;
-use Main\Manager\System as SystemManager;
+use Main\Manager\SystemManager;
 use Modules\ModuleBase;
-use Common\Interfaces\Module as ModuleInterface;
+use Common\Interfaces\ModuleInterface;
 use Common\Controller\Registry;
 
 /**

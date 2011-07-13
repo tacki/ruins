@@ -7,7 +7,7 @@
  * Namespaces
  */
 use Common\Controller\Registry;
-use Main\Manager\Module as ModuleManager;
+use Main\Manager\ModuleManager;
 
 // Add Module Entities
 $paths = array();

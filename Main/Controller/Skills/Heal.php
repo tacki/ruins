@@ -9,8 +9,10 @@
 
 namespace Main\Controller\Skills;
 use Main\Controller\Dice;
+use Main\Controller\SkillBase
+use Common\Interfaces\SkillInterface;
 
-class Heal extends \Main\Controller\SkillBase implements \Common\Interfaces\Skill
+class Heal extends SkillBase implements SkillInterface
 {
     public function getName() { return "Heilen"; }
 

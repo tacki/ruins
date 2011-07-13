@@ -15,9 +15,9 @@
 namespace Modules\ToolBox;
 use Main\Controller\Page;
 use Main\Controller\Link;
-use Main\Manager\System as SystemManager;
+use Main\Manager\SystemManager;
 use Modules\ModuleBase;
-use Common\Interfaces\Module as ModuleInterface;
+use Common\Interfaces\ModuleInterface;
 use Common\Controller\Registry;
 
 /**

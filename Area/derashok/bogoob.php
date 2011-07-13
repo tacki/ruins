@@ -12,7 +12,7 @@
  */
 use Main\Controller\Link;
 use Common\Controller\Registry;
-use Main\Manager\Item as ItemManager;
+use Main\Manager\ItemManager;
 
 /**
  * Page Content

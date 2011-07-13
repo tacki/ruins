@@ -14,10 +14,10 @@
  */
 namespace Main\Controller;
 use Smarty;
-use Main\Manager\System as SystemManager;
-use Main\Manager\Item as ItemManager;
-use Main\Manager\Module as ModuleManager;
-use Common\Interfaces\OutputObject;
+use Main\Manager\SystemManager;
+use Main\Manager\ItemManager;
+use Main\Manager\ModuleManager;
+use Common\Interfaces\OutputObjectInterface;
 use Common\Controller\BaseObject;
 use Common\Controller\BtCode;
 use Common\Controller\Error;
@@ -32,7 +32,7 @@ use Common\Controller\Registry;
  * Page-Class, the Heart of the Template-System
  * @package Ruins
  */
-class Page implements OutputObject
+class Page implements OutputObjectInterface
 {
     /**
     * Class constants

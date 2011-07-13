@@ -4,7 +4,7 @@
  */
 namespace Main\Entities;
 use Main\Layers\Money,
-    Main\Manager\Item as ItemManager;
+    Main\Manager\ItemManager;
 
 /**
  * @Entity

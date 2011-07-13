@@ -16,7 +16,7 @@ namespace Modules\ToolTip;
 use Main\Controller\Page;
 use Main\Controller\Link;
 use Modules\ModuleBase;
-use Common\Interfaces\Module as ModuleInterface;
+use Common\Interfaces\ModuleInterface;
 
 /**
  * ToolTip Module

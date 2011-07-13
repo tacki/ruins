@@ -16,8 +16,8 @@ namespace Main\Controller;
 use Main\Entities\Group;
 use Common\Controller\Error;
 use Common\Controller\BaseObject;
-use Main\Manager\System as SystemManager;
-use Common\Interfaces\OutputObject;
+use Main\Manager\SystemManager;
+use Common\Interfaces\OutputObjectInterface;
 use Common\Controller\Registry;
 
 /**
@@ -42,7 +42,7 @@ class Nav
 
     /**
      * Output Object
-     * @var OutputObject
+     * @var OutputObjectInterface
      */
     private $_outputObject;
 
@@ -67,7 +67,7 @@ class Nav
     /**
      * constructor - load the default values and initialize the attributes
      * @param Entities\Character $char Character Object
-     * @param OutputObject $outputobject Parent Outputobject
+     * @param OutputObjectInterface $outputobject Parent Outputobject
      */
     function __construct($character=false, $outputobject=false)
     {
@@ -84,7 +84,7 @@ class Nav
             $this->enableValidation();
         }
 
-        if ($outputobject instanceof OutputObject) {
+        if ($outputobject instanceof OutputObjectInterface) {
             $this->_outputObject = $outputobject;
         } else {
             $this->_outputObject = false;
@@ -160,7 +160,7 @@ class Nav
             if ($this->_outputObject) {
                 $this->_outputObject->output("<a href='?". $url . "'>" . $text . "</a>", true);
             } else {
-                throw new Error("\$this->_outputObject is not usable here, because it's not an instance of OutputObject!");
+                throw new Error("\$this->_outputObject is not usable here, because it's not an instance of OutputObjectInterface!");
             }
         }
 

@@ -11,8 +11,8 @@
  * Namespaces
  */
 use Main\Controller\Link;
-use Main\Manager\Item as ItemManager;
-use Main\Manager\System as SystemManager;
+use Main\Manager\ItemManager;
+use Main\Manager\SystemManager;
 use Main\Entities\Items\Armor;
 use Main\Entities\Items\Weapon;
 

@@ -11,7 +11,7 @@
  * Namespaces
  */
 use Main\Controller\Link;
-use Main\Manager\System as SystemManager;
+use Main\Manager\SystemManager;
 
 /**
  * Page Content

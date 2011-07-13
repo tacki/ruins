@@ -23,7 +23,7 @@ use Common\Controller\Registry;
  * Class to manage all kind of Items
  * @package Ruins
  */
-class Item
+class ItemManager
 {
     const CLASS_DEFAULT        = "default";
     const CLASS_WEAPON         = "weapon";

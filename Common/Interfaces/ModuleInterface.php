@@ -17,7 +17,7 @@ use Main\Controller\Page;
  * Interface for Modules
  * @package Ruins
  */
-interface Module
+interface ModuleInterface
 {
     /**
      * Module initialization

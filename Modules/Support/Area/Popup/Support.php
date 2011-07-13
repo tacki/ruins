@@ -14,7 +14,7 @@ use Common\Controller\SessionStore;
 use Main\Controller\Link;
 use Main\Controller\Page;
 use Modules\Support\Entities\SupportRequests;
-use Main\Manager\System as SystemManager;
+use Main\Manager\SystemManager;
 use Common\Controller\Registry;
 
 /**

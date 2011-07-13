@@ -2,9 +2,9 @@
 /**
  * Namespaces
  */
-use Main\Manager\Rights as RightsManager;
-use Main\Manager\System as SystemManager;
-use Main\Manager\Item as ItemManager;
+use Main\Manager\RightsManager;
+use Main\Manager\SystemManager;
+use Main\Manager\ItemManager;
 use Main\Entities\Items\Weapon;
 use Main\Entities\Items\Armor;
 use Common\Controller\Registry;
@@ -86,11 +86,11 @@ $em->flush();
 //*********************************
 // Create Test-Armor
 $armors = array (
-                   Manager\Item::CLASS_ARMOR_HEAD  => "Testrüstung (Kopf)",
-                   Manager\Item::CLASS_ARMOR_ARMS  => "Testrüstung (Arm)",
-                   Manager\Item::CLASS_ARMOR_CHEST => "Testrüstung (Brust)",
-                   Manager\Item::CLASS_ARMOR_LEGS  => "Testrüstung (Beine)",
-                   Manager\Item::CLASS_ARMOR_FEET  => "Testrüstung (Füße)",
+                   ItemManager::CLASS_ARMOR_HEAD  => "Testrüstung (Kopf)",
+                   ItemManager::CLASS_ARMOR_ARMS  => "Testrüstung (Arm)",
+                   ItemManager::CLASS_ARMOR_CHEST => "Testrüstung (Brust)",
+                   ItemManager::CLASS_ARMOR_LEGS  => "Testrüstung (Beine)",
+                   ItemManager::CLASS_ARMOR_FEET  => "Testrüstung (Füße)",
                 );
 
 foreach ($armors as $armorclass => $armorname) {

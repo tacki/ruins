@@ -22,8 +22,8 @@ use Common\Controller\SessionStore;
 use Common\Controller\StackObject;
 use Common\Controller\Form;
 use Common\Controller\Table;
-use Main\Manager\System as SystemManager;
-use Main\Manager\Rights as RightsManager;
+use Main\Manager\SystemManager;
+use Main\Manager\RightsManager;
 use Main\Manager\MessageManager;
 use Common\Controller\Registry;
 

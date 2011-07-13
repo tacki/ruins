@@ -13,7 +13,7 @@
 use Common\Controller\SessionStore;
 use Main\Entities\DebugLogEntity;
 use Main\Controller\Link;
-use Main\Manager\OpenID as OpenIDManager;
+use Main\Manager\OpenIDManager;
 use Common\Controller\Registry;
 
 /**

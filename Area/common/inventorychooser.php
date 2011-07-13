@@ -11,7 +11,7 @@
  * Namespaces
  */
 use Main\Controller\Link;
-use Main\Manager\Item as ItemManager;
+use Main\Manager\ItemManager;
 
 /**
  * Page Content

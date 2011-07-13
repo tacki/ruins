@@ -23,7 +23,7 @@ use Common\Controller\Registry;
  * Class to manage Group- and Characterrights
  * @package Ruins
  */
-class Rights
+class RightsManager
 {
     /**
      * Create a Group

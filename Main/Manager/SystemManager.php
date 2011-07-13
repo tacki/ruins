@@ -15,14 +15,14 @@
 namespace Main\Manager;
 use Common\Controller\SessionStore;
 use Common\Controller\Error;
-use Common\Interfaces\OutputObject;
+use Common\Interfaces\OutputObjectInterface;
 use Main\Entities\Administration;
 use Main\Entities\News;
 use Main\Entities\Site;
 use Main\Entities\Waypoint;
 use Main\Entities\WaypointConnection;
-use Main\Manager\Module as ModuleManager;
-use Main\Manager\System as SystemManager;
+use Main\Manager\ModuleManager;
+use Main\Manager\SystemManager;
 use Common\Controller\Registry;
 
 /**
@@ -31,7 +31,7 @@ use Common\Controller\Registry;
  * Class to manage Cities and other Environmentals
  * @package Ruins
  */
-class System
+class SystemManager
 {
 
     /**
@@ -152,9 +152,9 @@ class System
         global $page;
         global $popup;
 
-        if ($page instanceof OutputObject) {
+        if ($page instanceof OutputObjectInterface) {
             $outputobject =	$page;
-        } elseif ($popup instanceof OutputObject) {
+        } elseif ($popup instanceof OutputObjectInterface) {
             $outputobject = $popup;
         } else {
             $outputobject = false;

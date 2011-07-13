@@ -13,8 +13,8 @@
  * Namespaces
  */
 use Common\Controller\SessionStore;
-use Main\Manager\System as SystemManager;
-use Main\Manager\Module as ModuleManager;
+use Main\Manager\SystemManager;
+use Main\Manager\ModuleManager;
 use Main\Controller\Link;
 use Main\Controller\Page;
 use Common\Controller\Registry;

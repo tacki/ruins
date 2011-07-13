@@ -16,7 +16,7 @@ namespace Common\Interfaces;
  * Interface for Output Objects
  * @package Ruins
  */
-interface OutputObject
+interface OutputObjectInterface
 {
     /**
      * Output-Wrapper

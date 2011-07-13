@@ -14,6 +14,8 @@
  */
 namespace Modules\Support;
 use Main\Controller\Page;
+use Modules\ModuleBase;
+use Common\Interfaces\ModuleInterface;
 
 /**
  * Support Module
@@ -21,7 +23,7 @@ use Main\Controller\Page;
  * Add a Supportlink to every Page
  * @package Ruins
  */
-class Support extends \Modules\ModuleBase implements \Common\Interfaces\Module
+class Support extends ModuleBase implements ModuleInterface
 {
     /**
      * @see Common\Interfaces.Module::getName()

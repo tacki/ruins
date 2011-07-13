@@ -12,7 +12,7 @@
  */
 use Main\Controller\Link;
 use Main\Controller\Page;
-use Main\Manager\System as SystemManager;
+use Main\Manager\SystemManager;
 
 /**
  * Page Content

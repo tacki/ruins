@@ -14,8 +14,9 @@
  */
 namespace Modules\Survey;
 use Main\Controller\Page;
+use Main\Manager\SystemManager;
 use Modules\ModuleBase;
-use Common\Interfaces\Module as ModuleInterface;
+use Common\Interfaces\ModuleInterface;
 use Common\Controller\Registry;
 
 /**
@@ -35,7 +36,7 @@ class Survey extends ModuleBase implements ModuleInterface
         // Call init of Parent
         parent::init();
 
-        \Main\Manager\System::addAdminPage("Umfragen", "Module", "page=Admin/Survey");
+        SystemManager::addAdminPage("Umfragen", "Module", "page=Admin/Survey");
     }
 
     /**

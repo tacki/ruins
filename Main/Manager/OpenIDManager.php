@@ -32,7 +32,7 @@ define("OPENID_STORAGE_DIR",	DIR_TEMP."openid");
  * Class to handle OpenID-Checks etc.
  * @package Ruins
  */
-class OpenID
+class OpenIDManager
 {
     /**
      * Get Protocol (HTTP/HTTPS)

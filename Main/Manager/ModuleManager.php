@@ -13,6 +13,7 @@
  * Namespaces
  */
 namespace Main\Manager;
+use Main\Manager\SystemManager;
 use Common\Controller\Registry;
 use Doctrine\DBAL\Types\Type;
 
@@ -22,7 +23,7 @@ use Doctrine\DBAL\Types\Type;
  * Class to manage Modules
  * @package Ruins
  */
-class Module
+class ModuleManager
 {
     /**
      * Class Constants
@@ -52,7 +53,7 @@ class Module
     public static function getModuleListFromFilesystem()
     {
         $result = array();
-        $dircontent = System::getDirList(DIR_MODULES);
+        $dircontent = SystemManager::getDirList(DIR_MODULES);
 
         foreach($dircontent['directories'] as $dirname) {
             // Generate the Classname of the Module-Init-File

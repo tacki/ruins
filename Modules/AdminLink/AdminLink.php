@@ -15,9 +15,9 @@
 namespace Modules\AdminLink;
 use Main\Controller\Page;
 use Modules\ModuleBase;
-use Common\Interfaces\Module as ModuleInterface;
+use Common\Interfaces\ModuleInterface;
 use Common\Controller\Registry;
-use Main\Manager\Rights as RightsManager;
+use Main\Manager\RightsManager;
 
 /**
  * Admin Link Module

@@ -13,7 +13,7 @@
  */
 namespace Main\Repositories;
 use Exception;
-use Main\Manager\System;
+use Main\Manager\SystemManager;
 
 
 /**
@@ -38,7 +38,7 @@ class SkillRepository extends Repository
     public function getListFromFilesystem()
     {
         $result = array();
-        $dircontent = System::getDirList(DIR_MAIN."Controller/Skills");
+        $dircontent = SystemManager::getDirList(DIR_MAIN."Controller/Skills");
 
         foreach ($dircontent['files'] as $filename) {
             if (strtolower(substr($filename, -4,4) == ".php")) {

@@ -13,7 +13,7 @@
  * Namespaces
  */
 namespace Main\Manager;
-use Main\Manager\System;
+use Main\Manager\SystemManager;
 use Main\Entities\Battle;
 use Main\Entities\BattleMember;
 use Main\Entities\Character;
@@ -57,21 +57,21 @@ class BattleManager
         }
 
         if (!$battle->isActive()) {
-            $target = System::getOutputObject()->url->base."&battle_op=join&side=".BattleMember::SIDE_ATTACKERS."&battleid=".$battle->id;
+            $target = SystemManager::getOutputObject()->url->base."&battle_op=join&side=".BattleMember::SIDE_ATTACKERS."&battleid=".$battle->id;
             $output .= "<a href='?".$target."'>Angreifen</a>";
-            System::getOutputObject()->nav->addHiddenLink($target);
+            SystemManager::getOutputObject()->nav->addHiddenLink($target);
             $output .= " || ";
-            $target = System::getOutputObject()->url->base."&battle_op=join&side=".BattleMember::SIDE_DEFENDERS."&battleid=".$battle->id;
+            $target = SystemManager::getOutputObject()->url->base."&battle_op=join&side=".BattleMember::SIDE_DEFENDERS."&battleid=".$battle->id;
             $output .= "<a href='?".$target."'>Verteidigen</a>";
-            System::getOutputObject()->nav->addHiddenLink($target);
+            SystemManager::getOutputObject()->nav->addHiddenLink($target);
             $output .= " || ";
         }
-        $target = System::getOutputObject()->url->base."&battle_op=join&side=".BattleMember::SIDE_NEUTRALS."&battleid=".$battle->id;
+        $target = SystemManager::getOutputObject()->url->base."&battle_op=join&side=".BattleMember::SIDE_NEUTRALS."&battleid=".$battle->id;
         $output .= "<a href='?".$target."'>Zuschauen</a>";
-        System::getOutputObject()->nav->addHiddenLink($target);
+        SystemManager::getOutputObject()->nav->addHiddenLink($target);
         $output .= "</div>";
 
-        System::getOutputObject()->output($output, true);
+        SystemManager::getOutputObject()->output($output, true);
     }
 
     /**
@@ -114,7 +114,7 @@ class BattleManager
             $output .= "`n";
         }
 
-        System::getOutputObject()->output($output, true);
+        SystemManager::getOutputObject()->output($output, true);
     }
 
     /**
@@ -140,12 +140,12 @@ class BattleManager
             $output .= "Warte auf andere Kämpfer...";
         } else {
             // Show the Skillchooser
-            $skillForm = System::getOutputObject()->addForm("skillchooser");
+            $skillForm = SystemManager::getOutputObject()->addForm("skillchooser");
 
-            $skillForm->head("skillchooser", System::getOutputObject()->url->base."&battle_op=use_skill");
+            $skillForm->head("skillchooser", SystemManager::getOutputObject()->url->base."&battle_op=use_skill");
 
             // Add Nav
-            System::getOutputObject()->nav->addHiddenLink(System::getOutputObject()->url->base."&battle_op=use_skill");
+            SystemManager::getOutputObject()->nav->addHiddenLink(SystemManager::getOutputObject()->url->base."&battle_op=use_skill");
 
             // TODO: Get Available Skills for this Character
             $skills = array ( "Heilen" );
@@ -171,12 +171,12 @@ class BattleManager
             // Target-Chooser
             // The third Parameter is the name of the select-Form where we choose the skill
             // The fourth Parameter is the name of the select-Form where the targets appear
-            System::getOutputObject()->addJavaScript("$(function(){
+            SystemManager::getOutputObject()->addJavaScript("$(function(){
                                             getTargetList(".$battle->id.", ".$character->id.", 'skill', 'target');
                 });");
         }
 
-        System::getOutputObject()->output($output, true);
+        SystemManager::getOutputObject()->output($output, true);
     }
 
 

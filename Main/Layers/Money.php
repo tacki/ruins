@@ -13,7 +13,7 @@
  * Namespaces
  */
 namespace Main\Layers;
-use Main\Manager\System as SystemManager;
+use Main\Manager\SystemManager;
 
 /**
  * Money Layer Class

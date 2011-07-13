@@ -16,7 +16,7 @@ namespace Common\Interfaces;
  * Interface for Skills
  * @package Ruins
  */
-interface Skill
+interface SkillInterface
 {
     /**
      * Skill initialization

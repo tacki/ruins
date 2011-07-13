@@ -15,7 +15,7 @@
 namespace Modules\SettingsLink;
 use Main\Controller\Page;
 use Modules\ModuleBase;
-use Common\Interfaces\Module as ModuleInterface;
+use Common\Interfaces\ModuleInterface;
 use Common\Controller\Registry;
 
 /**
