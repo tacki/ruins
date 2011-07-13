@@ -14,6 +14,11 @@
  */
 namespace Common\Controller;
 use Common\Controller\Registry;
+use Doctrine\Common\Cache\ArrayCache;
+use Doctrine\Common\Cache\ApcCache;
+use Doctrine\Common\Cache\MemcacheCache;
+use Doctrine\Common\Cache\XcacheCache;
+
 
 /**
  * Caching Class
@@ -58,21 +63,21 @@ class Cache
         switch ($driver) {
             default:
             case "arraycache":
-                return new \Doctrine\Common\Cache\ArrayCache();
+                return new ArrayCache();
 
             case "apc":
-                return new \Doctrine\Common\Cache\ApcCache();
+                return new ApcCache();
 
             case "memcache":
                 $memcache = new \Memcache();
                 $memcache->connect('localhost', 11211);
 
-                $cacheDriver = new \Doctrine\Common\Cache\MemcacheCache();
+                $cacheDriver = new MemcacheCache();
                 $cacheDriver->setMemcache($memcache);
                 return $cacheDriver;
 
             case "xcache":
-                return new \Doctrine\Common\Cache\XcacheCache();
+                return new XcacheCache();
         }
     }
 }

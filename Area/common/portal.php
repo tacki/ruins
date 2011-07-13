@@ -10,9 +10,9 @@
 /**
  * Namespaces
  */
-use Main\Controller\Link,
-    Main\Controller\Page,
-    Main\Manager;
+use Main\Controller\Link;
+use Main\Controller\Page;
+use Main\Manager\System as SystemManager;
 
 /**
  * Page Content
@@ -62,7 +62,7 @@ switch ($_GET['op']) {
             $page->output("Geschlecht: " . $character->sex . "`n");
             $page->output("Level: " . $character->level . "`n");
             $curnav = explode("&", $character->current_nav);
-            $page->output("Ort: " . Manager\System::translate($curnav[0]) . "`n");
+            $page->output("Ort: " . SystemManager::translate($curnav[0]) . "`n");
 
             $page->output("`n");
 

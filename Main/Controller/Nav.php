@@ -13,11 +13,11 @@
  * Namespaces
  */
 namespace Main\Controller;
-use Main\Entities,
-    Common\Controller\Error,
-    Common\Controller\BaseObject,
-    Main\Manager,
-    Common\Interfaces\OutputObject;
+use Main\Entities\Group;
+use Common\Controller\Error;
+use Common\Controller\BaseObject;
+use Main\Manager\System as SystemManager;
+use Common\Interfaces\OutputObject;
 use Common\Controller\Registry;
 
 /**
@@ -95,10 +95,10 @@ class Nav
      * Add Navigation Head
      * @param string $title Title
      * @param string $linkcontainer Name of the Container this Link is shown in
-     * @param Entities\Group $restriction Group the Link is restricted to
+     * @param Group $restriction Group the Link is restricted to
      * @return Nav This Object
      */
-    public function addHead($title, $linkcontainer="main", Entities\Group $restriction=NULL)
+    public function addHead($title, $linkcontainer="main", Group $restriction=NULL)
     {
         $link = new Link($title, false, $linkcontainer);
 
@@ -114,10 +114,10 @@ class Nav
      * @param string $name Shown Linkname
      * @param string $url URL
      * @param string $linkcontainer Name of the Container this Link is shown in
-     * @param Entities\Group $restriction Group the Link is restricted to
+     * @param Group $restriction Group the Link is restricted to
      * @return Nav This Object
      */
-    public function addLink($name, $url, $linkcontainer="main", Entities\Group $restriction=NULL)
+    public function addLink($name, $url, $linkcontainer="main", Group $restriction=NULL)
     {
         $link = new Link($name, $url, $linkcontainer);
 
@@ -130,10 +130,10 @@ class Nav
     /**
      * Add a hidden Link to allow HTML-Forms in protected Areas
      * @param string $url URL
-     * @param Entities\Group $restriction Group the Link is restricted to
+     * @param Group $restriction Group the Link is restricted to
      * @return Nav This Object
      */
-    public function addHiddenLink($url, Entities\Group $restriction=NULL)
+    public function addHiddenLink($url, Group $restriction=NULL)
     {
         $link = new Link(false, $url);
 
@@ -147,10 +147,10 @@ class Nav
      * Add Navigation Link inside a Text
      * @param string $text Shown linked Text
      * @param string $url URL
-     * @param Entities\Group $restriction Group the Link is restricted to
+     * @param Group $restriction Group the Link is restricted to
      * @return Nav This Object
      */
-    public function addTextLink($text, $url, Entities\Group $restriction=NULL)
+    public function addTextLink($text, $url, Group $restriction=NULL)
     {
         // Add Hidden Link
         $this->addHiddenLink($url, $restriction);
@@ -188,7 +188,7 @@ class Nav
     {
         // Check if the Link is valid
         if ($this->validationEnabled() && $link->url) {
-            if (!Manager\System::validatePHPFilePath($link->url)) {
+            if (!SystemManager::validatePHPFilePath($link->url)) {
                 $this->_lastNavAdded['status'] = false;
                 return false;
             }
@@ -379,7 +379,7 @@ class Nav
         $em->flush();
 
         // Redirect
-        $baseurl = Manager\System::htmlpath(DIR_BASE);
+        $baseurl = SystemManager::htmlpath(DIR_BASE);
         if (isset($systemConfig) && $systemConfig->get("useManualRedirect", 0)) {
             echo "Forward to $url <br />";
             echo "<a href='$baseurl?" . $url ."'>Continue</a>";

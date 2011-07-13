@@ -13,9 +13,10 @@
  * Namespaces
  */
 namespace Modules\MessageSystemLink;
-use Main\Controller\Page,
-    Main\Controller\Link,
-    Main\Manager;
+use Main\Controller\Page;
+use Main\Manager\System as SystemManager;
+use Modules\ModuleBase;
+use Common\Interfaces\Module as ModuleInterface;
 use Common\Controller\Registry;
 
 /**
@@ -24,7 +25,7 @@ use Common\Controller\Registry;
  * Add the MessageSystem
  * @package Ruins
  */
-class MessageSystemLink extends \Modules\ModuleBase implements \Common\Interfaces\Module
+class MessageSystemLink extends ModuleBase implements ModuleInterface
 {
     /**
      * @see Common\Interfaces.Module::getName()
@@ -55,7 +56,7 @@ class MessageSystemLink extends \Modules\ModuleBase implements \Common\Interface
                  $(document).ready(function() {
                     var timerCycle 	= '60s';
                     var result 		= 0;
-                    var jsonURL		= '".Manager\System::getOverloadedFilePath("/Helpers/ajax/messenger_newMessageAlert.ajax.php", true)."?userid=".$user->character->id."';
+                    var jsonURL		= '".SystemManager::getOverloadedFilePath("/Helpers/ajax/messenger_newMessageAlert.ajax.php", true)."?userid=".$user->character->id."';
 
                     $.getJSON(jsonURL, function(json) {
                         if (json > 0) {

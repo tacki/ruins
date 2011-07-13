@@ -11,13 +11,14 @@
 /**
  * Namespaces
  */
-use Doctrine\Common\Cache\ArrayCache,
-    Doctrine\Common\Cache\ApcCache,
-    Doctrine\Common\ClassLoader,
-    Doctrine\Common\EventManager,
-    Doctrine\ORM\Events,
-    Doctrine\ORM\EntityManager,
-    Doctrine\DBAL\Types\Type;
+use Doctrine\Common\Cache\ArrayCache;
+use Doctrine\Common\Cache\ApcCache;
+use Doctrine\Common\ClassLoader;
+use Doctrine\Common\EventManager;
+use Doctrine\ORM\Configuration;
+use Doctrine\ORM\Events;
+use Doctrine\ORM\EntityManager;
+use Doctrine\DBAL\Types\Type;
 use Common\Controller\Registry;
 
 /**
@@ -27,7 +28,7 @@ use Common\Controller\Registry;
 // Application Mode
 $applicationMode = "development";
 
-$doctrineConfig = new Doctrine\ORM\Configuration;
+$doctrineConfig = new Configuration;
 
 // Load Annotation Driver (using a dummy Annotation Directory)
 $driverImpl = $doctrineConfig->newDefaultAnnotationDriver(array(DIR_TEMP."dummy"));
@@ -44,7 +45,6 @@ $doctrineConfig->setProxyNamespace('Proxies');
 
 // Set Table Prefix
 $dbconnect = Registry::get('dbconnect');
-
 $evm = new EventManager;
 $tablePrefix = new \Common\DoctrineExtensions\TablePrefix($dbconnect['prefix']);
 $evm->addEventListener(Events::loadClassMetadata, $tablePrefix);

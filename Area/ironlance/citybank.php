@@ -10,10 +10,9 @@
 /**
  * Namespaces
  */
-use Main\Controller\Link,
-    Main\Controller\TimerController as Timer,
-    Main\Layers\Money,
-    Main\Manager;
+use Main\Controller\Link;
+use Main\Controller\TimerController as Timer;
+use Main\Layers\Money;
 
 /**
  * Page Content

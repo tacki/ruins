@@ -13,9 +13,9 @@
  * Namespaces
  */
 namespace Main\Controller;
-use Main\Entities\Waypoint,
-    Main\Entities\Site,
-    Common\Controller\StackObject;
+use Main\Entities\Waypoint;
+use Main\Entities\Site;
+use Common\Controller\StackObject;
 use Common\Controller\Registry;
 
 /**

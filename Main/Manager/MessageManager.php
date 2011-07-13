@@ -13,8 +13,10 @@
  * Namespaces
  */
 namespace Main\Manager;
-use Main\Entities,
-    Common\Controller\SessionStore;
+use Main\Entities\Character;
+use Main\Entities\MessageData;
+use Main\Entities\Message;
+use Common\Controller\SessionStore;
 use Common\Controller\Registry;
 
 /**
@@ -23,7 +25,7 @@ use Common\Controller\Registry;
  * Class to control the Messaging-System
  * @package Ruins
  */
-class Message
+class MessageManager
 {
     const STATUS_UNREAD    = 0;
     const STATUS_READ      = 1;
@@ -39,7 +41,7 @@ class Message
      * @param int $status Messagestatus to set
      * @return int Number of Messages sent
      */
-    public static function write(Entities\Character $sender, $receivers, $subject, $text, $status=self::STATUS_UNREAD)
+    public static function write(Character $sender, $receivers, $subject, $text, $status=self::STATUS_UNREAD)
     {
         $em = Registry::getEntityManager();
 
@@ -51,7 +53,7 @@ class Message
                                             )
                                        );
         if (!$messagedata) {
-            $messagedata          = new Entities\MessageData;
+            $messagedata          = new MessageData;
             $messagedata->subject = $subject;
             $messagedata->text    = $text;
             $em->persist($messagedata);
@@ -63,7 +65,7 @@ class Message
             $receiverIDlist = $receivers;
         } elseif (is_numeric($receivers)) {
             $receiverIDlist[] = $receivers;
-        } elseif ($receivers instanceof Entities\Character) {
+        } elseif ($receivers instanceof Character) {
             $receiverIDlist[] = $receivers->id;
         } elseif (is_string($receivers) && $receivers != "all") {
             $receiverNameList = explode(",", $receivers);
@@ -82,7 +84,7 @@ class Message
         $batchSize = 20;
         $listSize = count($receiverIDlist);
         for ($i = 0; $i <= $listsize; $i++) {
-            $message = new Entities\Message;
+            $message = new Message;
             $message->sender = $sender;
             $message->receiver = $em->find("Main:Character", $receiverIDlist[$i]);
             $message->data = $messagedata;
@@ -144,7 +146,7 @@ class Message
      * Delete Messages from Database, marked as self::STATUS_DELETED
      * @param Character $character Limit to this Character
      */
-    public static function flushDeleted(Entities\Character $character=NULL)
+    public static function flushDeleted(Character $character=NULL)
     {
         $em = Registry::getEntityManager();
 
@@ -155,7 +157,7 @@ class Message
             ->from("Main:Message", "message")
             ->where("message.status = ?1")->setParameter(1, self::STATUS_DELETED);
 
-        if ($character instanceof Entities\Character) $qb->andWhere("message.receiver = ?2")->setParameter(2, $character);
+        if ($character instanceof Character) $qb->andWhere("message.receiver = ?2")->setParameter(2, $character);
 
         $messages = $qb->getQuery()->getResult();
 
@@ -215,7 +217,7 @@ class Message
      * @param int $status The Status of the Messages
      * @return array Array of Messages
      */
-    public static function getInbox(Entities\Character $character, $limit=false, $ascending=true, $status=false)
+    public static function getInbox(Character $character, $limit=false, $ascending=true, $status=false)
     {
         $em = Registry::getEntityManager();
 
@@ -251,7 +253,7 @@ class Message
      * @param int $status The Status of the Messages
      * @return array Array of Messages
      */
-    public static function getOutbox(Entities\Character $character, $limit=false, $ascending=true, $status=false)
+    public static function getOutbox(Character $character, $limit=false, $ascending=true, $status=false)
     {
         $em = Registry::getEntityManager();
 

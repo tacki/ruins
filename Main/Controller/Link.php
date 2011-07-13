@@ -15,7 +15,7 @@
  */
 namespace Main\Controller;
 use Common\Controller\Error,
-    Main\Entities;
+    Main\Entities\Group;
 
 /**
  * link Class
@@ -82,7 +82,7 @@ class Link
     public function setRestriction($groups)
     {
         switch (true) {
-            case $groups instanceof Entities\Group:
+            case $groups instanceof Group:
                 $this->_groups[] = $groups;
                 break;
 

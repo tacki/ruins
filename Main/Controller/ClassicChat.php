@@ -13,12 +13,13 @@
  * Namespaces
  */
 namespace Main\Controller;
-use Common\Controller\BtCode,
-    Common\Controller\SimpleTable,
-    Common\Controller\SessionStore,
-    Main\Entities\Chat,
-    Main\Entities\Character,
-    DateTime;
+use Common\Controller\BtCode;
+use Common\Controller\Error;
+use Common\Controller\SimpleTable;
+use Common\Controller\SessionStore;
+use Main\Entities\Chat;
+use Main\Entities\Character;
+use DateTime;
 use Common\Controller\Registry;
 
 /**
@@ -386,7 +387,7 @@ class ClassicChat
         if (strlen($this->_section)) {
             return $this->_section . "_form";
         } else {
-            throw new \Error("Section not set! A Chat has no Sectionname set!");
+            throw new Error("Section not set! A Chat has no Sectionname set!");
         }
     }
 

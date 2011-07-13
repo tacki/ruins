@@ -10,7 +10,7 @@
 /**
  * Namespaces
  */
-use Modules\Survey\Manager;
+use Modules\Survey\Manager\SurveyManager;
 
 /**
  * Page Content
@@ -22,18 +22,18 @@ $popup->set("headtitle", "Supportanfrage");
 
 $popup->nav->addLink("Umfrage", $popup->url);
 
-$polls = Manager\Survey::getAllPolls();
+$polls = SurveyManager::getAllPolls();
 
 if (!count($polls)) {
     $popup->output("Zur Zeit gibt es keine aktiven Umfragen");
 }
 
 if (isset($_GET['poll_id']) && isset($_POST['chooser'])) {
-    Manager\Survey::vote($_GET['poll_id'], $_POST['chooser']);
+    SurveyManager::vote($_GET['poll_id'], $_POST['chooser']);
 }
 
 foreach ($polls as $poll) {
-    $hasVoted = Manager\Survey::hasVoted($user->character, $poll);
+    $hasVoted = SurveyManager::hasVoted($user->character, $poll);
 
     $popup->addSimpleTable("survey")->setCSS("survey");
     $popup->addForm("survey")->setCSS("survey");
@@ -83,7 +83,7 @@ foreach ($polls as $poll) {
     $popup->closeForm("survey");
 
 
-    $popup->output("`s`c".Manager\Survey::getTotalNrOfVotes($poll)." Stimme(n) insgesamt.`c`s");
+    $popup->output("`s`c".SurveyManager::getTotalNrOfVotes($poll)." Stimme(n) insgesamt.`c`s");
 
     $popup->output("`n`n");
 }

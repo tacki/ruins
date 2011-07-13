@@ -12,9 +12,9 @@
  * Namespaces
  */
 namespace Main\Repositories;
-use Main\Entities\Character,
-    Main\Entities\User,
-    Main\Entities\UserSetting;
+use Main\Entities\Character;
+use Main\Entities\User;
+use Main\Entities\UserSetting;
 
 /**
  * User Repository

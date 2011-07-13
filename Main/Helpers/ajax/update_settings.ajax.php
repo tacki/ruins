@@ -14,6 +14,7 @@
  */
 use Common\Controller\SessionStore;
 use Common\Controller\Registry;
+use Doctrine\ORM\Tools\SchemaValidator;
 
 /**
  * Global Includes
@@ -23,7 +24,7 @@ require_once(DIR_BASE."main.inc.php");
 
 $em = Registry::getEntityManager();
 
-$validator = new \Doctrine\ORM\Tools\SchemaValidator($em);
+$validator = new SchemaValidator($em);
 $validator->validateMapping();
 
 // Initialize User-Object

@@ -40,6 +40,9 @@ $classLoader->register();
 $classLoader = new ClassLoader('Modules', DIR_BASE);
 $classLoader->register();
 
+$classLoader = new ClassLoader('Modules', DIR_BASE."../");
+$classLoader->register();
+
 /**
  * Register Database-Connection Information
  */

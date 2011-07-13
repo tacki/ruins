@@ -10,7 +10,7 @@
 /**
  * Namespaces
  */
-use Main\Manager;
+use Main\Manager\Module as ModuleManager;
 
 /**
  * Page Content
@@ -21,7 +21,7 @@ $page->set("headtitle", "Module");
 $page->nav->addHead("Navigation")
           ->addLink("Zurück", "page=admin/main");
 
-$moduleListFromDB = Manager\Module::getModuleListFromDatabase();
+$moduleListFromDB = ModuleManager::getModuleListFromDatabase();
 
 if (isset($_POST['chooser'])) {
     foreach ($moduleListFromDB as $module) {

@@ -14,6 +14,8 @@
  */
 namespace Modules\Survey;
 use Main\Controller\Page;
+use Modules\ModuleBase;
+use Common\Interfaces\Module as ModuleInterface;
 use Common\Controller\Registry;
 
 /**
@@ -22,7 +24,7 @@ use Common\Controller\Registry;
  * Create and Handle Surveys
  * @package Ruins
  */
-class Survey extends \Modules\ModuleBase implements \Common\Interfaces\Module
+class Survey extends ModuleBase implements ModuleInterface
 {
     /**
      * (non-PHPdoc)

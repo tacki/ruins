@@ -7,11 +7,11 @@
  * Namespaces
  */
 use Common\Controller\Registry;
-use Main\Manager\Module;
+use Main\Manager\Module as ModuleManager;
 
 // Add Module Entities
 $paths = array();
-foreach (Module::getModuleListFromFilesystem() as $module) {
+foreach (ModuleManager::getModuleListFromFilesystem() as $module) {
     if (file_exists(DIR_MODULES.$module['directory']."Entities")) {
         $paths[] =  DIR_MODULES.$module['directory']."Entities";
     }
@@ -24,7 +24,7 @@ $smarty = Registry::get('smarty');
 
 if ($smarty instanceof \Smarty) {
     $paths = array();
-    foreach (Module::getModuleListFromFilesystem() as $module) {
+    foreach (ModuleManager::getModuleListFromFilesystem() as $module) {
         if (file_exists(DIR_MODULES.$module['directory']."View/Templates")) {
             $paths[] =  DIR_MODULES.$module['directory']."View/Templates";
         }

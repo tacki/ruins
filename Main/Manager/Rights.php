@@ -13,7 +13,8 @@
  * Namespaces
  */
 namespace Main\Manager;
-use Main\Entities;
+use Main\Entities\Group;
+use Main\Entities\Character;
 use Common\Controller\Registry;
 
 /**
@@ -27,7 +28,7 @@ class Rights
     /**
      * Create a Group
      * @param string $groupname
-     * @return Entities\Group
+     * @return Group
      */
     public static function createGroup($groupname)
     {
@@ -38,7 +39,7 @@ class Rights
 
         if ($group) return $group;
 
-        $newgroup = new Entities\Group;
+        $newgroup = new Group;
         $newgroup->name = $groupname;
 
         $em->persist($newgroup);
@@ -49,8 +50,8 @@ class Rights
 
     /**
      * Get Group
-     * @param string|Entities\Group $groupname
-     * @return Entities\Group Group Object
+     * @param string|Group $groupname
+     * @return Group Group Object
      */
     public static function getGroup($groupname)
     {
@@ -59,7 +60,7 @@ class Rights
 
     /**
      * Remove a Group
-     * @param string|Entities\Group $groupname
+     * @param string|Group $groupname
      */
     public static function removeGroup($groupname)
     {
@@ -72,11 +73,11 @@ class Rights
 
     /**
      * Check if given Character is in Group
-     * @param string|Entities\Group $groupname
-     * @param Entities\Character $character
+     * @param string|Group $groupname
+     * @param Character $character
      * @return bool
      */
-    public static function isInGroup($groupname, Entities\Character $character)
+    public static function isInGroup($groupname, Character $character)
     {
         $group = self::_getGroupObject($groupname);
 
@@ -89,10 +90,10 @@ class Rights
 
     /**
      * Add Character to Group
-     * @param string|Entities\Group $groupname
-     * @param Entities\Character $character
+     * @param string|Group $groupname
+     * @param Character $character
      */
-    public static function addToGroup($groupname, Entities\Character $character)
+    public static function addToGroup($groupname, Character $character)
     {
         if (!self::isInGroup($groupname, $character)) {
             $group = self::_getGroupObject($groupname);
@@ -103,10 +104,10 @@ class Rights
 
     /**
      * Remove Character from Group
-     * @param string|Entities\Group $groupname
-     * @param Entities\Character $character
+     * @param string|Group $groupname
+     * @param Character $character
      */
-    public static function removeFromGroup($groupname, Entities\Character $character)
+    public static function removeFromGroup($groupname, Character $character)
     {
         $group = self::_getGroupObject($groupname);
 
@@ -115,14 +116,14 @@ class Rights
 
     /**
      * Get Group Object (if it's not already one)
-     * @param string|Entities\Group $groupname
-     * @returns Entities\Group Group Object
+     * @param string|Group $groupname
+     * @returns Group Group Object
      */
     private static function _getGroupObject($groupname)
     {
         $em = Registry::getEntityManager();
 
-        if ($groupname instanceof Entities\Group) {
+        if ($groupname instanceof Group) {
             $group = $groupname;
         } else {
             $group = $em->getRepository("Main:Group")

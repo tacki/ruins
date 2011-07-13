@@ -13,9 +13,16 @@
  * Namespaces
  */
 namespace Main\Manager;
-use Common\Controller\SessionStore,
-    Common\Controller\Error,
-    Main\Entities;
+use Common\Controller\SessionStore;
+use Common\Controller\Error;
+use Common\Interfaces\OutputObject;
+use Main\Entities\Administration;
+use Main\Entities\News;
+use Main\Entities\Site;
+use Main\Entities\Waypoint;
+use Main\Entities\WaypointConnection;
+use Main\Manager\Module as ModuleManager;
+use Main\Manager\System as SystemManager;
 use Common\Controller\Registry;
 
 /**
@@ -39,11 +46,11 @@ class System
         $em = Registry::getEntityManager();
 
         if (!($site = $em->getRepository("Main:Site")->findOneByName($name))) {
-            $site = new Entities\Site;
+            $site = new Site;
             $site->name        = $name;
             $site->description = $description;
 
-            $waypoint          = new Entities\Waypoint;
+            $waypoint          = new Waypoint;
             $waypoint->site    = $site;
             $waypoint->x       = $coords[0];
             $waypoint->y       = $coords[1];
@@ -65,12 +72,12 @@ class System
      * @param int $difficulty
      * @return Main\Entities\WaypointConnection
      */
-    public static function addSiteConnection(Entities\Site $site1, Entities\Site $site2, $difficulty=0)
+    public static function addSiteConnection(Site $site1, Site $site2, $difficulty=0)
     {
         $em = Registry::getEntityManager();
 
         if (!($wp_conn = $em->getRepository("Main:WaypointConnection")->findOneBy(array("start" => $site1->waypoint->id, "end" => $site2->waypoint->id)))) {
-            $wp_conn             = new Entities\WaypointConnection;
+            $wp_conn             = new WaypointConnection;
             $wp_conn->start      = $site1;
             $wp_conn->end        = $site2;
             $wp_conn->difficulty = $difficulty;
@@ -92,7 +99,7 @@ class System
         $em = Registry::getEntityManager();
 
         if (!($em->getRepository("Main:Administration")->findOneBy(array("category" => $category, "page" => $page)))) {
-            $administration           = new Entities\Administration;
+            $administration           = new Administration;
             $administration->name     = (string)$name;
             $administration->category = (string)$category;
             $administration->page     = (string)$page;
@@ -145,9 +152,9 @@ class System
         global $page;
         global $popup;
 
-        if ($page instanceof \Common\Interfaces\OutputObject) {
+        if ($page instanceof OutputObject) {
             $outputobject =	$page;
-        } elseif ($popup instanceof \Common\Interfaces\OutputObject) {
+        } elseif ($popup instanceof OutputObject) {
             $outputobject = $popup;
         } else {
             $outputobject = false;
@@ -168,11 +175,11 @@ class System
 
         if (!($result = $systemCache->fetch("overloadedFilePath_".md5($path)))) {
             // First Check Module-Directory
-            foreach (\Main\Manager\Module::getModuleListFromFilesystem() as $module) {
+            foreach (ModuleManager::getModuleListFromFilesystem() as $module) {
                 if (file_exists(DIR_MODULES.$module['directory'].$path)) {
                     $result = DIR_MODULES.$module['directory'].$path;
                     $systemCache->save("overloadedFilePath_".md5($path), $result);
-                    return $htmlpath?\Main\Manager\System::htmlpath($result):$result;
+                    return $htmlpath?SystemManager::htmlpath($result):$result;
                 }
             }
 
@@ -190,13 +197,13 @@ class System
 
             if ($result) {
                 $systemCache->save("overloadedFilePath_".md5($path), $result);
-                return $htmlpath?\Main\Manager\System::htmlpath($result):$result;
+                return $htmlpath?SystemManager::htmlpath($result):$result;
             } else {
                 throw new Error("Cannot find $path in any known Directory");
             }
         } else {
             // Use SessionStore
-            return $htmlpath?\Main\Manager\System::htmlpath($result):$result;
+            return $htmlpath?SystemManager::htmlpath($result):$result;
         }
     }
 
@@ -302,7 +309,7 @@ class System
         // check if filepath consists of dirname+"/"+filename (path to content)
         if (strpos($filepath, "/")) {
             // Get Overloaded Filepath
-            $treepath = \Main\Manager\System::getOverloadedFilePath("Area/".$filepath);
+            $treepath = SystemManager::getOverloadedFilePath("Area/".$filepath);
         }
 
         // create realpath
@@ -365,7 +372,7 @@ class System
         $em = Registry::getEntityManager();
         $user = Registry::getUser();
 
-        $newnews = new Entities\News;
+        $newnews = new News;
         $newnews->title   = $title;
         $newnews->body    = $body;
         $newnews->author  = $user->character;

@@ -12,9 +12,9 @@
  * Namespaces
  */
 namespace Main\Repositories;
-use Main\Entities\Bank,
-    Main\Entities\Character,
-    Main\Layers\Money;
+use Main\Entities\Bank;
+use Main\Entities\Character;
+use Main\Layers\Money;
 use Common\Controller\Registry;
 
 /**

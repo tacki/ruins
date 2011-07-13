@@ -12,10 +12,11 @@
 /**
  * Namespaces
  */
-use Common\Controller\SessionStore,
-    Main\Manager,
-    Main\Controller\Link,
-    Main\Controller\Page;
+use Common\Controller\SessionStore;
+use Main\Manager\System as SystemManager;
+use Main\Manager\Module as ModuleManager;
+use Main\Controller\Link;
+use Main\Controller\Page;
 use Common\Controller\Registry;
 
 /**
@@ -43,20 +44,20 @@ try {
     }
 
     // Check if the page-value is valid
-    $realpath = Manager\System::validatePHPFilePath(current($outputfile));
+    $realpath = SystemManager::validatePHPFilePath(current($outputfile));
 
     switch (current($outputfile)) {
         default:
             /**
              * Page Header
              */
-            Manager\Module::callModule(Manager\Module::EVENT_PRE_PAGEHEADER);
+            ModuleManager::callModule(ModuleManager::EVENT_PRE_PAGEHEADER);
             include(DIR_MAIN."Helpers/".key($outputfile).".header.php");
 
             /**
              * Page Content
              */
-            Manager\Module::callModule(Manager\Module::EVENT_PRE_PAGECONTENT);
+            ModuleManager::callModule(ModuleManager::EVENT_PRE_PAGECONTENT);
             include($realpath);
 
             /**
@@ -74,7 +75,7 @@ try {
     echo nl2br($e->getMessage());
     echo "</fieldset>";
 var_dump($e);
-    if ($systemConfig instanceof Common\Controller\Config && $systemConfig->get("debugException", 0)) {
+    if ($systemConfig && $systemConfig->get("debugException", 0)) {
         echo "<fieldset style='color: #000; border-color: #880000; background-color: #ffeab0; border-width:thin; border-style:solid'>";
         echo "<legend style='padding:2px 5px'><strong>Debug</strong></legend>";
         echo nl2br($e->getTraceAsString());

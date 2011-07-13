@@ -12,9 +12,9 @@
 /**
  * Namespaces
  */
-use Common\Controller\Error,
-    Common\Controller\SessionStore,
-    Main\Controller\Popup;
+use Common\Controller\Error;
+use Common\Controller\SessionStore;
+use Main\Controller\Popup;
 use Common\Controller\Registry;
 
 /**

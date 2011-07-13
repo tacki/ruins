@@ -13,7 +13,7 @@
  * Namespaces
  */
 namespace Main\Layers;
-use Main\Manager;
+use Main\Manager\System as SystemManager;
 
 /**
  * Money Layer Class
@@ -136,13 +136,13 @@ class Money extends LayerBase
     {
         switch ($currency) {
             case "gold":
-                return $this->getCurrency($currency) . "<img src=\"".Manager\System::getOverloadedFilePath("View/Images/gold.gif", true)."\" height=\"10\" alt=\"g\" />";
+                return $this->getCurrency($currency) . "<img src=\"".SystemManager::getOverloadedFilePath("View/Images/gold.gif", true)."\" height=\"10\" alt=\"g\" />";
 
             case "silver":
-                return $this->getCurrency($currency) . "<img src=\"".Manager\System::getOverloadedFilePath("View/Images/silver.gif", true)."\" height=\"10\" alt=\"s\" />";
+                return $this->getCurrency($currency) . "<img src=\"".SystemManager::getOverloadedFilePath("View/Images/silver.gif", true)."\" height=\"10\" alt=\"s\" />";
 
             case "copper":
-                return $this->getCurrency($currency) . "<img src=\"".Manager\System::getOverloadedFilePath("View/Images/copper.gif", true)."\" height=\"10\" alt=\"c\" />";
+                return $this->getCurrency($currency) . "<img src=\"".SystemManager::getOverloadedFilePath("View/Images/copper.gif", true)."\" height=\"10\" alt=\"c\" />";
 
             default:
                 return $this->money;

@@ -13,15 +13,17 @@
  * Namespaces
  */
 namespace Main\Controller;
-use Smarty,
-    Main\Manager,
-    Common\Interfaces\OutputObject,
-    Common\Controller\BaseObject,
-    Common\Controller\BtCode,
-    Common\Controller\Error,
-    Common\Controller\Form,
-    Common\Controller\Table,
-    Common\Controller\SimpleTable;
+use Smarty;
+use Main\Manager\System as SystemManager;
+use Main\Manager\Item as ItemManager;
+use Main\Manager\Module as ModuleManager;
+use Common\Interfaces\OutputObject;
+use Common\Controller\BaseObject;
+use Common\Controller\BtCode;
+use Common\Controller\Error;
+use Common\Controller\Form;
+use Common\Controller\Table;
+use Common\Controller\SimpleTable;
 use Common\Controller\Registry;
 
 /**
@@ -222,7 +224,7 @@ class Page implements OutputObject
      */
     public function addJavaScriptFile($script)
     {
-        $this->_headscripts[] = "<script src='".Manager\System::getOverloadedFilePath("View/JavaScript/".$script, true)."' type='text/javascript'></script>";
+        $this->_headscripts[] = "<script src='".SystemManager::getOverloadedFilePath("View/JavaScript/".$script, true)."' type='text/javascript'></script>";
     }
 
     /**
@@ -231,7 +233,7 @@ class Page implements OutputObject
     */
     public function addCSS($script)
     {
-        $this->_headscripts[] = "<link href='".Manager\System::getOverloadedFilePath("View/Styles/".$script, true)."' rel='stylesheet' type='text/css' />";
+        $this->_headscripts[] = "<link href='".SystemManager::getOverloadedFilePath("View/Styles/".$script, true)."' rel='stylesheet' type='text/css' />";
     }
 
     /**
@@ -240,7 +242,7 @@ class Page implements OutputObject
      */
     public function addCommonCSS($script)
     {
-        $this->_headscripts[] = "<link href='". Manager\System::htmlpath(DIR_COMMON) ."/View/Styles/".$script."' rel='stylesheet' type='text/css' />";
+        $this->_headscripts[] = "<link href='". SystemManager::htmlpath(DIR_COMMON) ."/View/Styles/".$script."' rel='stylesheet' type='text/css' />";
     }
 
     /**
@@ -537,9 +539,9 @@ class Page implements OutputObject
 
         // Set the correct Template-Paths inside the Template
         // For Paths that are sent to the Client (relative webbased paths)
-        $this->template['mytemplatedir'] = Manager\System::getOverloadedFilePath($this->template['name'], true);
+        $this->template['mytemplatedir'] = SystemManager::getOverloadedFilePath($this->template['name'], true);
         $this->set("mytemplatedir", $this->template['mytemplatedir']);
-        $this->template['commontemplatedir'] = Manager\System::htmlpath(DIR_COMMON . "View");
+        $this->template['commontemplatedir'] = SystemManager::htmlpath(DIR_COMMON . "View");
         $this->set("commontemplatedir", $this->template['commontemplatedir']);
 
         // Paths that are handled inside the templategeneration progress (full filepaths)
@@ -559,8 +561,8 @@ class Page implements OutputObject
         $snippet->compile_dir 		= $this->_smarty->compile_dir;
         $snippet->cache_dir 		= $this->_smarty->cache_dir;
         $snippet->config_dir 		= $this->_smarty->config_dir;
-        $snippet->assign("mytemplatedir", Manager\System::getOverloadedFilePath($template, true));
-        $snippet->assign("commontemplatedir", Manager\System::htmlpath(DIR_COMMON . "View"));
+        $snippet->assign("mytemplatedir", SystemManager::getOverloadedFilePath($template, true));
+        $snippet->assign("commontemplatedir", SystemManager::htmlpath(DIR_COMMON . "View"));
         $snippet->assign("myfulltemplatedir", DIR_BASE . $template);
 
         return $snippet;
@@ -660,7 +662,7 @@ class Page implements OutputObject
      */
     protected function _addJQuerySupport()
     {
-        array_unshift($this->_headscripts, "<script src='".Manager\System::getOverloadedFilePath("View/JavaScript/jquery-1.5.1.min.js", true)."' type='text/javascript'></script>");
+        array_unshift($this->_headscripts, "<script src='".SystemManager::getOverloadedFilePath("View/JavaScript/jquery-1.5.1.min.js", true)."' type='text/javascript'></script>");
         $this->addJavaScriptFile("jquery-ui-1.8.13.custom.min.js");
         $this->addJavaScriptFile("jquery.plugin.timers.js");
     }
@@ -791,7 +793,7 @@ class Page implements OutputObject
             $toolBoxJS 		.= "$('#".$toolItem['link']->displayname."').click(function() {
                                     $.ajax({
                                       type: 'GET',
-                                      url: '".Manager\System::getOverloadedFilePath("/Helpers/ajax/".$toolItem['link']->url, true)."',
+                                      url: '".SystemManager::getOverloadedFilePath("/Helpers/ajax/".$toolItem['link']->url, true)."',
                                       dataType: 'script'
                                     });
                                     $(this).replaceWith('<img src=\"".$toolItem['replaceimagesrc']."\" />');
@@ -858,7 +860,7 @@ class Page implements OutputObject
                         break;
 
                     case "weaponname":
-                        if ($weapon = Manager\Item::getEquippedItem($this->_char, "weapon")) {
+                        if ($weapon = ItemManager::getEquippedItem($this->_char, "weapon")) {
                             $snippet->assign($value, $weapon->name);
                         } else {
                             $snippet->assign($value, "N/A");
@@ -866,7 +868,7 @@ class Page implements OutputObject
                         break;
 
                     case "weapondamage":
-                        if ($weapon = Manager\Item::getEquippedItem($this->_char, "weapon")) {
+                        if ($weapon = ItemManager::getEquippedItem($this->_char, "weapon")) {
                             $snippet->assign($value, $weapon->showDamage(false));
                         } else {
                             $snippet->assign($value, "N/A");
@@ -954,7 +956,7 @@ class Page implements OutputObject
      */
     public function show()
     {
-        if ($this->modulesenabled) Manager\Module::callModule(Manager\Module::EVENT_PRE_PAGEGENERATION, $this);
+        if ($this->modulesenabled) ModuleManager::callModule(ModuleManager::EVENT_PRE_PAGEGENERATION, $this);
 
         $this->_addJQuerySupport();
         $this->_generateToolBox();
@@ -980,7 +982,7 @@ class Page implements OutputObject
             $this->set("characterlist", "");
         }
 
-        if ($this->modulesenabled) Manager\Module::callModule(Manager\Module::EVENT_POST_PAGEGENERATION, $this);
+        if ($this->modulesenabled) ModuleManager::callModule(ModuleManager::EVENT_POST_PAGEGENERATION, $this);
 
         if ($this->_smarty->caching) {
             $this->_smarty->display($this->template['file'], $this->_char->id);

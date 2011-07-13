@@ -13,8 +13,9 @@
  * Namespaces
  */
 namespace Modules\SettingsLink;
-use Main\Controller\Page,
-    Main\Controller\Link;
+use Main\Controller\Page;
+use Modules\ModuleBase;
+use Common\Interfaces\Module as ModuleInterface;
 use Common\Controller\Registry;
 
 /**
@@ -23,7 +24,7 @@ use Common\Controller\Registry;
  * Add the Settings Link to the shared Container
  * @package Ruins
  */
-class SettingsLink extends \Modules\ModuleBase implements \Common\Interfaces\Module
+class SettingsLink extends ModuleBase implements ModuleInterface
 {
     /**
      * @see Common\Interfaces.Module::getName()

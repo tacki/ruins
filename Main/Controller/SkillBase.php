@@ -13,6 +13,9 @@
  */
 namespace Main\Controller;
 use Common\Controller\Registry;
+use Main\Entities\Skill;
+use Main\Controller\BattleController;
+use Main\Entities\BattleAction;
 
 /**
  * Skill Base Class
@@ -66,7 +69,7 @@ abstract class SkillBase
     {
         $em = Registry::getEntityManager();
 
-        $skill                  = new \Main\Entities\Skill;
+        $skill                  = new Skill;
         $skill->classname       = get_called_class();
         $skill->name            = static::getName();
         $skill->description     = static::getDescription();
@@ -152,7 +155,7 @@ abstract class SkillBase
      * @param Main\Controller\BattleController $battle Battle Controller
      * @param Main\Entities\BattleAction $action Battle Action
      */
-    public function prepare(\Main\Controller\BattleController $battle, \Main\Entities\BattleAction $action)
+    public function prepare(BattleController $battle, BattleAction $action)
     {
         $em = Registry::getEntityManager();
 

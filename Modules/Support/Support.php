@@ -13,8 +13,7 @@
  * Namespaces
  */
 namespace Modules\Support;
-use Main\Controller\Page,
-    Main\Controller\Link;
+use Main\Controller\Page;
 
 /**
  * Support Module

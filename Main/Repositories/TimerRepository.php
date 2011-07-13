@@ -12,12 +12,12 @@
  * Namespaces
  */
 namespace Main\Repositories;
-use DateTime,
-    Main\Entities\Character,
-    Main\Entities\Timer,
-    Main\Controller\URL,
-    Common\Controller\Error,
-    Common\Controller\Form;
+use DateTime;
+use Main\Entities\Character;
+use Main\Entities\Timer;
+use Main\Controller\URL;
+use Common\Controller\Error;
+use Common\Controller\Form;
 
 /**
  * Timer Repository

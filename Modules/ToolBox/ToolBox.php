@@ -13,8 +13,11 @@
  * Namespaces
  */
 namespace Modules\ToolBox;
-use Main\Controller\Page,
-    Main\Controller\Link;
+use Main\Controller\Page;
+use Main\Controller\Link;
+use Main\Manager\System as SystemManager;
+use Modules\ModuleBase;
+use Common\Interfaces\Module as ModuleInterface;
 use Common\Controller\Registry;
 
 /**
@@ -23,7 +26,7 @@ use Common\Controller\Registry;
  * Adds the ToolBox
  * @package Ruins
  */
-class ToolBox extends \Modules\ModuleBase implements \Common\Interfaces\Module
+class ToolBox extends ModuleBase implements ModuleInterface
 {
     /**
      * @see Common\Interfaces.Module::getName()
@@ -49,8 +52,8 @@ class ToolBox extends \Modules\ModuleBase implements \Common\Interfaces\Module
 
             $page->addToolBoxItem(new Link("prunecache", "prune_cache.ajax.php"),
                                   "Session Cache leeren",
-                                  \Main\Manager\System::getOverloadedFilePath("View/Images/trash.png", true),
-                                  \Main\Manager\System::getOverloadedFilePath("View/Images/accept.png", true)
+                                  SystemManager::getOverloadedFilePath("View/Images/trash.png", true),
+                                  SystemManager::getOverloadedFilePath("View/Images/accept.png", true)
                                 );
         }
     }

@@ -10,8 +10,8 @@
 /**
  * Namespaces
  */
-use Main\Controller\Link,
-    Main\Manager;
+use Main\Controller\Link;
+use Main\Manager\Item as ItemManager;
 
 /**
  * Page Content
@@ -34,9 +34,9 @@ switch ($_GET['op']) {
     case "all":
         // Show the complete Inventory
         if (isset($_GET['order']) && isset($_GET['orderDesc'])) {
-            $itemlist 	= Manager\Item::getInventoryList($user->character, "all", false, $_GET['order'], $_GET['orderDesc']);
+            $itemlist 	= ItemManager::getInventoryList($user->character, "all", false, $_GET['order'], $_GET['orderDesc']);
         } else {
-            $itemlist 	= Manager\Item::getInventoryList($user->character, "all");
+            $itemlist 	= ItemManager::getInventoryList($user->character, "all");
         }
 
         $newURL = clone $page->url;
@@ -47,9 +47,9 @@ switch ($_GET['op']) {
     case "backpack":
         // Only show the backpack
         if (isset($_GET['order']) && isset($_GET['orderDesc'])) {
-            $itemlist 	= Manager\Item::getInventoryList($user->character, "backpack", false, $_GET['order'], $_GET['orderDesc']);
+            $itemlist 	= ItemManager::getInventoryList($user->character, "backpack", false, $_GET['order'], $_GET['orderDesc']);
         } else {
-            $itemlist 	= Manager\Item::getInventoryList($user->character, "backpack");
+            $itemlist 	= ItemManager::getInventoryList($user->character, "backpack");
         }
 
         $newURL = clone $page->url;

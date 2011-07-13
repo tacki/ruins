@@ -10,9 +10,9 @@
 /**
  * Namespaces
  */
-use Main\Controller\Link,
-    Main\Controller\BattleController,
-    Main\Manager;
+use Main\Controller\Link;
+use Common\Controller\Registry;
+use Main\Controller\BattleController;
 
 /**
  * Page Content
@@ -24,6 +24,7 @@ $page->nav->addHead("Navigation")
           ->addLink("Aktualisieren", $page->url);
 
 $battle = new BattleController;
+$em = Registry::getEntityManager();
 
 if ($em->getRepository("Main:Character")->getBattle($user->character)) {
     include (DIR_MAIN."Helpers/battle.running.php");

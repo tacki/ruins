@@ -10,7 +10,7 @@
 /**
  * Namespaces
  */
-use Modules\Survey\Manager;
+use Modules\Survey\Manager\SurveyManager;
 use Common\Controller\Registry;
 
 /**
@@ -30,7 +30,7 @@ $em = Registry::getEntityManager();
 switch ($_GET['op']) {
 
     default:
-        $polls = Manager\Survey::getAllPolls(false);
+        $polls = SurveyManager::getAllPolls(false);
 
         $page->output("`bUmfragen Liste`b `n`n");
 
@@ -70,7 +70,7 @@ switch ($_GET['op']) {
 
             // # of Votes
             $page->getSimpleTable("surveylist")->startData(10);
-            $page->output("`c".Manager\Survey::getTotalNrOfVotes($poll)."`c");
+            $page->output("`c".SurveyManager::getTotalNrOfVotes($poll)."`c");
 
             // Action
             $page->getSimpleTable("surveylist")->startData(50);
@@ -96,9 +96,9 @@ switch ($_GET['op']) {
 
 
             if (count($answers) > 1) {
-                $poll = Manager\Survey::addPoll($question, $description, new DateTime($deadline));
+                $poll = SurveyManager::addPoll($question, $description, new DateTime($deadline));
                 foreach ($answers as $answer) {
-                    Manager\Survey::addAnswer($poll, $answer);
+                    SurveyManager::addAnswer($poll, $answer);
                 }
 
                 $page->output("Umfrage hinzugefügt");
@@ -250,7 +250,7 @@ switch ($_GET['op']) {
 
     case "delete":
         if (isset($_GET['force'])) {
-            Manager\Survey::deletePoll($_GET['pollId']);
+            SurveyManager::deletePoll($_GET['pollId']);
 
             $page->output("Umfrage gelöscht");
         } else {

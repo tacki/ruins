@@ -13,7 +13,6 @@
  * Namespaces
  */
 namespace Main\Controller;
-use Main\Manager;
 
 /**
  * Popup Class

@@ -12,9 +12,9 @@
  * Namespaces
  */
 namespace Main\Repositories;
-use Main\Entities\EntityBase,
-    Common\Controller\Error,
-    Doctrine\ORM\EntityRepository;
+use Main\Entities\EntityBase;
+use Common\Controller\Error;
+use Doctrine\ORM\EntityRepository;
 
 /**
  * Base Repository

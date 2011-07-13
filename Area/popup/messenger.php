@@ -10,8 +10,8 @@
 /**
  * Namespaces
  */
-use Main\Controller\Link,
-    Main\Manager;
+use Main\Controller\Link;
+use Main\Manager\MessageManager;
 
 /**
  * Page Content
@@ -27,12 +27,12 @@ switch ($_GET['op']) {
 
     case "send":
         if ($_GET['reply']) {
-            $messagestatus = Manager\Message::STATUS_REPLIED;
+            $messagestatus = MessageManager::STATUS_REPLIED;
         } else {
-            $messagestatus = Manager\Message::STATUS_UNREAD;
+            $messagestatus = MessageManager::STATUS_UNREAD;
         }
 
-        $nrSentMessages = Manager\Message::write(
+        $nrSentMessages = MessageManager::write(
                                                     $user->character,
                                                     $_POST['receivers'],
                                                     $_POST['subject'],
@@ -63,7 +63,7 @@ switch ($_GET['op']) {
         $snippet = $popup->createTemplateSnippet();
         $snippet->assign("target", "popup=popup/messenger&op=send&reply=1");
         if (isset($_GET['replyto'])) {
-            $message = Manager\Message::getMessage($_GET['replyto']);
+            $message = MessageManager::getMessage($_GET['replyto']);
             $snippet->assign("receiver", $message->sender->name);
             if (substr($message->subject, 0, 4) != "RE: ") {
                 // Add 'RE: ' if there isn't already one
@@ -81,7 +81,7 @@ switch ($_GET['op']) {
         $popup->addForm("delete");
         $popup->getForm("delete")->head("deleteform", "popup=popup/messenger&op=delete");
 
-        $messagelist = Manager\Message::getInbox($user->character);
+        $messagelist = MessageManager::getInbox($user->character);
         $showlist = array();
         foreach ($messagelist as $message) {
             $showmessage = array();
@@ -117,7 +117,7 @@ switch ($_GET['op']) {
 
     case "read":
         if (isset($_GET['messageid'])) {
-            $message = Manager\Message::getMessage($_GET['messageid']);
+            $message = MessageManager::getMessage($_GET['messageid']);
 
             $snippet = $popup->createTemplateSnippet();
             $snippet->assign("target", "popup=popup/messenger&op=reply&replyto=".$message->id);
@@ -126,9 +126,9 @@ switch ($_GET['op']) {
             $snippet->assign("subject", $message->data->subject);
             $snippet->assign("text", $message->data->text);
 
-            if ($message->status != Manager\Message::STATUS_DELETED ||
+            if ($message->status != MessageManager::STATUS_DELETED ||
                 $message->receiver == $user->character) {
-                Manager\Message::updateMessageStatus($message->id, Manager\Message::STATUS_READ);
+                MessageManager::updateMessageStatus($message->id, MessageManager::STATUS_READ);
             }
         }
         $output = $snippet->fetch("snippet_messenger_read.tpl");
@@ -145,14 +145,14 @@ switch ($_GET['op']) {
             $popup->getForm("delete")->submitButton("Ja, Löschen");
             $popup->getForm("delete")->close();
         } elseif (isset($_POST['ids'])) {
-            Manager\Message::delete($_POST['ids']);
+            MessageManager::delete($_POST['ids']);
 
             $popup->output(count($_POST['ids']) . " Nachrichten gelöscht!");
         }
         break;
 
     case "outbox":
-        $messagelist = Manager\Message::getOutbox($user->character);
+        $messagelist = MessageManager::getOutbox($user->character);
 
         $showlist = array();
         foreach ($messagelist as $message) {

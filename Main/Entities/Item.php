@@ -4,7 +4,7 @@
  */
 namespace Main\Entities;
 use Main\Layers\Money,
-    Main\Manager;
+    Main\Manager\Item as ItemManager;
 
 /**
  * @Entity
@@ -83,7 +83,7 @@ abstract class Item extends EntityBase
         $this->requirement = 0;
         $this->weight = 0;
         $this->value = 0;
-        $this->location = Manager\Item::LOCATION_BACKPACK;
+        $this->location = ItemManager::LOCATION_BACKPACK;
     }
 
     /** @PostLoad @PostUpdate @PostPersist */

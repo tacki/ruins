@@ -10,7 +10,7 @@
 /**
  * Namespaces
  */
-use Main\Manager;
+use Main\Manager\System as SystemManager;
 
 /**
  * Page Content
@@ -19,15 +19,15 @@ $page->set("pagetitle", "Administration");
 $page->set("headtitle", "Administration");
 
 
-foreach (Manager\System::getAdminCategories() as $category) {
+foreach (SystemManager::getAdminCategories() as $category) {
     $page->nav->addHead($category);
 
-    foreach (Manager\System::getAdminCategoryPages($category) as $entry) {
+    foreach (SystemManager::getAdminCategoryPages($category) as $entry) {
         $page->nav->addLink($entry->name, $entry->page);
     }
 }
 
-Manager\System::getAdminCategories();
+SystemManager::getAdminCategories();
 
 
 $page->addChat("administration_mainchat")->show();

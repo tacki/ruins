@@ -13,13 +13,13 @@
  * Namespaces
  */
 namespace Main\Manager;
-use Common\Controller\SessionStore,
-    Auth_OpenID_FileStore,
-    Auth_OpenID_Consumer,
-    Auth_OpenID_SRegRequest,
-    Auth_OpenID_SRegResponse,
-    Auth_OpenID_PAPE_Request,
-    Auth_OpenID;
+use Common\Controller\SessionStore;
+use Auth_OpenID_FileStore;
+use Auth_OpenID_Consumer;
+use Auth_OpenID_SRegRequest;
+use Auth_OpenID_SRegResponse;
+use Auth_OpenID_PAPE_Request;
+use Auth_OpenID;
 
 /**
  * Class Defines

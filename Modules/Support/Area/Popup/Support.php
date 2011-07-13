@@ -10,11 +10,11 @@
 /**
  * Namespaces
  */
-use Common\Controller\SessionStore,
-    Main\Controller\Link,
-    Main\Controller\Page,
-    Main\Entities,
-    Main\Manager;
+use Common\Controller\SessionStore;
+use Main\Controller\Link;
+use Main\Controller\Page;
+use Modules\Support\Entities\SupportRequests;
+use Main\Manager\System as SystemManager;
 use Common\Controller\Registry;
 
 /**
@@ -88,7 +88,7 @@ switch ($_GET['op']) {
         $popup->getSimpleTable("supportformtable")->startData();
         $popup->output("Botschutz: ");
         $popup->getSimpleTable("supportformtable")->startData();
-        $popup->output("<img src='".Manager\System::getOverloadedFilePath("/Helpers/captcha.php", true)."'>", true);
+        $popup->output("<img src='".SystemManager::getOverloadedFilePath("/Helpers/captcha.php", true)."'>", true);
         $popup->getForm("support")->inputText("captcha", false, 5, 5);
         $popup->getSimpleTable("supportformtable")->closeRow();
 
@@ -144,7 +144,7 @@ switch ($_GET['op']) {
         // Collect all Information and write it to the Database
         $em = Registry::getEntityManager();
 
-        $data = new \Modules\Support\Entities\SupportRequests;
+        $data = new SupportRequests;
 
         if ($loggedin) {
             $data->user = $user;

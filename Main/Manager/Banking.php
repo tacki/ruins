@@ -13,8 +13,9 @@
  * Namespaces
  */
 namespace Main\Manager;
-use Main\Entities,
-    Main\Layers\Money;
+use Main\Entities\Character;
+use Main\Entities\Bank;
+use Main\Layers\Money;
 use Common\Controller\Registry;
 
 /**
@@ -31,7 +32,7 @@ class Banking
      * @param string $bankname The Name of the Bank
      * @return bool true is an account exists, else false
      */
-    public function accountExists(Entities\Character $character, $bankname)
+    public function accountExists(Character $character, $bankname)
     {
         return self::getAccount($character, $bankname);
     }
@@ -42,7 +43,7 @@ class Banking
      * @param string $bankname Name of the Bank
      * @return object Account Object
      */
-    public function getAccount(Entities\Character $character, $bankname)
+    public function getAccount(Character $character, $bankname)
     {
         $em = Registry::getEntityManager();
 
@@ -64,7 +65,7 @@ class Banking
      * @param string $bankname The Name of the Bank
      * @return int the current Balance of the Account
      */
-    public function getBalance(Entities\Character $character, $bankname)
+    public function getBalance(Character $character, $bankname)
     {
         if ($account = self::getAccount($character, $bankname)) {
             return $account->balance;
@@ -77,11 +78,11 @@ class Banking
      * @param string $bankname The Name of the Bank
      * @return bool true if successful, else false
      */
-    public function createAccount(Entities\Character $character, $bankname)
+    public function createAccount(Character $character, $bankname)
     {
         $em = Registry::getEntityManager();
 
-        $newAccount = new Entities\Bank;
+        $newAccount = new Bank;
         $newAccount->name = $bankname;
         $newAccount->depositor = $character;
         $em->persist($newAccount);
@@ -97,7 +98,7 @@ class Banking
      * @param string $bankname The Name of the Bank
      * @return Money The Interest given
      */
-    public function chargeInterest(Entities\Character $character, $bankname)
+    public function chargeInterest(Character $character, $bankname)
     {
         $systemConfig = Registry::getMainConfig();
 
@@ -128,7 +129,7 @@ class Banking
      * @param int $amount Amount of Money
      * @return bool true if successful, else false
      */
-    public function deposit(Entities\Character $character, $bankname, $amount)
+    public function deposit(Character $character, $bankname, $amount)
     {
         if ($balance = self::getBalance($character, $bankname)) {
             $balance->receive($amount);
@@ -142,7 +143,7 @@ class Banking
      * @param int $amount Amount of Money
      * @return bool true if successful, else false
      */
-    public function withdraw(Entities\Character $character, $bankname, $amount)
+    public function withdraw(Character $character, $bankname, $amount)
     {
         if ($balance = self::getBalance($character, $bankname)) {
             $balance->pay($amount);

@@ -3,8 +3,8 @@
  * Namespaces
  */
 namespace Main\Entities;
-use DateTime,
-    Common\Controller\SessionStore;
+use DateTime;
+use Common\Controller\SessionStore;
 use Common\Controller\Registry;
 
 /**

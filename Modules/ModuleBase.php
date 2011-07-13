@@ -12,8 +12,9 @@
  * Namespaces
  */
 namespace Modules;
-use ReflectionClass,
-    Main\Controller\Page;
+use ReflectionClass;
+use Main\Controller\Page;
+use Main\Entities\Module;
 use Common\Controller\Registry;
 
 /**
@@ -40,7 +41,7 @@ class ModuleBase
         $reflectionClass = new ReflectionClass($calledClass);
         $directory       = basename(dirname($reflectionClass->getFilename())) . "/";
 
-        $module                 = new \Main\Entities\Module;
+        $module                 = new Module;
         $module->name           = static::getName();
         $module->description    = static::getDescription();
         $module->basedir        = $directory;

@@ -13,11 +13,11 @@
  * Namespaces
  */
 namespace Main\Manager;
-use Main\Manager\System,
-    Main\Entities\Battle,
-    Main\Entities\BattleMember,
-    Main\Entities\Character;
-use Commontr\Controller\Registry;
+use Main\Manager\System;
+use Main\Entities\Battle;
+use Main\Entities\BattleMember;
+use Main\Entities\Character;
+use Common\Controller\Registry;
 
 /**
  * Battlesystem Class

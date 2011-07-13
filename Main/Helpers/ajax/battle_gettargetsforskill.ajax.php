@@ -12,8 +12,8 @@
 /**
  * Namespaces
  */
-use Main\Controller,
-    Main\Manager;
+use Main\Controller\SkillBase;
+use Main\Manager;
 use Common\Controller\Registry;
 
 /**
@@ -46,17 +46,17 @@ if (isset($battleid) && isset($charid) && isset($skillname)) {
     // Retrieve the possible side of the target
     switch ($skill->getPossibleTargets()) {
 
-        case Controller\SkillBase::POSSIBLE_TARGET_OWN:
+        case SkillBase::POSSIBLE_TARGET_OWN:
             // Target is self
-            $targetside = Controller\SkillBase::POSSIBLE_TARGET_OWN;
+            $targetside = SkillBase::POSSIBLE_TARGET_OWN;
             break;
 
-        case Controller\SkillBase::POSSIBLE_TARGET_ENEMIES:
+        case SkillBase::POSSIBLE_TARGET_ENEMIES:
             // Target is the opposite side
             $targetside = $otherside;
             break;
 
-        case Controller\SkillBase::POSSIBLE_TARGET_ALLIES:
+        case SkillBase::POSSIBLE_TARGET_ALLIES:
             // Target is the own side
             $targetside = $ourside;
             break;
@@ -64,17 +64,17 @@ if (isset($battleid) && isset($charid) && isset($skillname)) {
 
     // Retrieve the number of targets
     $target = false;
-    if ($targetside != Controller\SkillBase::POSSIBLE_TARGET_OWN) {
+    if ($targetside != SkillBase::POSSIBLE_TARGET_OWN) {
         if (is_numeric($skill->getNrOfTargets())) {
             if ($skill->nroftargets == 1) {
                 $target = "single";
             } elseif ($skill->nroftargets >= 2) {
                 $target = "multiple";
             }
-        } elseif ($skill->nroftargets == Controller\SkillBase::POSSIBLE_TARGET_ALLIES) {
-            $target	= Controller\SkillBase::POSSIBLE_TARGET_ALLIES;
-        } elseif ($skill->nroftargets == Main\Controller\SkillBase::POSSIBLE_TARGET_ENEMIES) {
-            $target = Controller\SkillBase::POSSIBLE_TARGET_ENEMIES;
+        } elseif ($skill->nroftargets == SkillBase::POSSIBLE_TARGET_ALLIES) {
+            $target	= SkillBase::POSSIBLE_TARGET_ALLIES;
+        } elseif ($skill->nroftargets == SkillBase::POSSIBLE_TARGET_ENEMIES) {
+            $target = SkillBase::POSSIBLE_TARGET_ENEMIES;
         }
     }
 
@@ -104,12 +104,12 @@ if (isset($battleid) && isset($charid) && isset($skillname)) {
             }
             break;
 
-        case Controller\SkillBase::POSSIBLE_TARGET_ALLIES:
-            $result[] = Controller\SkillBase::POSSIBLE_TARGET_ALLIES;
+        case SkillBase::POSSIBLE_TARGET_ALLIES:
+            $result[] = SkillBase::POSSIBLE_TARGET_ALLIES;
             break;
 
-        case Controller\SkillBase::POSSIBLE_TARGET_ENEMIES:
-            $result[] = Controller\SkillBase::POSSIBLE_TARGET_ENEMIES;
+        case SkillBase::POSSIBLE_TARGET_ENEMIES:
+            $result[] = SkillBase::POSSIBLE_TARGET_ENEMIES;
             break;
 
     }

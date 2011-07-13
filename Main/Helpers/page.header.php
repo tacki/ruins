@@ -12,9 +12,9 @@
 /**
  * Namespaces
  */
-use Common\Controller\SessionStore,
-    Main\Controller\Link,
-    Main\Controller\Page;
+use Common\Controller\SessionStore;
+use Main\Controller\Link;
+use Main\Controller\Page;
 use Common\Controller\Registry;
 
 /**

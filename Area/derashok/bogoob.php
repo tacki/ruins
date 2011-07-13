@@ -10,8 +10,9 @@
 /**
  * Namespaces
  */
-use Main\Controller\Link,
-    Main\Manager;
+use Main\Controller\Link;
+use Common\Controller\Registry;
+use Main\Manager\Item as ItemManager;
 
 /**
  * Page Content
@@ -23,6 +24,8 @@ $page->nav->addHead("Navigation")
           ->addLink("Zum Zentrum", "page=derashok/tribalcenter");
 
 $page->nav->addHead("Bogoob");
+
+$em = Registry::getEntityManager();
 
 switch ($_GET['op']) {
 
@@ -52,7 +55,7 @@ switch ($_GET['op']) {
 
         if (is_array($_POST['chooser'])) {
             foreach($_POST['chooser'] as $itemid) {
-                $item = Manager\Item::getItem($itemid, "all");
+                $item = ItemManager::getItem($itemid, "all");
 
                 if ($item->owner == $user->character->id
                     && $item->class == "fish") {

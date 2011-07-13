@@ -13,9 +13,11 @@
  * Namespaces
  */
 namespace Modules\AdminLink;
-use Main\Controller\Page,
-    Main\Manager;
+use Main\Controller\Page;
+use Modules\ModuleBase;
+use Common\Interfaces\Module as ModuleInterface;
 use Common\Controller\Registry;
+use Main\Manager\Rights as RightsManager;
 
 /**
  * Admin Link Module
@@ -23,7 +25,7 @@ use Common\Controller\Registry;
  * Add the Administration Link to the shared Container
  * @package Ruins
  */
-class AdminLink extends \Modules\ModuleBase implements \Common\Interfaces\Module
+class AdminLink extends ModuleBase implements ModuleInterface
 {
     /**
      * (non-PHPdoc)
@@ -59,7 +61,7 @@ class AdminLink extends \Modules\ModuleBase implements \Common\Interfaces\Module
 
         if ($user->character && $user->character->loggedin) {
             // Link restricted to Group "Administrator"
-            $page->nav->addLink("Administration", "page=admin/main", "shared", Manager\Rights::getGroup("Administrator"))
+            $page->nav->addLink("Administration", "page=admin/main", "shared", RightsManager::getGroup("Administrator"))
                       ->setDescription("Administrative Einstellungen");
         }
     }

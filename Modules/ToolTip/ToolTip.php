@@ -13,8 +13,10 @@
  * Namespaces
  */
 namespace Modules\ToolTip;
-use Main\Controller\Page,
-    Main\Controller\Link;
+use Main\Controller\Page;
+use Main\Controller\Link;
+use Modules\ModuleBase;
+use Common\Interfaces\Module as ModuleInterface;
 
 /**
  * ToolTip Module
@@ -22,7 +24,7 @@ use Main\Controller\Page,
  * Show Linkdescription as nice Tooltip
  * @package Ruins
  */
-class ToolTip extends \Modules\ModuleBase implements \Common\Interfaces\Module
+class ToolTip extends ModuleBase implements ModuleInterface
 {
     /**
      * @see Common\Interfaces.Module::getName()

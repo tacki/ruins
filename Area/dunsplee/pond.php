@@ -10,10 +10,10 @@
 /**
  * Namespaces
  */
-use Main\Controller\Link,
-    Main\Controller\TimerController as Timer,
-    Main\Controller\Dice,
-    Main\Entities;
+use Main\Controller\Link;
+use Main\Controller\TimerController as Timer;
+use Main\Controller\Dice;
+use Main\Entities\Items\Common;
 use Common\Controller\Registry;
 
 /**
@@ -142,7 +142,7 @@ switch ($_GET['op']) {
                             zu bewundern... :(`n");
 
             // Insert the Fish into the Database
-            $fish = new Entities\Items\Common;
+            $fish = new Common;
             $fish->name = $fishname;
             $fish->class = "fish";
             $fish->weight	= round($fishsize / 15); 	// 15 cm fish = 1 weight-unit? :D
@@ -152,17 +152,6 @@ switch ($_GET['op']) {
 
             $em->persist($fish);
 
-/*
-            $fish = new Item;
-            $fish->create();
-            $fish->name 	= $fishname;
-            $fish->class	= "fish";
-            $fish->weight	= round($fishsize / 15); 	// 15 cm fish = 1 weight-unit? :D
-            $fish->value	= round($fishsize / 10);  	// 10 cm fish = 1 copper
-            $fish->location	= "backpack";
-            $fish->owner	= $user->char->id;
-            $fish->save();
-*/
             $page->nav->addLink("Ui, gleich nochmal!", "page=dunsplee/pond&op=fishask");
         } else {
             $page->output("Da bist du nun so lange hier herumgesessen und du hast nichts, aber auch garnichts

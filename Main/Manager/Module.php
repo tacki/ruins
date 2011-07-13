@@ -13,8 +13,8 @@
  * Namespaces
  */
 namespace Main\Manager;
-use Main\Entities;
 use Common\Controller\Registry;
+use Doctrine\DBAL\Types\Type;
 
 /**
  * Modulesystem Class
@@ -92,7 +92,7 @@ class Module
 
         $qb ->select("module")
             ->from("Main:Module", "module");
-        if ($onlyenabled) $qb->where("module.enabled = ?1")->setParameter(1, true, \Doctrine\DBAL\Types\Type::BOOLEAN);
+        if ($onlyenabled) $qb->where("module.enabled = ?1")->setParameter(1, true, Type::BOOLEAN);
 
         $result = $qb->getQuery()->getResult();
 

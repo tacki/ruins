@@ -12,8 +12,8 @@
  * Namespaces
  */
 namespace Main\Repositories;
-use Exception,
-    Main\Manager\System;
+use Exception;
+use Main\Manager\System;
 
 
 /**

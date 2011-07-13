@@ -13,12 +13,17 @@
  */
 namespace Modules\Survey\Manager;
 use DateTime;
+use Doctrine\DBAL\Types\Type;
+use Main\Entities\Character;
+use Modules\Survey\Entities\Poll;
+use Modules\Survey\Entities\Vote;
+use Modules\Survey\Entities\Answer;
 use Common\Controller\Registry;
 
 /**
  * Survey Manager
  */
-class Survey
+class SurveyManager
 {
     /**
      * Retrieve a specific Poll by ID
@@ -62,7 +67,7 @@ class Survey
                 ->andWhere("poll.creationdate < ?1")
                 ->andWhere("poll.active = ?2")
                 ->setParameter(1, new DateTime())
-                ->setParameter(2, true, \Doctrine\DBAL\Types\Type::BOOLEAN);
+                ->setParameter(2, true, Type::BOOLEAN);
         }
 
         return $qb->getQuery()->getResult();
@@ -73,12 +78,12 @@ class Survey
      * @param \Modules\Survey\Entities\Poll $poll
      * @return array
      */
-    public static function getAnswers(\Modules\Survey\Entities\Poll $poll)
+    public static function getAnswers(Poll $poll)
     {
         return $poll->answers;
     }
 
-    public static function getNrOfAnswers(\Modules\Survey\Entities\Poll $poll)
+    public static function getNrOfAnswers(Poll $poll)
     {
         return self::getAnswers($poll)->count();
     }
@@ -88,7 +93,7 @@ class Survey
      * @param \Modules\Survey\Entities\Poll $poll
      * @return array
      */
-    public static function getAllVotes(\Modules\Survey\Entities\Poll $poll)
+    public static function getAllVotes(Poll $poll)
     {
         $result = array();
         foreach ($poll->answers as $answer) {
@@ -103,7 +108,7 @@ class Survey
      * @param \Modules\Survey\Entities\Poll $poll
      * @return int # of Votes
      */
-    public static function getTotalNrOfVotes(\Modules\Survey\Entities\Poll $poll)
+    public static function getTotalNrOfVotes(Poll $poll)
     {
         $result = 0;
         foreach ($poll->answers as $answer) {
@@ -118,7 +123,7 @@ class Survey
      * @param \Modules\Survey\Entities\Poll $poll
      * @return array 1-dimensional array with $answer->text => # of Votes
      */
-    public static function getSurveyResult(\Modules\Survey\Entities\Poll $poll)
+    public static function getSurveyResult(Poll $poll)
     {
         $result = array();
         foreach ($poll->answers as $answer) {
@@ -133,7 +138,7 @@ class Survey
      * @param \Modules\Survey\Entities\Answer $answer
      * @return int Number of Votes
      */
-    public static function getNrOfVotes(\Modules\Survey\Entities\Answer $answer)
+    public static function getNrOfVotes(Answer $answer)
     {
         return $answer->count();
     }
@@ -149,12 +154,12 @@ class Survey
         $em = Registry::getEntityManager();
         $user = Registry::getUser();
 
-        $poll = new \Modules\Survey\Entities\Poll;
+        $poll = new Poll;
         $poll->question = $question;
         $poll->description = $description;
         $poll->deadline = $deadline;
 
-        if ($user->character instanceof \Main\Entities\Character) $poll->creator = $user->character;
+        if ($user->character instanceof Character) $poll->creator = $user->character;
 
         $em->persist($poll);
 
@@ -182,11 +187,11 @@ class Survey
      * @param \Modules\Survey\Entities\Poll $poll
      * @param string $answer
      */
-    public static function addAnswer(\Modules\Survey\Entities\Poll $poll, $answer)
+    public static function addAnswer(Poll $poll, $answer)
     {
         $em = Registry::getEntityManager();
 
-        $answerObject = new \Modules\Survey\Entities\Answer();
+        $answerObject = new Answer();
         $answerObject->poll = $poll;
         $answerObject->text = $answer;
 
@@ -200,7 +205,7 @@ class Survey
     * @param \Modules\Survey\Entities\Poll $poll
     * @param string $answer
     */
-    public static function removeAnswer(\Modules\Survey\Entities\Poll $poll, $answer)
+    public static function removeAnswer(Poll $poll, $answer)
     {
         $poll->answers->removeElement($answer);
     }
@@ -211,7 +216,7 @@ class Survey
      * @param \Modules\Survey\Entities\Poll $poll
      * @return Modules\Survey\Entities\Answer Answer he voted for
      */
-    public static function hasVoted(\Main\Entities\Character $character, \Modules\Survey\Entities\Poll $poll)
+    public static function hasVoted(Character $character, Poll $poll)
     {
         $em = Registry::getEntityManager();
 
@@ -243,7 +248,7 @@ class Survey
             return false;
         }
 
-        $vote = new \Modules\Survey\Entities\Vote;
+        $vote = new Vote;
         $vote->voter  = $user->character;
         $vote->poll   = self::getPoll($pollId);
         $vote->answer = self::getAnswer($answerId);

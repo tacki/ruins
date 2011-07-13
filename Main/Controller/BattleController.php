@@ -11,12 +11,13 @@
  * Namespaces
  */
 namespace Main\Controller;
-use Common\Controller\SessionStore,
-    Common\Controller\Error,
-    Main\Controller\TimerController as Timer,
-    Main\Entities\Character,
-    Main\Entities,
-    Main\Manager;
+use Common\Controller\SessionStore;
+use Common\Controller\Error;
+use Main\Controller\SkillBase;
+use Main\Controller\TimerController as Timer;
+use Main\Entities\Battle;
+use Main\Entities\Character;
+use Main\Entities\BattleMember;
 use Common\Controller\Registry;
 
 
@@ -81,7 +82,7 @@ class BattleController extends Controller
      * Enter description here ...
      * @param \Main\Entities\Battle $battle
      */
-    public function load(\Main\Entities\Battle $battle)
+    public function load(Battle $battle)
     {
         // Set Class Object
         $this->_battle = $battle;
@@ -223,10 +224,10 @@ class BattleController extends Controller
 
             switch ($member->status) {
                 default: $status = ""; break;
-                case Entities\BattleMember::STATUS_ACTIVE: $status = "Aktiv"; break;
-                case Entities\BattleMember::STATUS_INACTIVE: $status = "Inaktiv"; break;
-                case Entities\BattleMember::STATUS_EXCLUDED: $status = "Ausgeschlossen"; break;
-                case Entities\BattleMember::STATUS_BEATEN: $status = "Tot"; break;
+                case BattleMember::STATUS_ACTIVE: $status = "Aktiv"; break;
+                case BattleMember::STATUS_INACTIVE: $status = "Inaktiv"; break;
+                case BattleMember::STATUS_EXCLUDED: $status = "Ausgeschlossen"; break;
+                case BattleMember::STATUS_BEATEN: $status = "Tot"; break;
             }
 
             foreach ($beforeSS['description'] as $property) {
@@ -292,7 +293,7 @@ class BattleController extends Controller
      * @param Main\Controller\SkillBase $action The Skill to use
      * @return bool true if successful, else false
      */
-    public function chooseSkill(Character $character, $target, \Main\Controller\SkillBase $skill)
+    public function chooseSkill(Character $character, $target, SkillBase $skill)
     {
         // Check if this Battle is initialized
         if (!$this->_battle) {
@@ -342,8 +343,8 @@ class BattleController extends Controller
     public function checkPremise()
     {
         // First Check if one Side has less than 1 member
-        if (count($this->getRepository()->getAllMembersAtSide(\Main\Entities\BattleMember::SIDE_ATTACKERS)) < 1
-            || count($this->getRepository()->getAllMembersAtSide(\Main\Entities\BattleMember::SIDE_DEFENDERS)) < 1) {
+        if (count($this->getRepository()->getAllMembersAtSide(BattleMember::SIDE_ATTACKERS)) < 1
+            || count($this->getRepository()->getAllMembersAtSide(BattleMember::SIDE_DEFENDERS)) < 1) {
             return false;
         }
 
@@ -375,9 +376,9 @@ class BattleController extends Controller
                         ->join("ba.initiator", "bm")
                         ->where("ba.battle = ?1")->setParameter(1, $this->_battle)
                         ->andWhere("bm.status = ?2")
-                        ->setParameter(2, Entities\BattleMember::STATUS_ACTIVE)
+                        ->setParameter(2, BattleMember::STATUS_ACTIVE)
                         ->orWhere("bm.status = ?3")
-                        ->setParameter(3, Entities\BattleMember::STATUS_INACTIVE)
+                        ->setParameter(3, BattleMember::STATUS_INACTIVE)
                         ->orderBy("bm.speed", "DESC")
                         ->addOrderBy("bm.side", "ASC") // attackers before defenders if speed is equal
                         ->getQuery()->getResult();
@@ -499,7 +500,7 @@ class BattleController extends Controller
 
                 // Automatically add the Creator to the attackers and give him the token
                 $member = $this->getRepository()->addCharacterToBattle($user->character, $this->_battle);
-                $member->side = \Main\Entities\BattleMember::SIDE_ATTACKERS;
+                $member->side = BattleMember::SIDE_ATTACKERS;
                 $this->getRepository()->setTokenOwner($user->character);
 
                 $outputobject->refresh(true);

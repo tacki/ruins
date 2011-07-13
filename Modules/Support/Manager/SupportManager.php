@@ -16,7 +16,7 @@ namespace Modules\Support\Manager;
 /**
  * Support Manager
  */
-class Support
+class SupportManager
 {
     /**
      * Generate Random String

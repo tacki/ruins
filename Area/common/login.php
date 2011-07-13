@@ -10,10 +10,10 @@
 /**
  * Namespaces
  */
-use Common\Controller\SessionStore,
-    Main\Entities\DebugLogEntity,
-    Main\Controller\Link,
-    Main\Manager;
+use Common\Controller\SessionStore;
+use Main\Entities\DebugLogEntity;
+use Main\Controller\Link;
+use Main\Manager\OpenID as OpenIDManager;
 use Common\Controller\Registry;
 
 /**
@@ -107,7 +107,7 @@ switch ($_GET['op']) {
 
     case "checkopenid":
         $page->output("`cChecking OpenID!`c`n");
-        Manager\OpenID::checkOpenID($_POST['openid_url'], "page=common/login&op=checkopenid2");
+        OpenIDManager::checkOpenID($_POST['openid_url'], "page=common/login&op=checkopenid2");
 
         if (SessionStore::get("openiderror")) {
             $page->nav->redirect("page=common/login");
@@ -117,7 +117,7 @@ switch ($_GET['op']) {
     case "checkopenid2":
         $page->output("`cChecking OpenID!`c`n");
         $oldlevel = error_reporting(0);
-        $result = Manager\OpenID::evalTrustResult("page=common/login&op=checkopenid2");
+        $result = OpenIDManager::evalTrustResult("page=common/login&op=checkopenid2");
         error_reporting($oldlevel);
         if (is_array($result) && $result['result'] == "ok") {
             $em = Registry::getEntityManager();

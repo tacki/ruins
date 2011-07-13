@@ -2,8 +2,11 @@
 /**
  * Namespaces
  */
-use Main\Manager,
-    Main\Entities;
+use Main\Manager\Rights as RightsManager;
+use Main\Manager\System as SystemManager;
+use Main\Manager\Item as ItemManager;
+use Main\Entities\Items\Weapon;
+use Main\Entities\Items\Armor;
 use Common\Controller\Registry;
 
 $em = Registry::getEntityManager();
@@ -23,10 +26,10 @@ $admin_char = $em->getRepository("Main:Character")->create("Administrator", $ins
 $admin_char->displayname = "`#19`bAdministrator`b`#00";
 
 // Add Administrator Char to Admin- and User-Group
-$group = Manager\Rights::createGroup("Administrator");
-Manager\Rights::addToGroup($group, $admin_char);
-$group = Manager\Rights::createGroup("User");
-Manager\Rights::addToGroup($group, $admin_char);
+$group = RightsManager::createGroup("Administrator");
+RightsManager::addToGroup($group, $admin_char);
+$group = RightsManager::createGroup("User");
+RightsManager::addToGroup($group, $admin_char);
 
 $em->flush();
 
@@ -37,8 +40,8 @@ $test_char = $em->getRepository("Main:Character")->create("Testcharacter", $inst
 $test_char->displayname = "`#59Testcharacter`#00";
 
 // Add User Char to User-Group
-$group = Manager\Rights::createGroup("User");
-Manager\Rights::addToGroup($group, $test_char);
+$group = RightsManager::createGroup("User");
+RightsManager::addToGroup($group, $test_char);
 
 $em->flush();
 
@@ -49,8 +52,8 @@ $test_char2 = $em->getRepository("Main:Character")->create("Testcharacter2", $in
 $test_char2->displayname = "`#79Testcharacter2`#00";
 
 // Add User Char to User-Group
-$group = Manager\Rights::createGroup("User");
-Manager\Rights::addToGroup($group, $test_char2);
+$group = RightsManager::createGroup("User");
+RightsManager::addToGroup($group, $test_char2);
 
 $em->flush();
 
@@ -67,12 +70,12 @@ $install_normal_user->settings->default_character = $test_char2;
 //*********************************
 // Create Test-Weapons
 if (!($weapon = $em->getRepository("Main:Items\Weapon")->findOneByName("Testwaffe"))) {
-    $weapon             = new Entities\Items\Weapon;
-    $weapon->class      = Manager\Item::CLASS_WEAPON;
+    $weapon             = new Weapon;
+    $weapon->class      = ItemManager::CLASS_WEAPON;
     $weapon->name       = "Testwaffe";
     $weapon->damage_min = 5;
     $weapon->damage_max = 10;
-    $weapon->location   = Manager\Item::LOCATION_BACKPACK;
+    $weapon->location   = ItemManager::LOCATION_BACKPACK;
     $weapon->owner      = $test_char;
     $em->persist($weapon);
 }
@@ -92,11 +95,11 @@ $armors = array (
 
 foreach ($armors as $armorclass => $armorname) {
     if (!$em->getRepository("Main:Items\Armor")->findOneByName($armorname)) {
-        $armor             = new Entities\Items\Armor;
+        $armor             = new Armor;
         $armor->class      = $armorclass;
         $armor->name       = $armorname;
         $armor->armorclass = 1;
-        $armor->location   = Manager\Item::LOCATION_BACKPACK;
+        $armor->location   = ItemManager::LOCATION_BACKPACK;
         $armor->owner      = $test_char;
         $em->persist($armor);
     }
@@ -120,7 +123,7 @@ $waypoints = array (
 );
 
 foreach ($sites as $name => $description) {
-    Manager\System::addSite($name, $description, $waypoints[$name]);
+    SystemManager::addSite($name, $description, $waypoints[$name]);
 }
 
 $em->flush();
@@ -135,7 +138,7 @@ foreach ($waypoints_conn as $source => $target) {
     $site1 = $em->getRepository("Main:Site")->findOneByName($source);
     $site2 = $em->getRepository("Main:Site")->findOneByName($target);
 
-    Manager\System::addSiteConnection($site1, $site2);
+    SystemManager::addSiteConnection($site1, $site2);
 }
 
 $em->flush();
@@ -143,11 +146,11 @@ $em->flush();
 
 //*********************************
 // Create Adminpages
-Manager\System::addAdminPage("Ironlance", "Travel", "page=ironlance/citysquare");
-Manager\System::addAdminPage("Derashok", "Travel", "page=derashok/tribalcenter");
-Manager\System::addAdminPage("Dunsplee", "Travel", "page=dunsplee/trail");
+SystemManager::addAdminPage("Ironlance", "Travel", "page=ironlance/citysquare");
+SystemManager::addAdminPage("Derashok", "Travel", "page=derashok/tribalcenter");
+SystemManager::addAdminPage("Dunsplee", "Travel", "page=dunsplee/trail");
 
-Manager\System::addAdminPage("Module", "System", "page=admin/modules");
+SystemManager::addAdminPage("Module", "System", "page=admin/modules");
 
 $em->flush();
 

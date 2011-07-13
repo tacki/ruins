@@ -10,8 +10,8 @@
 /**
  * Namespaces
  */
-use Common\Controller\SessionStore,
-    Modules\Support\Manager;
+use Common\Controller\SessionStore;
+use Modules\Support\Manager\SupportManager;
 
 /**
  * Global Includes
@@ -19,7 +19,7 @@ use Common\Controller\SessionStore,
 require_once("../../../config/dirconf.cfg.php");
 require_once(DIR_BASE."main.inc.php");
 
-$text = Manager\Support::generateRandomString(5, true, false, true);
+$text = SupportManager::generateRandomString(5, true, false, true);
 
 // Write $text to SessionStore
 SessionStore::set("support_captcha", $text);

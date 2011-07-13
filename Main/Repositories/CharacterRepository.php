@@ -12,10 +12,10 @@
  * Namespaces
  */
 namespace Main\Repositories;
-use DateTime,
-    Main\Entities\Character,
-    Main\Entities\User,
-    Doctrine\DBAL\Types\Type;
+use DateTime;
+use Main\Entities\Character;
+use Main\Entities\User;
+use Doctrine\DBAL\Types\Type;
 use Common\Controller\Registry;
 
 /**

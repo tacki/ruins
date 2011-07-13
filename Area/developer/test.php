@@ -12,17 +12,19 @@
 /**
  * Namespaces
  */
-use Main\Controller\Link,
-    Main\Controller\TimerController as Timer,
-    Main\Controller\Travel,
-    Main\Controller\Dice,
-    Common\Controller\BtCode,
-    Common\Controller\Config,
-    Common\Controller\SessionStore,
-    Common\Controller\StackObject,
-    Common\Controller\Form,
-    Common\Controller\Table,
-    Main\Manager;
+use Main\Controller\Link;
+use Main\Controller\TimerController as Timer;
+use Main\Controller\Travel;
+use Main\Controller\Dice;
+use Common\Controller\BtCode;
+use Common\Controller\Config;
+use Common\Controller\SessionStore;
+use Common\Controller\StackObject;
+use Common\Controller\Form;
+use Common\Controller\Table;
+use Main\Manager\System as SystemManager;
+use Main\Manager\Rights as RightsManager;
+use Main\Manager\MessageManager;
 use Common\Controller\Registry;
 
 // CLEAR CACHE
@@ -227,7 +229,7 @@ $page->addJavaScriptFile("autocomplete.func.js");
 
 $page->addJavaScript("
     $(function() {
-        setAutoComplete('searchField', 'results', '" . Manager\System::getOverloadedFilePath("Helpers/ajax/autocomplete_charname.ajax.php", true)."?part=');
+        setAutoComplete('searchField', 'results', '" . SystemManager::getOverloadedFilePath("Helpers/ajax/autocomplete_charname.ajax.php", true)."?part=');
     });
 ");
 // btcode Test END
@@ -395,13 +397,13 @@ $user = $em->find("Main:User",1);
 $user->login();
 
 // Adding Group
-Manager\Rights::createGroup("TempGroup");
+RightsManager::createGroup("TempGroup");
 
 // Adding User to Group
-Manager\Rights::addToGroup("TempGroup", $user->character);
+RightsManager::addToGroup("TempGroup", $user->character);
 
 $page->output("Is Character {$user->character->name} in Group TempGroup?`n");
-if (Manager\Rights::isInGroup("TempGroup", $user->character)) {
+if (RightsManager::isInGroup("TempGroup", $user->character)) {
     $page->output("Yes!`n");
 } else {
     $page->output("No!`n");
@@ -412,10 +414,10 @@ foreach($user->character->groups as $group) {
 }
 
 // Removing User from Group
-Manager\Rights::removeFromGroup("TempGroup", $user->character);
+RightsManager::removeFromGroup("TempGroup", $user->character);
 
 // Remove Group
-Manager\Rights::removeGroup("TempGroup", $user->character);
+RightsManager::removeGroup("TempGroup", $user->character);
 
 // Link-Class + Rights-Class Test end
 
@@ -512,8 +514,8 @@ $newstab = new Table;
 $newstab->setTabAttributes(false,2);
 $newstab->addTabHeader(array("ID","Datum","Author","Titel","HP", "Inhalt", "Ort"));
 
-if (!($newslist = Manager\System::getNews())) {
-    Manager\System::addNews("Skandal!", "Heute wieder kein Weltuntergang");
+if (!($newslist = SystemManager::getNews())) {
+    SystemManager::addNews("Skandal!", "Heute wieder kein Weltuntergang");
 } else {
     $newstab->addListArray($newslist);
 }
@@ -569,10 +571,10 @@ $position = "messagetest";
 $user = $em->find("Main:User",1);
 
 $page->output("Sending Message from {$user->character->displayname} to {$user->character->displayname}`n");
-Manager\Message::write($user->character, $user->character, "du...", "...idiota!");
+MessageManager::write($user->character, $user->character, "du...", "...idiota!");
 
 $page->output("`bInbox of {$user->character->displayname}:`b`n");
-$messagelist = Manager\Message::getInbox($user->character);
+$messagelist = MessageManager::getInbox($user->character);
 $showlist = array();
 foreach ($messagelist as $message) {
     $showmessage = array();
@@ -593,12 +595,12 @@ $newtab->addListArray($showlist);
 $page->output($newtab->load()->getHTML(),true);
 
 $page->output("Deleting last Message`n");
-$lastMessage = Manager\Message::getInbox($user->character, 1, false);
-Manager\Message::delete($lastMessage);
+$lastMessage = MessageManager::getInbox($user->character, 1, false);
+MessageManager::delete($lastMessage);
 
 $page->output("`bInbox of {$user->character->displayname}:`b`n");
-$messagelist = Manager\Message::getInbox($user->character);
-$messagelist = Manager\Message::getInbox($user->character);
+$messagelist = MessageManager::getInbox($user->character);
+$messagelist = MessageManager::getInbox($user->character);
 $showlist = array();
 foreach ($messagelist as $message) {
     $showmessage = array();
@@ -611,7 +613,7 @@ foreach ($messagelist as $message) {
     $showlist[] = $showmessage;
 }
 
-Manager\Message::flushDeleted($user->character);
+MessageManager::flushDeleted($user->character);
 
 $newtab = new Table;
 $newtab->setCSS("`~9f");

@@ -10,8 +10,7 @@
 /**
  * Namespaces
  */
-use Main\Controller\Link,
-    Main\Manager;
+use Main\Controller\Link;
 use Common\Controller\Registry;
 
 /**

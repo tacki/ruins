@@ -1,7 +1,7 @@
 <?php
 namespace Main\Controller;
-use Main\Repositories\Repository,
-    Common\Controller\Error;
+use Main\Repositories\Repository;
+use Common\Controller\Error;
 
 class Controller
 {

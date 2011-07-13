@@ -10,8 +10,11 @@
 /**
  * Namespaces
  */
-use Main\Controller\Link,
-    Main\Manager;
+use Main\Controller\Link;
+use Main\Manager\Item as ItemManager;
+use Main\Manager\System as SystemManager;
+use Main\Entities\Items\Armor;
+use Main\Entities\Items\Weapon;
 
 /**
  * Page Content
@@ -94,33 +97,33 @@ if ($_GET['op'] == 'change' && isset($_POST['equipped'])) {
 
         if (is_numeric($itemid)) {
             // Replaced by a new Item or still old item
-            $item = Manager\Item::getItem($itemid);
+            $item = ItemManager::getItem($itemid);
 
             // Check if the item fits the slot it's placed into
             if ($item->class === $itemclass) {
                 // Get the old equipped item
-                $olditem = Manager\Item::getEquippedItem($user->character, $itemclass);
+                $olditem = ItemManager::getEquippedItem($user->character, $itemclass);
 
                 // First check if the newitem is different
                 if ($olditem && $olditem->id != $item->id) {
                     // Replace the old item from Manager\Item::LOCATION_EQUIPMENT
                     // with the new one
-                    $olditem->location 	= Manager\Item::LOCATION_BACKPACK;
+                    $olditem->location 	= ItemManager::LOCATION_BACKPACK;
 
                     // Move the new item to the equipment
-                    $item->location 	= Manager\Item::LOCATION_EQUIPMENT;
+                    $item->location 	= ItemManager::LOCATION_EQUIPMENT;
                 } elseif (!$olditem) {
                     // There was no old item
-                    $item->location 	= Manager\Item::LOCATION_EQUIPMENT;
+                    $item->location 	= ItemManager::LOCATION_EQUIPMENT;
                 } else {
                     // Old and new item are the same - no action
                 }
             }
         } else {
             // Removed item
-            $olditem = Manager\Item::getEquippedItem($user->character, $itemclass);
+            $olditem = ItemManager::getEquippedItem($user->character, $itemclass);
             if ($olditem) {
-                $olditem->location 	= Manager\Item::LOCATION_BACKPACK;
+                $olditem->location 	= ItemManager::LOCATION_BACKPACK;
             }
 
         }
@@ -138,13 +141,13 @@ $newURL->setParameter("op", "change");
 $page->getForm("inventory")->head("inventoryform", $newURL);
 $page->nav->addHiddenLink($newURL);
 
-$itemtypes = array (Manager\Item::CLASS_WEAPON, Manager\Item::CLASS_ARMOR);
+$itemtypes = array (ItemManager::CLASS_WEAPON, ItemManager::CLASS_ARMOR);
 
-$itemclasses = array (Manager\Item::CLASS_WEAPON);
-$itemclasses = array_merge($itemclasses, Manager\Item::getArmorClasses());
+$itemclasses = array (ItemManager::CLASS_WEAPON);
+$itemclasses = array_merge($itemclasses, ItemManager::getArmorClasses());
 
-$equipped = Manager\Item::getInventoryList($user->character, "equipment", $itemtypes);
-$backpack = Manager\Item::getInventoryList($user->character, "backpack", $itemtypes, "class");
+$equipped = ItemManager::getInventoryList($user->character, "equipment", $itemtypes);
+$backpack = ItemManager::getInventoryList($user->character, "backpack", $itemtypes, "class");
 
 $page->output("`g`bAusrüstung`b`g`n");
 
@@ -163,7 +166,7 @@ foreach ($itemclasses as $itemclass) {
     if ($emptybox) {
         $page->output("<div id='{$itemclass}'>", true);
 
-        $page->output("`b`g`c".Manager\System::translate($itemclass) . "`c`g`b");
+        $page->output("`b`g`c".SystemManager::translate($itemclass) . "`c`g`b");
 
         $page->output("<div class='equippedbox'>", true);
         $page->output("</div>", true);
@@ -173,17 +176,17 @@ foreach ($itemclasses as $itemclass) {
     } else {
         $page->output("<div id='{$item->class}'>", true);
 
-        $page->output("`b`g`c".Manager\System::translate($item->class) . "`c`g`b");
+        $page->output("`b`g`c".SystemManager::translate($item->class) . "`c`g`b");
 
         $page->output("<div class='equippedbox'>", true);
 
         $page->output("<p class='itemid hidden'>".$item->id."</p>", true);
         $page->output("<p class='itemname'>".$item->name."</p>", true);
-        $page->output("<p class='itemdata'>".Manager\System::translate($item->class)."</p>", true);
+        $page->output("<p class='itemdata'>".SystemManager::translate($item->class)."</p>", true);
 
-        if ($item instanceof Entities\Weapon) {
+        if ($item instanceof Weapon) {
             $page->output("<p class='itemdata'>Schaden: ".$item->showDamage(false)."</p>", true);
-        } elseif ($item instanceof Entities\Armor) {
+        } elseif ($item instanceof Armor) {
             $page->output("<p class='itemdata'>Rüstung: ".$item->showArmorClass(false)."</p>", true);
         }
 
@@ -206,11 +209,11 @@ foreach ($backpack as $item) {
 
     $page->output("<p class='itemid hidden'>".$item->id."</p>", true);
     $page->output("<p class='itemname'>".$item->name."</p>", true);
-    $page->output("<p class='itemdata'>".Manager\System::translate($item->class)."</p>", true);
+    $page->output("<p class='itemdata'>".SystemManager::translate($item->class)."</p>", true);
 
-    if ($item instanceof Entities\Weapon) {
+    if ($item instanceof Weapon) {
         $page->output("<p class='itemdata'>Schaden: ".$item->showDamage(false)."</p>", true);
-    } elseif ($item instanceof Entities\Armor) {
+    } elseif ($item instanceof Armor) {
         $page->output("<p class='itemdata'>Rüstung: ".$item->showArmorClass(false)."</p>", true);
     }
 

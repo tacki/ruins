@@ -10,9 +10,10 @@
 /**
  * Namespaces
  */
-use Main\Controller\Link,
-    Main\Controller\TimerController as Timer,
-    Common\Controller\Error;
+use Main\Controller\Link;
+use Main\Controller\Travel;
+use Main\Controller\TimerController as Timer;
+use Common\Controller\Error;
 
 /**
  * Page Content
@@ -24,7 +25,7 @@ $page->nav->addHead("Ruins");
 
 $timer = $em->getRepository("Main:Timer")
             ->create("travelTimer", $user->character);
-$travel = new Main\Controller\Travel;
+$travel = new Travel;
 
 $curSite = $em->getRepository("Main:Site")->findOneByName($_GET['return']);
 

@@ -12,13 +12,13 @@
  * Namespaces
  */
 namespace Main\Repositories;
-use Common\Controller\Error,
-    Main\Entities\Battle,
-    Main\Entities\BattleMember,
-    Main\Entities\BattleMessage,
-    Main\Entities\Character,
-    Doctrine\DBAL\Types\Type,
-    Doctrine\Common\Collections\ArrayCollection;
+use Common\Controller\Error;
+use Main\Entities\Battle;
+use Main\Entities\BattleMember;
+use Main\Entities\BattleMessage;
+use Main\Entities\Character;
+use Doctrine\DBAL\Types\Type;
+use Doctrine\Common\Collections\ArrayCollection;
 
 
 /**
@@ -108,7 +108,7 @@ class BattleRepository extends Repository
      */
     public function getAllAttackers(Battle $battle=NULL)
     {
-        return $this->getAllMembersAtSide(\Main\Entities\BattleMember::SIDE_ATTACKERS, false, $battle);
+        return $this->getAllMembersAtSide(BattleMember::SIDE_ATTACKERS, false, $battle);
     }
 
     /**
@@ -118,7 +118,7 @@ class BattleRepository extends Repository
      */
     public function getAllDefenders(Battle $battle=NULL)
     {
-        return $this->getAllMembersAtSide(\Main\Entities\BattleMember::SIDE_DEFENDERS, false, $battle);
+        return $this->getAllMembersAtSide(BattleMember::SIDE_DEFENDERS, false, $battle);
     }
 
     /**

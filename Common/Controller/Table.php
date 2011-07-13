@@ -11,8 +11,8 @@
  * Namespaces
  */
 namespace Common\Controller;
-use Common\Controller\Error,
-    Common\Controller\BtCode;
+use Common\Controller\Error;
+use Common\Controller\BtCode;
 use Common\Controller\Registry;
 
 class Table extends BaseHTML
