@@ -34,114 +34,6 @@ class MainEntitiesBattleProxy extends \Main\Entities\Battle implements \Doctrine
         return parent::isActive();
     }
 
-    public function isMember(\Main\Entities\Character $character)
-    {
-        $this->__load();
-        return parent::isMember($character);
-    }
-
-    public function getMember(\Main\Entities\Character $character)
-    {
-        $this->__load();
-        return parent::getMember($character);
-    }
-
-    public function getAllMembers()
-    {
-        $this->__load();
-        return parent::getAllMembers();
-    }
-
-    public function getAllAttackers()
-    {
-        $this->__load();
-        return parent::getAllAttackers();
-    }
-
-    public function getAllDefenders()
-    {
-        $this->__load();
-        return parent::getAllDefenders();
-    }
-
-    public function getAllActiveMembers()
-    {
-        $this->__load();
-        return parent::getAllActiveMembers();
-    }
-
-    public function getMembersAtSide($side, $status = false)
-    {
-        $this->__load();
-        return parent::getMembersAtSide($side, $status);
-    }
-
-    public function addMember(\Main\Entities\Character $character, $side)
-    {
-        $this->__load();
-        return parent::addMember($character, $side);
-    }
-
-    public function removeMember(\Main\Entities\Character $character)
-    {
-        $this->__load();
-        return parent::removeMember($character);
-    }
-
-    public function setMemberStatus(\Main\Entities\Character $character, $status)
-    {
-        $this->__load();
-        return parent::setMemberStatus($character, $status);
-    }
-
-    public function setMemberSide(\Main\Entities\Character $character, $side)
-    {
-        $this->__load();
-        return parent::setMemberSide($character, $side);
-    }
-
-    public function getTokenOwner()
-    {
-        $this->__load();
-        return parent::getTokenOwner();
-    }
-
-    public function setTokenOwner(\Main\Entities\Character $character)
-    {
-        $this->__load();
-        return parent::setTokenOwner($character);
-    }
-
-    public function addMessage($message)
-    {
-        $this->__load();
-        return parent::addMessage($message);
-    }
-
-    public function getAllMessages()
-    {
-        $this->__load();
-        return parent::getAllMessages();
-    }
-
-    public function clearMessages()
-    {
-        $this->__load();
-        return parent::clearMessages();
-    }
-
-    public function getActionDoneList()
-    {
-        $this->__load();
-        return parent::getActionDoneList();
-    }
-
-    public function getActionNeededList()
-    {
-        $this->__load();
-        return parent::getActionNeededList();
-    }
-
     public function __get($name)
     {
         $this->__load();
@@ -152,6 +44,12 @@ class MainEntitiesBattleProxy extends \Main\Entities\Battle implements \Doctrine
     {
         $this->__load();
         return parent::__set($name, $value);
+    }
+
+    public function __toString()
+    {
+        $this->__load();
+        return parent::__toString();
     }
 
 

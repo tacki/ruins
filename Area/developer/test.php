@@ -13,7 +13,7 @@
  * Namespaces
  */
 use Main\Controller\Link,
-    Main\Controller\Timer,
+    Main\Controller\TimerController as Timer,
     Main\Controller\Travel,
     Main\Controller\Dice,
     Common\Controller\BtCode,
@@ -106,7 +106,8 @@ $mt = microtime(true);
 $page->output("Starting Global Timer Test: `n");
 $position = "globaltimertest";
 
-$timer = new Timer("1hourtimertest");
+$timer = $em->getRepository("Main:Timer")
+            ->create("1hourtimertest");
 
 switch($_GET['op'])
 {

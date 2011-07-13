@@ -671,7 +671,7 @@ switch ($_GET['step']) {
         }
 
         echo "<div class='checkfor'>Modules found ... </div>";
-        foreach(Main\Manager\Module::getModuleListFromDatabase() as $module) {
+        foreach($em->getRepository("Main:Module")->findAll() as $module) {
             echo "<div class='ok'>" . $module->name . "</div>";
         }
 
@@ -679,12 +679,13 @@ switch ($_GET['step']) {
         echo "<div class='checkfor'>Sync SkillList to Database ... </div>";
 
         // Sync Skill List
-        if (Main\Manager\Battle::syncSkillListToDatabase()) {
+        $skillRepos = $em->getRepository("Main:Skill");
+        if ($skillRepos->syncToDatabase()) {
             echo "<div class='ok'>OK!</div>";
         }
 
         echo "<div class='checkfor'>Skills found ... </div>";
-        foreach(Main\Manager\Battle::getSkillListFromDatabase() as $skill) {
+        foreach($skillRepos->findAll() as $skill) {
             echo "<div class='ok'>" . $skill->name . "</div>";
         }
 

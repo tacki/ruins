@@ -7,6 +7,11 @@
  * @package Ruins
  */
 
+/**
+ * Namespaces
+ */
+use Main\Manager\BattleManager;
+
 // Global Battle Nav();
 $battle->addBattleNav();
 
@@ -19,14 +24,14 @@ if ($battletimer = $battle->getTimer()) {
 }
 
 // Battle Member List
-$battle->showBattleMemberList(true);
+BattleManager::showBattleMemberlist($battle->getEntity());
 
 // Divider
 $page->output("`n<div style='border-bottom: 1px solid;'></div>`n", true);
 
 // Skill Options
 $page->output("`bAktion: `b`n");
-$battle->showSkillChooser($user->character);
+BattleManager::showSkillChooser($user->character, $battle->getEntity());
 $page->output("`n");
 
 // Divider

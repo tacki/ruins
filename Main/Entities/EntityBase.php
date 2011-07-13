@@ -28,4 +28,9 @@ class EntityBase
     {
         $this->$name = $value;
     }
+
+    public function __toString()
+    {
+        return (string)$this->id;
+    }
 }

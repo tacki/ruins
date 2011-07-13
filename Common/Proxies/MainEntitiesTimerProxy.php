@@ -28,6 +28,12 @@ class MainEntitiesTimerProxy extends \Main\Entities\Timer implements \Doctrine\O
     }
     
     
+    public function isRunning()
+    {
+        $this->__load();
+        return parent::isRunning();
+    }
+
     public function __get($name)
     {
         $this->__load();
@@ -38,6 +44,12 @@ class MainEntitiesTimerProxy extends \Main\Entities\Timer implements \Doctrine\O
     {
         $this->__load();
         return parent::__set($name, $value);
+    }
+
+    public function __toString()
+    {
+        $this->__load();
+        return parent::__toString();
     }
 
 

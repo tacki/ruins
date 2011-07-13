@@ -10,15 +10,14 @@
 /**
  * Namespaces
  */
-use Main\Controller\Battle,
-    Main\Manager;
+use Main\Manager\BattleManager;
 
 $battle->addCreateBattleNav();
 $page->output("`nGegenwärtige Kämpfe`n");
 
-$battlelist = Manager\Battle::getBattleList();
+$battlelist = $em->getRepository("Main:Battle")->getList();
 
 foreach ($battlelist as $activebattle) {
-    Manager\Battle::showBattleInformationBox($activebattle);
+    BattleManager::showBattleInformationBox($activebattle);
 }
 ?>

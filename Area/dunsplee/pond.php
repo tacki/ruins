@@ -11,7 +11,7 @@
  * Namespaces
  */
 use Main\Controller\Link,
-    Main\Controller\Timer,
+    Main\Controller\TimerController as Timer,
     Main\Controller\Dice,
     Main\Entities;
 
@@ -44,7 +44,8 @@ switch ($_GET['op']) {
         break;
 
     case "fish":
-        $timer = new Timer("dunsplee_pond_fishing", $user->character);
+        $timer = $em->getRepository("Main:Timer")
+                    ->create("dunsplee_pond_fishing", $user->character);
         // Don't refresh the Page, show this Button instead
         $timer->useReplacementButton("Weiter...", $page->url);
 

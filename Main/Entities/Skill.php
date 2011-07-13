@@ -5,7 +5,7 @@
 namespace Main\Entities;
 
 /**
- * @Entity
+ * @Entity(repositoryClass="Main\Repositories\SkillRepository")
  * @Table(name="skills")
  */
 class Skill extends EntityBase

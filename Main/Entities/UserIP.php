@@ -6,7 +6,7 @@ namespace Main\Entities;
 use DateTime;
 
 /**
- * @Entity
+ * @Entity(repositoryClass="Main\Repositories\UserRepository")
  * @Table(name="users__ips")
  */
 class UserIP extends EntityBase

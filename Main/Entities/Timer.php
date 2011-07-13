@@ -6,7 +6,7 @@ namespace Main\Entities;
 use DateTime;
 
 /**
- * @Entity
+ * @Entity(repositoryClass="Main\Repositories\TimerRepository")
  * @Table(name="timers")
  */
 class Timer extends EntityBase
@@ -42,5 +42,18 @@ class Timer extends EntityBase
         if ($name) $this->name = $name;
         $this->backup_ttc = 0;
         $this->completiontime = new DateTime;
+    }
+
+    /**
+    * Check if a Timer is running
+    * @return bool true if the timer is running, false if the timer is stopped
+    */
+    public function isRunning()
+    {
+        if ($this->backup_ttc > 0) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

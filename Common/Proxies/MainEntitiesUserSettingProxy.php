@@ -40,6 +40,12 @@ class MainEntitiesUserSettingProxy extends \Main\Entities\UserSetting implements
         return parent::__set($name, $value);
     }
 
+    public function __toString()
+    {
+        $this->__load();
+        return parent::__toString();
+    }
+
 
     public function __sleep()
     {

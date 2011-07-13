@@ -6,7 +6,7 @@ namespace Main\Entities;
 use Main\Layers\Money;
 
 /**
- * @Entity
+ * @Entity(repositoryClass="Main\Repositories\BankRepository")
  * @HasLifecycleCallbacks
  * @Table(name="banks")
  */

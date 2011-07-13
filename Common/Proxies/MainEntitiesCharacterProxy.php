@@ -70,6 +70,12 @@ class MainEntitiesCharacterProxy extends \Main\Entities\Character implements \Do
         return parent::__set($name, $value);
     }
 
+    public function __toString()
+    {
+        $this->__load();
+        return parent::__toString();
+    }
+
 
     public function __sleep()
     {

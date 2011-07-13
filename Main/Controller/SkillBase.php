@@ -47,8 +47,8 @@ abstract class SkillBase
     protected $initiator;
 
     /**
-     * Battle Entity
-     * @var Main\Controller\Battle
+     * Battle Controller
+     * @var Main\Controller\BattleController
      */
     protected $battle;
 
@@ -148,10 +148,10 @@ abstract class SkillBase
 
     /**
      * Prepare the skill
-     * @param Main\Controller\Battle $battle Battle Controller
+     * @param Main\Controller\BattleController $battle Battle Controller
      * @param Main\Entities\BattleAction $action Battle Action
      */
-    public function prepare(\Main\Controller\Battle $battle, \Main\Entities\BattleAction $action)
+    public function prepare(\Main\Controller\BattleController $battle, \Main\Entities\BattleAction $action)
     {
         global $em;
 

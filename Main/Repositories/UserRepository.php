@@ -14,14 +14,13 @@
 namespace Main\Repositories;
 use Main\Entities\Character,
     Main\Entities\User,
-    Main\Entities\UserSetting,
-    Doctrine\ORM\EntityRepository;
+    Main\Entities\UserSetting;
 
 /**
  * User Repository
  * @package Ruins
  */
-class UserRepository extends EntityRepository
+class UserRepository extends Repository
 {
     /**
      * Create User
@@ -32,7 +31,7 @@ class UserRepository extends EntityRepository
      */
     public function create($username, $password, Character $defaultCharacter=NULL)
     {
-        if (!($createUser = $this->getEntityManager()->getRepository("Main:User")->findOneByLogin($username))) {
+        if (!($createUser = $this->findOneByLogin($username))) {
             $createUser = new User;
             $createUser->login = $username;
             $createUser->password = $this->hashPassword($password);
@@ -66,7 +65,7 @@ class UserRepository extends EntityRepository
      */
     public function checkPassword($username, $password)
     {
-        $user = $this->getEntityManager()->getRepository("Main:User")->findOneByLogin($username);
+        $user = $this->findOneByLogin($username);
 
         if ($user && $this->hashPassword($password, $user->password) === $user->password) {
             return $user;

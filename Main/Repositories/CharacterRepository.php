@@ -15,14 +15,13 @@ namespace Main\Repositories;
 use DateTime,
     Main\Entities\Character,
     Main\Entities\User,
-    Doctrine\ORM\EntityRepository,
     Doctrine\DBAL\Types\Type;
 
 /**
  * User Repository
  * @package Ruins
  */
-class CharacterRepository extends EntityRepository
+class CharacterRepository extends Repository
 {
     /**
      * Create Character
@@ -32,9 +31,7 @@ class CharacterRepository extends EntityRepository
      */
     public function create($charactername, User $user=NULL)
     {
-        if (!($createCharacter = $this  ->getEntityManager()
-                                        ->getRepository("Main:Character")
-                                        ->findOneByName($charactername))) {
+        if (!($createCharacter = $this->findOneByName($charactername))) {
             $createCharacter = new Character;
             $createCharacter->name = $charactername;
             $createCharacter->displayname = $charactername;
@@ -92,7 +89,7 @@ class CharacterRepository extends EntityRepository
      */
     public function getListAtPlace($place)
     {
-        global $systemConfig;
+        global $user, $systemConfig;
 
         $qb = $this->getEntityManager()->createQueryBuilder();
 
@@ -104,14 +101,37 @@ class CharacterRepository extends EntityRepository
                         ->getQuery()
                         ->getResult();
 
-        $characterlist = array();
+        $characterlist = array($user->character->displayname);
 
         if ($result) {
             foreach ($result as $entry) {
-                $characterlist[] = $entry['displayname'];
+                if ($entry['displayname'] !== $user->character->displayname) {
+                    $characterlist[] = $entry['displayname'];
+                }
             }
         }
 
         return $characterlist;
+    }
+
+    /**
+     * Get current Battle of a given Character
+     * @param Main\Entities\Character $char Character to check
+     * @return Main\Entities\Battle
+     */
+    public function getBattle(Character $character)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        $result = $qb   ->select("battlemember")
+                        ->from("Main:BattleMember", "battlemember")
+                        ->where("battlemember.character = ?2")->setParameter(2, $character)
+                        ->getQuery()->getOneOrNullResult();
+
+        if ($result->battle) {
+            return $result->battle;
+        } else {
+            return false;
+        }
     }
 }

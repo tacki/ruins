@@ -33,14 +33,14 @@ if (isset($battleid) && isset($charid) && isset($skillname)) {
     // Load Battleinformation
     $battle     = $em->find("Main:Battle", $battleid);
     $character  = $em->find("Main:Character", $charid);
-    $member     = $battle->getMember($character);
+    $member     = $em->getRepository("Main:Battle")->getBattleMember($character, $battle);
 
     // Get fighting Side
     $ourside    = $member->side;
     $otherside	= $member->getOppositeSide();
 
     // Get the skill the character likes to use
-    $skill = Manager\Battle::getSkill($skillname);
+    $skill = $em->getRepository("Main:Skill")->getController($skillname);
 
     // Retrieve the possible side of the target
     switch ($skill->getPossibleTargets()) {

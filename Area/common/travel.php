@@ -11,7 +11,7 @@
  * Namespaces
  */
 use Main\Controller\Link,
-    Main\Controller\Timer,
+    Main\Controller\TimerController as Timer,
     Common\Controller\Error;
 
 /**
@@ -22,7 +22,8 @@ $page->set("headtitle", "Reisen");
 
 $page->nav->addHead("Ruins");
 
-$timer = new Timer("travelTimer", $user->character);
+$timer = $em->getRepository("Main:Timer")
+            ->create("travelTimer", $user->character);
 $travel = new Main\Controller\Travel;
 
 $curSite = $em->getRepository("Main:Site")->findOneByName($_GET['return']);

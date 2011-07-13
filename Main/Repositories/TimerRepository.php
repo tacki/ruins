@@ -1,21 +1,9 @@
 <?php
 /**
- * Timer Class
- *
- * Timer-Class
- *
- * Table-Layout:
- * CREATE TABLE `timers` (
- *	`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
- *	`name` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
- *	`completiontime` DATE NOT NULL ,
- *	UNIQUE (
- *	`name`
- *	)
- *	) ENGINE = MYISAM ;
+ * Timer Repository
  *
  * @author Markus Schlegel <g42@gmx.net>
- * @copyright Copyright (C) 2006 Markus Schlegel
+ * @copyright Copyright (C) 2011 Markus Schlegel
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @package Ruins
  */
@@ -23,47 +11,24 @@
 /**
  * Namespaces
  */
-namespace Main\Controller;
+namespace Main\Repositories;
 use DateTime,
-    Common\Controller\Form,
-    Main\Entities;
+    Main\Entities\Character,
+    Main\Entities\Timer,
+    Main\Controller\URL,
+    Common\Controller\Error,
+    Common\Controller\Form;
 
 /**
- * Timer Class
- *
- * Timer-Class
- *
- * Example for a <b>private</b> timer:
- * <code>
- * // Take a Walk of exactly 1 hour
- * $timer = new Timer("walking", Character);
- * $timer->set(0, 0, 1, false);
- * if ($timer->get()) {
- *     $page->output("I'm still walking");
- * } else {
- *     $page->output("Yes! Finally i'm there!'");
- * }
- * </code>
- * Example for a <b>global</b> timer:
- * <code>
- * // Let it rain for 6 hours
- * $timer = new Timer("rain");
- * $timer->set(0, 0, 6, false);
- * if ($timer->get()) {
- *     $page->output("It's still raining");
- * } else {
- *     $page->output("Weee! It stops raining!!");
- * }
- * </code>
- *
+ * Timer Repository
  * @package Ruins
  */
-class Timer
+class TimerRepository extends Repository
 {
     /**
-     * Set this to replace the Timer with HTML instead of reload the page
-     * @var string HTML-Element
-     */
+    * Set this to replace the Timer with HTML instead of reload the page
+    * @var string HTML-Element
+    */
     private $_replacement = false;
 
     /**
@@ -73,57 +38,53 @@ class Timer
     private $_replacenow = false;
 
     /**
-     * Timer Object
-     * @var \Entities\Timer
+     * Create a new Timer
+     * @param string $timername
+     * @param Main\Entities\Character $character
+     * @throws Common\Controller\Error
+     * @return Main\Repositories\TimerRepository
      */
-    private $_timer;
-
-    /**
-     * constructor - load the default values and initialize the attributes
-     * @param string $timername Name of the Timer we manage
-     * @param Character $character Affected Character Object - Defines the timer as private
-     */
-    function __construct($timername, $character = false)
+    public function create($timername, Character $character=NULL)
     {
         // Set Timername
+        // Private Timers start with '_'
         if ($character) {
             $timername = "_".$character->id."_".$timername;
         } elseif (substr($timername, 0, 1) == "_") {
-            throw new \Error("Timers with a Name starting with '_' are not allowed");
+            throw new Error("Timers with a Name starting with '_' are not allowed");
         }
 
-        // Load or create the Timer
-        if ($this->_timer = $this->_getTimer($timername)) {
-            // Make sure a stopped Timer is also stopped after loading
-            if (!$this->isRunning()) {
-                $this->stop();
-            }
-        } else {
-            $this->create($timername);
+        if (!($timer = $this->findOneByName($timername))) {
+            $timer = new Timer;
+            $timer->name = $timername;
+
+            $this->getEntityManager()->persist($timer);
         }
 
+        $this->setEntity($timer);
+
+        if (!$timer->isRunning()) {
+            $this->stop();
+        }
+
+        return $this;
     }
 
     /**
-     * Create a new Timer
+     * Set new Date for this Timer
+     * @param DateTime $datetime
      */
-    public function create($timername)
+    public function setNewTime(DateTime $datetime)
     {
-        global $em;
-
-        $newtimer = new Entities\Timer;
-        $newtimer->name = $timername;
-        $em->persist($newtimer);
-        $em->flush();
-
-        $this->_timer = $newtimer;
+        $this->getEntity()->completiontime = $datetime;
+        $this->getEntity()->backup_ttc     = 0;
     }
 
     /**
-     * Don't refresh the page if the Timer finished, but replace the Timer with a Button
-     * @param string $buttonText Text on the Button
-     * @param URL $targetUrl Url the Button sends the User to
-     */
+    * Don't refresh the page if the Timer finished, but replace the Timer with a Button
+    * @param string $buttonText Text on the Button
+    * @param URL $targetUrl Url the Button sends the User to
+    */
     public function useReplacementButton($buttonText, URL $targetUrl)
     {
         $html		= "";
@@ -160,8 +121,7 @@ class Timer
             $datetime = new DateTime("+".$totaltime." seconds");
 
             // set new time or force to overwrite
-            $this->_timer->completiontime = $datetime;
-            $this->_timer->backup_ttc = 0;
+            $this->setNewTime($datetime);
         } else {
             // timer exists and force isn't enabled -> do nothing
             return false;
@@ -180,8 +140,7 @@ class Timer
     {
         if (!$this->get() || $force) {
             // set new time or force to overwrite
-            $this->_timer->completiontime = $datetime;
-            $this->_timer->backup_ttc = 0;
+            $this->setNewTime($datetime);
         } else {
             // timer exists and force isn't enabled -> do nothing
             return false;
@@ -238,10 +197,10 @@ class Timer
      */
     public function stop()
     {
-        $this->_timer->backup_ttc = $this->_getTimeDiff($this->_getTTC());
+        $this->getEntity()->backup_ttc = $this->_getTimeDiff($this->_getTTC());
 
         $this->_replacenow = true;
-        $this->useReplacementText("<span class='timer_stop'>".date("H:i:s", mktime(0, 0, $this->_timer->backup_ttc)) ."</span>");
+        $this->useReplacementText("<span class='timer_stop'>".date("H:i:s", mktime(0, 0, $this->getEntity()->backup_ttc)) ."</span>");
     }
 
     /**
@@ -250,24 +209,20 @@ class Timer
      */
     public function isRunning()
     {
-        if ($this->_timer->backup_ttc) {
-            return false;
-        } else {
-            return true;
-        }
+        return $this->getEntity()->isRunning();
     }
 
-     /**
+    /**
      * Get the current ttc or the backup ttc if exists
      * @return DateTime Time to complete
      */
     private function _getTTC()
     {
         // Get timetocomplete from BackupTTC or calculate from completiontime
-        if ($seconds = $this->_timer->backup_ttc) {
+        if ($seconds = $this->getEntity()->backup_ttc) {
             return new DateTime("+".$seconds." seconds");
         } else {
-            return $this->_timer->completiontime;
+            return $this->getEntity()->completiontime;
         }
     }
 
@@ -281,19 +236,4 @@ class Timer
 
         return $datetime->getTimestamp() - $now->getTimestamp();
     }
-
-    /**
-     * Return the Timer
-     * @param string $name Name of the Timer
-     * @return int ID of the Timer or false if non-existing
-     */
-    private function _getTimer($name)
-    {
-        global $em;
-
-        $result = $em->getRepository("Main:Timer")->findOneByName($name);
-
-        return $result;
-    }
 }
-?>

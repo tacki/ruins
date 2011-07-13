@@ -11,7 +11,7 @@
  * Namespaces
  */
 use Main\Controller\Link,
-    Main\Controller\Battle,
+    Main\Controller\BattleController,
     Main\Manager;
 
 /**
@@ -23,11 +23,11 @@ $page->set("headtitle", "Derashok Kampfarena");
 $page->nav->addHead("Navigation")
           ->addLink("Aktualisieren", $page->url);
 
-$battle = new Battle;
+$battle = new BattleController;
 
-if (Manager\Battle::getBattle($user->character)) {
+if ($em->getRepository("Main:Character")->getBattle($user->character)) {
     include (DIR_MAIN."Helpers/battle.running.php");
-} elseif (Manager\Battle::getBattleList()) {
+} elseif ($em->getRepository("Main:Battle")->getList()) {
     $page->nav->addLink("Zurück", "page=derashok/tribalcenter");
     include (DIR_MAIN."Helpers/battle.list.php");
 } else {
