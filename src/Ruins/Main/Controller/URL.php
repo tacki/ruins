@@ -48,7 +48,7 @@ class URL
         // Initialize
         $this->_url = html_entity_decode($initURL);
         $this->base = array_shift(explode("&", $this->_url));
-        $this->short = array_pop(explode("page=", $this->base));
+        $this->short = array_pop(explode("page/", $this->base));
     }
 
     /**

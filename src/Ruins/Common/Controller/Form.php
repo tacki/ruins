@@ -12,8 +12,10 @@
  * Namespaces
  */
 namespace Ruins\Common\Controller;
-use Ruins\Main\Controller\Nav,
-    Main\Controller\Link;
+use Ruins\Main\Controller\Nav;
+use Ruins\Main\Controller\Link;
+use Ruins\Common\Manager\RequestHandler;
+
 
 /**
  * Creating formulars
@@ -25,12 +27,12 @@ class Form extends BaseHTML
      * @param string $name
      * @param string $action the target page e.g. action='test.php'
      * @param string $method use GET|POST
-     * @return Common\Controller\Form
+     * @return Ruins\Common\Controller\Form
      */
     public function head($name, $action, $method='post')
     {
         // Checking the file type and the length
-        $output = "<form name='".$name."' action='?".htmlspecialchars($action)."' ";
+        $output = "<form name='".$name."' action='".RequestHandler::getWebBasePath()."/".$action."' ";
 
             // checking method if GET or POST
         if ($method == 'post' || $method == 'get') {
@@ -56,7 +58,7 @@ class Form extends BaseHTML
 
     /**
      * Close the formular
-     * @return Common\Controller\Form
+     * @return Ruins\Common\Controller\Form
      */
     public function close()
     {
@@ -72,7 +74,7 @@ class Form extends BaseHTML
      * @param int $size Size of the field
      * @param int $maxlength Maximun length
      * @param bool $readonly Set to true to make the Field readonly
-     * @return Common\Controller\Form
+     * @return Ruins\Common\Controller\Form
      */
     public function inputText($name,$value=false,$size=20,$maxlength=50,$readonly=false)
     {
@@ -121,7 +123,7 @@ class Form extends BaseHTML
      * @param string $value To set a default fieldvalue
      * @param int $size Size of the field
      * @param int $maxlength Maximun length
-     * @return Common\Controller\Form
+     * @return Ruins\Common\Controller\Form
      */
     public function inputPassword($name,$value=false,$size=20,$maxlength=50)
     {
@@ -161,7 +163,7 @@ class Form extends BaseHTML
     /**
      * Creating the SubmitButton
      * @param string $value Text on the button
-     * @return Common\Controller\Form
+     * @return Ruins\Common\Controller\Form
      */
     public function submitButton($value="")
     {
@@ -178,7 +180,7 @@ class Form extends BaseHTML
     /**
      * Creating the ResetButton
      * @param string $value Text on the button
-     * @return Common\Controller\Form
+     * @return Ruins\Common\Controller\Form
      */
     public function resetButton($value="")
     {
@@ -197,7 +199,7 @@ class Form extends BaseHTML
      * @param string $value value of the field
      * @param int $cols number of cols
      * @param int $rows number of rows
-     * @return Common\Controller\Form
+     * @return Ruins\Common\Controller\Form
      */
     public function textArea($name,$value=false,$cols=50,$rows=10)
     {
@@ -241,7 +243,7 @@ class Form extends BaseHTML
      * @param string $value value of the checkbox
      * @param boolean $onclick true|false
      * @param boolean $checked true|false
-     * @return Common\Controller\Form
+     * @return Ruins\Common\Controller\Form
      */
     public function checkbox($name,$value=false,$onclick=false,$checked=false)
     {
@@ -265,7 +267,7 @@ class Form extends BaseHTML
      * @param string $name name of the selection
      * @param boolean $empty empty value
      * @param int $size number of possible selection
-     * @return Common\Controller\Form
+     * @return Ruins\Common\Controller\Form
      */
     function selectStart($name,$size=1)
     {
@@ -293,7 +295,7 @@ class Form extends BaseHTML
      * @param string $value pre-defined value
      * @param boolean $selected true if preselected
      * @param string $title pre-defined title
-     * @return Common\Controller\Form
+     * @return Ruins\Common\Controller\Form
      */
     public function selectOption($name,$value=false,$selected=false,$title=false)
     {
@@ -318,7 +320,7 @@ class Form extends BaseHTML
 
     /**
      * End of select function
-     * @return Common\Controller\Form
+     * @return Ruins\Common\Controller\Form
      */
     function selectEnd()
     {
@@ -331,7 +333,7 @@ class Form extends BaseHTML
      * Radio Button
      * @param string $name name of the group, the radio belongs to
      * @param string $value value of the radio
-     * @return Common\Controller\Form
+     * @return Ruins\Common\Controller\Form
      */
     public function radio($name, $value, $checked=false, $disabled=false)
     {
@@ -354,7 +356,7 @@ class Form extends BaseHTML
      * hidden function
      * @param string $name name of the inputfield
      * @param string $value value of the inputfield
-     * @return Common\Controller\Form
+     * @return Ruins\Common\Controller\Form
      */
     public function hidden($name, $value=false)
     {

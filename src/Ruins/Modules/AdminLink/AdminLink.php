@@ -42,18 +42,18 @@ class AdminLink extends ModuleBase implements ModuleInterface
     }
 
     /**
-     * @see Common\Interfaces.Module::getName()
+     * @see Ruins\Common\Interfaces.Module::getName()
      */
     public function getName() { return "AdminLink Module"; }
 
     /**
      * (non-PHPdoc)
-     * @see Common\Interfaces.Module::getDescription()
+     * @see Ruins\Common\Interfaces.Module::getDescription()
      */
     public function getDescription() { return "Enables the Admin-Link on every Page"; }
 
     /**
-     * @see Common\Interfaces.Module::prePageGeneration()
+     * @see Ruins\Common\Interfaces.Module::prePageGeneration()
      */
     public function prePageGeneration(Page $page)
     {
@@ -61,7 +61,7 @@ class AdminLink extends ModuleBase implements ModuleInterface
 
         if ($user->character && $user->character->loggedin) {
             // Link restricted to Group "Administrator"
-            $page->nav->addLink("Administration", "page=admin/main", "shared", RightsManager::getGroup("Administrator"))
+            $page->nav->addLink("Administration", "page/admin/main", "shared", RightsManager::getGroup("Administrator"))
                       ->setDescription("Administrative Einstellungen");
         }
     }

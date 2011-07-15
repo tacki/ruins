@@ -146,11 +146,11 @@ $em->flush();
 
 //*********************************
 // Create Adminpages
-SystemManager::addAdminPage("Ironlance", "Travel", "page=ironlance/citysquare");
-SystemManager::addAdminPage("Derashok", "Travel", "page=derashok/tribalcenter");
-SystemManager::addAdminPage("Dunsplee", "Travel", "page=dunsplee/trail");
+SystemManager::addAdminPage("Ironlance", "Travel", "page/ironlance/citysquare");
+SystemManager::addAdminPage("Derashok", "Travel", "page/derashok/tribalcenter");
+SystemManager::addAdminPage("Dunsplee", "Travel", "page/dunsplee/trail");
 
-SystemManager::addAdminPage("Module", "System", "page=admin/modules");
+SystemManager::addAdminPage("Module", "System", "page/admin/modules");
 
 $em->flush();
 

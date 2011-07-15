@@ -16,6 +16,7 @@ use Ruins\Common\Controller\SessionStore;
 use Ruins\Main\Controller\Link;
 use Ruins\Main\Controller\Page;
 use Ruins\Common\Controller\Registry;
+use Ruins\Common\Manager\RequestHandler;
 
 /**
  * Page Content
@@ -32,15 +33,23 @@ if ($userid = SessionStore::get('userid')) {
 
 // Page preparation
 $config = Registry::getMainConfig();
-$config->addPublicPage(array(	"common/login",
-                                "common/login&op=checkpw",
-                                "common/logout",
-                                "developer/test",)
+$config->addPublicPage(array(	"/page/common/login",
+                                "/page/common/logout",
+                                "/page/developer/test",)
                             );
-$config->addNoCachePage(array(	"common/portal" )
+$config->addNoCachePage(array(	"/page/common/portal" )
                             );
 
-if (array_search($_GET['page'], $config->get("publicpages")) !== false) {
+$isPublic     = false;
+$routeRequest = RequestHandler::getRequest()->getRouteString();
+
+foreach ($config->get("publicpages") as $publicpage) {
+    if (substr($routeRequest, 0, strlen($publicpage)) == $publicpage) {
+        $isPublic = true;
+    }
+}
+
+if ($isPublic) {
     // this is a public page!
     $page = new Page();
 
@@ -60,7 +69,7 @@ if (array_search($_GET['page'], $config->get("publicpages")) !== false) {
         // Connection Timeout occurred
         // Redirect to logoutpage
         SessionStore::set("logoutreason", "Automatischer Logout: Verbindungs Timeout!");
-        $page->nav->redirect("page=common/logout");
+        $page->nav->redirect("page/common/logout");
     } else {
         // Create the Page
         $page->create();
@@ -69,17 +78,17 @@ if (array_search($_GET['page'], $config->get("publicpages")) !== false) {
         $user->character->lastpagehit = new DateTime();
 
         // Set current_nav if this is not the portal
-        if (strpos($page->url, "page=common/portal") === false) {
+        if (strpos($page->url, "page/common/portal") === false) {
             $user->character->current_nav = (string)$page->url;
         } elseif (!$user->character->current_nav) {
-            $user->character->current_nav = "page=ironlance/citysquare";
+            $user->character->current_nav = "page/ironlance/citysquare";
         }
     }
 } else {
     // this is a private page, but no user is loaded. Force to logout
     SessionStore::set("logoutreason", "Automatischer Logout: Nicht eingeloggt!");
     $page = new Page();
-    $page->nav->redirect("page=common/logout");
+    $page->nav->redirect("page/common/logout");
 }
 
 // BtCode

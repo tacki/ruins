@@ -36,28 +36,28 @@ class Survey extends ModuleBase implements ModuleInterface
         // Call init of Parent
         parent::init();
 
-        SystemManager::addAdminPage("Umfragen", "Module", "page=Admin/Survey");
+        SystemManager::addAdminPage("Umfragen", "Module", "page/Admin/Survey");
     }
 
     /**
-     * @see Common\Interfaces.Module::getName()
+     * @see Ruins\Common\Interfaces.Module::getName()
      */
     public function getName() { return "Survey Module"; }
 
     /**
-     * @see Common\Interfaces.Module::getDescription()
+     * @see Ruins\Common\Interfaces.Module::getDescription()
      */
     public function getDescription() { return "Create and Handle Surveys"; }
 
     /**
-    * @see Common\Interfaces.Module::prePageGeneration()
+    * @see Ruins\Common\Interfaces.Module::prePageGeneration()
     */
     public function prePageGeneration(Page $page)
     {
         $user = Registry::getUser();
 
         if ($user->character && $user->character->loggedin) {
-            $page->nav->addLink("Umfragen", "popup=Popup/Survey", "shared")
+            $page->nav->addLink("Umfragen", "popup/Popup/Survey", "shared")
                       ->setDescription("Aktuelle Umfragen");
         }
     }

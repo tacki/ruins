@@ -24,6 +24,8 @@ use Ruins\Main\Entities\WaypointConnection;
 use Ruins\Main\Manager\ModuleManager;
 use Ruins\Main\Manager\SystemManager;
 use Ruins\Common\Controller\Registry;
+use Ruins\Common\Controller\Request;
+use Ruins\Common\Manager\RequestHandler;
 
 /**
  * System Class
@@ -210,6 +212,59 @@ class SystemManager
     }
 
     /**
+     * Retrieve request filepath
+     * @param Request $request
+     * @param bool $addQuery
+     * @return string
+     */
+    public static function getRequestFilePath(Request $request, $addQuery=false)
+    {
+        $caller     = $request->getRouteCaller();
+        $parameters = current($request->getRoute());
+        $filePath   = "Pages/".$request->getRouteCaller();
+        $foundPath  = "";
+        $counter    = 0;
+
+        // Find Filename
+        // TODO: NEEDS SOME CACHING
+        for ($counter=0; $counter<count($parameters); $counter++) {
+            $filePath .= "/" . $parameters[$counter];
+
+            // First Check Module-Directory
+            foreach (ModuleManager::getModuleListFromFilesystem() as $module) {
+                if (file_exists(DIR_MODULES.$module['directory'].$filePath.".php")) {
+                    $foundpath = DIR_MODULES.$module['directory'].$filePath.".php";
+                    break 2;
+                }
+            }
+
+            if (file_exists(DIR_COMMON.$filePath . ".php")) {
+                $foundpath = DIR_COMMON.$filePath.".php";
+                break;
+            } elseif (file_exists(DIR_MAIN.$filePath . ".php")) {
+                $foundpath = DIR_MAIN.$filePath.".php";
+                break;
+            }
+        }
+
+        if (!$addQuery) {
+            return $foundpath;
+        }
+
+        // Add Rest of Parameters as opX-query
+        for ($i=1; $counter<count($parameters); $counter++) {
+            if (strstr($foundpath, "?") === false) {
+                $foundpath .= "?op=".$parameters[$counter];
+            } else {
+                $foundpath .= "&op".$i."=".$parameters[$counter];
+            }
+            $i++;
+        }
+
+        return $foundpath;
+    }
+
+    /**
      * Get Filepath of an overloaded File
      * @param string $path Relative Filepath (e.g. View/Images/trash.png)
      * @param bool $htmlpath Return as htmlpath (relative to Doctree)
@@ -319,47 +374,25 @@ class SystemManager
     }
 
     /**
-     * Create a complete Filepath of a shortcut (example: common/login or page=common/login)
-     * @param string $shortcut
+     * Create a complete Filepath of a shortcut (example: common/login or page/common/login)
+     * @param string $filepath
      * @return string The Filepath if successful, else false if file not found
      */
-    public static function createFullPHPFilePath($shortcut)
+    public static function createFullPHPFilePath($path)
     {
-        $filepath = $shortcut;
-        $parameters = false;
-
-        // check for an existing 'page=' or 'popup=' in front of the shortcut (and remove it)
-        if (strtolower(substr($filepath, 0, 5)) === "page=") {
-            // remove 'page='
-            $filepath = substr($filepath, 5);
-        } elseif (strtolower(substr($filepath, 0, 6)) === "popup=") {
-            // remove 'popup='
-            $filepath = substr($filepath, 6);
+        if (!($path instanceof Request)) {
+            $request = RequestHandler::getRequest($path);
+        } else {
+            $request = $path;
         }
 
-        // remove parameters (we'll add them later)
-        if (strpos($filepath, "&")) {
-            // strip all parameters
-            $stripped = explode("&", $filepath, 2);
-            $filepath = $stripped[0];
-            $parameters = $stripped[1];
-        } elseif (strpos($filepath, "?")) {
-            // someone used ? as the seperator or inside the GET-string, which is invalid!
-            throw new Error("The Character '?' isn't allowed inside the Navigation Path!
-                             Use '&' for additional Parameters or '&amp;#63;' if you want
-                             to use the '?' inside the GET-string");
-        }
+        $treepath = SystemManager::getRequestFilePath($request);
 
-        // check if the shortcut already has a .php extension
-        if (strtolower(substr($filepath, -4, 4)) !== ".php") {
-            // add the extension
-            $filepath = $filepath . ".php";
-        }
-
-        // check if filepath consists of dirname+"/"+filename (path to content)
-        if (strpos($filepath, "/")) {
-            // Get Overloaded Filepath
-            $treepath = SystemManager::getOverloadedFilePath("Area/".$filepath);
+        // strip query string
+        if (strpos($treepath, "?")) {
+            $stripped = explode("?", $treepath, 2);
+            $treepath = $stripped[0];
+            $query    = $stripped[1];
         }
 
         // create realpath
@@ -371,8 +404,10 @@ class SystemManager
         // Add last / for directories and the parameters (if any) for files
         if (is_dir($realpath) && substr($realpath, 0, -1) != "/") {
             $realpath .= "/";
-        } elseif ($parameters) {
-            $realpath = $realpath . "&" . $parameters;
+        }
+
+        if ($query) {
+            $realpath = $realpath . "?" . $query;
         }
 
         // return the complete Path

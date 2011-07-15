@@ -335,7 +335,7 @@ switch ($_GET['step']) {
 
         // Include dirconf
         require_once(BASEDIR."/app/config/dirconf.cfg.php");
-        // Include Common\Controller\Config Class-Definition
+        // Include Ruins\Common\Controller\Config Class-Definition
         require_once(DIR_COMMON."Controller/Config.php");
 
 

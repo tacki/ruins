@@ -128,7 +128,7 @@ class BattleMember extends EntityBase
     /**
      * Set Action of this Member
      * @param int $target
-     * @param Main\Controller\SkillBase $skill
+     * @param Ruins\Main\Controller\SkillBase $skill
      */
     public function setAction($target, Skillbase $skill)
     {

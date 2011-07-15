@@ -91,12 +91,10 @@ class Popup extends Page
                 continue;
             }
 
-            $linktype = array_shift(explode("=", $linkitem['url']));
-
-            if ($linktype == "popup") {
+            if (strtolower($linkitem['type']) == "popup") {
                 // page-links and the linkpositions are ignored
                 $nav .= "<li class='navid_".$i."'>";
-                $nav .= "<a href='?".$linkitem['url']."&navid=".$i."'>".$linkitem['displayname']."</a>";
+                $nav .= "<a href='".$linkitem['url']."&navid=".$i."'>".$linkitem['displayname']."</a>";
                 $nav .= "</li>";
 
                 $i++;

@@ -21,9 +21,9 @@ $page->set("headtitle", "Module");
 
 $page->nav->addHead("Umfragen")
           ->addLink("Übersicht", $page->url->base)
-          ->addLink("Erstellen", $page->url->base."&op=create")
+          ->addLink("Erstellen", $page->url->base."/create")
           ->addHead("Navigation")
-          ->addLink("Zurück zur Administration", "page=admin/main");
+          ->addLink("Zurück zur Administration", "page/admin/main");
 
 $em = Registry::getEntityManager();
 
@@ -74,13 +74,13 @@ switch ($_GET['op']) {
 
             // Action
             $page->getSimpleTable("surveylist")->startData(50);
-            $page->nav->addTextLink("Details", $page->url->base."&op=details&pollId=$poll->id");
+            $page->nav->addTextLink("Details", $page->url->base."/details&pollId=$poll->id");
             if ($poll->active) {
-                $page->nav->addTextLink("Deaktivieren", $page->url->base."&op=deactivate&pollId=$poll->id");
+                $page->nav->addTextLink("Deaktivieren", $page->url->base."/deactivate&pollId=$poll->id");
             } else {
-                $page->nav->addTextLink("Aktivieren", $page->url->base."&op=activate&pollId=$poll->id");
+                $page->nav->addTextLink("Aktivieren", $page->url->base."/activate&pollId=$poll->id");
             }
-            $page->nav->addTextLink("Löschen", $page->url->base."&op=delete&pollId=$poll->id");
+            $page->nav->addTextLink("Löschen", $page->url->base."/delete&pollId=$poll->id");
 
             $page->getSimpleTable("surveylist")->closeRow();
         }
@@ -256,7 +256,7 @@ switch ($_GET['op']) {
         } else {
             $page->output("Umfrage wirklich löschen?");
 
-            $page->nav->addTextLink("Ja, löschen", $page->url->base."&op=delete&force=1&pollId=".$_GET['pollId']);
+            $page->nav->addTextLink("Ja, löschen", $page->url->base."/delete&force=1&pollId=".$_GET['pollId']);
         }
         break;
 }

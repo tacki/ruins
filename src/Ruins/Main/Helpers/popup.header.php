@@ -16,6 +16,7 @@ use Ruins\Common\Controller\Error;
 use Ruins\Common\Controller\SessionStore;
 use Ruins\Main\Controller\Popup;
 use Ruins\Common\Controller\Registry;
+use Ruins\Common\Manager\RequestHandler;
 
 /**
  * Popup Content
@@ -34,10 +35,16 @@ if ($userid = SessionStore::get('userid')) {
 // Page preparation
 $config = Registry::getMainConfig();
 
-// Page preparation
-$config->addPublicPage(array("Popup/Support"));
+$isPublic     = false;
+$routeRequest = RequestHandler::getRequest()->getRouteString();
 
-if (array_search($_GET['popup'], $config->get("publicpages")) !== false) {
+foreach ($config->get("publicpages") as $publicpage) {
+    if (substr($routeRequest, 0, strlen($publicpage)) == $publicpage) {
+        $isPublic = true;
+    }
+}
+
+if ($isPublic) {
     // this is a public page!
     $popup = new Popup();
 
@@ -56,7 +63,7 @@ if (array_search($_GET['popup'], $config->get("publicpages")) !== false) {
         SessionStore::set("logoutreason", "Automatischer Logout: Connection Timeout!");
 
         // Redirect Parent
-        $popup->redirectParent("page=common/logout");
+        $popup->redirectParent("page/common/logout");
 
         // Close Popup
         $popup->close();

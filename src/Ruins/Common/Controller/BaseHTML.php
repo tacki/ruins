@@ -66,7 +66,7 @@ class BaseHTML
     /**
      * Set CSS-Class for the following Element(s)
      * @param string $class
-     * @return Common\Controller\BaseHTML
+     * @return Ruins\Common\Controller\BaseHTML
      */
     public function setCSS($class)
     {
@@ -78,7 +78,7 @@ class BaseHTML
     /**
      * Send to outputclass if outputclass is set
      * @param string $output Output to work with
-     * @return Common\Controller\BaseHTML
+     * @return Ruins\Common\Controller\BaseHTML
      */
     protected function generateOutput($output)
     {

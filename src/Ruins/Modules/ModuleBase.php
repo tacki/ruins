@@ -74,22 +74,22 @@ class ModuleBase
     }
 
     /**
-     * @see Common\Interfaces.Module::prePageHeader()
+     * @see Ruins\Common\Interfaces.Module::prePageHeader()
      */
     public function prePageHeader() {}
 
     /**
-     * @see Common\Interfaces.Module::prePageContent()
+     * @see Ruins\Common\Interfaces.Module::prePageContent()
      */
     public function prePageContent() {}
 
     /**
-     * @see Common\Interfaces.Module::prePageGeneration()
+     * @see Ruins\Common\Interfaces.Module::prePageGeneration()
      */
     public function prePageGeneration(Page $page) {}
 
     /**
-     * @see Common\Interfaces.Module::postPageGeneration()
+     * @see Ruins\Common\Interfaces.Module::postPageGeneration()
      */
     public function postPageGeneration(Page $page) {}
 }

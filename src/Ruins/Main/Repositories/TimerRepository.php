@@ -41,7 +41,7 @@ class TimerRepository extends Repository
      * Create a new Timer
      * @param string $timername
      * @param Ruins\Main\Entities\Character $character
-     * @throws Common\Controller\Error
+     * @throws Ruins\Common\Controller\Error
      * @return Ruins\Main\Repositories\TimerRepository
      */
     public function create($timername, Character $character=NULL)

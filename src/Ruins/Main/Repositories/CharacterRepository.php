@@ -97,7 +97,7 @@ class CharacterRepository extends Repository
 
         $result = $qb   ->select("char.displayname")
                         ->from("Main:Character", "char")
-                        ->andWhere("char.current_nav LIKE ?1")->setParameter(1, "page=".$place."%")
+                        ->andWhere("char.current_nav LIKE ?1")->setParameter(1, "page/".$place."%")
                         ->andWhere("char.lastpagehit > ?2")
                         ->setParameter(2, new DateTime("-".$systemConfig->get("connectiontimeout", 15)." minutes"))
                         ->getQuery()

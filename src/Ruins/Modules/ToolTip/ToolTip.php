@@ -27,17 +27,17 @@ use Ruins\Common\Interfaces\ModuleInterface;
 class ToolTip extends ModuleBase implements ModuleInterface
 {
     /**
-     * @see Common\Interfaces.Module::getName()
+     * @see Ruins\Common\Interfaces.Module::getName()
      */
     public function getName() { return "ToolTip Module"; }
 
     /**
-     * @see Common\Interfaces.Module::getDescription()
+     * @see Ruins\Common\Interfaces.Module::getDescription()
      */
     public function getDescription() { return "Show Linkdescription as nice Tooltip"; }
 
     /**
-     * @see Common\Interfaces.Module::prePageGeneration()
+     * @see Ruins\Common\Interfaces.Module::prePageGeneration()
      */
     public function prePageGeneration(Page $page)
     {

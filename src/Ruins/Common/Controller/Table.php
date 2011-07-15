@@ -124,7 +124,7 @@ class Table extends BaseHTML
      * @param mixed $width String or Int "100%" or "100" pixel [optional]
      * @param int $border Wide of the Border [optional]
      * @param string $name Name of the table
-     * @return Common\Controller\Table
+     * @return Ruins\Common\Controller\Table
      */
     public function setTabAttributes ($width=false,$border=false,$name=false)
     {
@@ -140,7 +140,7 @@ class Table extends BaseHTML
     /**
      * Set a second CSS for changing rowbackgrounds
      * @param String $class From defined ClassTypes in file.css
-     * @return Common\Controller\Table
+     * @return Ruins\Common\Controller\Table
      */
     public function setSecondRowCSS($class) {
         if (is_string($class)) {
@@ -155,7 +155,7 @@ class Table extends BaseHTML
     /**
      * Set the highlight status on/off
      * @param true or false
-     * @return Common\Controller\Table
+     * @return Ruins\Common\Controller\Table
      */
     public function setHighlightStatus($status=false) {
         if ($status==true) {
@@ -173,7 +173,7 @@ class Table extends BaseHTML
      * @param array $colWidth Array with String or Int "100%" or "100" pixel [optional]
      * @param array $colClass colors, fontcolors, bold, center, ...like array("`19~`37`c`b",..)[optional]
      * @param String $trClass From defined ClassTypes in file.css [optional]
-     * @return Common\Controller\Table
+     * @return Ruins\Common\Controller\Table
      */
     public function addTabHeader ($titles,$colWidth=false,$colClass=false,$trClass=false)
     {
@@ -194,7 +194,7 @@ class Table extends BaseHTML
      * @param mixed $datarow Input data
      * @param mixed $class colors, fontcolors, bold, center, ...like array("`19~`37`c`b",..)[optional]
      * @param string $trclass colors, fontcolors, bold, center, ...like array("`19~`37`c`b",..)[optional]
-     * @return Common\Controller\Table
+     * @return Ruins\Common\Controller\Table
      */
     public function addTabRow ($datarow,$class=false,$trclass=false)
     {
@@ -234,7 +234,7 @@ class Table extends BaseHTML
      * @param array $datalist QueryTool->_listRes
      * @param array $class Defined ClassTypes in file.css [optional]
      * @param String $trclass Defined ClassTypes in file.css [optional]
-     * @return Common\Controller\Table
+     * @return Ruins\Common\Controller\Table
      */
     public function addListArray ($datalist,$class=false,$trclass=false)
     {
@@ -281,7 +281,7 @@ class Table extends BaseHTML
      * Set the size of the table (number of cols & rows)
      * @param int $rows number of rows
      * @param int $cols number of cols
-     * @return Common\Controller\Table
+     * @return Ruins\Common\Controller\Table
      */
 
     public function addTabSize($rows,$cols)
@@ -315,7 +315,7 @@ class Table extends BaseHTML
      * @param string $class colors, fontcolors, bold, center, ...like array("`19~`37`c`b",..)[optional]
      * @param int $rowspan number of rows
      * @param int $colspan number of cols
-     * @return Common\Controller\Table
+     * @return Ruins\Common\Controller\Table
      */
     public function addFieldContent($row,$col,$content,$width=false,$class=false,$rowspan=false,$colspan=false)
     {
@@ -361,7 +361,7 @@ class Table extends BaseHTML
 
     /**
      * Load the table finally
-     * @return Common\Controller\Table
+     * @return Ruins\Common\Controller\Table
      */
     public function load()
     {

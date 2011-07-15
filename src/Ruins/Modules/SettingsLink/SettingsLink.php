@@ -27,18 +27,18 @@ use Ruins\Common\Controller\Registry;
 class SettingsLink extends ModuleBase implements ModuleInterface
 {
     /**
-     * @see Common\Interfaces.Module::getName()
+     * @see Ruins\Common\Interfaces.Module::getName()
      */
     public function getName() { return "SettingsLink Module"; }
 
     /**
      * (non-PHPdoc)
-     * @see Common\Interfaces.Module::getDescription()
+     * @see Ruins\Common\Interfaces.Module::getDescription()
      */
     public function getDescription() { return "Enables the settings-Link on every Page"; }
 
     /**
-     * @see Common\Interfaces.Module::prePageGeneration()
+     * @see Ruins\Common\Interfaces.Module::prePageGeneration()
      */
     public function prePageGeneration(Page $page)
     {
@@ -46,7 +46,7 @@ class SettingsLink extends ModuleBase implements ModuleInterface
 
         if ($user->character && $user->character->loggedin) {
             // add the Supportlink to the toplist
-            $page->nav->addLink("Settings", "popup=popup/settings", "shared")
+            $page->nav->addLink("Settings", "popup/popup/settings", "shared")
                       ->setDescription("Hier findest du alle Einstellungen zum Spiel");
         }
     }

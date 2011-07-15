@@ -28,18 +28,18 @@ use Ruins\Common\Controller\Registry;
 class MessageSystemLink extends ModuleBase implements ModuleInterface
 {
     /**
-     * @see Common\Interfaces.Module::getName()
+     * @see Ruins\Common\Interfaces.Module::getName()
      */
     public function getName() { return "MessageSystemLink Module"; }
 
     /**
      * (non-PHPdoc)
-     * @see Common\Interfaces.Module::getDescription()
+     * @see Ruins\Common\Interfaces.Module::getDescription()
      */
     public function getDescription() { return "Enables the Messenger-Link on every Page"; }
 
     /**
-     * @see Common\Interfaces.Module::prePageGeneration()
+     * @see Ruins\Common\Interfaces.Module::prePageGeneration()
      */
     public function prePageGeneration(Page $page)
     {
@@ -47,7 +47,7 @@ class MessageSystemLink extends ModuleBase implements ModuleInterface
 
         if ($user->character && $user->character->loggedin) {
             // add the Supportlink to the toplist
-            $page->nav->addLink("Messenger","popup=popup/messenger","shared")
+            $page->nav->addLink("Messenger","popup/popup/messenger","shared")
                       ->setDescription("Ruins Messenger zum Senden und Empfangen von Nachrichten");
 
 

@@ -52,7 +52,7 @@ abstract class SkillBase
 
     /**
      * Battle Controller
-     * @var Main\Controller\BattleController
+     * @var Ruins\Main\Controller\BattleController
      */
     protected $battle;
 
@@ -152,7 +152,7 @@ abstract class SkillBase
 
     /**
      * Prepare the skill
-     * @param Main\Controller\BattleController $battle Battle Controller
+     * @param Ruins\Main\Controller\BattleController $battle Battle Controller
      * @param Ruins\Main\Entities\BattleAction $action Battle Action
      */
     public function prepare(BattleController $battle, BattleAction $action)

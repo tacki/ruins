@@ -48,7 +48,7 @@ class Page implements OutputObjectInterface
 
     /**
      * Page URL
-     * @var Main\Controller\URL
+     * @var Ruins\Main\Controller\URL
      */
     public $url;
 
@@ -366,7 +366,7 @@ class Page implements OutputObjectInterface
      * @param string $name Name of the HTMLForm
      * @param bool $directoutput Output directly with $page->output()
      * @param bool $overwrite Overwrite existing
-     * @return Common\Controller\Form The Form Object
+     * @return Ruins\Common\Controller\Form The Form Object
      */
     public function addForm($name, $directoutput=true, $overwrite=false)
     {
@@ -385,7 +385,7 @@ class Page implements OutputObjectInterface
     /**
      * Return given Form Object
      * @param string $name
-     * @return Common\Controller\Form The Form Object
+     * @return Ruins\Common\Controller\Form The Form Object
      */
     public function getForm($name)
     {
@@ -406,7 +406,7 @@ class Page implements OutputObjectInterface
      * @param string $name Name of the HTMLTable
      * @param bool $directoutput Output directly with $page->output()
      * @param bool $overwrite Overwrite existing
-     * @return Common\Controller\Table The Table Object
+     * @return Ruins\Common\Controller\Table The Table Object
      */
     public function addTable($name, $directoutput=true, $overwrite=false)
     {
@@ -425,7 +425,7 @@ class Page implements OutputObjectInterface
     /**
      * Return given Table Object
      * @param string $name
-     * @return Common\Controller\Table The Table Object
+     * @return Ruins\Common\Controller\Table The Table Object
      */
     public function getTable($name)
     {
@@ -444,7 +444,7 @@ class Page implements OutputObjectInterface
     /**
      * Add a new Chat to the Page
      * @param string $name Name of the Chat
-     * @return Common\Controller\Chat The Chat Object
+     * @return Ruins\Common\Controller\Chat The Chat Object
      */
     public function addChat($name)
     {
@@ -460,7 +460,7 @@ class Page implements OutputObjectInterface
     /**
      * Return given Chat Object
      * @param string $name
-     * @return Common\Controller\Chat The Chat Object
+     * @return Ruins\Common\Controller\Chat The Chat Object
      */
     public function getChat($name)
     {
@@ -481,7 +481,7 @@ class Page implements OutputObjectInterface
      * @param string $name Name of the simple HTMLTable
      * @param bool $directoutput Output directly with $page->output()
      * @param bool $overwrite Overwrite existing
-     * @return Common\Controller\SimpleTable The Table Object
+     * @return Ruins\Common\Controller\SimpleTable The Table Object
      */
     public function addSimpleTable($name, $directoutput=true, $overwrite=false)
     {
@@ -500,7 +500,7 @@ class Page implements OutputObjectInterface
     /**
      * Return given SimpleTable Object
      * @param string $name
-     * @return Common\Controller\SimpleTable The Chat Object
+     * @return Ruins\Common\Controller\SimpleTable The Chat Object
      */
     public function getSimpleTable($name)
     {
@@ -695,13 +695,12 @@ class Page implements OutputObjectInterface
         foreach ($this->nav->getLinkList() as $linklist) {
 
             if ($linklist['displayname']) {
-                // Get linktype (page or popup)
-                $linktype = array_shift(explode("=", $linklist['url']));
 
-                switch ($linktype) {
+                switch ($linklist['type']) {
 
                     default:
                     case "page":
+                    case "Page":
                         if ($linklist['position'] == "main") {
                             // generating the leftbar
                             if (!$boxOpen && !$linklist['url']) {
@@ -736,7 +735,7 @@ class Page implements OutputObjectInterface
                             }
                         } else if ($linklist['position'] == "shared") {
                             // generate the topbar
-                            $navShared .= "<a 	href='?".$linklist['url']."'
+                            $navShared .= "<a 	href='".$linklist['url']."'
                                                 title='".htmlspecialchars($linklist['description'], ENT_QUOTES)."'>" .
                                             $linklist['displayname'] .
                                         "</a>";
@@ -744,9 +743,10 @@ class Page implements OutputObjectInterface
                         break;
 
                     case "popup":
+                    case "Popup":
                         //generate the topbar
                         if ($linklist['position'] == "shared") {
-                            $navShared .= "<a 	href='?".$linklist['url']."'
+                            $navShared .= "<a 	href='".$linklist['url']."'
                                                 title='".htmlspecialchars($linklist['description'], ENT_QUOTES)."'
                                                 onclick='return popup(this)'>" .
                                             $linklist['displayname'] .

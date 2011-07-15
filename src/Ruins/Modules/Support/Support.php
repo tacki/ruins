@@ -16,6 +16,7 @@ namespace Ruins\Modules\Support;
 use Ruins\Main\Controller\Page;
 use Ruins\Modules\ModuleBase;
 use Ruins\Common\Interfaces\ModuleInterface;
+use Ruins\Common\Controller\Registry;
 
 /**
  * Support Module
@@ -26,21 +27,33 @@ use Ruins\Common\Interfaces\ModuleInterface;
 class Support extends ModuleBase implements ModuleInterface
 {
     /**
-     * @see Common\Interfaces.Module::getName()
+     * @see Ruins\Common\Interfaces.Module::getName()
      */
     public function getName() { return "Supportlink Module"; }
 
     /**
-     * @see Common\Interfaces.Module::getDescription()
+     * @see Ruins\Common\Interfaces.Module::getDescription()
      */
     public function getDescription() { return "Module to add a Support-Link to each Page"; }
 
     /**
-     * @see Common\Interfaces.Module::prePageGeneration()
+     * @see Ruins\Modules.ModuleBase::prePageHeader()
+     */
+    public function prePageHeader()
+    {
+        // Page preparation
+        $config = Registry::getMainConfig();
+
+        // Page preparation
+        $config->addPublicPage(array("/popup/support"));
+    }
+
+    /**
+     * @see Ruins\Common\Interfaces.Module::prePageGeneration()
      */
     public function prePageGeneration(Page $page)
     {
-        $page->nav->addLink("Support", "popup=Popup/Support", "shared")
+        $page->nav->addLink("Support", "Popup/SupportPopup", "shared")
                   ->setDescription("Wenn ein Fehler oder Bug auftritt, bitte hier melden");
     }
 }

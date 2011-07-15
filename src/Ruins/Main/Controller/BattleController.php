@@ -290,7 +290,7 @@ class BattleController extends Controller
      * Choose Skill to execute
      * @param Character $char
      * @param mixed $target
-     * @param Main\Controller\SkillBase $action The Skill to use
+     * @param Ruins\Main\Controller\SkillBase $action The Skill to use
      * @return bool true if successful, else false
      */
     public function chooseSkill(Character $character, $target, SkillBase $skill)

@@ -48,7 +48,7 @@ class SimpleTable extends BaseHTML
      * @param int $border width of the tableborder
      * @param int $cellspacing
      * @param int $cellpading
-     * @return Common\Controller\SimpleTable
+     * @return Ruins\Common\Controller\SimpleTable
      */
     public function head($width=false,$border=0,$cellspacing=0,$cellpadding=0)
     {
@@ -73,7 +73,7 @@ class SimpleTable extends BaseHTML
 
     /**
      * close the table
-     * @return Common\Controller\SimpleTable
+     * @return Ruins\Common\Controller\SimpleTable
      */
     public function close()
     {
@@ -87,7 +87,7 @@ class SimpleTable extends BaseHTML
 
     /**
      * start a table row
-     * @return Common\Controller\SimpleTable
+     * @return Ruins\Common\Controller\SimpleTable
      */
     public function startRow()
     {
@@ -106,7 +106,7 @@ class SimpleTable extends BaseHTML
 
     /**
      * close a table row
-     * @return Common\Controller\SimpleTable
+     * @return Ruins\Common\Controller\SimpleTable
      */
     public function closeRow()
     {
@@ -123,7 +123,7 @@ class SimpleTable extends BaseHTML
      * @param mixed $width
      * @param int $colspan Default value $colspan=1
      * @param int $ rowspan Default value $rowspan=1
-     * @return Common\Controller\SimpleTable
+     * @return Ruins\Common\Controller\SimpleTable
      */
     public function startHead($width=false,$colspan=1,$rowspan=1)
     {
@@ -149,7 +149,7 @@ class SimpleTable extends BaseHTML
 
     /**
      * close the head field
-     * @return Common\Controller\SimpleTable
+     * @return Ruins\Common\Controller\SimpleTable
      */
     public function closeHead()
     {
@@ -166,7 +166,7 @@ class SimpleTable extends BaseHTML
      * @param mixed $width
      * @param int $colspan Default value $colspan=1
      * @param int $ rowspan Default value $rowspan=1
-     * @return Common\Controller\SimpleTable
+     * @return Ruins\Common\Controller\SimpleTable
      */
     public function startData($width=false,$colspan=1,$rowspan=1)
     {
@@ -192,7 +192,7 @@ class SimpleTable extends BaseHTML
 
     /**
      * close the data field
-     * @return Common\Controller\SimpleTable
+     * @return Ruins\Common\Controller\SimpleTable
      */
     public function closeData()
     {

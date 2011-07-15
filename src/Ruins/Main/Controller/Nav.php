@@ -13,6 +13,8 @@
  * Namespaces
  */
 namespace Ruins\Main\Controller;
+use Ruins\Common\Manager\RequestHandler;
+
 use Ruins\Main\Entities\Group;
 use Ruins\Common\Controller\Error;
 use Ruins\Common\Controller\BaseObject;
@@ -119,6 +121,10 @@ class Nav
      */
     public function addLink($name, $url, $linkcontainer="main", Group $restriction=NULL)
     {
+        if ($url instanceof Page) {
+            $url = (string)$url->url;
+        }
+
         $link = new Link($name, $url, $linkcontainer);
 
         if ($restriction) $link->setRestriction($restriction);
@@ -152,13 +158,15 @@ class Nav
      */
     public function addTextLink($text, $url, Group $restriction=NULL)
     {
+        $url = RequestHandler::getWebBasePath()."/".$url;
+
         // Add Hidden Link
         $this->addHiddenLink($url, $restriction);
 
         // Output Link
         if ($this->_lastNavAdded['status'] === true) {
             if ($this->_outputObject) {
-                $this->_outputObject->output("<a href='?". $url . "'>" . $text . "</a>", true);
+                $this->_outputObject->output("<a href='". $url . "'>" . $text . "</a>", true);
             } else {
                 throw new Error("\$this->_outputObject is not usable here, because it's not an instance of OutputObjectInterface!");
             }
@@ -199,12 +207,15 @@ class Nav
             return true;
         }
 
+        $request = RequestHandler::getRequest($link->url);
+
         if (!$this->validationEnabled() || $link->isAllowedBy($this->_char) ) {
 
             $linkdescription = array(	"displayname"=>$link->displayname,
-                                        "url"=>$link->url,
+                                        "url"=>$link->url?RequestHandler::getWebBasePath()."/".$link->url:"",
                                         "position"=>$link->position,
-                                        "description"=>$link->description
+                                        "description"=>$link->description,
+                                        "type"=>$request->getRouteCaller(),
                                     );
 
             if ($linklistid > 0) {
@@ -379,13 +390,14 @@ class Nav
         $em->flush();
 
         // Redirect
-        $baseurl = SystemManager::htmlpath(DIR_BASE);
+        $redirect = RequestHandler::getWebBasePath() . "/" . $url;
+
         if (isset($systemConfig) && $systemConfig->get("useManualRedirect", 0)) {
             echo "Forward to $url <br />";
-            echo "<a href='$baseurl?" . $url ."'>Continue</a>";
+            echo "<a href='". $redirect ."'>Continue</a>";
             exit;
         } else {
-            $header = "Location: $baseurl?" . $url;
+            $header = "Location: ".$redirect;
             header($header);
             exit;
         }

@@ -202,7 +202,7 @@ class Character extends EntityBase
         $this->charisma          = 7;
         $this->money             = 100;
         $this->groups            = new \Doctrine\Common\Collections\ArrayCollection;
-        $this->current_nav       = "page=ironlance/citysquare";
+        $this->current_nav       = "page/ironlance/citysquare";
         $this->allowednavs       = array();
         $this->allowednavs_cache = array();
         $this->template          = "main/templates/default";

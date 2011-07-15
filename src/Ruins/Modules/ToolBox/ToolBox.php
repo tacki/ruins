@@ -29,17 +29,17 @@ use Ruins\Common\Controller\Registry;
 class ToolBox extends ModuleBase implements ModuleInterface
 {
     /**
-     * @see Common\Interfaces.Module::getName()
+     * @see Ruins\Common\Interfaces.Module::getName()
      */
     public function getName() { return "ToolBox Module"; }
 
     /**
-     * @see Common\Interfaces.Module::getDescription()
+     * @see Ruins\Common\Interfaces.Module::getDescription()
      */
     public function getDescription() { return "Add the Toolbox for all kind of usefull small tools"; }
 
     /**
-     * @see Common\Interfaces.Module::prePageGeneration()
+     * @see Ruins\Common\Interfaces.Module::prePageGeneration()
      */
     public function prePageGeneration(Page $page)
     {
