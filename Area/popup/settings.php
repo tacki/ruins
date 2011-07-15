@@ -10,8 +10,8 @@
 /**
  * Namespaces
  */
-use Main\Controller\Link;
-use Common\Controller\Registry;
+use Ruins\Main\Controller\Link;
+use Ruins\Common\Controller\Registry;
 
 /**
  * Page Content

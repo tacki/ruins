@@ -1,0 +1,47 @@
+<?php
+/**
+ * Support Module
+ *
+ * Add a Supportlink to every Page
+ * @author Markus Schlegel <g42@gmx.net>
+ * @copyright Copyright (C) 2008 Markus Schlegel
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @package Ruins
+ */
+
+/**
+ * Namespaces
+ */
+namespace Ruins\Modules\Support;
+use Ruins\Main\Controller\Page;
+use Ruins\Modules\ModuleBase;
+use Ruins\Common\Interfaces\ModuleInterface;
+
+/**
+ * Support Module
+ *
+ * Add a Supportlink to every Page
+ * @package Ruins
+ */
+class Support extends ModuleBase implements ModuleInterface
+{
+    /**
+     * @see Common\Interfaces.Module::getName()
+     */
+    public function getName() { return "Supportlink Module"; }
+
+    /**
+     * @see Common\Interfaces.Module::getDescription()
+     */
+    public function getDescription() { return "Module to add a Support-Link to each Page"; }
+
+    /**
+     * @see Common\Interfaces.Module::prePageGeneration()
+     */
+    public function prePageGeneration(Page $page)
+    {
+        $page->nav->addLink("Support", "popup=Popup/Support", "shared")
+                  ->setDescription("Wenn ein Fehler oder Bug auftritt, bitte hier melden");
+    }
+}
+?>

@@ -12,18 +12,18 @@
 /**
  * Namespaces
  */
-use Common\Controller\SessionStore;
-use Main\Manager\SystemManager;
-use Main\Manager\ModuleManager;
-use Main\Controller\Link;
-use Main\Controller\Page;
-use Common\Controller\Registry;
+use Ruins\Common\Controller\SessionStore;
+use Ruins\Main\Manager\SystemManager;
+use Ruins\Main\Manager\ModuleManager;
+use Ruins\Main\Controller\Link;
+use Ruins\Main\Controller\Page;
+use Ruins\Common\Controller\Registry;
 
 /**
  * Global Includes
  */
-require_once("config/dirconf.cfg.php");
-require_once(DIR_BASE."main.inc.php");
+require_once("app/config/dirconf.cfg.php");
+require_once(DIR_BASE."app/main.inc.php");
 
 try {
     // set op-value if it's not set

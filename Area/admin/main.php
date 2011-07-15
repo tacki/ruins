@@ -10,7 +10,7 @@
 /**
  * Namespaces
  */
-use Main\Manager\SystemManager;
+use Ruins\Main\Manager\SystemManager;
 
 /**
  * Page Content

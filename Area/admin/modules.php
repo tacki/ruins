@@ -10,7 +10,7 @@
 /**
  * Namespaces
  */
-use Main\Manager\ModuleManager;
+use Ruins\Main\Manager\ModuleManager;
 
 /**
  * Page Content

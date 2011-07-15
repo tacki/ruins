@@ -12,20 +12,20 @@
 /**
  * Namespaces
  */
-use Main\Controller\Link;
-use Main\Controller\TimerController as Timer;
-use Main\Controller\Travel;
-use Main\Controller\Dice;
-use Common\Controller\BtCode;
-use Common\Controller\Config;
-use Common\Controller\SessionStore;
-use Common\Controller\StackObject;
-use Common\Controller\Form;
-use Common\Controller\Table;
-use Main\Manager\SystemManager;
-use Main\Manager\RightsManager;
-use Main\Manager\MessageManager;
-use Common\Controller\Registry;
+use Ruins\Main\Controller\Link;
+use Ruins\Main\Controller\TimerController as Timer;
+use Ruins\Main\Controller\Travel;
+use Ruins\Main\Controller\Dice;
+use Ruins\Common\Controller\BtCode;
+use Ruins\Common\Controller\Config;
+use Ruins\Common\Controller\SessionStore;
+use Ruins\Common\Controller\StackObject;
+use Ruins\Common\Controller\Form;
+use Ruins\Common\Controller\Table;
+use Ruins\Main\Manager\SystemManager;
+use Ruins\Main\Manager\RightsManager;
+use Ruins\Main\Manager\MessageManager;
+use Ruins\Common\Controller\Registry;
 
 // CLEAR CACHE
 $systemCache = Registry::get('main.cache');

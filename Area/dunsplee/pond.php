@@ -10,11 +10,11 @@
 /**
  * Namespaces
  */
-use Main\Controller\Link;
-use Main\Controller\TimerController as Timer;
-use Main\Controller\Dice;
-use Main\Entities\Items\Common;
-use Common\Controller\Registry;
+use Ruins\Main\Controller\Link;
+use Ruins\Main\Controller\TimerController as Timer;
+use Ruins\Main\Controller\Dice;
+use Ruins\Main\Entities\Items\Common;
+use Ruins\Common\Controller\Registry;
 
 /**
  * Page Content

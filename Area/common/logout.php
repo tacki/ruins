@@ -10,7 +10,7 @@
 /**
  * Namespaces
  */
-use Main\Entities\User;
+use Ruins\Main\Entities\User;
 
 if ($user instanceof User) {
     $user->addDebugLog("Logout");

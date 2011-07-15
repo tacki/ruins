@@ -10,11 +10,11 @@
 /**
  * Namespaces
  */
-use Common\Controller\SessionStore;
-use Main\Entities\DebugLogEntity;
-use Main\Controller\Link;
-use Main\Manager\OpenIDManager;
-use Common\Controller\Registry;
+use Ruins\Common\Controller\SessionStore;
+use Ruins\Main\Entities\DebugLogEntity;
+use Ruins\Main\Controller\Link;
+use Ruins\Main\Manager\OpenIDManager;
+use Ruins\Common\Controller\Registry;
 
 /**
  * Page Content

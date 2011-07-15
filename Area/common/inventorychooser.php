@@ -10,8 +10,8 @@
 /**
  * Namespaces
  */
-use Main\Controller\Link;
-use Main\Manager\ItemManager;
+use Ruins\Main\Controller\Link;
+use Ruins\Main\Manager\ItemManager;
 
 /**
  * Page Content

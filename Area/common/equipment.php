@@ -10,11 +10,11 @@
 /**
  * Namespaces
  */
-use Main\Controller\Link;
-use Main\Manager\ItemManager;
-use Main\Manager\SystemManager;
-use Main\Entities\Items\Armor;
-use Main\Entities\Items\Weapon;
+use Ruins\Main\Controller\Link;
+use Ruins\Main\Manager\ItemManager;
+use Ruins\Main\Manager\SystemManager;
+use Ruins\Main\Entities\Items\Armor;
+use Ruins\Main\Entities\Items\Weapon;
 
 /**
  * Page Content

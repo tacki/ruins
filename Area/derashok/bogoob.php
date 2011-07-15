@@ -10,9 +10,9 @@
 /**
  * Namespaces
  */
-use Main\Controller\Link;
-use Common\Controller\Registry;
-use Main\Manager\ItemManager;
+use Ruins\Main\Controller\Link;
+use Ruins\Common\Controller\Registry;
+use Ruins\Main\Manager\ItemManager;
 
 /**
  * Page Content

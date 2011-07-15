@@ -10,10 +10,10 @@
 /**
  * Namespaces
  */
-use Main\Controller\Link;
-use Main\Controller\Travel;
-use Main\Controller\TimerController as Timer;
-use Common\Controller\Error;
+use Ruins\Main\Controller\Link;
+use Ruins\Main\Controller\Travel;
+use Ruins\Main\Controller\TimerController as Timer;
+use Ruins\Common\Controller\Error;
 
 /**
  * Page Content

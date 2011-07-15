@@ -10,9 +10,9 @@
 /**
  * Namespaces
  */
-use Main\Controller\Link;
-use Common\Controller\Registry;
-use Main\Controller\BattleController;
+use Ruins\Main\Controller\Link;
+use Ruins\Common\Controller\Registry;
+use Ruins\Main\Controller\BattleController;
 
 /**
  * Page Content

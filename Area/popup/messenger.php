@@ -10,8 +10,8 @@
 /**
  * Namespaces
  */
-use Main\Controller\Link;
-use Main\Manager\MessageManager;
+use Ruins\Main\Controller\Link;
+use Ruins\Main\Manager\MessageManager;
 
 /**
  * Page Content

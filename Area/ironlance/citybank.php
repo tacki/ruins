@@ -10,9 +10,10 @@
 /**
  * Namespaces
  */
-use Main\Controller\Link;
-use Main\Controller\TimerController as Timer;
-use Main\Layers\Money;
+use Ruins\Main\Controller\Link;
+use Ruins\Main\Controller\TimerController as Timer;
+use Ruins\Main\Layers\Money;
+use Ruins\Common\Controller\Registry;
 
 /**
  * Page Content
@@ -27,6 +28,8 @@ $timer = $em->getRepository("Main:Timer")
 
 $bankRepos   = $em->getRepository("Main:Bank");
 $bankAccount = $bankRepos->getAccount($user->character, "ironlance/citybank");
+
+$systemConfig = Registry::getMainConfig();
 
 if (!isset($_GET['op'])) $_GET['op']="";
 switch ($_GET['op']) {
