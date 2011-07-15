@@ -37,8 +37,8 @@ class Page implements OutputObjectInterface
     /**
     * Class constants
     */
-    const DEFAULT_PUBLIC_TEMPLATE    = "Main/View/Templates/Default";
-    const DEFAULT_PRIVATE_TEMPLATE   = "Main/View/Templates/Default";
+    const DEFAULT_PUBLIC_TEMPLATE    = "main/templates/default";
+    const DEFAULT_PRIVATE_TEMPLATE   = "main/templates/default";
 
     /**
      * Navigation Class
@@ -224,7 +224,7 @@ class Page implements OutputObjectInterface
      */
     public function addJavaScriptFile($script)
     {
-        $this->_headscripts[] = "<script src='".SystemManager::getOverloadedFilePath("View/JavaScript/".$script, true)."' type='text/javascript'></script>";
+        $this->_headscripts[] = "<script src='".SystemManager::getWebRessourcePath("javascript/".$script, true)."' type='text/javascript'></script>";
     }
 
     /**
@@ -233,7 +233,7 @@ class Page implements OutputObjectInterface
     */
     public function addCSS($script)
     {
-        $this->_headscripts[] = "<link href='".SystemManager::getOverloadedFilePath("View/Styles/".$script, true)."' rel='stylesheet' type='text/css' />";
+        $this->_headscripts[] = "<link href='".SystemManager::getWebRessourcePath("styles/".$script, true)."' rel='stylesheet' type='text/css' />";
     }
 
     /**
@@ -242,7 +242,7 @@ class Page implements OutputObjectInterface
      */
     public function addCommonCSS($script)
     {
-        $this->_headscripts[] = "<link href='". SystemManager::htmlpath(DIR_COMMON) ."/View/Styles/".$script."' rel='stylesheet' type='text/css' />";
+        $this->_headscripts[] = "<link href='". SystemManager::getWebRessourcePath("common/styles/".$script, true)."' rel='stylesheet' type='text/css' />";
     }
 
     /**
@@ -539,13 +539,13 @@ class Page implements OutputObjectInterface
 
         // Set the correct Template-Paths inside the Template
         // For Paths that are sent to the Client (relative webbased paths)
-        $this->template['mytemplatedir'] = SystemManager::getOverloadedFilePath($this->template['name'], true);
+        $this->template['mytemplatedir'] = SystemManager::getWebRessourcePath($this->template['name'], true);
         $this->set("mytemplatedir", $this->template['mytemplatedir']);
-        $this->template['commontemplatedir'] = SystemManager::htmlpath(DIR_COMMON . "View");
+        $this->template['commontemplatedir'] = SystemManager::getWebRessourcePath("common");
         $this->set("commontemplatedir", $this->template['commontemplatedir']);
 
         // Paths that are handled inside the templategeneration progress (full filepaths)
-        $this->template['myfulltemplatedir'] = DIR_BASE . "src/Ruins/" . $this->template['name'];
+        $this->template['myfulltemplatedir'] = DIR_WEB . $this->template['name'];
         $this->set("myfulltemplatedir", $this->template['myfulltemplatedir']);
 
     }
@@ -561,9 +561,9 @@ class Page implements OutputObjectInterface
         $snippet->compile_dir 		= $this->_smarty->compile_dir;
         $snippet->cache_dir 		= $this->_smarty->cache_dir;
         $snippet->config_dir 		= $this->_smarty->config_dir;
-        $snippet->assign("mytemplatedir", SystemManager::getOverloadedFilePath($template, true));
-        $snippet->assign("commontemplatedir", SystemManager::htmlpath(DIR_COMMON . "View"));
-        $snippet->assign("myfulltemplatedir", DIR_BASE . "src/Ruins/" . $template);
+        $snippet->assign("mytemplatedir", SystemManager::getWebRessourcePath($template, true));
+        $snippet->assign("commontemplatedir", SystemManager::getWebRessourcePath("common"));
+        $snippet->assign("myfulltemplatedir", DIR_WEB . $template);
 
         return $snippet;
     }
@@ -662,7 +662,7 @@ class Page implements OutputObjectInterface
      */
     protected function _addJQuerySupport()
     {
-        array_unshift($this->_headscripts, "<script src='".SystemManager::getOverloadedFilePath("View/JavaScript/jquery-1.5.1.min.js", true)."' type='text/javascript'></script>");
+        array_unshift($this->_headscripts, "<script src='".SystemManager::getWebRessourcePath("javascript/jquery-1.5.1.min.js", true)."' type='text/javascript'></script>");
         $this->addJavaScriptFile("jquery-ui-1.8.13.custom.min.js");
         $this->addJavaScriptFile("jquery.plugin.timers.js");
     }

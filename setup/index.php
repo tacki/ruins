@@ -106,7 +106,7 @@ use Ruins\Common\Controller\Registry;
     -->
     </style>
 
-    <script type="text/javascript" src="Common/View/JavaScript/jquery-1.5.1.min.js "></script>
+    <script type="text/javascript" src="../web/common/javascript/jquery-1.5.1.min.js "></script>
 </head>
 <body>
 
@@ -248,6 +248,10 @@ switch ($_GET['step']) {
                                                     "	define('DIR_VENDOR', ".
                                                         "'".str_replace('\\', '/', BASEDIR) .
                                                         "/vendor/".
+                                                        "');"."\n" .
+                                                    "	define('DIR_WEB', ".
+                                                        "'".str_replace('\\', '/', BASEDIR) .
+                                                        "/web/".
                                                         "');"."\n" .
                                                     "";
 

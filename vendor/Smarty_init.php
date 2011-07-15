@@ -23,7 +23,7 @@ $smarty = new \Smarty();
 $smarty->caching        = 1;
 $smarty->cache_lifetime = -1;
 
-$smarty->setTemplateDir(DIR_BASE."src/Ruins/".Page::DEFAULT_PUBLIC_TEMPLATE);
+$smarty->setTemplateDir(DIR_WEB.Page::DEFAULT_PUBLIC_TEMPLATE);
 $smarty->compile_dir 	= DIR_TEMP."smarty/templates_c";
 $smarty->cache_dir 		= DIR_TEMP."smarty/cache";
 $smarty->config_dir     = DIR_VENDOR."Smarty/configs";

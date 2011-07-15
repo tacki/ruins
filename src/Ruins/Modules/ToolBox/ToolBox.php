@@ -52,8 +52,8 @@ class ToolBox extends ModuleBase implements ModuleInterface
 
             $page->addToolBoxItem(new Link("prunecache", "prune_cache.ajax.php"),
                                   "Session Cache leeren",
-                                  SystemManager::getOverloadedFilePath("View/Images/trash.png", true),
-                                  SystemManager::getOverloadedFilePath("View/Images/accept.png", true)
+                                  SystemManager::getWebRessourcePath("images/trash.png", true),
+                                  SystemManager::getWebRessourcePath("images/accept.png", true)
                                 );
         }
     }

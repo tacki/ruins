@@ -164,9 +164,56 @@ class SystemManager
     }
 
     /**
+     * Find correct Path of a Web Ressource (JS, CSS, Image, etc)
+     * @param string $path Relative Filepath (e.g. common/images/trash.png)
+     * @param bool $htmlpath Return as htmlpath (relative to Doctree)
+     * @throws Error
+     */
+    public static function getWebRessourcePath($path, $htmlpath=false)
+    {
+        $systemCache = Registry::get('main.cache');
+
+        if (!($result = $systemCache->fetch("webRessourcePath_".md5($path)))) {
+            // First check Module-Directory for web-ressources
+            foreach (ModuleManager::getModuleListFromFilesystem() as $module) {
+                if (file_exists(DIR_MODULES.$module['directory'].'web/'.$path)) {
+                    $result = DIR_MODULES.$module['directory'].'web/'.$path;
+                    $systemCache->save("webRessourcePath_".md5($path), $result);
+
+                    return $htmlpath?SystemManager::htmlpath($result):$result;
+                }
+            }
+
+
+            if (file_exists(DIR_WEB."common/".$path)) {
+                // No Result? Check Common Web-Directory
+                $result = DIR_WEB."common/".$path;
+            } elseif (file_exists(DIR_WEB."main/".$path)) {
+                // Check Main Web-Directory
+                $result = DIR_WEB."main/".$path;
+            } elseif (file_exists(DIR_WEB.$path)) {
+                // Last Chance - Full web Path is given
+                $result = DIR_WEB.$path;
+            }
+
+            if ($result) {
+                $systemCache->save("webRessourcePath_".md5($path), $result);
+
+                return $htmlpath?SystemManager::htmlpath($result):$result;
+            } else {
+                throw new Error("Cannot find Web Ressource $path in any known Directory");
+            }
+        } else {
+            // Use SessionStore
+            return $htmlpath?SystemManager::htmlpath($result):$result;
+        }
+    }
+
+    /**
      * Get Filepath of an overloaded File
      * @param string $path Relative Filepath (e.g. View/Images/trash.png)
      * @param bool $htmlpath Return as htmlpath (relative to Doctree)
+     * @throws Error
      * @return string Full Path of the overloaded File (e.g. .../ruins/Common/View/trash.png)
      */
     public static function getOverloadedFilePath($path, $htmlpath=false)

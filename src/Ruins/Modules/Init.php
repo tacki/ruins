@@ -25,8 +25,8 @@ $smarty = Registry::get('smarty');
 if ($smarty instanceof \Smarty) {
     $paths = array();
     foreach (ModuleManager::getModuleListFromFilesystem() as $module) {
-        if (file_exists(DIR_MODULES.$module['directory']."View/Templates")) {
-            $paths[] =  DIR_MODULES.$module['directory']."View/Templates";
+        if (file_exists(DIR_MODULES.$module['directory']."web/templates")) {
+            $paths[] =  DIR_MODULES.$module['directory']."web/templates";
         }
     }
 

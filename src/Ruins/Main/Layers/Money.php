@@ -136,13 +136,13 @@ class Money extends LayerBase
     {
         switch ($currency) {
             case "gold":
-                return $this->getCurrency($currency) . "<img src=\"".SystemManager::getOverloadedFilePath("View/Images/gold.gif", true)."\" height=\"10\" alt=\"g\" />";
+                return $this->getCurrency($currency) . "<img src=\"".SystemManager::getWebRessourcePath("images/gold.gif", true)."\" height=\"10\" alt=\"g\" />";
 
             case "silver":
-                return $this->getCurrency($currency) . "<img src=\"".SystemManager::getOverloadedFilePath("View/Images/silver.gif", true)."\" height=\"10\" alt=\"s\" />";
+                return $this->getCurrency($currency) . "<img src=\"".SystemManager::getWebRessourcePath("images/silver.gif", true)."\" height=\"10\" alt=\"s\" />";
 
             case "copper":
-                return $this->getCurrency($currency) . "<img src=\"".SystemManager::getOverloadedFilePath("View/Images/copper.gif", true)."\" height=\"10\" alt=\"c\" />";
+                return $this->getCurrency($currency) . "<img src=\"".SystemManager::getWebRessourcePath("images/copper.gif", true)."\" height=\"10\" alt=\"c\" />";
 
             default:
                 return $this->money;
