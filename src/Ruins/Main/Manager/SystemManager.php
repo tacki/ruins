@@ -170,6 +170,7 @@ class SystemManager
      * @param string $path Relative Filepath (e.g. common/images/trash.png)
      * @param bool $htmlpath Return as htmlpath (relative to Doctree)
      * @throws Error
+     * @return string
      */
     public static function getWebRessourcePath($path, $htmlpath=false)
     {
@@ -215,15 +216,16 @@ class SystemManager
      * Retrieve request filepath
      * @param Request $request
      * @param bool $addQuery
-     * @return string
+     * @return array
      */
-    public static function getRequestFilePath(Request $request, $addQuery=false)
+    public static function getRequestFileInfo(Request $request)
     {
         $caller     = $request->getRouteCaller();
         $parameters = current($request->getRoute());
         $filePath   = "Pages/".$request->getRouteCaller();
         $foundPath  = "";
         $counter    = 0;
+        $result     = "";
 
         // Find Filename
         // TODO: NEEDS SOME CACHING
@@ -238,30 +240,36 @@ class SystemManager
                 }
             }
 
-            if (file_exists(DIR_COMMON.$filePath . ".php")) {
-                $foundpath = DIR_COMMON.$filePath.".php";
-                break;
-            } elseif (file_exists(DIR_MAIN.$filePath . ".php")) {
-                $foundpath = DIR_MAIN.$filePath.".php";
+            if (file_exists(DIR_BASE."src/Ruins/".$filePath . ".php")) {
+                $foundpath = DIR_BASE."src/Ruins/".$filePath . ".php";
                 break;
             }
         }
 
-        if (!$addQuery) {
-            return $foundpath;
-        }
+        $result['path'] = $foundpath;
 
         // Add Rest of Parameters as opX-query
+        $queries = array();
+        $counter++;
         for ($i=1; $counter<count($parameters); $counter++) {
-            if (strstr($foundpath, "?") === false) {
-                $foundpath .= "?op=".$parameters[$counter];
+            if (count($queries) == 0) {
+                $queries['op'] = $parameters[$counter];
             } else {
-                $foundpath .= "&op".$i."=".$parameters[$counter];
+                $queries['op'.$i] = $parameters[$counter];
             }
             $i++;
         }
 
-        return $foundpath;
+        $result['query'] = $queries;
+
+        // Get Classname of the File
+        $classname = substr($result['path'], strlen(DIR_BASE."src"));
+        $classname = str_replace("/", "\\", $classname);
+        $classname = substr($classname, 0, -4);
+
+        $result['classname'] = $classname;
+
+        return $result;
     }
 
     /**
@@ -374,7 +382,7 @@ class SystemManager
     }
 
     /**
-     * Create a complete Filepath of a shortcut (example: common/login or page/common/login)
+     * Create a complete Filepath of a shortcut (example: common/login or Page/Common/LoginPage)
      * @param string $filepath
      * @return string The Filepath if successful, else false if file not found
      */
@@ -386,7 +394,9 @@ class SystemManager
             $request = $path;
         }
 
-        $treepath = SystemManager::getRequestFilePath($request);
+        $requestFileInfo = SystemManager::getRequestFileInfo($request);
+
+        $treepath = $requestFileInfo['path'];
 
         // strip query string
         if (strpos($treepath, "?")) {

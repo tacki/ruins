@@ -727,7 +727,7 @@ switch ($_GET['step']) {
         echo "<h2>Installation complete</h2>";
         echo "<h4>Congratulations, the Installation is complete! Press 'Continue' to load the Frontpage of Ruins.</h4>";
 
-        echo "<form action='../index.php' method='post'>
+        echo "<form action='../web/' method='post'>
                 <input type='submit' value='Continue' class='continue'></form>";
         break;
 

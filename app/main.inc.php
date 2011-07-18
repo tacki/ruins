@@ -44,21 +44,20 @@ require_once(DIR_CONFIG."dbconnect.cfg.php");
 
 Registry::set('dbconnect', $dbconnect);
 
-
 /**
  * Doctrine Initialization
  */
-require_once(DIR_VENDOR."Doctrine_init.php");
+require_once("Doctrine_init.php");
 
 /**
  * Smarty Initialization
  */
-require_once(DIR_VENDOR."Smarty_init.php");
+require_once("Smarty_init.php");
 
 /**
  * PHP-OpenID Initialization
  */
-require_once(DIR_VENDOR."php-openid_init.php");
+require_once("php-openid_init.php");
 
 /**
  * Tree Initialization

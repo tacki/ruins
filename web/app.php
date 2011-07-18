@@ -27,18 +27,14 @@ require_once("../app/config/dirconf.cfg.php");
 require_once(DIR_BASE."app/main.inc.php");
 
 try {
-    // set op-value if it's not set
-    if (!isset($_GET['op'])) {
-        $_GET['op'] = NULL;
-    }
-
     // Handle Request
     $request = RequestHandler::getRequest();
+    $requestInfo = SystemManager::getRequestFileInfo($request);
 
     if (!$request->getRouteCaller()) {
         // set loginpage to default
         $page = new Page();
-        $page->nav->redirect("page/common/login");
+        $page->nav->redirect("Page/Common/LoginPage");
     }
 
     // Check if the page-value is valid
@@ -56,6 +52,16 @@ try {
              * Page Content
              */
             ModuleManager::callModule(ModuleManager::EVENT_PRE_PAGECONTENT);
+            $page = new $requestInfo['classname'];
+            $page->create();
+            $page->addCommonCSS("btcode.css");
+            $page->addJavaScriptFile("timer.func.js");
+            $page->addJavaScriptFile("global.func.js");
+            $page->set("servertime", date("H:i:s"));
+            $page->setTitle();
+            $page->createMenu();
+            $page->createContent($requestInfo['query']);
+/*
             if ($request->getRouteCaller() == 'Popup') {
                 $popup = new Ruins\Modules\Support\Pages\Popup\SupportPopup;
 
@@ -68,13 +74,13 @@ try {
                 //---
 
                 $popup->create();
-                $popup->title();
-                $popup->menu();
-                $popup->content($_GET);
+                $popup->setTitle();
+                $popup->createMenu();
+                $popup->createContent($requestInfo['query']);
             } else {
                 include($realpath);
             }
-
+*/
             /**
              * Page Footer
              */

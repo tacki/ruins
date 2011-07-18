@@ -33,11 +33,11 @@ if ($userid = SessionStore::get('userid')) {
 
 // Page preparation
 $config = Registry::getMainConfig();
-$config->addPublicPage(array(	"/page/common/login",
-                                "/page/common/logout",
-                                "/page/developer/test",)
+$config->addPublicPage(array(	"/Page/Common/LoginPage",
+                                "/Page/Common/LogoutPage",
+                                "/Page/Developer/TestPage",)
                             );
-$config->addNoCachePage(array(	"/page/common/portal" )
+$config->addNoCachePage(array(	"/Page/Common/PortalPage" )
                             );
 
 $isPublic     = false;
@@ -69,7 +69,7 @@ if ($isPublic) {
         // Connection Timeout occurred
         // Redirect to logoutpage
         SessionStore::set("logoutreason", "Automatischer Logout: Verbindungs Timeout!");
-        $page->nav->redirect("page/common/logout");
+        $page->nav->redirect("Page/Common/LogoutPage");
     } else {
         // Create the Page
         $page->create();
@@ -78,17 +78,18 @@ if ($isPublic) {
         $user->character->lastpagehit = new DateTime();
 
         // Set current_nav if this is not the portal
-        if (strpos($page->url, "page/common/portal") === false) {
+
+        if (strlen($page->url) && strpos($page->url, "Page/Common/PortalPage") === false) {
             $user->character->current_nav = (string)$page->url;
-        } elseif (!$user->character->current_nav) {
-            $user->character->current_nav = "page/ironlance/citysquare";
+        } elseif (!$user->character->current_nav || !$page->url) {
+            $user->character->current_nav = "Page/Ironlance/CitysquarePage";
         }
     }
 } else {
     // this is a private page, but no user is loaded. Force to logout
     SessionStore::set("logoutreason", "Automatischer Logout: Nicht eingeloggt!");
     $page = new Page();
-    $page->nav->redirect("page/common/logout");
+    $page->nav->redirect("Page/Common/LogoutPage");
 }
 
 // BtCode

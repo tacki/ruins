@@ -24,7 +24,7 @@ $page->nav->addHead("Navigation")
           ->addLink("Spielerliste", "page/common/charlist&return={$page->url->short}");
 
 $page->nav->addHead("Allgemein")
-          ->addLink("Logout", "page/common/logout");
+          ->addLink("Logout", "Page/Common/LogoutPage");
 
 $page->output("Du stehst auf einem kleinen Weg, kurz bevor dieser in den dichten Dunsplee Wald verschwindet.
                 `n Die Gegend hier ist nicht sehr einladend, leicht bedrohlich. Doch einen tapferen Recken

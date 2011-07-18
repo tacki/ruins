@@ -20,6 +20,10 @@ use Ruins\Common\Controller\Request;
  */
 class RequestHandler
 {
+    /**
+     * Retrieve WebBasePath (example: /ruins/web or /ruins/web/app.php)
+     * @return string
+     */
     public static function getWebBasePath()
     {
         $frontCntrl = $_SERVER['SCRIPT_NAME'];

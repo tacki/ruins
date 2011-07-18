@@ -8,7 +8,7 @@
  * @package Ruins
  */
 $oldlevel = error_reporting(0);
-$path_extra = dirname(__FILE__) . "/php-openid";
+$path_extra = DIR_VENDOR . "php-openid";
 $path = ini_get('include_path');
 $path = $path_extra . PATH_SEPARATOR . $path;
 ini_set('include_path', $path);

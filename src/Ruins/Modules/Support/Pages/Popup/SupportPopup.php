@@ -18,30 +18,30 @@ use Ruins\Main\Controller\Page;
 use Ruins\Modules\Support\Entities\SupportRequests;
 use Ruins\Main\Manager\SystemManager;
 use Ruins\Common\Controller\Registry;
+use Ruins\Common\Interfaces\PageObjectInterface;
 
-class SupportPopup extends Popup
+class SupportPopup extends Popup implements PageObjectInterface
 {
     protected $pagetitle  = "Supportanfrage";
-    protected $parameters = array();
 
-    public function title()
+    public function setTitle()
     {
         $this->set("pagetitle", $this->pagetitle);
         $this->set("headtitle", $this->pagetitle);
     }
 
-    public function menu()
+    public function createMenu()
     {
         $this->nav->addLink("Anfrage", $this->url);
     }
 
-    public function content($parameters)
+    public function createContent(array $parameters)
     {
         switch ($parameters['op']) {
 
             default:
             $this->addForm("support");
-            $this->getForm("support")->head("supportform", "popup/Popup/Support/request");
+            $this->getForm("support")->head("supportform", "Popup/SupportPopup/request");
 
             $this->addSimpleTable("supportformtable");
             $this->getForm("support")->setCSS("input");
@@ -116,16 +116,16 @@ class SupportPopup extends Popup
                 // Captcha Check
                 if ($_POST['captcha'] !== SessionStore::get("support_captcha")) {
                     $this->output("Falscher Botschutz-Code eingegeben!`n`n");
-                    $this->nav->addTextLink("Zurück", "popup/Popup/Support");
+                    $this->nav->addTextLink("Zurück", "Popup/SupportPopup");
                     break;
                 }
-                SessionStore::remove("support_captcha");
+                //SessionStore::remove("support_captcha");
 
                 // Valid Supportrequest Check
                 if (!$loggedin) {
                     if (!$_POST['userlogin'] || !$_POST['email'] || !$_POST['text']) {
                         $this->output("Bitte alle Felder ausfüllen!`n`n");
-                        $this->nav->addTextLink("Zurück", "popup/Popup/Support");
+                        $this->nav->addTextLink("Zurück", "Popup/SupportPopup");
                         break;
                     }
                 }
@@ -167,7 +167,7 @@ class SupportPopup extends Popup
                 }
 
                 $this->addForm("support");
-                $this->getForm("support")->head("supportform", "popup/Popup/Support");
+                $this->getForm("support")->head("supportform", "Popup/SupportPopup");
                 $this->output("<div class='floatclear center'>", true);
                 $this->getForm("support")->setCSS("button");
                 $this->getForm("support")->submitButton("Zurück");

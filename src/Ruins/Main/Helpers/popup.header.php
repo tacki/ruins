@@ -63,7 +63,7 @@ if ($isPublic) {
         SessionStore::set("logoutreason", "Automatischer Logout: Connection Timeout!");
 
         // Redirect Parent
-        $popup->redirectParent("page/common/logout");
+        $popup->redirectParent("Page/Common/LogoutPage");
 
         // Close Popup
         $popup->close();
