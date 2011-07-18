@@ -17,6 +17,7 @@ use Smarty;
 use Ruins\Main\Manager\SystemManager;
 use Ruins\Main\Manager\ItemManager;
 use Ruins\Main\Manager\ModuleManager;
+use Ruins\Main\Controller\Nav;
 use Ruins\Common\Interfaces\OutputObjectInterface;
 use Ruins\Common\Controller\BaseObject;
 use Ruins\Common\Controller\BtCode;
@@ -197,6 +198,12 @@ class Page implements OutputObjectInterface
         $this->_smarty->assign($placeholder, $value);
     }
 
+    public function setTitle($value)
+    {
+        $this->set("pagetitle", $value);
+        $this->set("headtitle", $value);
+    }
+
     /**
      * Make this Page a public one
      */
@@ -309,6 +316,16 @@ class Page implements OutputObjectInterface
         if (!$showhtml) $text=htmlspecialchars($text, ENT_QUOTES, "UTF-8");
 
         $this->_bodycontent[] = $text;
+    }
+
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    public function getNavigation()
+    {
+        return $this->nav;
     }
 
     /**

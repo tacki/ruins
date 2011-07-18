@@ -13,26 +13,15 @@
 namespace Ruins\Pages\Page\Common;
 use Ruins\Main\Entities\User;
 use Ruins\Common\Controller\Registry;
-use Ruins\Main\Controller\Page;
-use Ruins\Common\Interfaces\PageObjectInterface;
+use Ruins\Common\Controller\AbstractPageObject;
 
-class LogoutPage extends Page implements PageObjectInterface
+class LogoutPage extends AbstractPageObject
 {
     protected $pagetitle  = "Logout Page";
 
-    public function setTitle()
+    public function createContent($page, $parameters)
     {
-        $this->set("pagetitle", $this->pagetitle);
-        $this->set("headtitle", $this->pagetitle);
-    }
-
-    public function createMenu()
-    {
-    }
-
-    public function createContent(array $parameters)
-    {
-        $user = Registry::getUser();
+        $user = $this->getUser();
 
         if ($user instanceof User) {
             $user->addDebugLog("Logout");
@@ -40,6 +29,6 @@ class LogoutPage extends Page implements PageObjectInterface
             $user->logout();
         }
 
-        $this->nav->redirect("Page/Common/LoginPage");
+        $page->nav->redirect("Page/Common/LoginPage");
     }
 }

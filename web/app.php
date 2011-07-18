@@ -28,10 +28,9 @@ require_once(DIR_BASE."app/main.inc.php");
 
 try {
     // Handle Request
-    $request = RequestHandler::getRequest();
-    $requestInfo = SystemManager::getRequestFileInfo($request);
+    $request = RequestHandler::createRequest();
 
-    if (!$request->getRouteCaller()) {
+    if (!$request->getRoute()->getCaller()) {
         // set loginpage to default
         $page = new Page();
         $page->nav->redirect("Page/Common/LoginPage");
@@ -40,19 +39,30 @@ try {
     // Check if the page-value is valid
     $realpath = SystemManager::validatePHPFilePath($request);
 
-    switch ($request->getRouteCaller()) {
+    switch ($request->getRoute()->getCaller()) {
         default:
+
+            $classname = $request->getRoute()->getClassname();
+
+        var_dump($request);
+
+            $page = new $classname($request);
+
+            $page->render();
+
             /**
              * Page Header
              */
-            ModuleManager::callModule(ModuleManager::EVENT_PRE_PAGEHEADER);
-            include(DIR_MAIN."Helpers/".strtolower($request->getRouteCaller()).".header.php");
+            //ModuleManager::callModule(ModuleManager::EVENT_PRE_PAGEHEADER);
+            //include(DIR_MAIN."Helpers/".strtolower($request->getRoute()->getCaller()).".header.php");
 
             /**
              * Page Content
              */
+/*
             ModuleManager::callModule(ModuleManager::EVENT_PRE_PAGECONTENT);
-            $page = new $requestInfo['classname'];
+            $classname = $request->getRoute()->getClassname();
+            $page = new $classname;
             $page->create();
             $page->addCommonCSS("btcode.css");
             $page->addJavaScriptFile("timer.func.js");
@@ -60,8 +70,8 @@ try {
             $page->set("servertime", date("H:i:s"));
             $page->setTitle();
             $page->createMenu();
-            $page->createContent($requestInfo['query']);
-/*
+            $page->createContent($request->getQueryAsArray());
+
             if ($request->getRouteCaller() == 'Popup') {
                 $popup = new Ruins\Modules\Support\Pages\Popup\SupportPopup;
 
@@ -84,7 +94,7 @@ try {
             /**
              * Page Footer
              */
-            include(DIR_MAIN."Helpers/".strtolower($request->getRouteCaller()).".footer.php");
+            //include(DIR_MAIN."Helpers/".strtolower($request->getRoute()->getCaller()).".footer.php");
             break;
     }
 

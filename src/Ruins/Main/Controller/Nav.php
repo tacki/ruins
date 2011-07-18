@@ -207,7 +207,7 @@ class Nav
             return true;
         }
 
-        $request = RequestHandler::getRequest($link->url);
+        $request = RequestHandler::createRequest($link->url);
 
         if (!$this->validationEnabled() || $link->isAllowedBy($this->_char) ) {
 
@@ -215,7 +215,7 @@ class Nav
                                         "url"=>$link->url?RequestHandler::getWebBasePath()."/".$link->url:"",
                                         "position"=>$link->position,
                                         "description"=>$link->description,
-                                        "type"=>$request->getRouteCaller(),
+                                        "type"=>$request->getRoute()->getCaller(),
                                     );
 
             if ($linklistid > 0) {

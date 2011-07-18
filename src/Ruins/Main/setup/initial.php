@@ -10,6 +10,16 @@ use Ruins\Main\Entities\Items\Armor;
 use Ruins\Common\Controller\Registry;
 
 $em = Registry::getEntityManager();
+$config = Registry::getMainConfig();
+
+//*********************************
+// Create Config-Settings
+$config->addPublicPage(array(	"/Page/Common/LoginPage",
+                                "/Page/Common/LogoutPage",
+                                "/Page/Developer/TestPage",)
+);
+$config->addNoCachePage(array(	"/Page/Common/PortalPage" )
+);
 
 //*********************************
 // Create Admin User

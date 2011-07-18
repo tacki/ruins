@@ -17,30 +17,56 @@ namespace Ruins\Common\Controller;
  * Request Class
  * @package Ruins
  */
+use Ruins\Main\Manager\SystemManager;
+use Ruins\Common\Controller\Route;
+
 class Request
 {
-    protected $route = array();
+    /**
+     * @var Route
+     */
+    protected $route;
+
+    /**
+    * @var string
+    */
     protected $routeString;
 
+    /**
+     * @var array
+     */
     protected $query = array();
+
+    /**
+     * @var string
+     */
     protected $queryString;
 
-    protected $completeRoute;
-
+    /**
+     * Create and Initialize
+     * @param string $completeRequest
+     */
     public function __construct($completeRoute)
     {
-        $routeParts = explode('?', $completeRoute, 2);
+        $requestParts = explode('?', $completeRoute, 2);
 
-        $this->routeString = $routeParts[0];
-        $this->queryString = $routeParts[1];
-        $this->completeRoute = $completeRoute;
+        // The Route as a String
+        $this->routeString = $requestParts[0];
 
-        $this->setRoute($this->generateRouteArray());
-        $this->setQuery($this->generateQueryArray());
+        // The Routing-Part is handled by our
+        // Route-Object
+        $this->route = new Route($requestParts[0]);
+
+        // The extra Query-Part
+        $this->queryString = $requestParts[1];
+
+        // Generate Route and Query Arrays
+        $this->query = $this->generateQueryArray();
     }
 
     /**
-     * @return array
+     * Get Route Object
+     * @return Ruins\Common\Controller\Route
      */
     public function getRoute()
     {
@@ -48,106 +74,30 @@ class Request
     }
 
     /**
-     * @param array $route
-     */
-    public function setRoute(array $route)
-    {
-        $this->route = $route;
-    }
-
-    /**
+     * Get Request-Query as Array
      * @return array
      */
-    public function getQuery()
+    public function getQueryAsArray()
     {
         return $this->query;
     }
 
     /**
-     * @param array $query
-     */
-    public function setQuery(array $query)
-    {
-        $this->query = $query;
-    }
-
-    /**
+     * Get Request-Query as String
      * @return string
      */
-    public function getRouteString()
-    {
-        return $this->routeString;
-    }
-
-    /**
-     * @return string
-     */
-    public function getQueryString()
+    public function getQueryAsString()
     {
         return $this->queryString;
     }
 
     /**
+     * Get Route as String
      * @return string
      */
-    public function getCompleteRoute()
+    public function getRouteAsString()
     {
-        return $this->completeRoute;
-    }
-
-    /**
-     * Get Route Caller
-     * @return string
-     */
-    public function getRouteCaller()
-    {
-        if (!($result = key($this->route))) {
-            $result = false;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Get Route Parameters
-     * @return string
-     */
-    public function getRouteParameters()
-    {
-        $result = implode("/", current($this->route));
-
-        return $result;
-    }
-
-    /**
-     * Generate Route Array from Route String
-     * Example Result:
-     * array ( 'page' => array ( 'common', 'login' ) )
-     * @return array
-     */
-    private function generateRouteArray()
-    {
-        $routeArray = array();
-        $routeString = $this->routeString;
-
-        // Strip first slash
-        if (substr($routeString, 0, 1) == "/") {
-            $routeString = substr($routeString, 1);
-        }
-
-        if (strlen($routeString) === 0) {
-            return $routeArray;
-        }
-
-        $explodedRoute = explode("/", $routeString);
-
-        // First Element = Route Caller
-        $routeCaller = array_shift($explodedRoute);
-
-        // Rest of the RouteString = Route
-        $routeArray = array( $routeCaller => $explodedRoute );
-
-        return $routeArray;
+        return $this->routeString;
     }
 
     /**

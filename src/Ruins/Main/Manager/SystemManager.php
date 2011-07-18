@@ -213,6 +213,72 @@ class SystemManager
     }
 
     /**
+     * Get full Path of a given filepart (example: Page/Common/LoginPage.php -> /var/www/.../LoginPage.php
+     * Result is cached
+     * @param string $filepart
+     * @return string
+     */
+    public static function findFileInTree($filepart)
+    {
+        $cache = Registry::get('main.cache');
+
+        if (!($result = $cache->fetch("findFileInTree_".md5($filepart)))) {
+            // Filepart is already a complete Path
+            if (file_exists($filepart)) {
+                 return $filepart;
+            }
+
+            // Filepart is a complete relative Path inside our Project
+            if (file_exists(DIR_BASE.$filepart)) {
+                $foundpath = DIR_BASE.$filepart;
+
+                $cache->save("findFileInTree_".md5($filepart), $foundpath);
+                return $foundpath;
+            }
+
+            // Module-Directory
+            foreach (ModuleManager::getModuleListFromFilesystem() as $module) {
+                if (file_exists(DIR_MODULES.$module['directory'].$filepart)) {
+                    $foundpath = DIR_MODULES.$module['directory'].$filepart;
+
+                    $cache->save("findFileInTree_".md5($filepart), $foundpath);
+                    return $foundpath;
+                }
+            }
+
+            // Ruins Source Directory
+            if (file_exists(DIR_BASE."src/Ruins/".$filepart)) {
+                $foundpath = DIR_BASE."src/Ruins/".$filepart;
+
+                $cache->save("findFileInTree_".md5($filepart), $foundpath);
+                return $foundpath;
+            }
+
+            // Ruins Common Source Directory
+            if (file_exists(DIR_COMMON.$filepart)) {
+                $foundpath = DIR_COMMON.$filepart;
+
+                $cache->save("findFileInTree_".md5($filepart), $foundpath);
+                return $foundpath;
+            }
+
+            // Ruins Main Source Directory
+            if (file_exists(DIR_MAIN.$filepart)) {
+                $foundpath = DIR_MAIN.$filepart;
+
+                $cache->save("findFileInTree_".md5($filepart), $foundpath);
+                return $foundpath;
+            }
+
+            return false;
+
+        } else {
+            return $result;
+        }
+
+    }
+
+    /**
      * Retrieve request filepath
      * @param Request $request
      * @param bool $addQuery
@@ -366,7 +432,7 @@ class SystemManager
         $filepath = self::createFullPHPFilePath($filepath);
 
         if ($filepath === false) {
-            throw new Error("Invalid PHPFilePath! File not found!");
+            throw new Error("Invalid PHPFilePath! File '$filepath' not found!");
         }
 
         // check if the file is inside our Project
@@ -375,50 +441,31 @@ class SystemManager
 
         if (substr($filepath, 0, $projectpathlength) !== $projectpath) {
             // The File is not inside our Project...
-            throw new Error("Invalid PHPFilePath! PHPFilePath not inside our Project!");
+            throw new Error("Invalid PHPFilePath! PHPFilePath '$filepath' is not inside our Project!");
         }
 
         return $filepath;
     }
 
     /**
-     * Create a complete Filepath of a shortcut (example: common/login or Page/Common/LoginPage)
-     * @param string $filepath
+     * Get the Real Path (eliminate symbolic links)
+     * @param string $path
      * @return string The Filepath if successful, else false if file not found
      */
     public static function createFullPHPFilePath($path)
     {
+        // Use the Request-Object for Help
         if (!($path instanceof Request)) {
-            $request = RequestHandler::getRequest($path);
+            $request = RequestHandler::createRequest($path);
         } else {
             $request = $path;
         }
 
-        $requestFileInfo = SystemManager::getRequestFileInfo($request);
-
-        $treepath = $requestFileInfo['path'];
-
-        // strip query string
-        if (strpos($treepath, "?")) {
-            $stripped = explode("?", $treepath, 2);
-            $treepath = $stripped[0];
-            $query    = $stripped[1];
-        }
-
         // create realpath
-        $realpath = realpath($treepath);
+        $realpath = realpath($request->getRoute()->getFilename());
 
         // Windoof Fix
         $realpath = str_replace("\\","/", $realpath);
-
-        // Add last / for directories and the parameters (if any) for files
-        if (is_dir($realpath) && substr($realpath, 0, -1) != "/") {
-            $realpath .= "/";
-        }
-
-        if ($query) {
-            $realpath = $realpath . "?" . $query;
-        }
 
         // return the complete Path
         return $realpath;

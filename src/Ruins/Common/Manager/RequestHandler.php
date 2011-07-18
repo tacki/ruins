@@ -21,30 +21,11 @@ use Ruins\Common\Controller\Request;
 class RequestHandler
 {
     /**
-     * Retrieve WebBasePath (example: /ruins/web or /ruins/web/app.php)
-     * @return string
-     */
-    public static function getWebBasePath()
-    {
-        $frontCntrl = $_SERVER['SCRIPT_NAME'];
-
-        // Remove Front-Controller
-        if (strpos($_SERVER['REQUEST_URI'], $frontCntrl) === false) {
-            // Front Controller is removed by mod_rewrite
-            $result = pathinfo($frontCntrl, PATHINFO_DIRNAME);
-        } else {
-            $result = $frontCntrl;
-        }
-
-        return $result;
-    }
-
-    /**
      * Retrieve Route Request String
      * @var string $requestURI
      * @return Request
      */
-    public static function getRequest($routeRequest=false)
+    public static function createRequest($routeRequest=false)
     {
         if (!$routeRequest) {
             $requestURI = $_SERVER['REQUEST_URI'];
@@ -60,16 +41,25 @@ class RequestHandler
             $routeRequest = "/".$routeRequest;
         }
 
-        return self::createRequestObject($routeRequest);
+        return new Request($routeRequest);
     }
 
     /**
-     * Create Request Object
-     * @param string $routeRequest
-     * @return Request
-     */
-    private static function createRequestObject($routeRequest)
+    * Retrieve WebBasePath (example: /ruins/web or /ruins/web/app.php)
+    * @return string
+    */
+    public static function getWebBasePath()
     {
-        return new Request($routeRequest);
+        $frontCntrl = $_SERVER['SCRIPT_NAME'];
+
+        // Remove Front-Controller
+        if (strpos($_SERVER['REQUEST_URI'], $frontCntrl) === false) {
+            // Front Controller is removed by mod_rewrite
+            $result = pathinfo($frontCntrl, PATHINFO_DIRNAME);
+        } else {
+            $result = $frontCntrl;
+        }
+
+        return $result;
     }
 }

@@ -33,15 +33,10 @@ if ($userid = SessionStore::get('userid')) {
 
 // Page preparation
 $config = Registry::getMainConfig();
-$config->addPublicPage(array(	"/Page/Common/LoginPage",
-                                "/Page/Common/LogoutPage",
-                                "/Page/Developer/TestPage",)
-                            );
-$config->addNoCachePage(array(	"/Page/Common/PortalPage" )
-                            );
 
+//--
 $isPublic     = false;
-$routeRequest = RequestHandler::getRequest()->getRouteString();
+$routeRequest = substr($_SERVER['REQUEST_URI'], strlen(RequestHandler::getWebBasePath()));
 
 foreach ($config->get("publicpages") as $publicpage) {
     if (substr($routeRequest, 0, strlen($publicpage)) == $publicpage) {

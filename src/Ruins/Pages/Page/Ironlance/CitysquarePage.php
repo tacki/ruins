@@ -11,38 +11,26 @@
  * Namespaces
  */
 namespace Ruins\Pages\Page\Ironlance;
-use Ruins\Main\Entities\User;
-use Ruins\Common\Controller\Registry;
-use Ruins\Main\Controller\Page;
-use Ruins\Common\Interfaces\PageObjectInterface;
+use Ruins\Common\Controller\AbstractPageObject;
 
-class CitysquarePage extends Page implements PageObjectInterface
+class CitysquarePage extends AbstractPageObject
 {
-    protected $pagetitle  = "Ironlance Stadtzentrum";
+    public $title  = "Ironlance Stadtzentrum";
 
-    public function setTitle()
+    public function createContent($page, $parameters)
     {
-        $this->set("pagetitle", $this->pagetitle);
-        $this->set("headtitle", $this->pagetitle);
-    }
+        $page->nav->addHead("Navigation")
+                  ->addLink("Reisen", "Page/Common/TravelPage?return={$page->url->short}")
+                  ->addLink("Stadtbank", "Page/Ironlance/CitybankPage")
+                  ->addLink("Spielerliste", "Page/Common/CharlistPage?return={$page->url->short}")
+                  ->addLink("Ausrüstung", "Page/Common/EquipmentPage?return={$page->url->short}");
 
-    public function createMenu()
-    {
-        $this->nav->addHead("Navigation")
-                  ->addLink("Reisen", "page/common/travel&return={$this->url->short}")
-                  ->addLink("Stadtbank", "page/ironlance/citybank")
-                  ->addLink("Spielerliste", "page/common/charlist&return={$this->url->short}")
-                  ->addLink("Ausrüstung", "page/common/equipment&return={$this->url->short}");
-
-        $this->nav->addHead("Allgemein")
+        $page->nav->addHead("Allgemein")
                   ->addLink("Logout", "Page/Common/LogoutPage");
-    }
 
-    public function createContent(array $parameters)
-    {
-        $this->output("Willkommen im Stadtzentrum von Ironlance, dem aus Stein gebauten Stolz der menschlichen Rasse.`n");
+        $page->output("Willkommen im Stadtzentrum von Ironlance, dem aus Stein gebauten Stolz der menschlichen Rasse.`n");
 
-        $this->addChat("ironlance_citysquare")->show();
+        $page->addChat("ironlance_citysquare")->show();
     }
 }
 

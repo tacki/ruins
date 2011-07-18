@@ -18,9 +18,7 @@ namespace Ruins\Common\Interfaces;
  */
 interface PageObjectInterface
 {
-    public function setTitle();
+    public function setTitle($title);
 
-    public function createMenu();
-
-    public function createContent(array $parameters);
+    public function createContent($page, $queryParameters);
 }

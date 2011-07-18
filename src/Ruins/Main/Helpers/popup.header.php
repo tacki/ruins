@@ -36,7 +36,7 @@ if ($userid = SessionStore::get('userid')) {
 $config = Registry::getMainConfig();
 
 $isPublic     = false;
-$routeRequest = RequestHandler::getRequest()->getRouteString();
+$routeRequest = RequestHandler::createRequest()->getRouteString();
 
 foreach ($config->get("publicpages") as $publicpage) {
     if (substr($routeRequest, 0, strlen($publicpage)) == $publicpage) {
