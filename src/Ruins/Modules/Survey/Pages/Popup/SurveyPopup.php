@@ -12,30 +12,20 @@
  */
 namespace Ruins\Modules\Survey\Pages\Popup;
 use Ruins\Modules\Survey\Manager\SurveyManager;
+use Ruins\Common\Controller\AbstractPageObject;
 
-class SurveyPopup extends Popup
+class SurveyPopup extends AbstractPageObject
 {
-    protected $pagetitle  = "Survey Module";
+    public $title  = "Umfrage";
 
-    public function setTitle()
+    public function createContent($page, $parameters)
     {
-        $this->set("pagetitle", $this->pagetitle);
-        $this->set("headtitle", $this->pagetitle);
-    }
-
-    public function createMenu()
-    {
-        $this->nav->addLink("Umfrage", $this->url);
-    }
-
-    public function createContent(array $parameters)
-    {
-        $this->addCSS("Survey.css");
+        $page->addCSS("Survey.css");
 
         $polls = SurveyManager::getAllPolls();
 
         if (!count($polls)) {
-            $this->output("Zur Zeit gibt es keine aktiven Umfragen");
+            $page->output("Zur Zeit gibt es keine aktiven Umfragen");
         }
 
         if (isset($_GET['poll_id']) && isset($_POST['chooser'])) {
@@ -45,57 +35,57 @@ class SurveyPopup extends Popup
         foreach ($polls as $poll) {
             $hasVoted = SurveyManager::hasVoted($user->character, $poll);
 
-            $this->addSimpleTable("survey")->setCSS("survey");
-            $this->addForm("survey")->setCSS("survey");
+            $page->addSimpleTable("survey")->setCSS("survey");
+            $page->addForm("survey")->setCSS("survey");
 
-            $this->getForm("survey")->head("survey", $this->url->setParameter("poll_id", $poll->id));
-            $this->getSimpleTable("survey")->head(400);
+            $page->getForm("survey")->head("survey", $page->url->setParameter("poll_id", $poll->id));
+            $page->getSimpleTable("survey")->head(400);
 
             // Question
-            $this->getSimpleTable("survey")->startRow();
-            $this->getSimpleTable("survey")->startHead(false, 2);
-            $this->output($poll->question);
-            $this->getSimpleTable("survey")->closeRow();
+            $page->getSimpleTable("survey")->startRow();
+            $page->getSimpleTable("survey")->startHead(false, 2);
+            $page->output($poll->question);
+            $page->getSimpleTable("survey")->closeRow();
 
             // Description
-            $this->getSimpleTable("survey")->startRow();
-            $this->getSimpleTable("survey")->startData(false, 2);
-            $this->output($poll->description."`n");
-            $this->getSimpleTable("survey")->closeRow();
+            $page->getSimpleTable("survey")->startRow();
+            $page->getSimpleTable("survey")->startData(false, 2);
+            $page->output($poll->description."`n");
+            $page->getSimpleTable("survey")->closeRow();
 
 
             foreach ($poll->answers as $answer) {
-                $this->getSimpleTable("survey")->startRow();
-                $this->getSimpleTable("survey")->startData();
-                $this->output($answer->text);
-                $this->getSimpleTable("survey")->startData(20);
+                $page->getSimpleTable("survey")->startRow();
+                $page->getSimpleTable("survey")->startData();
+                $page->output($answer->text);
+                $page->getSimpleTable("survey")->startData(20);
                 if ($hasVoted == $answer) {
-                    $this->getForm("survey")->radio("chooser", $answer->id, true, true);
+                    $page->getForm("survey")->radio("chooser", $answer->id, true, true);
                 } elseif ($hasVoted) {
-                    $this->getForm("survey")->radio("chooser", $answer->id, false, true);
+                    $page->getForm("survey")->radio("chooser", $answer->id, false, true);
                 } else {
-                    $this->getForm("survey")->radio("chooser", $answer->id);
+                    $page->getForm("survey")->radio("chooser", $answer->id);
                 }
-                $this->getSimpleTable("survey")->closeRow();
+                $page->getSimpleTable("survey")->closeRow();
             }
 
-            $this->getSimpleTable("survey")->close();
-            $this->closeSimpleTable("survey");
+            $page->getSimpleTable("survey")->close();
+            $page->closeSimpleTable("survey");
 
             // Submit
             if ($hasVoted) {
-                $this->output("Du hast bereits abgestimmt!");
+                $page->output("Du hast bereits abgestimmt!");
             } else {
-                $this->getForm("survey")->setCSS("submit");
-                $this->getForm("survey")->submitButton("Absenden");
+                $page->getForm("survey")->setCSS("submit");
+                $page->getForm("survey")->submitButton("Absenden");
             }
-            $this->getForm("survey")->close();
-            $this->closeForm("survey");
+            $page->getForm("survey")->close();
+            $page->closeForm("survey");
 
 
-            $this->output("`s`c".SurveyManager::getTotalNrOfVotes($poll)." Stimme(n) insgesamt.`c`s");
+            $page->output("`s`c".SurveyManager::getTotalNrOfVotes($poll)." Stimme(n) insgesamt.`c`s");
 
-            $this->output("`n`n");
+            $page->output("`n`n");
         }
     }
 }

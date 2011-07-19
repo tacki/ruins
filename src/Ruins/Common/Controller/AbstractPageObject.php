@@ -12,6 +12,7 @@
  * Namespaces
  */
 namespace Ruins\Common\Controller;
+use Ruins\Main\Controller\Nav;
 use Doctrine\ORM\EntityManager;
 use Ruins\Common\Controller\Registry;
 use Ruins\Common\Controller\Request;
@@ -177,14 +178,13 @@ abstract class AbstractPageObject implements PageObjectInterface
      */
     public function render()
     {
-        // Call Bootstrap
-        $this->bootstrap();
-
         // Set Title of PageObject
         $this->setTitle();
 
         // Create QueryData and pass it to createContent()
+        // QueryExtra overwrites Post overwrites Query
         $query = array_merge($this->getRequest()->getQueryAsArray(),
+                             $this->getRequest()->getPostAsArray(),
                              $this->getRequest()->getRoute()->getQueryExtra());
         $this->createContent($this->getOutputObject(), $query);
 
@@ -196,27 +196,6 @@ abstract class AbstractPageObject implements PageObjectInterface
 
         // FIXME: find better place for this
         $this->getEntityManager()->flush();
-    }
-
-    /**
-     * Run initial Commands
-     */
-    protected function bootstrap()
-    {
-        // BtCode
-        $this->getOutputObject()->addCommonCSS("btcode.css");
-
-        // Timers
-        $this->getOutputObject()->addJavaScriptFile("timer.func.js");
-
-        // Global Java Functions
-        $this->getOutputObject()->addJavaScriptFile("global.func.js");
-
-        // Popups
-        $this->getOutputObject()->addJavaScriptFile("popup.func.js");
-
-        // Set Servertime on Page
-        $this->getOutputObject()->set("servertime", date("H:i:s"));
     }
 
     protected function initUser()
@@ -254,27 +233,31 @@ abstract class AbstractPageObject implements PageObjectInterface
     {
         $caller = $this->getRequest()->getRoute()->getCaller();
 
-        $classname = 'Ruins\\Main\\Controller\\'.$caller;
+        $classname = 'Ruins\\Common\\Controller\\OutputObjects\\'.$caller;
 
         $this->_outputObject = new $classname;
+
+        $this->getOutputObject()->setNavigation(new Nav());
 
         if ($this->dontCache) {
             $this->getOutputObject()->disableCaching();
         }
 
-        $this->getOutputObject()->create();
+        $this->getOutputObject()->create($this->getRequest());
 
-        if ($user = $this->getUser()) {
+        if ($this->getUser() && !$this->isPublic()) {
+            $user = $this->getUser();
+
             // Set current_nav if this is not the portal
-            if (strlen($this->getOutputObject()->getUrl()) && strpos($this->getOutputObject()->getUrl(), "Page/Common/PortalPage") === false) {
+            if (strlen($this->getOutputObject()->getUrl()) && strpos($this->getOutputObject()->getUrl(), "Page/Common/Portal") === false) {
                 $user->character->current_nav = (string)$this->getOutputObject()->getUrl();
             } elseif (!$user->character->current_nav || !$this->getOutputObject()->getUrl()) {
-                $user->character->current_nav = "Page/Ironlance/CitysquarePage";
+                $user->character->current_nav = "Page/Ironlance/Citysquare";
             }
-        } else {
+        } elseif (!$this->isPublic()) {
             // this is a private page, but no user is loaded. Force to logout
             SessionStore::set("logoutreason", "Automatischer Logout: Nicht eingeloggt!");
-            $this->getOutputObject()->getNavigation()->redirect("Page/Common/LogoutPage");
+            $this->getOutputObject()->getNavigation()->redirect("Page/Common/Logout");
         }
 
         // Add Page to Registry

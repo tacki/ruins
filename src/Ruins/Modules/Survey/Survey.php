@@ -13,7 +13,7 @@
  * Namespaces
  */
 namespace Ruins\Modules\Survey;
-use Ruins\Main\Controller\Page;
+use Ruins\Common\Interfaces\OutputObjectInterface;
 use Ruins\Main\Manager\SystemManager;
 use Ruins\Modules\ModuleBase;
 use Ruins\Common\Interfaces\ModuleInterface;
@@ -52,12 +52,12 @@ class Survey extends ModuleBase implements ModuleInterface
     /**
     * @see Ruins\Common\Interfaces.Module::prePageGeneration()
     */
-    public function prePageGeneration(Page $page)
+    public function prePageGeneration(OutputObjectInterface $page)
     {
         $user = Registry::getUser();
 
         if ($user->character && $user->character->loggedin) {
-            $page->nav->addLink("Umfragen", "popup/Popup/Survey", "shared")
+            $page->nav->addLink("Umfragen", "Popup/Survey", "shared")
                       ->setDescription("Aktuelle Umfragen");
         }
     }

@@ -15,7 +15,7 @@ namespace Ruins\Main\Repositories;
 use DateTime;
 use Ruins\Main\Entities\Character;
 use Ruins\Main\Entities\Timer;
-use Ruins\Main\Controller\URL;
+use Ruins\Common\Controller\Url;
 use Ruins\Common\Controller\Error;
 use Ruins\Common\Controller\Form;
 

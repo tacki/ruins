@@ -13,7 +13,7 @@
  * Namespaces
  */
 namespace Ruins\Modules\AdminLink;
-use Ruins\Main\Controller\Page;
+use Ruins\Common\Interfaces\OutputObjectInterface;
 use Ruins\Modules\ModuleBase;
 use Ruins\Common\Interfaces\ModuleInterface;
 use Ruins\Common\Controller\Registry;
@@ -55,13 +55,13 @@ class AdminLink extends ModuleBase implements ModuleInterface
     /**
      * @see Ruins\Common\Interfaces.Module::prePageGeneration()
      */
-    public function prePageGeneration(Page $page)
+    public function prePageGeneration(OutputObjectInterface $page)
     {
         $user = Registry::getUser();
 
         if ($user->character && $user->character->loggedin) {
             // Link restricted to Group "Administrator"
-            $page->nav->addLink("Administration", "page/admin/main", "shared", RightsManager::getGroup("Administrator"))
+            $page->nav->addLink("Administration", "Page/Admin/Main", "shared", RightsManager::getGroup("Administrator"))
                       ->setDescription("Administrative Einstellungen");
         }
     }

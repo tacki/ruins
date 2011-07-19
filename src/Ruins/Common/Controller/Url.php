@@ -12,7 +12,8 @@
 /**
  * Namespaces
  */
-namespace Ruins\Main\Controller;
+namespace Ruins\Common\Controller;
+use Ruins\Common\Controller\Request;
 
 /**
  * Basic HTML Class
@@ -20,7 +21,7 @@ namespace Ruins\Main\Controller;
  * Baseclass for all HTML-based classes
  * @package Ruins
  */
-class URL
+class Url
 {
     /**
      * @var string
@@ -34,21 +35,14 @@ class URL
     public $base;
 
     /**
-     * Holds the shortvar of the Base
-     * @var string
-     */
-    public $short;
-
-    /**
      * Constructor - Loads the default values and initializes the attributes
-     * @param mixed $outputclass Class which handles the output
+     * @param Request $request
      */
-    function __construct($initURL)
+    function __construct(Request $request)
     {
         // Initialize
-        $this->_url = html_entity_decode($initURL);
-        $this->base = array_shift(explode("&", $this->_url));
-        $this->short = array_pop(explode("page/", $this->base));
+        $this->_url = html_entity_decode($request->getCompleteRequest());
+        $this->base = $request->getRoute()->getRouteBase();
     }
 
     /**
@@ -87,6 +81,7 @@ class URL
             $oldvalue = $this->getParameter($parameter);
             if ($oldvalue !== false) {
                 // Remove the Parameter
+                $this->_url = str_replace("?".$parameter."=".$oldvalue, "", $this->_url);
                 $this->_url = str_replace("&".$parameter."=".$oldvalue, "", $this->_url);
             }
         } else {
@@ -110,7 +105,11 @@ class URL
             $this->_url = str_replace($parameter."=".$oldvalue, $parameter."=".$value, $this->_url);
         } else {
             // Add the Parameter
-            $this->_url = $this->_url."&".$parameter."=".$value;
+            if (strstr($this->_url, "?") === false) {
+                $this->_url = $this->_url."?".$parameter."=".$value;
+            } else {
+                $this->_url = $this->_url."&".$parameter."=".$value;
+            }
         }
 
         return $this;

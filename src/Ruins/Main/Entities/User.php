@@ -3,6 +3,7 @@
  * Namespaces
  */
 namespace Ruins\Main\Entities;
+use Ruins\Common\Interfaces\UserInterface;
 use DateTime;
 use Ruins\Main\Entities\EntityBase;
 use Ruins\Common\Controller\SessionStore;
@@ -12,7 +13,7 @@ use Ruins\Common\Controller\Registry;
  * @Entity(repositoryClass="Ruins\Main\Repositories\UserRepository")
  * @Table(name="users")
  */
-class User extends EntityBase
+class User extends EntityBase implements UserInterface
 {
     /**
      * @Id @Column(type="integer")

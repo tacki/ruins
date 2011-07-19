@@ -11,7 +11,7 @@
  * Namespaces
  */
 namespace Ruins\Common\Interfaces;
-use Ruins\Main\Controller\Page;
+use Ruins\Common\Interfaces\OutputObjectInterface;
 
 /**
  * Interface for Modules
@@ -48,12 +48,12 @@ interface ModuleInterface
      * Event triggered before Page is generated
      * @param Page $page Page Object
      */
-    public function prePageGeneration(Page $page);
+    public function prePageGeneration(OutputObjectInterface $page);
 
     /**
      * Event triggered after Page is fully generated and before Content is shown by Template Engine
      * @param Page $page Page Object
      */
-    public function postPageGeneration(Page $page);
+    public function postPageGeneration(OutputObjectInterface $page);
 }
 ?>

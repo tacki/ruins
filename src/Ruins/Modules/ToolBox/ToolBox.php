@@ -13,7 +13,7 @@
  * Namespaces
  */
 namespace Ruins\Modules\ToolBox;
-use Ruins\Main\Controller\Page;
+use Ruins\Common\Interfaces\OutputObjectInterface;
 use Ruins\Main\Controller\Link;
 use Ruins\Main\Manager\SystemManager;
 use Ruins\Modules\ModuleBase;
@@ -41,7 +41,7 @@ class ToolBox extends ModuleBase implements ModuleInterface
     /**
      * @see Ruins\Common\Interfaces.Module::prePageGeneration()
      */
-    public function prePageGeneration(Page $page)
+    public function prePageGeneration(OutputObjectInterface $page)
     {
         $user = Registry::getUser();
 

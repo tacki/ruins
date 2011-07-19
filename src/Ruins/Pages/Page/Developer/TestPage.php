@@ -13,6 +13,8 @@
  * Namespaces
  */
 namespace Ruins\Pages\Page\Developer;
+use Ruins\Common\Manager\RequestHandler;
+
 use Ruins\Main\Controller\Link;
 use Ruins\Main\Controller\TimerController as Timer;
 use Ruins\Main\Controller\Travel;
@@ -116,13 +118,13 @@ class TestPage extends AbstractPageObject
         $position = "globaltimertest";
 
         $timer = $em->getRepository("Main:Timer")
-        ->create("1hourtimertest");
+                    ->create("1hourtimertest");
 
-        switch($_GET['op'])
+        switch($parameters['op'])
         {
             case "stoptimer";
-            $timer->stop();
-            break;
+                $timer->stop();
+                break;
 
             case "starttimer":
                 $timer->start();
@@ -135,9 +137,12 @@ class TestPage extends AbstractPageObject
             $timer->set(0, 0, 1);
             $page->output("1 Hour Timer: ". $timer->get(), true);
         }
+        var_dump($page->url);
+        var_dump(RequestHandler::createRequest()->getRoute());
+
 
         $tempform = new Form($page);
-        if ($_GET['op'] == "stoptimer") {
+        if ($parameters['op'] == "stoptimer") {
             $tempform->head("", $page->url->base."/starttimer");
             $tempform->submitButton("Start");
         } else {
@@ -442,13 +447,13 @@ class TestPage extends AbstractPageObject
 
         $page->nav->disableValidation();
         $page->nav->addHead("Home")
-             ->addLink("Login Page", "Page/Common/LoginPage","main")
-             ->addLink("Testpage", "Page/Developer/TestPage","main");
+             ->addLink("Login Page", "Page/Common/Login","main")
+             ->addLink("Testpage", "Page/Developer/Test","main");
 
         $page->nav->addHead("Dorf")
-             ->addLink("Ausgang", "Page/Common/LogoutPage","main")
-             ->addLink("Home", "Page/Developer/TestPage","shared")
-             ->addLink("Logout", "Page/Common/LogoutPage","shared");
+             ->addLink("Ausgang", "Page/Common/Logout","main")
+             ->addLink("Home", "Page/Developer/Test","shared")
+             ->addLink("Logout", "Page/Common/Logout","shared");
 
         $page->nav->save();
 
@@ -546,7 +551,7 @@ class TestPage extends AbstractPageObject
 
         $page->output("Formulartest!`n1.Formular:`nName");
         $page->addForm("testformular");
-        $page->getForm("testformular")->head("form", "test.php");
+        $page->getForm("testformular")->head("form", "Page/Developer/Test");
         $page->getForm("testformular")->selectStart("selectform");
         $page->getForm("testformular")->selectOption("Jack");
         $page->getForm("testformular")->selectOption("Jim", false, true);
@@ -558,7 +563,7 @@ class TestPage extends AbstractPageObject
         $page->getForm("testformular")->submitButton("Absenden");
         $page->getForm("testformular")->close();
 
-        if (isset($_POST['textareaform'])) $page->output("Wenn Formular 1 ausgeführt wurde, steht im folgenden die Begründung:`n`#25".$_POST['textareaform']."`n",true);
+        if (isset($parameters['textareaform'])) $page->output("Wenn Formular 1 ausgeführt wurde, steht im folgenden die Begründung:`n`#25".$parameters['textareaform']."`n",true);
 
 
         // Form Test End
@@ -769,22 +774,22 @@ class TestPage extends AbstractPageObject
         $page->output("Enter your OpenID: `n");
 
         $page->addForm("openid");
-        $page->getForm("openid")->head("login", "page/developer/test/checkopenid");
+        $page->getForm("openid")->head("login", "Page/Developer/Test/checkopenid");
         $page->getForm("openid")->inputText("openid_identifier");
         $page->getForm("openid")->submitButton("Check");
         $page->getForm("openid")->close();
 
-        if ($_GET['op'] == "checkopenid") {
-            OpenIDSystem::checkOpenID($_POST['openid_identifier'], "page/developer/test/returnopenid");
+        if ($parameters['op'] == "checkopenid") {
+            OpenIDSystem::checkOpenID($parameters['openid_identifier'], "Page/Developer/Test/returnopenid");
 
             if ($error = SessionStore::get("openiderror")) {
                 $page->output($error);
                 SessionStore::remove("openiderror");
             }
 
-        } elseif ($_GET['op'] == "returnopenid") {
+        } elseif ($parameters['op'] == "returnopenid") {
 
-            $result = OpenIDSystem::evalTrustResult("page/developer/test/returnopenid");
+            $result = OpenIDSystem::evalTrustResult("Page/Developer/Test/returnopenid");
 
             if ($error = SessionStore::get("openiderror")) {
                 $page->output($error);

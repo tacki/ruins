@@ -26,17 +26,17 @@ class PortalPage extends AbstractPageObject
 
         $page->nav->addHead("Allgemein")
                   ->addLink("Aktualisieren", $page->url)
-                  ->addLink("Logout", "Page/Common/LogoutPage");
+                  ->addLink("Logout", "Page/Common/Logout");
 
         switch ($parameters['op']) {
 
             default:
                 if (!$user) {
-                    $page->nav->redirect("Page/Common/LoginPage");
+                    $page->nav->redirect("Page/Common/Login");
                 }
 
                 if ($user->settings->default_character) {
-                    $page->nav->redirect("Page/Common/PortalPage/forward");
+                    $page->nav->redirect("Page/Common/Portal/forward");
                 }
 
                 $page->output("Deine Charaktere:`n`n");
@@ -50,8 +50,8 @@ class PortalPage extends AbstractPageObject
 
                 $page->addSimpleTable("chartable");
                 $page->addForm("charchooseform");
-                $page->getForm("charchooseform")->head("charchoose", "Page/Common/PortalPage/forward");
-                $page->nav->addHiddenLink("Page/Common/PortalPage/forward");
+                $page->getForm("charchooseform")->head("charchoose", "Page/Common/Portal/forward");
+                $page->nav->addHiddenLink("Page/Common/Portal/forward");
 
                 foreach ($characters as $character) {
                     $page->getSimpleTable("chartable")->startRow();
@@ -82,8 +82,8 @@ class PortalPage extends AbstractPageObject
 
             case "forward":
                 // set new current character
-                if (isset($_POST['chooser'])) {
-                    $user->character = $em->find("Main:Character", $_POST['chooser']);
+                if (isset($parameters['chooser'])) {
+                    $user->character = $em->find("Main:Character", $parameters['chooser']);
                 } else {
                     $user->character = $user->settings->default_character;
                 }

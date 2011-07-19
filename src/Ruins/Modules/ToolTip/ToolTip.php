@@ -13,7 +13,7 @@
  * Namespaces
  */
 namespace Ruins\Modules\ToolTip;
-use Ruins\Main\Controller\Page;
+use Ruins\Common\Interfaces\OutputObjectInterface;
 use Ruins\Main\Controller\Link;
 use Ruins\Modules\ModuleBase;
 use Ruins\Common\Interfaces\ModuleInterface;
@@ -39,7 +39,7 @@ class ToolTip extends ModuleBase implements ModuleInterface
     /**
      * @see Ruins\Common\Interfaces.Module::prePageGeneration()
      */
-    public function prePageGeneration(Page $page)
+    public function prePageGeneration(OutputObjectInterface $page)
     {
         $page->addJavaScriptFile("jquery.plugin.tooltip.min.js");
 

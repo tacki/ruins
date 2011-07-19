@@ -12,6 +12,7 @@
  * Namespaces
  */
 namespace Ruins\Common\Controller;
+use Ruins\Common\Controller\Error;
 use Ruins\Main\Manager\SystemManager;
 
 /**
@@ -29,6 +30,11 @@ class Route
      * @var string
      */
     protected $caller;
+
+    /**
+     * @var string
+     */
+    protected $routeBase;
 
     /**
      * @var array
@@ -58,7 +64,9 @@ class Route
         $this->initRoute();
 
         // Try to guess corresponding Route Filename
-        $this->filename = $this->getRouteFile($route);
+        if (strlen($route)) {
+            $this->filename = $this->getRouteFile($route);
+        }
     }
 
     /**
@@ -120,6 +128,15 @@ class Route
     }
 
     /**
+     * Get Route Base without ExtraQuery
+     * @return string
+     */
+    public function getRouteBase()
+    {
+        return $this->routeBase;
+    }
+
+    /**
      * Initialize Route
      */
     private function initRoute()
@@ -145,6 +162,7 @@ class Route
 
     /**
      * Find the matching Controller for this Route
+     * @throws Error
      * @return string
      */
     private function getRouteFile()
@@ -155,9 +173,18 @@ class Route
         // Find Routefile
         while (count($this->parameters)) {
             // Create Filename and check if it exists in our tree
-            $filepart .= "/".array_shift($this->parameters);
+            $filepart .= "/".ucfirst(array_shift($this->parameters));
 
-            if ($result = SystemManager::findFileInTree($filepart.".php")) {
+            if (substr($filepart, -strlen($this->caller)) !== $this->caller) {
+                $temppart = $this->caller;
+            } else {
+                $temppart = "";
+            }
+
+            if ($result = SystemManager::findFileInTree($filepart.$temppart.".php")) {
+                // remember routeBase (remove Pages/)
+                $this->routeBase = substr($filepart, strlen("Pages/"));
+
                 // Add the Rest of the Parameters to queryExtra
                 // beginning with key 'op', then 'op1', 'op2'...
                 for ($j=0; $j<count($this->parameters); $j++) {
@@ -167,10 +194,11 @@ class Route
                         $this->queryExtra['op'.$j] = $this->parameters;
                     }
                 }
+
                 return $result;
             }
         }
 
-        return false;
+        throw new Error("Cannot find RouteFile for Route-Request '$this->routeString'");
     }
 }

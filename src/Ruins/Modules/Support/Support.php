@@ -13,7 +13,7 @@
  * Namespaces
  */
 namespace Ruins\Modules\Support;
-use Ruins\Main\Controller\Page;
+use Ruins\Common\Interfaces\OutputObjectInterface;
 use Ruins\Modules\ModuleBase;
 use Ruins\Common\Interfaces\ModuleInterface;
 use Ruins\Common\Controller\Registry;
@@ -51,9 +51,9 @@ class Support extends ModuleBase implements ModuleInterface
     /**
      * @see Ruins\Common\Interfaces.Module::prePageGeneration()
      */
-    public function prePageGeneration(Page $page)
+    public function prePageGeneration(OutputObjectInterface $page)
     {
-        $page->nav->addLink("Support", "Popup/SupportPopup", "shared")
+        $page->nav->addLink("Support", "Popup/Support", "shared")
                   ->setDescription("Wenn ein Fehler oder Bug auftritt, bitte hier melden");
     }
 }

@@ -43,12 +43,23 @@ class Request
     protected $queryString;
 
     /**
+     * @var array
+     */
+    protected $post = array();
+
+    /**
+     * @var string
+     */
+    protected $completeRequest;
+
+    /**
      * Create and Initialize
      * @param string $completeRequest
      */
-    public function __construct($completeRoute)
+    public function __construct($completeRequest)
     {
-        $requestParts = explode('?', $completeRoute, 2);
+        $requestParts = explode('?', $completeRequest, 2);
+        $this->completeRequest = $completeRequest;
 
         // The Route as a String
         $this->routeString = $requestParts[0];
@@ -62,6 +73,9 @@ class Request
 
         // Generate Route and Query Arrays
         $this->query = $this->generateQueryArray();
+
+        // Include Post-Variables
+        $this->post  = $_POST;
     }
 
     /**
@@ -83,6 +97,15 @@ class Request
     }
 
     /**
+     * Get Post as Array
+     * @return array
+     */
+    public function getPostAsArray()
+    {
+        return $this->post;
+    }
+
+    /**
      * Get Request-Query as String
      * @return string
      */
@@ -98,6 +121,15 @@ class Request
     public function getRouteAsString()
     {
         return $this->routeString;
+    }
+
+    /**
+     * Get complete, unmodified Request inclusive the Query String
+     * @return string
+     */
+    public function getCompleteRequest()
+    {
+        return $this->completeRequest;
     }
 
     /**

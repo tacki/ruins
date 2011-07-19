@@ -13,6 +13,10 @@
  * Namespaces
  */
 namespace Ruins\Main\Controller;
+use Ruins\Common\Controller\Url;
+use Ruins\Common\Controller\Request;
+use Ruins\Common\Interfaces\UserInterface;
+use Ruins\Common\Interfaces\NavigationInterface;
 use Smarty;
 use Ruins\Main\Manager\SystemManager;
 use Ruins\Main\Manager\ItemManager;
@@ -26,6 +30,7 @@ use Ruins\Common\Controller\Form;
 use Ruins\Common\Controller\Table;
 use Ruins\Common\Controller\SimpleTable;
 use Ruins\Common\Controller\Registry;
+use Ruins\Common\Manager\RequestHandler;
 
 /**
  * Page Class
@@ -49,7 +54,7 @@ class Page implements OutputObjectInterface
 
     /**
      * Page URL
-     * @var Ruins\Main\Controller\URL
+     * @var Ruins\Common\Controller\Url
      */
     public $url;
 
@@ -153,7 +158,7 @@ class Page implements OutputObjectInterface
         $this->nav->cacheNavigation = true;
 
         // Set own URL
-        $this->url = new URL($this->nav->getRequestURL());
+        $this->url = new Url(RequestHandler::createRequest());
         $this->shortname = $this->url->getParameter("page");
 
         // Initialize the Smarty-Class
@@ -161,9 +166,17 @@ class Page implements OutputObjectInterface
     }
 
     /**
+    * @see Ruins\Common\Interfaces.OutputObjectInterface::setPrivate()
+    */
+    public function setPrivate(UserInterface $user)
+    {
+
+    }
+
+    /**
      * Create a new/blank Page
      */
-    public function create()
+    public function create(Request $request)
     {
         // Prepare Template Information
         $this->_loadTemplateInformation();
@@ -196,6 +209,15 @@ class Page implements OutputObjectInterface
     public function set($placeholder, $value)
     {
         $this->_smarty->assign($placeholder, $value);
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see Ruins\Common\Interfaces.OutputObjectInterface::assign()
+     */
+    public function assign($placeholder, $value)
+    {
+         $this->set($placeholder, $value);
     }
 
     public function setTitle($value)
@@ -326,6 +348,11 @@ class Page implements OutputObjectInterface
     public function getNavigation()
     {
         return $this->nav;
+    }
+
+    public function setNavigation(NavigationInterface $nav)
+    {
+        $this->nav = $nav;
     }
 
     /**
@@ -606,7 +633,7 @@ class Page implements OutputObjectInterface
             $this->nav->clear();
             return true;
         }
-        if ($this->nav->checkRequestURL()) {
+        if ($this->nav->checkRequestURL((string)$this->url)) {
             // page is valid, erase cache so we can create a new one
             if ($this->_smarty->caching) {
                 $this->_smarty->clearCache($this->template['file'], $this->_char->id);
@@ -628,6 +655,18 @@ class Page implements OutputObjectInterface
 
                 return false;
             }
+        }
+    }
+
+    /**
+     * @see Ruins\Common\Interfaces.OutputObjectInterface::isPrivate()
+     */
+    public function isPrivate()
+    {
+        if ($this->_char->id) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -971,7 +1010,7 @@ class Page implements OutputObjectInterface
     /**
      * Collect all Data and compile the Page
      */
-    public function show()
+    public function show($template=false)
     {
         if ($this->modulesenabled) ModuleManager::callModule(ModuleManager::EVENT_PRE_PAGEGENERATION, $this);
 

@@ -29,6 +29,6 @@ class LogoutPage extends AbstractPageObject
             $user->logout();
         }
 
-        $page->nav->redirect("Page/Common/LoginPage");
+        $page->nav->redirect("Page/Common/Login");
     }
 }

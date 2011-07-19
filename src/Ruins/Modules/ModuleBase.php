@@ -13,7 +13,7 @@
  */
 namespace Ruins\Modules;
 use ReflectionClass;
-use Ruins\Main\Controller\Page;
+use Ruins\Common\Interfaces\OutputObjectInterface;
 use Ruins\Main\Entities\Module;
 use Ruins\Common\Controller\Registry;
 
@@ -86,11 +86,11 @@ class ModuleBase
     /**
      * @see Ruins\Common\Interfaces.Module::prePageGeneration()
      */
-    public function prePageGeneration(Page $page) {}
+    public function prePageGeneration(OutputObjectInterface $page) {}
 
     /**
      * @see Ruins\Common\Interfaces.Module::postPageGeneration()
      */
-    public function postPageGeneration(Page $page) {}
+    public function postPageGeneration(OutputObjectInterface $page) {}
 }
 ?>

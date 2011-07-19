@@ -13,7 +13,7 @@
  * Namespaces
  */
 namespace Ruins\Modules\MessageSystemLink;
-use Ruins\Main\Controller\Page;
+use Ruins\Common\Interfaces\OutputObjectInterface;
 use Ruins\Main\Manager\SystemManager;
 use Ruins\Modules\ModuleBase;
 use Ruins\Common\Interfaces\ModuleInterface;
@@ -41,13 +41,13 @@ class MessageSystemLink extends ModuleBase implements ModuleInterface
     /**
      * @see Ruins\Common\Interfaces.Module::prePageGeneration()
      */
-    public function prePageGeneration(Page $page)
+    public function prePageGeneration(OutputObjectInterface $page)
     {
         $user = Registry::getUser();
 
         if ($user->character && $user->character->loggedin) {
             // add the Supportlink to the toplist
-            $page->nav->addLink("Messenger","popup/popup/messenger","shared")
+            $page->nav->addLink("Messenger","Popup/Messenger","shared")
                       ->setDescription("Ruins Messenger zum Senden und Empfangen von Nachrichten");
 
 

@@ -13,7 +13,7 @@
  * Namespaces
  */
 namespace Ruins\Modules\SettingsLink;
-use Ruins\Main\Controller\Page;
+use Ruins\Common\Interfaces\OutputObjectInterface;
 use Ruins\Modules\ModuleBase;
 use Ruins\Common\Interfaces\ModuleInterface;
 use Ruins\Common\Controller\Registry;
@@ -40,13 +40,13 @@ class SettingsLink extends ModuleBase implements ModuleInterface
     /**
      * @see Ruins\Common\Interfaces.Module::prePageGeneration()
      */
-    public function prePageGeneration(Page $page)
+    public function prePageGeneration(OutputObjectInterface $page)
     {
         $user = Registry::getUser();
 
         if ($user->character && $user->character->loggedin) {
             // add the Supportlink to the toplist
-            $page->nav->addLink("Settings", "popup/popup/settings", "shared")
+            $page->nav->addLink("Settings", "Popup/Settings", "shared")
                       ->setDescription("Hier findest du alle Einstellungen zum Spiel");
         }
     }

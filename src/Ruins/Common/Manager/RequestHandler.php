@@ -28,26 +28,21 @@ class RequestHandler
     public static function createRequest($routeRequest=false)
     {
         if (!$routeRequest) {
-            $requestURI = $_SERVER['REQUEST_URI'];
-
-            $routeRequest = substr($requestURI, strlen(self::getWebBasePath()));
+            $routeRequest = self::getCurrentShortUrl();
         }
 
-        if ($routeRequest === false) {
-            // empty or invalid request_uri = slash
-            $routeRequest = "/";
-        } else if (substr($routeRequest,0,1) !== "/") {
-            // add a missing leading slash
-            $routeRequest = "/".$routeRequest;
+        // strip leading slashes
+        while (substr($routeRequest,0,1) == "/") {
+            $routeRequest = substr($routeRequest,1);
         }
 
         return new Request($routeRequest);
     }
 
     /**
-    * Retrieve WebBasePath (example: /ruins/web or /ruins/web/app.php)
-    * @return string
-    */
+     * Retrieve WebBasePath (example: /ruins/web or /ruins/web/app.php)
+     * @return string
+     */
     public static function getWebBasePath()
     {
         $frontCntrl = $_SERVER['SCRIPT_NAME'];
@@ -61,5 +56,23 @@ class RequestHandler
         }
 
         return $result;
+    }
+
+    /**
+     * Retrieve Url without WebBasePath
+     * @return string
+     */
+    public static function getCurrentShortUrl()
+    {
+        $requestURI = $_SERVER['REQUEST_URI'];
+
+        $routeRequest = substr($requestURI, strlen(self::getWebBasePath()));
+
+        // strip leading slashes
+        while (substr($routeRequest,0,1) == "/") {
+            $routeRequest = substr($routeRequest,1);
+        }
+
+        return $routeRequest;
     }
 }

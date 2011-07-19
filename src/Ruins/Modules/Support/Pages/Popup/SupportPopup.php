@@ -18,114 +18,105 @@ use Ruins\Main\Controller\Page;
 use Ruins\Modules\Support\Entities\SupportRequests;
 use Ruins\Main\Manager\SystemManager;
 use Ruins\Common\Controller\Registry;
-use Ruins\Common\Interfaces\PageObjectInterface;
+use Ruins\Common\Controller\AbstractPageObject;
 
-class SupportPopup extends Popup implements PageObjectInterface
+class SupportPopup extends AbstractPageObject
 {
-    protected $pagetitle  = "Supportanfrage";
+    public $title  = "Supportanfrage";
 
-    public function setTitle()
+    public function createContent($page, $parameters)
     {
-        $this->set("pagetitle", $this->pagetitle);
-        $this->set("headtitle", $this->pagetitle);
-    }
+        $user = $this->getUser();
 
-    public function createMenu()
-    {
-        $this->nav->addLink("Anfrage", $this->url);
-    }
-
-    public function createContent(array $parameters)
-    {
         switch ($parameters['op']) {
 
             default:
-            $this->addForm("support");
-            $this->getForm("support")->head("supportform", "Popup/SupportPopup/request");
+                $page->addForm("support");
+                $page->getForm("support")->head("supportform", "Popup/Support/request");
 
-            $this->addSimpleTable("supportformtable");
-            $this->getForm("support")->setCSS("input");
+                $page->addSimpleTable("supportformtable");
+                $page->getForm("support")->setCSS("input");
 
-            // Login Name
-            $this->getSimpleTable("supportformtable")->startData();
-            $this->output("Loginname: ");
-            $this->getSimpleTable("supportformtable")->startData();
-            if ($this->_char) {
-                $this->getForm("support")->inputText("userlogin", $user->login, 20, 50, true);
-            } else {
-                $this->getForm("support")->inputText("userlogin");
-            }
-            $this->getSimpleTable("supportformtable")->closeRow();
+                // Login Name
+                $page->getSimpleTable("supportformtable")->startData();
+                $page->output("Loginname: ");
+                $page->getSimpleTable("supportformtable")->startData();
+                if ($user->character) {
+                    $page->getForm("support")->inputText("userlogin", $user->login, 20, 50, true);
+                } else {
+                    $page->getForm("support")->inputText("userlogin");
+                }
+                $page->getSimpleTable("supportformtable")->closeRow();
 
-            // Email
-            $this->getSimpleTable("supportformtable")->startData();
-            $this->output("Email Addresse: ");
-            $this->getSimpleTable("supportformtable")->startData();
-            if ($loggedin) {
-                $this->getForm("support")->inputText("email", $user->email, 20, 50, true);
-            } else {
-                $this->getForm("support")->inputText("email");
-            }
-            $this->getSimpleTable("supportformtable")->closeRow();
+                // Email
+                $page->getSimpleTable("supportformtable")->startData();
+                $page->output("Email Addresse: ");
+                $page->getSimpleTable("supportformtable")->startData();
+                if ($loggedin) {
+                    $page->getForm("support")->inputText("email", $user->email, 20, 50, true);
+                } else {
+                    $page->getForm("support")->inputText("email");
+                }
+                $page->getSimpleTable("supportformtable")->closeRow();
 
-            // Character
-            $this->getSimpleTable("supportformtable")->startData();
-            $this->output("Character: ");
-            $this->getSimpleTable("supportformtable")->startData();
-            if ($loggedin) {
-                $this->getForm("support")->inputText("charname", $user->character->name, 20, 50, true);
-            } else {
-                $this->getForm("support")->inputText("charname");
-            }
-            $this->getSimpleTable("supportformtable")->closeRow();
+                // Character
+                $page->getSimpleTable("supportformtable")->startData();
+                $page->output("Character: ");
+                $page->getSimpleTable("supportformtable")->startData();
+                if ($loggedin) {
+                    $page->getForm("support")->inputText("charname", $user->character->name, 20, 50, true);
+                } else {
+                    $page->getForm("support")->inputText("charname");
+                }
+                $page->getSimpleTable("supportformtable")->closeRow();
 
-            // Supporttext
-            $this->getSimpleTable("supportformtable")->startData();
-            $this->output("Supportanfrage: ");
-            $this->getSimpleTable("supportformtable")->startData();
-            $this->getForm("support")->textArea("text", false, 45);
-            $this->getSimpleTable("supportformtable")->closeRow();
+                // Supporttext
+                $page->getSimpleTable("supportformtable")->startData();
+                $page->output("Supportanfrage: ");
+                $page->getSimpleTable("supportformtable")->startData();
+                $page->getForm("support")->textArea("text", false, 45);
+                $page->getSimpleTable("supportformtable")->closeRow();
 
-            // CAPTCHA
-            $this->getSimpleTable("supportformtable")->startData();
-            $this->output("Botschutz: ");
-            $this->getSimpleTable("supportformtable")->startData();
-            $this->output("<img src='".SystemManager::getOverloadedFilePath("/Helpers/captcha.php", true)."'>", true);
-            $this->getForm("support")->inputText("captcha", false, 5, 5);
-            $this->getSimpleTable("supportformtable")->closeRow();
+                // CAPTCHA
+                $page->getSimpleTable("supportformtable")->startData();
+                $page->output("Botschutz: ");
+                $page->getSimpleTable("supportformtable")->startData();
+                $page->output("<img src='".SystemManager::getOverloadedFilePath("/Helpers/captcha.php", true)."'>", true);
+                $page->getForm("support")->inputText("captcha", false, 5, 5);
+                $page->getSimpleTable("supportformtable")->closeRow();
 
-            // Pagedump
-            if ($loggedin) {
-                $this->getSimpleTable("supportformtable")->startData();
-                $this->output("Seitenkopie`neinfügen: ");
-                $this->getSimpleTable("supportformtable")->startData();
-                $this->getForm("support")->checkbox("pagedump");
-                $this->getSimpleTable("supportformtable")->closeRow();
-            }
+                // Pagedump
+                if ($loggedin) {
+                    $page->getSimpleTable("supportformtable")->startData();
+                    $page->output("Seitenkopie`neinfügen: ");
+                    $page->getSimpleTable("supportformtable")->startData();
+                    $page->getForm("support")->checkbox("pagedump");
+                    $page->getSimpleTable("supportformtable")->closeRow();
+                }
 
-            // Submitbutton
-            $this->getSimpleTable("supportformtable")->startData(false, 2);
-            $this->getForm("support")->setCSS("button");
-            $this->getForm("support")->submitButton("Absenden");
+                // Submitbutton
+                $page->getSimpleTable("supportformtable")->startData(false, 2);
+                $page->getForm("support")->setCSS("button");
+                $page->getForm("support")->submitButton("Absenden");
 
-            $this->getSimpleTable("supportformtable")->close();
-            $this->getForm("support")->close();
-            break;
+                $page->getSimpleTable("supportformtable")->close();
+                $page->getForm("support")->close();
+                break;
 
             case "request":
                 // Captcha Check
-                if ($_POST['captcha'] !== SessionStore::get("support_captcha")) {
-                    $this->output("Falscher Botschutz-Code eingegeben!`n`n");
-                    $this->nav->addTextLink("Zurück", "Popup/SupportPopup");
+                if ($parameters['captcha'] !== SessionStore::get("support_captcha")) {
+                    $page->output("Falscher Botschutz-Code eingegeben!`n`n");
+                    $page->nav->addTextLink("Zurück", "Popup/Support");
                     break;
                 }
                 //SessionStore::remove("support_captcha");
 
                 // Valid Supportrequest Check
                 if (!$loggedin) {
-                    if (!$_POST['userlogin'] || !$_POST['email'] || !$_POST['text']) {
-                        $this->output("Bitte alle Felder ausfüllen!`n`n");
-                        $this->nav->addTextLink("Zurück", "Popup/SupportPopup");
+                    if (!$parameters['userlogin'] || !$parameters['email'] || !$parameters['text']) {
+                        $page->output("Bitte alle Felder ausfüllen!`n`n");
+                        $page->nav->addTextLink("Zurück", "Popup/Support");
                         break;
                     }
                 }
@@ -134,7 +125,7 @@ class SupportPopup extends Popup implements PageObjectInterface
                 // To get this, we need to create a new, temporary Page-Object,
                 // initialize it with the current character (to get the correct Template)
                 // and call Page::getLatestGenerated()
-                if (isset($_POST['pagedump']) && $loggedin) {
+                if (isset($parameters['pagedump']) && $loggedin) {
                     $temppage = new Page($user->character);
                     $pagedump = $temppage->getLatestGenerated();
                 } else {
@@ -148,31 +139,31 @@ class SupportPopup extends Popup implements PageObjectInterface
 
                 if ($loggedin) {
                     $data->user = $user;
-                } elseif ($user = $em->getRepository("Main:User")->findByLogin($_POST['userlogin'])) {
+                } elseif ($user = $em->getRepository("Main:User")->findByLogin($parameters['userlogin'])) {
                     $data->user = $user;
                 }
 
-                $data->email         = $_POST['email'];
-                $data->charactername = $_POST['charname'];
-                $data->text          = $_POST['text'];
+                $data->email         = $parameters['email'];
+                $data->charactername = $parameters['charname'];
+                $data->text          = $parameters['text'];
                 $data->pagedump      = $pagedump;
                 $em->persist($data);
 
                 $em->flush();
 
                 if ($data->id) {
-                    $this->output("Supportanfrage abgeschickt!`n`n");
+                    $page->output("Supportanfrage abgeschickt!`n`n");
                 } else {
-                    $this->output("Fehler beim Speichern der Supportanfrage! :(`n`n");
+                    $page->output("Fehler beim Speichern der Supportanfrage! :(`n`n");
                 }
 
-                $this->addForm("support");
-                $this->getForm("support")->head("supportform", "Popup/SupportPopup");
-                $this->output("<div class='floatclear center'>", true);
-                $this->getForm("support")->setCSS("button");
-                $this->getForm("support")->submitButton("Zurück");
-                $this->getForm("support")->close();
-                $this->output("</div>", true);
+                $page->addForm("support");
+                $page->getForm("support")->head("supportform", "Popup/Support");
+                $page->output("<div class='floatclear center'>", true);
+                $page->getForm("support")->setCSS("button");
+                $page->getForm("support")->submitButton("Zurück");
+                $page->getForm("support")->close();
+                $page->output("</div>", true);
                 break;
         }
     }

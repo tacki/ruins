@@ -13,8 +13,8 @@
  * Namespaces
  */
 namespace Ruins\Main\Controller;
+use Ruins\Common\Interfaces\NavigationInterface;
 use Ruins\Common\Manager\RequestHandler;
-
 use Ruins\Main\Entities\Group;
 use Ruins\Common\Controller\Error;
 use Ruins\Common\Controller\BaseObject;
@@ -28,7 +28,7 @@ use Ruins\Common\Controller\Registry;
  * Navigation Class which cares about the Navigation between the Pages
  * @package Ruins
  */
-class Nav
+class Nav implements NavigationInterface
 {
     /**
      * Flag to save Navigation to cache
@@ -317,19 +317,6 @@ class Nav
     }
 
     /**
-     * Return Request URL
-     * @return string The Request URL
-     */
-    public function getRequestURL()
-    {
-        if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], "?") !== false) {
-            return parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY);
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * Return Referer URL
      * @var string The Referer URL
      */
@@ -348,13 +335,9 @@ class Nav
      * @param bool $noclear Don't clear, just check
      * @return bool true if successful, else false
      */
-    public function checkRequestURL($url=false, $noclear=false)
+    public function checkRequestURL($url, $noclear=false)
     {
         $user = Registry::getUser();
-
-        if (!$url) {
-            $url = $this->getRequestURL();
-        }
 
         if ($this->_exists(false, $url)) {
             // Add DebugLogEntry

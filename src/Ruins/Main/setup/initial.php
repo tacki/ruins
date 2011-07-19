@@ -14,11 +14,11 @@ $config = Registry::getMainConfig();
 
 //*********************************
 // Create Config-Settings
-$config->addPublicPage(array(	"/Page/Common/LoginPage",
-                                "/Page/Common/LogoutPage",
-                                "/Page/Developer/TestPage",)
+$config->addPublicPage(array(	"Page/Common/Login",
+                                "Page/Common/Logout",
+                                "Page/Developer/Test",)
 );
-$config->addNoCachePage(array(	"/Page/Common/PortalPage" )
+$config->addNoCachePage(array(	"Page/Common/Portal" )
 );
 
 //*********************************
@@ -121,15 +121,15 @@ $em->flush();
 //*********************************
 // Create Sites+Waypoints
 $sites = array (
-                    "derashok/tribalcenter" => "Derashok Stammeszentrum - Der wichtigste Treffpunkt der orkischen Clans",
-                    "ironlance/citysquare"  => "Ironlance Stadtplatz - Der Platz mitten in Ironlance, dem Stolz der Menschen",
-                    "dunsplee/trail"		=> "Dunsplee Wald - Weg zum sagenumwobenen Wald`n`n",
+                    "Page/Derashok/Tribalcenter" => "Derashok Stammeszentrum - Der wichtigste Treffpunkt der orkischen Clans",
+                    "Page/Ironlance/Citysquare"  => "Ironlance Stadtplatz - Der Platz mitten in Ironlance, dem Stolz der Menschen",
+                    "Page/Dunsplee/Trail"        => "Dunsplee Wald - Weg zum sagenumwobenen Wald`n`n",
                );
 
 $waypoints = array (
-                        "derashok/tribalcenter"  => array(135, 170, 25),
-                        "ironlance/citysquare"   => array(20, 180, 40),
-                        "dunsplee/trail"	     => array(55, 45, 30),
+                        "Page/Derashok/Tribalcenter"  => array(135, 170, 25),
+                        "Page/Ironlance/Citysquare"   => array(20, 180, 40),
+                        "Page/Dunsplee/Trail"	      => array(55, 45, 30),
 );
 
 foreach ($sites as $name => $description) {
@@ -140,8 +140,8 @@ $em->flush();
 
 // Create Waypoint-Connections
 $waypoints_conn = array (
-                            "derashok/tribalcenter" => "dunsplee/trail",
-                            "ironlance/citysquare"  => "dunsplee/trail",
+                            "Page/Derashok/Tribalcenter" => "Page/Dunsplee/Trail",
+                            "Page/Ironlance/Citysquare"  => "Page/Dunsplee/Trail",
                         );
 
 foreach ($waypoints_conn as $source => $target) {
@@ -156,11 +156,11 @@ $em->flush();
 
 //*********************************
 // Create Adminpages
-SystemManager::addAdminPage("Ironlance", "Travel", "page/ironlance/citysquare");
-SystemManager::addAdminPage("Derashok", "Travel", "page/derashok/tribalcenter");
-SystemManager::addAdminPage("Dunsplee", "Travel", "page/dunsplee/trail");
+SystemManager::addAdminPage("Ironlance", "Travel", "Page/Ironlance/Citysquare");
+SystemManager::addAdminPage("Derashok", "Travel", "Page/Derashok/Tribalcenter");
+SystemManager::addAdminPage("Dunsplee", "Travel", "Page/Dunsplee/Trail");
 
-SystemManager::addAdminPage("Module", "System", "page/admin/modules");
+SystemManager::addAdminPage("Module", "System", "Page/Admin/Modules");
 
 $em->flush();
 

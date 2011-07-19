@@ -13,6 +13,7 @@
  * Namespaces
  */
 use Ruins\Common\Controller\SessionStore;
+use Ruins\Main\Controller\Nav;
 use Ruins\Main\Manager\SystemManager;
 use Ruins\Main\Manager\ModuleManager;
 use Ruins\Main\Controller\Link;
@@ -33,68 +34,20 @@ try {
     if (!$request->getRoute()->getCaller()) {
         // set loginpage to default
         $page = new Page();
-        $page->nav->redirect("Page/Common/LoginPage");
+        $page->nav->redirect("Page/Common/Login");
     }
 
     // Check if the page-value is valid
-    $realpath = SystemManager::validatePHPFilePath($request);
+    SystemManager::validatePHPFilePath($request);
 
     switch ($request->getRoute()->getCaller()) {
         default:
 
             $classname = $request->getRoute()->getClassname();
 
-        var_dump($request);
-
             $page = new $classname($request);
 
             $page->render();
-
-            /**
-             * Page Header
-             */
-            //ModuleManager::callModule(ModuleManager::EVENT_PRE_PAGEHEADER);
-            //include(DIR_MAIN."Helpers/".strtolower($request->getRoute()->getCaller()).".header.php");
-
-            /**
-             * Page Content
-             */
-/*
-            ModuleManager::callModule(ModuleManager::EVENT_PRE_PAGECONTENT);
-            $classname = $request->getRoute()->getClassname();
-            $page = new $classname;
-            $page->create();
-            $page->addCommonCSS("btcode.css");
-            $page->addJavaScriptFile("timer.func.js");
-            $page->addJavaScriptFile("global.func.js");
-            $page->set("servertime", date("H:i:s"));
-            $page->setTitle();
-            $page->createMenu();
-            $page->createContent($request->getQueryAsArray());
-
-            if ($request->getRouteCaller() == 'Popup') {
-                $popup = new Ruins\Modules\Support\Pages\Popup\SupportPopup;
-
-                $popup->addCommonCSS("btcode.css");
-                $popup->addJavaScriptFile("timer.func.js");
-                $popup->addJavaScriptFile("global.func.js");
-                $popup->set("servertime", date("H:i:s"));
-                Registry::set('main.output', $popup);
-
-                //---
-
-                $popup->create();
-                $popup->setTitle();
-                $popup->createMenu();
-                $popup->createContent($requestInfo['query']);
-            } else {
-                include($realpath);
-            }
-*/
-            /**
-             * Page Footer
-             */
-            //include(DIR_MAIN."Helpers/".strtolower($request->getRoute()->getCaller()).".footer.php");
             break;
     }
 

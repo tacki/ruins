@@ -11,8 +11,8 @@
  * Namespaces
  */
 namespace Ruins\Common\Interfaces;
-use Ruins\Main\Controller\URL;
-use Ruins\Main\Controller\Nav;
+use Ruins\Common\Interfaces\UserInterface;
+use Ruins\Common\Controller\Request;
 
 /**
  * Interface for Output Objects
@@ -23,7 +23,7 @@ interface OutputObjectInterface
     /**
      * Create the Object and prepare for Output
      */
-    public function create();
+    public function create(Request $request);
 
     /**
      * Output-Wrapper
@@ -34,15 +34,28 @@ interface OutputObjectInterface
 
     /**
      * Get OutputObject-Url
-     * @return URL
+     * @return \Ruins\Common\Controller\Url
      */
     public function getUrl();
 
     /**
      * Get Navigation
-     * @return Nav
+     * @return \Ruins\Main\Controller\Nav
      */
     public function getNavigation();
+
+    /**
+     * Assign a Navigation Object
+     * @param NavigationInterface $nav
+     */
+    public function setNavigation(NavigationInterface $nav);
+
+    /**
+     * Assign a value to a given Template-Placeholder
+     * @param string $placeholder
+     * @param string $value
+     */
+    public function assign($placeholder, $value);
 
     /**
      * Set Title for this Output Object (if needed)
@@ -51,8 +64,21 @@ interface OutputObjectInterface
     public function setTitle($value);
 
     /**
-     * Create all Output and send it to the User
+     * Set this Object to private and only available for the given User
+     * @param UserInterface $user
      */
-    public function show();
+    public function setPrivate(UserInterface $user);
+
+    /**
+     * Check if the OutputObject is private
+     * @return bool
+     */
+    public function isPrivate();
+
+    /**
+     * Create all Output and send it to the User
+     * @var string $template Template Name
+     */
+    public function show($template);
 }
 ?>
