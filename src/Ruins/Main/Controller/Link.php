@@ -14,7 +14,7 @@
  * Namespaces
  */
 namespace Ruins\Main\Controller;
-use Ruins\Common\Controller\Error,
+use Ruins\Common\Exceptions\Error,
     Ruins\Main\Entities\Group;
 
 /**

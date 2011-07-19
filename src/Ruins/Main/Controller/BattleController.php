@@ -12,7 +12,7 @@
  */
 namespace Ruins\Main\Controller;
 use Ruins\Common\Controller\SessionStore;
-use Ruins\Common\Controller\Error;
+use Ruins\Common\Exceptions\Error;
 use Ruins\Main\Controller\SkillBase;
 use Ruins\Main\Controller\TimerController as Timer;
 use Ruins\Main\Entities\Battle;

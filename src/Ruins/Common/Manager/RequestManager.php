@@ -18,7 +18,7 @@ use Ruins\Common\Controller\Request;
  * Request Handler Class
  * @package Ruins
  */
-class RequestHandler
+class RequestManager
 {
     /**
      * Retrieve Route Request String

@@ -12,7 +12,7 @@
  * Namespaces
  */
 namespace Ruins\Common\Controller;
-use Ruins\Common\Controller\Error;
+use Ruins\Common\Exceptions\Error;
 
 /**
  * Class Defines

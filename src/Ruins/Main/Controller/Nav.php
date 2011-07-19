@@ -14,9 +14,9 @@
  */
 namespace Ruins\Main\Controller;
 use Ruins\Common\Interfaces\NavigationInterface;
-use Ruins\Common\Manager\RequestHandler;
+use Ruins\Common\Manager\RequestManager;
 use Ruins\Main\Entities\Group;
-use Ruins\Common\Controller\Error;
+use Ruins\Common\Exceptions\Error;
 use Ruins\Common\Controller\BaseObject;
 use Ruins\Main\Manager\SystemManager;
 use Ruins\Common\Interfaces\OutputObjectInterface;
@@ -158,7 +158,7 @@ class Nav implements NavigationInterface
      */
     public function addTextLink($text, $url, Group $restriction=NULL)
     {
-        $url = RequestHandler::getWebBasePath()."/".$url;
+        $url = RequestManager::getWebBasePath()."/".$url;
 
         // Add Hidden Link
         $this->addHiddenLink($url, $restriction);
@@ -207,12 +207,12 @@ class Nav implements NavigationInterface
             return true;
         }
 
-        $request = RequestHandler::createRequest($link->url);
+        $request = RequestManager::createRequest($link->url);
 
         if (!$this->validationEnabled() || $link->isAllowedBy($this->_char) ) {
 
             $linkdescription = array(	"displayname"=>$link->displayname,
-                                        "url"=>$link->url?RequestHandler::getWebBasePath()."/".$link->url:"",
+                                        "url"=>$link->url?RequestManager::getWebBasePath()."/".$link->url:"",
                                         "position"=>$link->position,
                                         "description"=>$link->description,
                                         "type"=>$request->getRoute()->getCaller(),
@@ -373,7 +373,7 @@ class Nav implements NavigationInterface
         $em->flush();
 
         // Redirect
-        $redirect = RequestHandler::getWebBasePath() . "/" . $url;
+        $redirect = RequestManager::getWebBasePath() . "/" . $url;
 
         if (isset($systemConfig) && $systemConfig->get("useManualRedirect", 0)) {
             echo "Forward to $url <br />";

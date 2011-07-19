@@ -13,6 +13,7 @@
  */
 namespace Ruins\Common\Controller\OutputObjects;
 use Smarty;
+use Ruins\Common\Controller\BtCode;
 use Ruins\Common\Controller\Registry;
 use Ruins\Common\Controller\Request;
 use Ruins\Common\Controller\Url;
@@ -20,6 +21,7 @@ use Ruins\Common\Interfaces\OutputObjectInterface;
 use Ruins\Common\Interfaces\UserInterface;
 use Ruins\Common\Interfaces\NavigationInterface;
 use Ruins\Main\Manager\SystemManager;
+use Ruins\Main\Manager\ModuleManager;
 
 /**
  * Class Name
@@ -51,6 +53,11 @@ class Page implements OutputObjectInterface
      * @var int
      */
     protected $pagegenerationstarttime;
+
+    /**
+     * @var array
+     */
+    protected $toolBoxItems = array();
 
     public function __construct()
     {
@@ -122,6 +129,30 @@ class Page implements OutputObjectInterface
     }
 
     /**
+     * Add a tool to the ToolBox
+     * @param string $url Url
+     * @param string $description Description for this Tool
+     * @param string $imagesrc Imagesrc before a click
+     * @param string $replaceimagesrc Imagesrc after a click (optional)
+     */
+    public function addToolBoxItem($name, $url, $description, $imagesrc, $replaceimagesrc=false)
+    {
+        $boxItem = array();
+
+        $boxItem['name']            = $name;
+        $boxItem['url']             = $url;
+        $boxItem['description']     = $description;
+        $boxItem['imagesrc']        = $imagesrc;
+        if ($replaceimagesrc) {
+            $boxItem['replaceimagesrc']    = $replaceimagesrc;
+        } else {
+            $boxItem['replaceimagesrc']    = $boxItem['imagesrc'];
+        }
+
+        $this->toolBoxItems[] = $boxItem;
+    }
+
+    /**
      * @see Ruins\Common\Interfaces.OutputObjectInterface::setTitle()
      */
     public function setTitle($value)
@@ -158,6 +189,10 @@ class Page implements OutputObjectInterface
         return $this->url;
     }
 
+    /**
+     * (non-PHPdoc)
+     * @see Ruins\Common\Interfaces.OutputObjectInterface::setNavigation()
+     */
     public function setNavigation(NavigationInterface $navigation)
     {
         $this->navigation = $navigation;
@@ -172,6 +207,15 @@ class Page implements OutputObjectInterface
     }
 
     /**
+     * Return Template Engine (smarty)
+     * @return \Smarty
+     */
+    public function getTemplateEngine()
+    {
+        return $this->templateEngine;
+    }
+
+    /**
      * @see Ruins\Common\Interfaces.OutputObjectInterface::output()
      */
     public function output($text, $showhtml=false)
@@ -180,7 +224,7 @@ class Page implements OutputObjectInterface
 
         $this->templateEngine->append(
             'main',
-            $text
+            BtCode::decode($text)
         );
     }
 
@@ -212,11 +256,17 @@ class Page implements OutputObjectInterface
      */
     public function show($template)
     {
+        ModuleManager::callModule(ModuleManager::EVENT_PRE_PAGEGENERATION, $this);
+
         // Generate Navigation
         $this->generateNavigation();
+        // Generate ToolBox
+        $this->generateToolBox();
 
         // Page generation Time
         $this->assign("pagegen", round(microtime(true) - $this->pagegenerationstarttime,3) * 1000);
+
+        ModuleManager::callModule(ModuleManager::EVENT_POST_PAGEGENERATION, $this);
 
         if ($this->isPrivate) {
             $this->templateEngine->display($template, $this->user->character->id);
@@ -239,38 +289,12 @@ class Page implements OutputObjectInterface
             if ($linklist['displayname']) {
 
                 if ($linklist['position'] == "main") {
-                    // generating the leftbar
-                    if (!$boxOpen && !$linklist['url']) {
-                        // First NavHead
-                        $navMain .= "<div class='navbox'>
-                                                <h3>".$linklist['displayname']."</h3>
-                                                <div class='links'>";
-                        $boxOpen = true;
-                    } else if ($boxOpen && !$linklist['url']) {
-                        // New NavHead (not the first)
-                        $navMain .= "</div></div>" .
-                                            "<div class='navbox'>
-                                                <h3>".$linklist['displayname']."</h3>
-                                                <div class='links'>";
-                    } else if ($boxOpen) {
-                        // Standard Link
-                        $snippet = $this->createTemplateSnippet();
-                        $snippet->assign("linktarget", $linklist['url']);
-                        $snippet->assign("linkname", $linklist['displayname']);
-                        $snippet->assign("description", htmlspecialchars($linklist['description'], ENT_QUOTES));
-                        $navMain .= $snippet->fetch("snippet_navigation.tpl");
-                    } else {
-                        // No NavHead
-                        $navMain .= "<div class='navbox'>
-                                                <h3>NavHead fehlt</h3>";
-                        $snippet = $this->createTemplateSnippet();
-                        $snippet->assign("linktarget", $linklist['url']);
-                        $snippet->assign("linkname", $linklist['displayname']);
-                        $snippet->assign("description", htmlspecialchars($linklist['description'], ENT_QUOTES));
-                        $navMain .= $snippet->fetch("snippet_navigation.tpl");
-                        $boxOpen = true;
-                    }
-                } else if ($linklist['position'] == "shared") {
+                    $this->templateEngine->append('navMain',
+                                                  array('url' => $linklist['url'],
+                                                        'title' => htmlspecialchars($linklist['description'], ENT_QUOTES),
+                                                        'display' => $linklist['displayname'])
+                                                 );
+                } elseif ($linklist['position'] == "shared") {
                     $this->templateEngine->append('navShared',
                                                   array('url' => $linklist['url'],
                                                         'title' => htmlspecialchars($linklist['description'], ENT_QUOTES),
@@ -279,15 +303,13 @@ class Page implements OutputObjectInterface
                 }
             }
         }
-        // close the div box in the leftbar
-        // 1st div: closes div 'links'
-        // 2nd div: closes div 'navbox'
-        $navMain .= "</div></div>";
-        $boxOpen = false;
-        if (is_array($this->_bodycontent)) {
-            // insert the bodycontent into the template
-            $this->assign("navMain", $navMain);
-            $this->assign("navShared", $navShared);
-        }
+    }
+
+    /**
+    * Generate the ToolBox (small tools)
+    */
+    protected function generateToolBox()
+    {
+        $this->assign("toolBox", $this->toolBoxItems);
     }
 }

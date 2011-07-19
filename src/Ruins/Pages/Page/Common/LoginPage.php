@@ -11,6 +11,8 @@
  * Namespaces
  */
 namespace Ruins\Pages\Page\Common;
+use Ruins\Common\Manager\HtmlElementManager;
+
 use Ruins\Common\Controller\SessionStore;
 use Ruins\Main\Entities\DebugLogEntity;
 use Ruins\Main\Controller\Link;
@@ -50,19 +52,21 @@ class LoginPage extends AbstractPageObject
             $page->output("`c Gib deinen Namen und dein Passwort ein, um diese Welt zu betreten.`c`n");
 
             // Normal Login
-            $loginform = $page->addForm("login")->head("login", "Page/Common/Login/checkpw");
+            $loginform = HtmlElementManager::addForm("login", $this->getOutputObject())->head("login", "Page/Common/Login/checkpw");
+            //$loginform = $page->addForm("login")->head("login", "Page/Common/Login/checkpw");
 
-            $logintable = $page->addSimpleTable("logintable")->setCSS("login");
+            $logintable = HtmlElementManager::addSimpleTable("logintable", $this->getOutputObject())->setCSS("login");
+            //$logintable = $page->addSimpleTable("logintable")->setCSS("login");
 
             $logintable ->startRow()
                         ->startData();
-            $page->output("Benutzername: ");
+            $loginform->labelFor('username', 'Benutzername:');
             $logintable->startData();
             $loginform->setCSS("input")->inputText("username");
 
             $logintable->startRow()
                        ->startData();
-            $page->output("Passwort: ");
+            $loginform->labelFor('password', 'Passwort:');
             $logintable->startData();
             $loginform->setCSS("input")->inputPassword("password");
 
@@ -78,10 +82,12 @@ class LoginPage extends AbstractPageObject
 
 
             // OpenID Login
-            $openidform = $page->addForm("openid")->head("openid_login", "Page/Common/Login/checkopenid");
+            $openidform = HtmlElementManager::addForm("openid", $this->getOutputObject())->head("openid_login", "Page/Common/Login/checkopenid");
+            //$openidform = $page->addForm("openid")->head("openid_login", "Page/Common/Login/checkopenid");
             $openidform->setCSS("openid");
 
-            $openidtable = $page->addSimpleTable("openidtable");
+            $openidtable = HtmlElementManager::addSimpleTable("openidtable", $this->getOutputObject());
+            //$openidtable = $page->addSimpleTable("openidtable");
             $openidtable->setCSS("login");
 
             $openidtable->startRow()
@@ -129,9 +135,9 @@ class LoginPage extends AbstractPageObject
                     $qb = $em->createQueryBuilder();
 
                     $result = $qb   ->select("openid")
-                    ->from("Main:OpenID", "openid")
-                    ->where("openid.urlID LIKE ?1")->setParameter(1, $result['openid'])
-                    ->getQuery()->getOneOrNullResult();
+                                    ->from("Main:OpenID", "openid")
+                                    ->where("openid.urlID LIKE ?1")->setParameter(1, $result['openid'])
+                                    ->getQuery()->getOneOrNullResult();
 
                     if ($result) {
                         $user = $result->user;

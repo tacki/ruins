@@ -47,16 +47,17 @@ class MessageSystemLink extends ModuleBase implements ModuleInterface
 
         if ($user->character && $user->character->loggedin) {
             // add the Supportlink to the toplist
-            $page->nav->addLink("Messenger","Popup/Messenger","shared")
-                      ->setDescription("Ruins Messenger zum Senden und Empfangen von Nachrichten");
+            $page->getNavigation()
+                 ->addLink("Messenger","Popup/Messenger","shared")
+                 ->setDescription("Ruins Messenger zum Senden und Empfangen von Nachrichten");
 
 
             $page->addJavaScriptFile("jquery.plugin.timers.js");
             $page->addJavaScript("
                  $(document).ready(function() {
-                    var timerCycle 	= '60s';
-                    var result 		= 0;
-                    var jsonURL		= '".SystemManager::getOverloadedFilePath("/Helpers/ajax/messenger_newMessageAlert.ajax.php", true)."?userid=".$user->character->id."';
+                    var timerCycle     = '60s';
+                    var result         = 0;
+                    var jsonURL        = '".SystemManager::getOverloadedFilePath("/Helpers/ajax/messenger_newMessageAlert.ajax.php", true)."?userid=".$user->character->id."';
 
                     $.getJSON(jsonURL, function(json) {
                         if (json > 0) {

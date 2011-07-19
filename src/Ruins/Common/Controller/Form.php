@@ -14,7 +14,7 @@
 namespace Ruins\Common\Controller;
 use Ruins\Main\Controller\Nav;
 use Ruins\Main\Controller\Link;
-use Ruins\Common\Manager\RequestHandler;
+use Ruins\Common\Manager\RequestManager;
 
 
 /**
@@ -32,7 +32,7 @@ class Form extends BaseHTML
     public function head($name, $action, $method='post')
     {
         // Checking the file type and the length
-        $output = "<form name='".$name."' action='".RequestHandler::getWebBasePath()."/".$action."' ";
+        $output = "<form name='".$name."' action='".RequestManager::getWebBasePath()."/".$action."' ";
 
             // checking method if GET or POST
         if ($method == 'post' || $method == 'get') {
@@ -54,7 +54,7 @@ class Form extends BaseHTML
 
 
         return $this->generateOutput($output);
-    }	// END head($method,$action,$name)
+    }    // END head($method,$action,$name)
 
     /**
      * Close the formular
@@ -63,6 +63,18 @@ class Form extends BaseHTML
     public function close()
     {
         $output = "</form>";
+
+        return $this->generateOutput($output);
+    }
+
+    /**
+     *
+     * Enter description here ...
+     * @param unknown_type $name
+     */
+    public function labelFor($name, $value)
+    {
+        $output = "<label for='".$name."'>".$value."</label>";
 
         return $this->generateOutput($output);
     }
@@ -81,7 +93,7 @@ class Form extends BaseHTML
         // checking if $name is set
         if ($name != "")
         {
-            $output = "<input type='text' name='".$name."' ";
+            $output = "<input type='text' id='".$name."' name='".$name."' ";
             // checking $value
             if ($value !== false) $output .= "value='".$value."' ";
             // checking $size, when it's incorrect, the default value will be set
@@ -372,5 +384,5 @@ class Form extends BaseHTML
         return $this->generateOutput($output);
     } // END hidden($name,$value)
 
-}	// END class FORM
+}    // END class FORM
 ?>

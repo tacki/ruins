@@ -189,7 +189,7 @@ abstract class AbstractPageObject implements PageObjectInterface
         $this->createContent($this->getOutputObject(), $query);
 
         // Call Show-Method of PageObject
-        $this->getOutputObject()->show();
+        $this->getOutputObject()->show("index.tpl");
 
         // FIXME: this has nothing to do here
         if ($nav = $this->getOutputObject()->getNavigation()) $nav->save();

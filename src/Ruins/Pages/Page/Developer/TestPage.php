@@ -13,8 +13,8 @@
  * Namespaces
  */
 namespace Ruins\Pages\Page\Developer;
-use Ruins\Common\Manager\RequestHandler;
-
+use Ruins\Common\Manager\HtmlElementManager;
+use Ruins\Common\Manager\RequestManager;
 use Ruins\Main\Controller\Link;
 use Ruins\Main\Controller\TimerController as Timer;
 use Ruins\Main\Controller\Travel;
@@ -137,16 +137,13 @@ class TestPage extends AbstractPageObject
             $timer->set(0, 0, 1);
             $page->output("1 Hour Timer: ". $timer->get(), true);
         }
-        var_dump($page->url);
-        var_dump(RequestHandler::createRequest()->getRoute());
-
 
         $tempform = new Form($page);
         if ($parameters['op'] == "stoptimer") {
             $tempform->head("", $page->url->base."/starttimer");
             $tempform->submitButton("Start");
         } else {
-            $tempform->head("", $page->url->base."/stoptimer");
+            $tempform->head("", $page->getUrl()->base."/stoptimer");
             $tempform->submitButton("Stop");
         }
         $tempform->close();
@@ -235,7 +232,7 @@ class TestPage extends AbstractPageObject
 
         $page->output("<label for='searchField'>Charnames: </label>", true);
         $page->output("<input type='text' id='searchField' name='searchField'>", true);
-        $page->addCommonCSS("autocomplete.css");
+        $page->addCSS("autocomplete.css");
         $page->addJavaScriptFile("autocomplete.func.js");
 
         $page->addJavaScript("
@@ -284,7 +281,7 @@ class TestPage extends AbstractPageObject
 
         // Case 2:
         $page->output("`nGeordnet nach HP:`n");
-        $result = $qb	->orderBy("char.healthpoints")
+        $result = $qb    ->orderBy("char.healthpoints")
         ->getQuery()
         ->getResult();
 
@@ -377,21 +374,21 @@ class TestPage extends AbstractPageObject
 
         // Neue Tabellenform:
         $page->output("`n`n");
-        $page->addTable("testtabelle");
+        $testtable = HtmlElementManager::addTable("testtabelle", $this->getOutputObject());
         //$page->testtabelle->setCSS("`~35");
-        $page->getTable("testtabelle")->setTabAttributes("40%",2);
-        $page->getTable("testtabelle")->addTabSize(4,4);
-        $page->getTable("testtabelle")->addFieldContent(1,1,"Oben links",false,"`~25",1,1);
-        $page->getTable("testtabelle")->addFieldContent(2,1,"Oben unten links",false,false,1,1);
-        $page->getTable("testtabelle")->addFieldContent(1,2,"Oben halb links",false,false,1,1);
-        $page->getTable("testtabelle")->addFieldContent(1,3,"Oben halb rechts",false,false,1,1);
-        $page->getTable("testtabelle")->addFieldContent(1,4,"Oben rechts",false,false,2,1);
-        $page->getTable("testtabelle")->addFieldContent(2,2,/*$page->addform(false,"inputText","mitte")*/"",false,"`c",2,2);
-        $page->getTable("testtabelle")->addFieldContent(3,1,"Unten links",false,false,2,1);
-        $page->getTable("testtabelle")->addFieldContent(3,4,"Unten oben rechts",false,false,1,1);
-        $page->getTable("testtabelle")->addFieldContent(4,4,"Unten rechts",false,false,1,1);
-        $page->getTable("testtabelle")->addFieldContent(4,2,"Unten",false,false,1,2);
-        $page->getTable("testtabelle")->load();
+        $testtable  ->setTabAttributes("40%",2)
+                    ->addTabSize(4,4)
+                    ->addFieldContent(1,1,"Oben links",false,"`~25",1,1)
+                    ->addFieldContent(2,1,"Oben unten links",false,false,1,1)
+                    ->addFieldContent(1,2,"Oben halb links",false,false,1,1)
+                    ->addFieldContent(1,3,"Oben halb rechts",false,false,1,1)
+                    ->addFieldContent(1,4,"Oben rechts",false,false,2,1)
+                    ->addFieldContent(2,2,/*$page->addform(false,"inputText","mitte")*/"",false,"`c",2,2)
+                    ->addFieldContent(3,1,"Unten links",false,false,2,1)
+                    ->addFieldContent(3,4,"Unten oben rechts",false,false,1,1)
+                    ->addFieldContent(4,4,"Unten rechts",false,false,1,1)
+                    ->addFieldContent(4,2,"Unten",false,false,1,2)
+                    ->load();
 
         // *************************************
         $res = microtime(true) - $mt;
@@ -445,17 +442,20 @@ class TestPage extends AbstractPageObject
 
         $page->output("see left side ;)");
 
-        $page->nav->disableValidation();
-        $page->nav->addHead("Home")
+        $page->getNavigation()
+             ->disableValidation();
+        $page->getNavigation()
+             ->addHead("Home")
              ->addLink("Login Page", "Page/Common/Login","main")
              ->addLink("Testpage", "Page/Developer/Test","main");
 
-        $page->nav->addHead("Dorf")
+        $page->getNavigation()
+             ->addHead("Dorf")
              ->addLink("Ausgang", "Page/Common/Logout","main")
              ->addLink("Home", "Page/Developer/Test","shared")
              ->addLink("Logout", "Page/Common/Logout","shared");
 
-        $page->nav->save();
+        $page->getNavigation()->save();
 
         // Navigation Test end
 
@@ -550,18 +550,17 @@ class TestPage extends AbstractPageObject
         $position = "formtest";
 
         $page->output("Formulartest!`n1.Formular:`nName");
-        $page->addForm("testformular");
-        $page->getForm("testformular")->head("form", "Page/Developer/Test");
-        $page->getForm("testformular")->selectStart("selectform");
-        $page->getForm("testformular")->selectOption("Jack");
-        $page->getForm("testformular")->selectOption("Jim", false, true);
-        $page->getForm("testformular")->selectOption("Johnny");
-        $page->getForm("testformular")->selectEnd();
+        $testform = HtmlElementManager::addForm("testformular", $this->getOutputObject());
+        $testform->head("form", "Page/Developer/Test")
+                 ->selectStart("selectform")
+                 ->selectOption("Jack")
+                 ->selectOption("Jim", false, true)
+                 ->selectOption("Johnny")
+                 ->selectEnd();
         $page->output("`nBegründung`n");
-        $page->getForm("testformular")->textArea("textareaform","Hier kannst du deine Auswahl begründen!");
+        $testform->textArea("textareaform","Hier kannst du deine Auswahl begründen!");
         $page->output("`n");
-        $page->getForm("testformular")->submitButton("Absenden");
-        $page->getForm("testformular")->close();
+        $testform->submitButton("Absenden")->close();
 
         if (isset($parameters['textareaform'])) $page->output("Wenn Formular 1 ausgeführt wurde, steht im folgenden die Begründung:`n`#25".$parameters['textareaform']."`n",true);
 
@@ -589,8 +588,8 @@ class TestPage extends AbstractPageObject
         $showlist = array();
         foreach ($messagelist as $message) {
             $showmessage = array();
-            $showmessage['id']		  = $message->id;
-            $showmessage['sender']	  = $message->sender->name;
+            $showmessage['id']          = $message->id;
+            $showmessage['sender']      = $message->sender->name;
             $showmessage['receiver']  = $message->receiver->name;
             $showmessage['subject']   = $message->data->subject;
             $showmessage['date']      = $message->date->format("H:i:s d.m.y");
@@ -615,8 +614,8 @@ class TestPage extends AbstractPageObject
         $showlist = array();
         foreach ($messagelist as $message) {
             $showmessage = array();
-            $showmessage['id']		  = $message->id;
-            $showmessage['sender']	  = $message->sender->name;
+            $showmessage['id']          = $message->id;
+            $showmessage['sender']      = $message->sender->name;
             $showmessage['receiver']  = $message->receiver->name;
             $showmessage['subject']   = $message->data->subject;
             $showmessage['date']      = $message->date->format("H:i:s d.m.y");
@@ -758,7 +757,7 @@ class TestPage extends AbstractPageObject
         $page->output("Classic Chat Start: `n");
         $position = "classicchattest";
 
-        $page->addChat("testchat")->show();
+        HtmlElementManager::addChat("testchat", $this->getOutputObject())->show();
 
         // Classic Chat End
 
@@ -773,11 +772,11 @@ class TestPage extends AbstractPageObject
 
         $page->output("Enter your OpenID: `n");
 
-        $page->addForm("openid");
-        $page->getForm("openid")->head("login", "Page/Developer/Test/checkopenid");
-        $page->getForm("openid")->inputText("openid_identifier");
-        $page->getForm("openid")->submitButton("Check");
-        $page->getForm("openid")->close();
+        $openidform = HtmlElementManager::addForm("openid", $this->getOutputObject());
+        $openidform ->head("login", "Page/Developer/Test/checkopenid")
+                    ->inputText("openid_identifier")
+                    ->submitButton("Check")
+                    ->close();
 
         if ($parameters['op'] == "checkopenid") {
             OpenIDSystem::checkOpenID($parameters['openid_identifier'], "Page/Developer/Test/returnopenid");

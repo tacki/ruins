@@ -19,7 +19,7 @@ use Ruins\Main\Manager\ModuleManager;
 use Ruins\Main\Controller\Link;
 use Ruins\Main\Controller\Page;
 use Ruins\Common\Controller\Registry;
-use Ruins\Common\Manager\RequestHandler;
+use Ruins\Common\Manager\RequestManager;
 
 /**
  * Global Includes
@@ -29,7 +29,7 @@ require_once(DIR_BASE."app/main.inc.php");
 
 try {
     // Handle Request
-    $request = RequestHandler::createRequest();
+    $request = RequestManager::createRequest();
 
     if (!$request->getRoute()->getCaller()) {
         // set loginpage to default

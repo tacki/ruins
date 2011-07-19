@@ -3,7 +3,7 @@
  * Namespaces
  */
 namespace Ruins\Main\Layers;
-use Ruins\Common\Controller\Error;
+use Ruins\Common\Exceptions\Error;
 
 /**
  * Money Layer Class

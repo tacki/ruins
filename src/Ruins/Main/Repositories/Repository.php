@@ -13,7 +13,7 @@
  */
 namespace Ruins\Main\Repositories;
 use Ruins\Main\Entities\EntityBase;
-use Ruins\Common\Controller\Error;
+use Ruins\Common\Exceptions\Error;
 use Doctrine\ORM\EntityRepository;
 
 /**

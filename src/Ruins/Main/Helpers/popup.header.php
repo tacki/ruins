@@ -12,11 +12,11 @@
 /**
  * Namespaces
  */
-use Ruins\Common\Controller\Error;
+use Ruins\Common\Exceptions\Error;
 use Ruins\Common\Controller\SessionStore;
 use Ruins\Main\Controller\Popup;
 use Ruins\Common\Controller\Registry;
-use Ruins\Common\Manager\RequestHandler;
+use Ruins\Common\Manager\RequestManager;
 
 /**
  * Popup Content
@@ -36,7 +36,7 @@ if ($userid = SessionStore::get('userid')) {
 $config = Registry::getMainConfig();
 
 $isPublic     = false;
-$routeRequest = RequestHandler::createRequest()->getRouteString();
+$routeRequest = RequestManager::createRequest()->getRouteString();
 
 foreach ($config->get("publicpages") as $publicpage) {
     if (substr($routeRequest, 0, strlen($publicpage)) == $publicpage) {

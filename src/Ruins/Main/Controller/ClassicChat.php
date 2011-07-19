@@ -13,8 +13,9 @@
  * Namespaces
  */
 namespace Ruins\Main\Controller;
+use Ruins\Common\Interfaces\OutputObjectInterface;
 use Ruins\Common\Controller\BtCode;
-use Ruins\Common\Controller\Error;
+use Ruins\Common\Exceptions\Error;
 use Ruins\Common\Controller\SimpleTable;
 use Ruins\Common\Controller\SessionStore;
 use Ruins\Main\Entities\Chat;
@@ -35,7 +36,7 @@ class ClassicChat
 
     /**
      * Page-Object for direct Output
-     * @var Page
+     * @var OutputObjectInterface
      */
     private $_page;
 
@@ -62,10 +63,10 @@ class ClassicChat
      * @param Page $page Page-Object for direct Output
      * @param string $section Section to use
      */
-    function __construct(Page $page, $section)
+    function __construct(OutputObjectInterface $page, $section)
     {
-        $this->_page 		= $page;
-        $this->_section 	= $section;
+        $this->_page         = $page;
+        $this->_section     = $section;
     }
 
     /**
@@ -349,8 +350,8 @@ class ClassicChat
             }
 
             // Check for special Commands
-            $firstword 	= substr($resultpage[$i]['chatline'], 0, strpos($resultpage[$i]['chatline'], " "));
-            $rest		= strstr($resultpage[$i]['chatline'], " ");
+            $firstword     = substr($resultpage[$i]['chatline'], 0, strpos($resultpage[$i]['chatline'], " "));
+            $rest        = strstr($resultpage[$i]['chatline'], " ");
 
             if ($firstword == "/me" || $firstword == ":") {
                 // Actions
@@ -399,7 +400,7 @@ class ClassicChat
     {
         $user = Registry::getUser();
 
-        $output		= "";
+        $output        = "";
 
         $chatform = $this->_getChatFormName();
 
@@ -408,13 +409,13 @@ class ClassicChat
         switch ($this->_mode) {
             case self::MODE_NORMAL:
                 // Chatlines
-                $chatsnippet = $this->_page->createTemplateSnippet();
+                $chatsnippet = $this->_page->getTemplateEngine()->createTemplate("snippet_classicchat.tpl");
 
                 $chatsnippet->assign("chatname", $this->_section);
                 $chatsnippet->assign("chatform", $chatform);
-                $chatsnippet->assign("target", (string)$this->_page->url);
+                $chatsnippet->assign("target", (string)$this->_page->getUrl());
                 // Nav for all Buttons (important)
-                $this->_page->nav->addHiddenLink($this->_page->url);
+                $this->_page->getNavigation()->addHiddenLink($this->_page->getUrl());
 
                 // Get Chatpage
                 $resultpage = $this->_pageDisplayWrapper($this->_getPage(20, $this->_pagenr));
@@ -449,8 +450,8 @@ class ClassicChat
 
 
                 // Previous Pages
-                $pagesoutput	= "";
-                $numberOfPages 	= $this->_getNumberOfPages(20);
+                $pagesoutput    = "";
+                $numberOfPages     = $this->_getNumberOfPages(20);
                 for ($i=1; $i<=$numberOfPages; $i++) {
                     // Replace previous GET-Query
                     $newurl = clone $this->_page->url;
@@ -480,7 +481,7 @@ class ClassicChat
                     $chatsnippet->assign("visibility_inv", "none");
                 }
 
-                $this->_page->output($chatsnippet->fetch("snippet_classicchat.tpl"), true);
+                $this->_page->output($chatsnippet->fetch(), true);
 
                 break;
 

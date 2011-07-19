@@ -1,7 +1,7 @@
 <?php
 namespace Ruins\Main\Controller;
 use Ruins\Main\Repositories\Repository;
-use Ruins\Common\Controller\Error;
+use Ruins\Common\Exceptions\Error;
 
 class Controller
 {

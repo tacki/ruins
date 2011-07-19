@@ -14,7 +14,7 @@
 namespace Ruins\Common\Controller;
 use Doctrine\ORM\EntityManager;
 use Ruins\Common\Controller\Config;
-use Ruins\Common\Controller\Error;
+use Ruins\Common\Exceptions\Error;
 use Ruins\Main\Entities\User;
 
 /**

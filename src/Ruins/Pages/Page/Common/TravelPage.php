@@ -14,7 +14,7 @@ namespace Ruins\Pages\Page\Common;
 use Ruins\Main\Controller\Link;
 use Ruins\Main\Controller\Travel;
 use Ruins\Main\Controller\TimerController as Timer;
-use Ruins\Common\Controller\Error;
+use Ruins\Common\Exceptions\Error;
 use Ruins\Common\Controller\AbstractPageObject;
 
 class TravelPage extends AbstractPageObject

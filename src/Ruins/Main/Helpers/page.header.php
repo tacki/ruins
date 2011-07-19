@@ -16,7 +16,7 @@ use Ruins\Common\Controller\SessionStore;
 use Ruins\Main\Controller\Link;
 use Ruins\Main\Controller\Page;
 use Ruins\Common\Controller\Registry;
-use Ruins\Common\Manager\RequestHandler;
+use Ruins\Common\Manager\RequestManager;
 
 /**
  * Page Content
@@ -36,7 +36,7 @@ $config = Registry::getMainConfig();
 
 //--
 $isPublic     = false;
-$routeRequest = substr($_SERVER['REQUEST_URI'], strlen(RequestHandler::getWebBasePath()));
+$routeRequest = substr($_SERVER['REQUEST_URI'], strlen(RequestManager::getWebBasePath()));
 
 foreach ($config->get("publicpages") as $publicpage) {
     if (substr($routeRequest, 0, strlen($publicpage)) == $publicpage) {

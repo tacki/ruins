@@ -14,7 +14,7 @@
  */
 namespace Ruins\Main\Manager;
 use Ruins\Common\Controller\SessionStore;
-use Ruins\Common\Controller\Error;
+use Ruins\Common\Exceptions\Error;
 use Ruins\Common\Interfaces\OutputObjectInterface;
 use Ruins\Main\Entities\Administration;
 use Ruins\Main\Entities\News;
@@ -25,7 +25,7 @@ use Ruins\Main\Manager\ModuleManager;
 use Ruins\Main\Manager\SystemManager;
 use Ruins\Common\Controller\Registry;
 use Ruins\Common\Controller\Request;
-use Ruins\Common\Manager\RequestHandler;
+use Ruins\Common\Manager\RequestManager;
 
 /**
  * System Class
@@ -456,7 +456,7 @@ class SystemManager
     {
         // Use the Request-Object for Help
         if (!($path instanceof Request)) {
-            $request = RequestHandler::createRequest($path);
+            $request = RequestManager::createRequest($path);
         } else {
             $request = $path;
         }

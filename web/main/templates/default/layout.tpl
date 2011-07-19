@@ -17,7 +17,7 @@
 
         <div id="navMain">
             <!-- Navigation Content Start -->
-            {$navMain}
+            {block name=navMain}{/block}
             <!-- Navigation Content End -->
         </div>
 
@@ -51,7 +51,7 @@
                 {$version} {$copyright}
             </div>
             <div id="toolbox">
-                {$toolbox}
+                {block name=toolBox}{/block}
             </div>
         </div>
         <div id="pagegen">

@@ -57,8 +57,9 @@ class Survey extends ModuleBase implements ModuleInterface
         $user = Registry::getUser();
 
         if ($user->character && $user->character->loggedin) {
-            $page->nav->addLink("Umfragen", "Popup/Survey", "shared")
-                      ->setDescription("Aktuelle Umfragen");
+            $page->getNavigation()
+                 ->addLink("Umfragen", "Popup/Survey", "shared")
+                 ->setDescription("Aktuelle Umfragen");
         }
     }
 }

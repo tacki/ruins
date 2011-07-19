@@ -25,12 +25,12 @@ use Ruins\Main\Controller\Nav;
 use Ruins\Common\Interfaces\OutputObjectInterface;
 use Ruins\Common\Controller\BaseObject;
 use Ruins\Common\Controller\BtCode;
-use Ruins\Common\Controller\Error;
+use Ruins\Common\Exceptions\Error;
 use Ruins\Common\Controller\Form;
 use Ruins\Common\Controller\Table;
 use Ruins\Common\Controller\SimpleTable;
 use Ruins\Common\Controller\Registry;
-use Ruins\Common\Manager\RequestHandler;
+use Ruins\Common\Manager\RequestManager;
 
 /**
  * Page Class
@@ -158,7 +158,7 @@ class Page implements OutputObjectInterface
         $this->nav->cacheNavigation = true;
 
         // Set own URL
-        $this->url = new Url(RequestHandler::createRequest());
+        $this->url = new Url(RequestManager::createRequest());
         $this->shortname = $this->url->getParameter("page");
 
         // Initialize the Smarty-Class

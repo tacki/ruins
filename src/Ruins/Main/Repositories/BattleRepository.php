@@ -12,7 +12,7 @@
  * Namespaces
  */
 namespace Ruins\Main\Repositories;
-use Ruins\Common\Controller\Error;
+use Ruins\Common\Exceptions\Error;
 use Ruins\Main\Entities\Battle;
 use Ruins\Main\Entities\BattleMember;
 use Ruins\Main\Entities\BattleMessage;

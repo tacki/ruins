@@ -12,7 +12,7 @@
 /**
  * Namespaces
  */
-namespace Ruins\Common\Controller;
+namespace Ruins\Common\Exceptions;
 use Exception;
 
 /**
