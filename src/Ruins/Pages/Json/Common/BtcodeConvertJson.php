@@ -16,7 +16,7 @@ namespace Ruins\Pages\Json\Common;
 use Ruins\Common\Controller\BtCode;
 use Ruins\Common\Controller\AbstractPageObject;
 
-class AutocompleteCharnameJson extends AbstractPageObject
+class BtcodeConvertJson extends AbstractPageObject
 {
     /**
      * @see Ruins\Common\Interfaces.PageObjectInterface::createContent()

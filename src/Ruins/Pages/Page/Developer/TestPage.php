@@ -226,7 +226,7 @@ class TestPage extends AbstractPageObject
 
         $page->addJavaScript("
             $(function() {
-                setColorPreview('chat', 'chatpreview');
+                setColorPreview('chat', 'chatpreview', '".RequestManager::getWebBasePath()."/"."Json/Common/BtcodeConvert');
             });
          ");
 

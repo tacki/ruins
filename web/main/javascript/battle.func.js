@@ -6,10 +6,10 @@
  */
 function refreshOnNewRound(charid)
 {
-    var callURL			= "Main/Helpers/ajax/battle_checknewround.ajax.php";
-    var parameters		= "characterid="+charid;
+    var callURL			= "Json/Battle/CheckNewRound";
+    var parameters		= "";
     var timerCycle		= '12s';
-    var curbattleround 	= 1;
+    var curbattleround 		= 1;
     var pageURL 		= unescape(window.location.href);
 
 
@@ -37,7 +37,7 @@ function refreshOnNewRound(charid)
  */
 function checkBattleActionDone(battleid, tokenowner)
 {
-    var callURL			= "Main/Helpers/ajax/battle_checkactiondone.ajax.php";
+    var callURL			= "Json/Battle/CheckActionDone";
     var parameters		= "battleid="+battleid;
     var timerCycle		= '5s';
     var pageURL 		= unescape(window.location.href);
@@ -71,10 +71,10 @@ function checkBattleActionDone(battleid, tokenowner)
 function getTargetList(battleid, charid, skillselectform, targetselectform)
 {
     $(document).ready(function() {
-        var callURL 	= "Main/Helpers/ajax/battle_gettargetsforskill.ajax.php";
-        var parameters	= "battleid="+battleid+"&charid="+charid;
-        var selectedskill = $("select[name="+skillselectform+"] option:selected").val();
-        var url = callURL+"?"+parameters+"&skillname="+selectedskill;
+        var callURL 		= "Json/Battle/GetTargetsForSkill";
+        var parameters		= "battleid="+battleid+"&charid="+charid;
+        var selectedskill 	= $("select[name="+skillselectform+"] option:selected").val();
+        var url 		= callURL+"?"+parameters+"&skillname="+selectedskill;
 
         insertTargetsIntoForm(url, targetselectform);
         // Update Description

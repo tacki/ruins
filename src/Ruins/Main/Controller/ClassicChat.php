@@ -22,6 +22,7 @@ use Ruins\Main\Entities\Chat;
 use Ruins\Main\Entities\Character;
 use DateTime;
 use Ruins\Common\Controller\Registry;
+use Ruins\Common\Manager\RequestManager;
 
 /**
  * Class to create a simple Chat
@@ -409,10 +410,11 @@ class ClassicChat
         switch ($this->_mode) {
             case self::MODE_NORMAL:
                 // Chatlines
-                $chatsnippet = $this->_page->getTemplateEngine()->createTemplate("snippet_classicchat.tpl");
+                $chatsnippet = $this->_page->getTemplateEngine()->createTemplate("snippet_classicchat.tpl", new \Smarty);
 
                 $chatsnippet->assign("chatname", $this->_section);
                 $chatsnippet->assign("chatform", $chatform);
+                $chatsnippet->assign("chatpreviewurl", RequestManager::getWebBasePath()."/"."Json/Common/BtcodeConvert");
                 $chatsnippet->assign("target", (string)$this->_page->getUrl());
                 // Nav for all Buttons (important)
                 $this->_page->getNavigation()->addHiddenLink($this->_page->getUrl());

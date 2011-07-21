@@ -5,7 +5,7 @@ function updateSettings(settingsobject, setting, data)
     postdata['setting'] 		= setting;
     postdata['data']			= data;
 
-    $.post("includes/helpers/ajax/update_settings.ajax.php", postdata);
+    $.post("Json/Main/UpdateSettings", postdata);
 }
 
 function updateArraySettings(settingsobject, setting, data, arrayaction)
@@ -16,5 +16,5 @@ function updateArraySettings(settingsobject, setting, data, arrayaction)
     postdata['data']			= data;
     postdata['arrayaction']		= arrayaction;
 
-    $.post("includes/helpers/ajax/update_settings.ajax.php", postdata);
+    $.post("Json/Main/UpdateSettings", postdata);
 }

@@ -1,6 +1,6 @@
-function setColorPreview(input_id, preview_id)
+function setColorPreview(input_id, preview_id, url)
 {
-    var callURL			= "Common/Helpers/ajax/btcode.ajax.php";
+    var callURL			= url;
 
     var cpInputId 		= "#" + input_id;
     var cpPreviewId 		= "#" + preview_id;
@@ -18,7 +18,7 @@ function setColorPreview(input_id, preview_id)
             search_timeout = undefined;
 
             $.post(callURL+"?action=decode", {decodestring: "" + Url.encode($(cpInputId).val()) + ""}, function(data) {
-                $(cpPreviewId).html ( data );
+                $(cpPreviewId).html ( jQuery.parseJSON(data) );
             });
         }, delay);
     });

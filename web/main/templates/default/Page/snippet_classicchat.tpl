@@ -1,12 +1,8 @@
-{literal}
 <script type="text/javascript">
-    $(function() {
-{/literal}
-        setColorPreview('{$chatform}_chatline', '{$chatform}_chatpreview');
-{literal}
-    });
+    $(function() {ldelim}
+        setColorPreview('{$chatform}_chatline', '{$chatform}_chatpreview', '{$chatpreviewurl}');
+    {rdelim});
 </script>
-{/literal}
 
 <a
     id="chatid_{$chatname}_hide"

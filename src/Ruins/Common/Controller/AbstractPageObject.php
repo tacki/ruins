@@ -265,6 +265,11 @@ abstract class AbstractPageObject implements PageObjectInterface
         $query = array_merge($this->getRequest()->getQueryAsArray(),
                              $this->getRequest()->getPostAsArray(),
                              $this->getRequest()->getRoute()->getQueryExtra());
+
+        foreach ($query as &$entry) {
+            $entry = rawurldecode($entry);
+        }
+
         $this->createContent($this->getOutputObject(), $query);
 
         // Call Show-Method of PageObject
