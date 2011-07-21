@@ -1,0 +1,1 @@
+{foreach $main as $entry}{$entry}{/foreach}

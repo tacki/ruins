@@ -1,6 +1,6 @@
 <?php
 /**
- * Security Class
+ * Firewall Class
  *
  * @author Markus Schlegel <g42@gmx.net>
  * @copyright Copyright (C) 2011 Markus Schlegel
@@ -33,6 +33,11 @@ class Firewall
     public function checkRequestAllowed(UserInterface $user, Request $request)
     {
         $savedNavigation = $user->getCharacter()->getAllowedNavigation();
+
+        if (!($savedNavigation instanceof NavigationInterface)) {
+            // TODO: Security Issue
+            return true;
+        }
 
         foreach ($savedNavigation->getLinkList() as $allowedNavigation) {
             if ($allowedNavigation['url'] == RequestManager::getWebBasePath() . "/" . $request->getCompleteRequest()) {

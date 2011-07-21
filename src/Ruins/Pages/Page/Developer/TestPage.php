@@ -237,7 +237,7 @@ class TestPage extends AbstractPageObject
 
         $page->addJavaScript("
             $(function() {
-                setAutoComplete('searchField', 'results', '" . SystemManager::getOverloadedFilePath("Helpers/ajax/autocomplete_charname.ajax.php", true)."?part=');
+                setAutoComplete('searchField', 'results', '".RequestManager::getWebBasePath()."/"."Json/Common/AutocompleteCharname?part=');
             });
         ");
         // btcode Test END

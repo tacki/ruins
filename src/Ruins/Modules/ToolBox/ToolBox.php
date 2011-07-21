@@ -13,6 +13,8 @@
  * Namespaces
  */
 namespace Ruins\Modules\ToolBox;
+use Ruins\Common\Manager\RequestManager;
+
 use Ruins\Common\Interfaces\OutputObjectInterface;
 use Ruins\Main\Controller\Link;
 use Ruins\Main\Manager\SystemManager;
@@ -51,7 +53,7 @@ class ToolBox extends ModuleBase implements ModuleInterface
         if ($user->character && $user->getCharacter()->loggedin) {
 
             $page->addToolBoxItem("pruneCache",
-                                  SystemManager::getOverloadedFilePath("Helpers/ajax/prune_cache.ajax.php", true),
+                                  RequestManager::getWebBasePath()."/"."Json/Common/PruneCache",
                                   "Session Cache leeren",
                                   SystemManager::getWebRessourcePath("images/trash.png", true),
                                   SystemManager::getWebRessourcePath("images/accept.png", true)

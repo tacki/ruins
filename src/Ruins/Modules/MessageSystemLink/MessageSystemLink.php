@@ -14,10 +14,10 @@
  */
 namespace Ruins\Modules\MessageSystemLink;
 use Ruins\Common\Interfaces\OutputObjectInterface;
-use Ruins\Main\Manager\SystemManager;
 use Ruins\Modules\ModuleBase;
 use Ruins\Common\Interfaces\ModuleInterface;
 use Ruins\Common\Controller\Registry;
+use Ruins\Common\Manager\RequestManager;
 
 /**
  * MessageSystem Module
@@ -56,7 +56,7 @@ class MessageSystemLink extends ModuleBase implements ModuleInterface
                  $(document).ready(function() {
                     var timerCycle     = '60s';
                     var result         = 0;
-                    var jsonURL        = '".SystemManager::getOverloadedFilePath("/Helpers/ajax/messenger_newMessageAlert.ajax.php", true)."?userid=".$user->getCharacter()->id."';
+                    var jsonURL        = '".RequestManager::getWebBasePath()."/"."Json/Messenger/NewMessageAlert"."';
 
                     $.getJSON(jsonURL, function(json) {
                         if (json > 0) {

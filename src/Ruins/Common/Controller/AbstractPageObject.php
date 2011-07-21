@@ -89,7 +89,7 @@ abstract class AbstractPageObject implements PageObjectInterface
         $this->registry = new Registry;
         $this->request  = $request;
         $this->em       = $this->getEntityManager();
-        $this->security = new Firewall;
+        $this->firewall = new Firewall;
 
         // Initialize Visibility ($public and $dontCache)
         $this->initVisibility();
@@ -139,7 +139,7 @@ abstract class AbstractPageObject implements PageObjectInterface
      */
     public function getFirewall()
     {
-        return $this->security;
+        return $this->firewall;
     }
 
     /**
@@ -226,7 +226,7 @@ abstract class AbstractPageObject implements PageObjectInterface
     public function redirect($url)
     {
         // Add Url to Navigation
-        if ($this->isPrivate()) {
+        if ($this->isPrivate() && $this->getOutputObject()->isPrivate()) {
             $this->getOutputObject()->getNavigation()->addHiddenLink($url);
         }
 
@@ -252,7 +252,7 @@ abstract class AbstractPageObject implements PageObjectInterface
      */
     public function render()
     {
-        if ($this->isPrivate()) {
+        if ($this->isPrivate() && $this->getOutputObject()->isPrivate()) {
             // Bootstrap User
             $this->bootstrapUser();
         }
@@ -270,7 +270,7 @@ abstract class AbstractPageObject implements PageObjectInterface
         // Call Show-Method of PageObject
         $this->getOutputObject()->show($this->getTemplate());
 
-        if ($this->isPrivate()) {
+        if ($this->isPrivate() && $this->getOutputObject()->isPrivate()) {
             // Filter Pages that are not accessable due to Restrictions
             $allowedNavigation = $this->getFirewall()
                                       ->filterNavigationRestriction($this->getUser(), $this->getOutputObject()->getNavigation());
@@ -318,7 +318,7 @@ abstract class AbstractPageObject implements PageObjectInterface
     /**
      * Initialize matching Output Object
      */
-    private function initOutputObject()
+    protected function initOutputObject()
     {
         $caller = $this->getRequest()->getRoute()->getCallerName();
         $classname = 'Ruins\\Common\\Controller\\OutputObjects\\'.$caller;
@@ -336,7 +336,7 @@ abstract class AbstractPageObject implements PageObjectInterface
         if ($this->isPrivate() && $this->getUser()) {
             // This PageObject is private, set the underlying OutputObject to private too
             $this->getOutputObject()->setPrivate($this->getUser());
-        } elseif ($this->isPrivate() && !$this->getUser()) {
+        } elseif ($this->isPrivate() && $this->getOutputObject()->isPrivate() && !$this->getUser()) {
             // This Page Object is private, but there is no User loaded. Force to login
             SessionStore::set("logoutreason", "Nicht eingeloggt!");
             $this->redirect("Page/Common/Login");
@@ -349,11 +349,11 @@ abstract class AbstractPageObject implements PageObjectInterface
     /**
      * Bootstrap User
      */
-    private function bootstrapUser()
+    protected function bootstrapUser()
     {
         $user = $this->getUser();
 
-        if ($user && $this->isPrivate() && $this->getOutputObject()->isPrivate()) {
+        if ($user) {
             // Page is private and we have an loggedin User
 
             // Check if this Request is allowed to the User
