@@ -14,6 +14,7 @@ namespace Ruins\Pages\Popup;
 use Ruins\Main\Controller\Link;
 use Ruins\Main\Manager\MessageManager;
 use Ruins\Common\Controller\AbstractPageObject;
+use Ruins\Common\Controller\Registry;
 
 class MessengerPopup extends AbstractPageObject
 {
@@ -21,9 +22,12 @@ class MessengerPopup extends AbstractPageObject
 
     public function createContent($page, $parameters)
     {
-        $page->getNavigation()->addLink("Verfassen", "Popup/Messenger/create")
-                  ->addLink("Posteingang", "Popup/Messenger/inbox")
-                  ->addLink("Postausgang", "Popup/Messenger/outbox");
+        $user = Registry::getUser();
+
+        $page->getNavigation()
+             ->addLink("Verfassen", "Popup/Messenger/create")
+             ->addLink("Posteingang", "Popup/Messenger/inbox")
+             ->addLink("Postausgang", "Popup/Messenger/outbox");
 
         switch ($parameters['op']) {
 
@@ -51,19 +55,18 @@ class MessengerPopup extends AbstractPageObject
 
             default:
             case "create":
-                $snippet = $page->createTemplateSnippet();
+                $snippet = $page->getTemplateEngine()->createTemplate("snippet_messenger_create.tpl");
                 $snippet->assign("target", "Popup/Messenger/send");
                 $snippet->assign("receiver", "");
                 $snippet->assign("subject", "");
                 $snippet->assign("text", "");
-                $output = $snippet->fetch("snippet_messenger_create.tpl");
+                $output = $snippet->fetch();
                 $page->output($output, true);
-
-            break;
+                break;
 
             case "reply":
-                $snippet = $page->createTemplateSnippet();
-                $snippet->assign("target", "Popup/Messenger/send&reply=1");
+                $snippet = $page->getTemplateEngine()->createTemplate("snippet_messenger_create.tpl");
+                $snippet->assign("target", "Popup/Messenger/send?reply=1");
                 if (isset($parameters['replyto'])) {
                     $message = MessageManager::getMessage($parameters['replyto']);
                     $snippet->assign("receiver", $message->sender->name);
@@ -75,13 +78,12 @@ class MessengerPopup extends AbstractPageObject
                     }
                     $snippet->assign("text", "\r\n\n--- Original Message ---\r\n". $message->data->text);
                 }
-                $output = $snippet->fetch("snippet_messenger_create.tpl");
+                $output = $snippet->fetch();
                 $page->output($output, true);
                 break;
 
             case "inbox":
-                $page->addForm("delete");
-                $page->getForm("delete")->head("deleteform", "Popup/Messenger/delete");
+                $page->addForm("delete")->head("deleteform", "Popup/Messenger/delete");
 
                 $messagelist = MessageManager::getInbox($user->character);
                 $showlist = array();
@@ -93,8 +95,8 @@ class MessengerPopup extends AbstractPageObject
                         case 2: $showmessage['status'] = "<img src='".$page->template['mytemplatedir']."/images/message_replied.gif' />"; break;
                     }
 
-                    $showmessage['sender']		= "<a href='Popup/Messenger/read&messageid=".$message->id."'>".$message->sender->name."</a>";
-                    $showmessage['subject'] 	= "<a href='Popup/Messenger/read&messageid=".$message->id."'>".$message->data->subject."</a>";
+                    $showmessage['sender']		= "<a href='Popup/Messenger/read?messageid=".$message->id."'>".$message->sender->name."</a>";
+                    $showmessage['subject'] 	= "<a href='Popup/Messenger/read?messageid=".$message->id."'>".$message->data->subject."</a>";
                     $showmessage['date']		= $message->date->format("H:i:s d.m.y");
                     $showmessage['action']		= "<input type='checkbox' name='chooser[]' value='".$message->id."'>";
 
@@ -122,7 +124,7 @@ class MessengerPopup extends AbstractPageObject
                     $message = MessageManager::getMessage($parameters['messageid']);
 
                     $snippet = $page->createTemplateSnippet();
-                    $snippet->assign("target", "Popup/Messenger/reply&replyto=".$message->id);
+                    $snippet->assign("target", "Popup/Messenger/reply?replyto=".$message->id);
                     $snippet->assign("sender", $message->sender->displayname);
                     $snippet->assign("date", $message->date->format("H:i:s d.m.y"));
                     $snippet->assign("subject", $message->data->subject);
@@ -141,7 +143,7 @@ class MessengerPopup extends AbstractPageObject
                 if (isset($parameters['chooser'])) {
                     $page->output("Willst du wirklich " . count($parameters['chooser']) . " Nachrichten löschen?");
                     $page->addForm("delete");
-                    $page->getForm("delete")->head("deleteform", "Popup/Messenger/delete&ask=yes");
+                    $page->getForm("delete")->head("deleteform", "Popup/Messenger/delete?ask=yes");
                     $page->getForm("delete")->hidden("ids", implode(",", $parameters['chooser']));
                     $page->getForm("delete")->setCSS("button");
                     $page->getForm("delete")->submitButton("Ja, Löschen");
@@ -159,8 +161,8 @@ class MessengerPopup extends AbstractPageObject
                 $showlist = array();
                 foreach ($messagelist as $message) {
                     $showmessage = array();
-                    $showmessage['receiver']	= "<a href='Popup/Messenger/read&messageid=".$message->id."'>".$message->receiver->displayname."</a>";
-                    $showmessage['subject'] 	= "<a href='Popup/Messenger/read&messageid=".$message->id."'>".$message->data->subject."</a>";
+                    $showmessage['receiver']	= "<a href='Popup/Messenger/read?messageid=".$message->id."'>".$message->receiver->displayname."</a>";
+                    $showmessage['subject'] 	= "<a href='Popup/Messenger/read?messageid=".$message->id."'>".$message->data->subject."</a>";
                     $showmessage['date']		= $message->date->format("H:i:s d.m.y");
 
                     $showlist[] = $showmessage;

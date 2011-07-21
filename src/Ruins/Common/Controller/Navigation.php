@@ -141,12 +141,14 @@ class Navigation implements NavigationInterface
      */
     protected function addToLinkList($display, $url=false, $description=false, GroupInterface $restriction=null)
     {
+        $linktype = RequestManager::createRequest($url)->getRoute()->getCallerName();
+
         $this->linkList[] = array(
                                     'displayname' => $display,
                                     'url'		  => ($url?RequestManager::getWebBasePath()."/".$url:false),
                                     'position'	  => $this->getContainerName(),
                                     'description' => $description,
-                                    'type'		  => $this->getRequest()->getRoute()->getCallerName(),
+                                    'type'		  => $linktype,
                                     'restriction' => $restriction,
                                  );
     }

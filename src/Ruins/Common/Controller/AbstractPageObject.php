@@ -353,7 +353,7 @@ abstract class AbstractPageObject implements PageObjectInterface
     {
         $user = $this->getUser();
 
-        if ($user && $this->isPrivate()) {
+        if ($user && $this->isPrivate() && $this->getOutputObject()->isPrivate()) {
             // Page is private and we have an loggedin User
 
             // Check if this Request is allowed to the User

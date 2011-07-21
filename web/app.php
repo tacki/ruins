@@ -64,6 +64,7 @@ try {
 
     switch ($opmode) {
         case "normal":
+            ModuleManager::callModule(ModuleManager::EVENT_PRE_PAGEHEADER);
             $page = $request->createPageObject();
 
             $page->render();

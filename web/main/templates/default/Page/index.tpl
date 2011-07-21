@@ -4,7 +4,7 @@
 {foreach $cssHeadIncludes as $cssFile}
     <link href='{$cssFile}' rel='stylesheet' type='text/css' />
 {/foreach}
-    <link href='{$mytemplatedir}/styles/content_stdelements.css' rel='stylesheet' type='text/css' />
+    <link href='{$basetemplatedir}/styles/base.css' rel='stylesheet' type='text/css' />
     <link href='{$mytemplatedir}/styles/content.css' rel='stylesheet' type='text/css' />
     <link href='{$mytemplatedir}/styles/layout.css' rel='stylesheet' type='text/css' />
 {foreach $jsHeadIncludes as $jsFile}
@@ -14,7 +14,11 @@
 
 {block name=navShared}
     {foreach $navShared as $entry}
+        {if $entry.type == "Popup"}
+        <a href='{$entry.url}' title='{$entry.title}' onclick='return popup(this)'>{$entry.display}</a>
+        {else}
         <a href='{$entry.url}' title='{$entry.title}'>{$entry.display}</a>
+        {/if}
     {/foreach}
 {/block}
 

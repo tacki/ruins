@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>{block name=title}Default Page Title{/block}</title>
+    <title>{block name=title}Ruins - {$headtitle}{/block}</title>
     <meta charset="UTF-8" />
     {block name=headScripts}{/block}
 </head>

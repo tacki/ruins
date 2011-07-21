@@ -30,13 +30,8 @@ use Ruins\Main\Manager\ModuleManager;
  * Class Name
  * @package Ruins
  */
-class Page implements OutputObjectInterface
+class Popup implements OutputObjectInterface
 {
-    /**
-     * @var UserInterface
-     */
-    protected $user=null;
-
     /**
      * @var Url
      */
@@ -57,11 +52,6 @@ class Page implements OutputObjectInterface
      */
     protected $pagegenerationstarttime;
 
-    /**
-     * @var array
-     */
-    protected $toolBoxItems = array();
-
     public function __construct()
     {
         // Set microtime to meassure the page-generation time
@@ -77,6 +67,9 @@ class Page implements OutputObjectInterface
         $this->navigation = new Navigation($request);
 
         $this->templateEngine  = Registry::get('smarty');
+
+        $this->getTemplateEngine()->caching = 0;
+
         $baseTemplateDir       = reset($this->getTemplateEngine()->template_dir);
         $pageObjectTemplateDir = $baseTemplateDir . "/" . $request->getRoute()->getCallerName();
 
@@ -137,35 +130,10 @@ class Page implements OutputObjectInterface
     }
 
     /**
-     * Add a tool to the ToolBox
-     * @param string $url Url
-     * @param string $description Description for this Tool
-     * @param string $imagesrc Imagesrc before a click
-     * @param string $replaceimagesrc Imagesrc after a click (optional)
-     */
-    public function addToolBoxItem($name, $url, $description, $imagesrc, $replaceimagesrc=false)
-    {
-        $boxItem = array();
-
-        $boxItem['name']            = $name;
-        $boxItem['url']             = $url;
-        $boxItem['description']     = $description;
-        $boxItem['imagesrc']        = $imagesrc;
-        if ($replaceimagesrc) {
-            $boxItem['replaceimagesrc']    = $replaceimagesrc;
-        } else {
-            $boxItem['replaceimagesrc']    = $boxItem['imagesrc'];
-        }
-
-        $this->toolBoxItems[] = $boxItem;
-    }
-
-    /**
      * @see Ruins\Common\Interfaces.OutputObjectInterface::setTitle()
      */
     public function setTitle($value)
     {
-        $this->assign("pagetitle", $value);
         $this->assign("headtitle", $value);
     }
 
@@ -174,11 +142,7 @@ class Page implements OutputObjectInterface
      */
     public function isPrivate()
     {
-        if (isset($this->user)) {
-            return true;
-        } else {
-            return false;
-        }
+        return false;
     }
 
     /**
@@ -186,7 +150,6 @@ class Page implements OutputObjectInterface
      */
     public function setPrivate(UserInterface $user)
     {
-        $this->user = $user;
     }
 
     /**
@@ -243,15 +206,7 @@ class Page implements OutputObjectInterface
      */
     public function cacheExists($template)
     {
-        if ($this->isPrivate()) {
-            if ($this->getTemplateEngine()->isCached($template, $this->user->character->id)) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        return false;
+        return true;
     }
 
     /**
@@ -259,14 +214,6 @@ class Page implements OutputObjectInterface
      */
     public function getLatestGenerated($template)
     {
-        if ($this->isPrivate()) {
-            if ($this->getTemplateEngine()->isCached($template, $this->user->character->id)) {
-                return $this->getTemplateEngine()->fetch($template, $this->user->character->id);
-            } else {
-                return false;
-            }
-        }
-
         return "";
     }
 
@@ -283,7 +230,6 @@ class Page implements OutputObjectInterface
      */
     public function clearCache($template)
     {
-        $this->getTemplateEngine()->clearCache($template, $this->user->getCharacter()->id);
     }
 
     /**
@@ -383,33 +329,37 @@ class Page implements OutputObjectInterface
     }
 
     /**
+     * Redirect the main Window to another Location
+     * Warning: No Nav-checking!
+     * @param string $location The new Location
+     */
+    public function redirectParent($location)
+    {
+        //TODO:Navchecking?
+        $this->addJavascript("opener.window.location.href = '?" . $location . "'");
+    }
+
+    /**
+     * Close the Popup via Javascript
+     */
+    public function close()
+    {
+        $this->addJavaScript("self.close()");
+    }
+
+    /**
      * @see Ruins\Common\Interfaces.OutputObjectInterface::show()
      */
     public function show($template)
     {
-        ModuleManager::callModule(ModuleManager::EVENT_PRE_PAGEGENERATION, $this);
-
         // Generate Navigation
         $this->generateNavigation();
-        // Generate ToolBox
-        $this->generateToolBox();
-        // Generate Character Stats (if private)
-        $this->generateStats();
-        // Generate Characters Near List (if private)
-        $this->generateCharactersNear();
-        // Generate Character List (if not private)
-        $this->generateCharacterList();
 
         // Page generation Time
         $this->assign("pagegen", round(microtime(true) - $this->pagegenerationstarttime,3) * 1000);
 
-        ModuleManager::callModule(ModuleManager::EVENT_POST_PAGEGENERATION, $this);
-
-        if ($this->isPrivate()) {
-            $this->getTemplateEngine()->display($template, $this->user->character->id);
-        } else {
-            $this->getTemplateEngine()->display($template);
-        }
+        // Display Page
+        $this->getTemplateEngine()->display($template);
     }
 
     /**
@@ -417,23 +367,9 @@ class Page implements OutputObjectInterface
      */
     public function showLatestGenerated($template)
     {
-        if ($this->isPrivate()) {
-            if ($this->getTemplateEngine()->isCached($template, $this->user->character->id)) {
-                $this->getTemplateEngine()->display($template, $this->user->character->id);
-                return true;
-            }
-        }
+        $this->show($template);
 
-        return false;
-    }
-
-    /**
-     * Get User
-     * @return Ruins\Common\Interfaces\UserInterface
-     */
-    protected function getUser()
-    {
-        return $this->user;
+        return true;
     }
 
     /**
@@ -445,77 +381,13 @@ class Page implements OutputObjectInterface
 
             if ($linklist['displayname']) {
 
-                if ($linklist['position'] == "main") {
-                    $this->getTemplateEngine()->append('navMain',
-                                                       array('url' => $linklist['url'],
-                                                             'title' => htmlspecialchars($linklist['description'], ENT_QUOTES),
-                                                             'display' => BtCode::decode($linklist['displayname']),
-                                                             'type' => $linklist['type'],
-                                                      ));
-                } elseif ($linklist['position'] == "shared") {
-                    $this->getTemplateEngine()->append('navShared',
-                                                       array('url' => $linklist['url'],
-                                                             'title' => htmlspecialchars($linklist['description'], ENT_QUOTES),
-                                                             'display' => BtCode::decode($linklist['displayname']),
-                                                             'type' => $linklist['type'],
-                                                      ));
-                }
+                $this->getTemplateEngine()->append('navMain',
+                                                   array('url' => $linklist['url'],
+                                                         'title' => htmlspecialchars($linklist['description'], ENT_QUOTES),
+                                                         'display' => BtCode::decode($linklist['displayname']),
+                                                         'type' => $linklist['type'],
+                                                  ));
             }
         }
-    }
-
-    /**
-     * Generate the ToolBox (small tools)
-     */
-    protected function generateToolBox()
-    {
-        $this->assign("toolBox", $this->toolBoxItems);
-    }
-
-    /**
-     * Generate Stats
-     */
-    protected function generateStats()
-    {
-        if (!$this->isPrivate()) {
-            return false;
-        }
-        $this->assign("user", $this->getUser());
-        $this->assign("weapon", ItemManager::getEquippedItem($this->getUser()->getCharacter(), "weapon"));
-        $this->assign("money", $this->getUser()->getCharacter()->money);
-    }
-
-    /**
-     * Generate List of Characters near the active one
-     */
-    protected function generateCharactersNear()
-    {
-        if (!$this->isPrivate()) {
-            return false;
-        }
-
-        $characterlist = Registry::getEntityManager()->getRepository("Main:Character")
-                                                     ->getListAtPlace($this->getUrl()->base);
-
-        foreach ($characterlist as &$charactername) {
-            $charactername = BtCode::decode($charactername);
-        }
-
-        $this->assign("charactersNear", $characterlist);
-    }
-
-    /**
-     * Generate Character list for the Frontpage
-     */
-    protected function generateCharacterList()
-    {
-        if ($this->isPrivate()) {
-            return false;
-        }
-
-        $characterlist = Registry::getEntityManager()->getRepository("Main:Character")
-                                                     ->getList(array('displayname'), 'id', 'ASC', true);
-
-        $this->assign("charactersOnline", $characterlist);
     }
 }

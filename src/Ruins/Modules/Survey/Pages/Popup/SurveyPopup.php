@@ -20,6 +20,8 @@ class SurveyPopup extends AbstractPageObject
 
     public function createContent($page, $parameters)
     {
+        $page->getNavigation()->addHead("Umfrage");
+
         $page->addCSS("Survey.css");
 
         $polls = SurveyManager::getAllPolls();

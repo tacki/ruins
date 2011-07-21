@@ -28,6 +28,8 @@ class SupportPopup extends AbstractPageObject
     {
         $user = $this->getUser();
 
+        $page->getNavigation()->addHead("Support");
+
         switch ($parameters['op']) {
 
             default:

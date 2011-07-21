@@ -21,13 +21,15 @@ class SettingsPopup extends AbstractPageObject
 
     public function createContent($page, $parameters)
     {
-        $page->getNavigation()->addLink("Benutzer", "Popup/Settings/user")
-                   ->addLink("Charakter", "Popup/Settings/char")
-                   ->addLink("Sonstiges", "Popup/Settings/other");
+        $user = Registry::getUser();
+        $em = Registry::getEntityManager();
+
+        $page->getNavigation()
+             ->addLink("Benutzer", "Popup/Settings/user")
+             ->addLink("Charakter", "Popup/Settings/char")
+             ->addLink("Sonstiges", "Popup/Settings/other");
 
         $page->addForm("settings");
-
-        $em = Registry::getEntityManager();
 
         switch ($parameters['op']) {
 

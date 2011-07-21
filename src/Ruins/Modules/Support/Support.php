@@ -42,10 +42,7 @@ class Support extends ModuleBase implements ModuleInterface
     public function prePageHeader()
     {
         // Page preparation
-        $config = Registry::getMainConfig();
-
-        // Page preparation
-        $config->addPublicPage(array("/popup/support"));
+        Registry::getMainConfig()->addPublicPage(array("Popup/Support"));
     }
 
     /**

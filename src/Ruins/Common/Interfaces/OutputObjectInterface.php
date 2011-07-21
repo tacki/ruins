@@ -52,6 +52,12 @@ interface OutputObjectInterface
     public function setNavigation(NavigationInterface $nav);
 
     /**
+     * Return Template Engine (smarty)
+     * @return \Smarty
+     */
+    public function getTemplateEngine();
+
+    /**
      * Assign a value to a given Template-Placeholder
      * @param string $placeholder
      * @param string $value
