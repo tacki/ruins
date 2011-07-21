@@ -23,12 +23,12 @@ class TrailPage extends AbstractPageObject
         $page->set("pagetitle", "Dunsplee Waldweg");
         $page->set("headtitle", "Dunsplee Waldweg");
 
-        $page->nav->addHead("Navigation")
-                  ->addLink("Reisen", "Page/Common/Travel?return={$page->url->short}")
+        $page->getNavigation()->addHead("Navigation")
+                  ->addLink("Reisen", "Page/Common/Travel?return={$page->getUrl()->short}")
                   ->addLink("Weiher", "Page/Dunsplee/Pond")
-                  ->addLink("Spielerliste", "Page/Common/Charlist?return={$page->url->short}");
+                  ->addLink("Spielerliste", "Page/Common/Charlist?return={$page->getUrl()->short}");
 
-        $page->nav->addHead("Allgemein")
+        $page->getNavigation()->addHead("Allgemein")
                   ->addLink("Logout", "Page/Common/Logout");
 
         $page->output("Du stehst auf einem kleinen Weg, kurz bevor dieser in den dichten Dunsplee Wald verschwindet.

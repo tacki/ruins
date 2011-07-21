@@ -24,19 +24,20 @@ class PortalPage extends AbstractPageObject
     {
         $user = $this->getUser();
 
-        $page->nav->addHead("Allgemein")
-                  ->addLink("Aktualisieren", $page->url)
-                  ->addLink("Logout", "Page/Common/Logout");
+        $page->getNavigation()
+             ->addHead("Allgemein")
+             ->addLink("Aktualisieren", $page->getUrl())
+             ->addLink("Logout", "Page/Common/Logout");
 
         switch ($parameters['op']) {
 
             default:
                 if (!$user) {
-                    $page->nav->redirect("Page/Common/Login");
+                    $this->redirect("Page/Common/Login");
                 }
 
                 if ($user->settings->default_character) {
-                    $page->nav->redirect("Page/Common/Portal/forward");
+                    $this->redirect("Page/Common/Portal/forward");
                 }
 
                 $page->output("Deine Charaktere:`n`n");
@@ -51,7 +52,7 @@ class PortalPage extends AbstractPageObject
                 $page->addSimpleTable("chartable");
                 $page->addForm("charchooseform");
                 $page->getForm("charchooseform")->head("charchoose", "Page/Common/Portal/forward");
-                $page->nav->addHiddenLink("Page/Common/Portal/forward");
+                $page->getNavigation()->addHiddenLink("Page/Common/Portal/forward");
 
                 foreach ($characters as $character) {
                     $page->getSimpleTable("chartable")->startRow();
@@ -89,26 +90,29 @@ class PortalPage extends AbstractPageObject
                 }
 
                 // we need to let the system know, that this character is now the loggedin one
-                $user->character->login();
+                $user->getCharacter()->login();
 
                 // Write to Debuglog
-                $user->addDebugLog("Character choosen: ". $user->character->name);
+                $user->addDebugLog("Character choosen: ". $user->getCharacter()->name);
 
                 // Create new Page for the new Character
                 // (updates page-class to use correct allowednavs, etc)
-                $page->__construct($user->character);
+                $page->setPrivate($user);
 
-                if ($page->cacheExists()) {
-                    $page->nav->loadFromCache();
+                if ($page->cacheExists($this->getTemplate())) {
+                    //$page->getNavigation()->loadFromCache(); TODO
 
                     // Check if the Cached Navigation has a refresh-nav
-                    if ($page->nav->checkRequestURL($user->character->current_nav, true)) {
+                    /* TODO
+                    if ($page->getNavigation()->checkRequestURL($user->getCharacter()->current_nav, true)) {
                         // Redirect to current_nav to fetch a new version of the Page
-                        $page->nav->redirect($user->character->current_nav);
-                    }
+                        $this->redirect($user->getCharacter()->current_nav);
+                    }*/
+
+                    $page->showLatestGenerated($this->getTemplate());
                 } else {
                     // redirect to the last place visited
-                    $page->nav->redirect($user->character->current_nav);
+                    $this->redirect($user->getCharacter()->current_nav);
                 }
 
                 break;

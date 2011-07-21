@@ -26,13 +26,13 @@ class EquipmentPage extends AbstractPageObject
     {
         $em = $this->getEntityManager();
 
-        $page->nav->addHead("Navigation");
+        $page->getNavigation()->addHead("Navigation");
         if (isset($parameters['return'])) {
-            $page->nav->addLink("Zurück", $parameters['return']);
+            $page->getNavigation()->addLink("Zurück", $parameters['return']);
         } else {
             $page->output("`b`g`#25This Page needs a return-Parameter! Please fix this!");
         }
-        $page->nav->addLink("Aktualisieren", $page->url);
+        $page->getNavigation()->addLink("Aktualisieren", $page->getUrl());
 
         // --------
         $page->addJavaScript("
@@ -140,10 +140,10 @@ class EquipmentPage extends AbstractPageObject
         // ---------
 
         $page->addForm("inventory");
-        $newURL = clone $page->url;
+        $newURL = clone $page->getUrl();
         $newURL->setParameter("op", "change");
         $page->getForm("inventory")->head("inventoryform", $newURL);
-        $page->nav->addHiddenLink($newURL);
+        $page->getNavigation()->addHiddenLink($newURL);
 
         $itemtypes = array (ItemManager::CLASS_WEAPON, ItemManager::CLASS_ARMOR);
 

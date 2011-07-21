@@ -38,7 +38,7 @@ class SurveyPopup extends AbstractPageObject
             $page->addSimpleTable("survey")->setCSS("survey");
             $page->addForm("survey")->setCSS("survey");
 
-            $page->getForm("survey")->head("survey", $page->url->setParameter("poll_id", $poll->id));
+            $page->getForm("survey")->head("survey", $page->getUrl()->setParameter("poll_id", $poll->id));
             $page->getSimpleTable("survey")->head(400);
 
             // Question

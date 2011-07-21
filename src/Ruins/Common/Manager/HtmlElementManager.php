@@ -89,7 +89,7 @@ class HtmlElementManager
     * @param bool $overwrite Overwrite existing
     * @return Ruins\Common\Controller\Form The Form Object
     */
-    public function addForm($name, OutputObjectInterface $outputObject=null, $overwrite=false)
+    public static function addForm($name, OutputObjectInterface $outputObject=null, $overwrite=false)
     {
         if ($outputObject) {
             $result = self::addElement("Form", $name, new Form($outputObject), $overwrite);
@@ -105,7 +105,7 @@ class HtmlElementManager
      * @param string $name
      * @return Ruins\Common\Controller\Form The Form Object
      */
-    public function getForm($name)
+    public static function getForm($name)
     {
         return self::getElement("Form", $name);
     }
@@ -114,7 +114,7 @@ class HtmlElementManager
      * Close Form Object
      * @param string $name
      */
-    public function closeForm($name)
+    public static function closeForm($name)
     {
         return self::deleteElement("Form", $name);
     }
@@ -126,7 +126,7 @@ class HtmlElementManager
      * @param bool $overwrite Overwrite existing
      * @return Ruins\Common\Controller\Table The Table Object
      */
-    public function addTable($name, OutputObjectInterface $outputObject=null, $overwrite=false)
+    public static function addTable($name, OutputObjectInterface $outputObject=null, $overwrite=false)
     {
         if ($outputObject) {
             $result = self::addElement("Table", $name, new Table($outputObject), $overwrite);
@@ -142,7 +142,7 @@ class HtmlElementManager
      * @param string $name
      * @return Ruins\Common\Controller\Table The Table Object
      */
-    public function getTable($name)
+    public static function getTable($name)
     {
         return self::getElement("Table", $name);
     }
@@ -151,7 +151,7 @@ class HtmlElementManager
      * Close Table Object
      * @param string $name
      */
-    public function closeTable($name)
+    public static function closeTable($name)
     {
         return self::deleteElement("Table", $name);
     }
@@ -161,7 +161,7 @@ class HtmlElementManager
      * @param string $name Name of the Chat
      * @return Ruins\Common\Controller\Chat The Chat Object
      */
-    public function addChat($name, OutputObjectInterface $outputObject=null)
+    public static function addChat($name, OutputObjectInterface $outputObject=null)
     {
         // always overwrite Chat
         $result = self::addElement("Chat", $name, new ClassicChat($outputObject, $name), true);
@@ -174,7 +174,7 @@ class HtmlElementManager
      * @param string $name
      * @return Ruins\Common\Controller\Chat The Chat Object
      */
-    public function getChat($name)
+    public static function getChat($name)
     {
         return self::getElement("Chat", $name);
     }
@@ -183,7 +183,7 @@ class HtmlElementManager
      * Close Chat Object
      * @param string $name
      */
-    public function closeChat($name)
+    public static function closeChat($name)
     {
         return self::deleteElement("Chat", $name);
     }
@@ -195,7 +195,7 @@ class HtmlElementManager
      * @param bool $overwrite Overwrite existing
      * @return Ruins\Common\Controller\SimpleTable The Table Object
      */
-    public function addSimpleTable($name, OutputObjectInterface $outputObject=null, $overwrite=false)
+    public static function addSimpleTable($name, OutputObjectInterface $outputObject=null, $overwrite=false)
     {
         if ($outputObject) {
             $result = self::addElement("SimpleTable", $name, new SimpleTable($outputObject), $overwrite);
@@ -211,7 +211,7 @@ class HtmlElementManager
      * @param string $name
      * @return Ruins\Common\Controller\SimpleTable The Chat Object
      */
-    public function getSimpleTable($name)
+    public static function getSimpleTable($name)
     {
         return self::getElement("SimpleTable", $name);
     }
@@ -220,7 +220,7 @@ class HtmlElementManager
      * Close SimpleTable Object
      * @param string $name
      */
-    public function closeSimpleTable($name)
+    public static function closeSimpleTable($name)
     {
         return self::deleteElement("SimpleTable", $name);
     }

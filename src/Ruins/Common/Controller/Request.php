@@ -12,14 +12,14 @@
  * Namespaces
  */
 namespace Ruins\Common\Controller;
+use Ruins\Common\Interfaces\PageObjectInterface;
+use Ruins\Main\Manager\SystemManager;
+use Ruins\Common\Controller\Route;
 
 /**
  * Request Class
  * @package Ruins
  */
-use Ruins\Main\Manager\SystemManager;
-use Ruins\Common\Controller\Route;
-
 class Request
 {
     /**
@@ -130,6 +130,26 @@ class Request
     public function getCompleteRequest()
     {
         return $this->completeRequest;
+    }
+
+    /**
+     * Check if this Request is valid
+     * @return boolean
+     */
+    public function isValid()
+    {
+        return $this->getRoute()->isValid();
+    }
+
+    /**
+     * Create corresponding Page Object
+     * @return Ruins\Common\Interfaces\PageObjectInterface
+     */
+    public function createPageObject()
+    {
+        $classname = $this->getRoute()->getClassname();
+
+        return new $classname($this);
     }
 
     /**

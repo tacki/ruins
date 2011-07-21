@@ -13,7 +13,6 @@
  * Namespaces
  */
 namespace Ruins\Main\Controller;
-use Ruins\Common\Interfaces\NavigationInterface;
 use Ruins\Common\Manager\RequestManager;
 use Ruins\Main\Entities\Group;
 use Ruins\Common\Exceptions\Error;
@@ -28,7 +27,7 @@ use Ruins\Common\Controller\Registry;
  * Navigation Class which cares about the Navigation between the Pages
  * @package Ruins
  */
-class Nav implements NavigationInterface
+class Nav
 {
     /**
      * Flag to save Navigation to cache
@@ -94,11 +93,7 @@ class Nav implements NavigationInterface
     }
 
     /**
-     * Add Navigation Head
-     * @param string $title Title
-     * @param string $linkcontainer Name of the Container this Link is shown in
-     * @param Group $restriction Group the Link is restricted to
-     * @return Nav This Object
+     * @see Ruins\Common\Interfaces.NavigationInterface::addHead()
      */
     public function addHead($title, $linkcontainer="main", Group $restriction=NULL)
     {
@@ -112,12 +107,7 @@ class Nav implements NavigationInterface
 
 
     /**
-     * Add Navigation Link
-     * @param string $name Shown Linkname
-     * @param string $url URL
-     * @param string $linkcontainer Name of the Container this Link is shown in
-     * @param Group $restriction Group the Link is restricted to
-     * @return Nav This Object
+     * @see Ruins\Common\Interfaces.NavigationInterface::addLink()
      */
     public function addLink($name, $url, $linkcontainer="main", Group $restriction=NULL)
     {
@@ -134,10 +124,7 @@ class Nav implements NavigationInterface
     }
 
     /**
-     * Add a hidden Link to allow HTML-Forms in protected Areas
-     * @param string $url URL
-     * @param Group $restriction Group the Link is restricted to
-     * @return Nav This Object
+     * @see Ruins\Common\Interfaces.NavigationInterface::addHiddenLink()
      */
     public function addHiddenLink($url, Group $restriction=NULL)
     {
@@ -150,11 +137,7 @@ class Nav implements NavigationInterface
     }
 
     /**
-     * Add Navigation Link inside a Text
-     * @param string $text Shown linked Text
-     * @param string $url URL
-     * @param Group $restriction Group the Link is restricted to
-     * @return Nav This Object
+     * @see Ruins\Common\Interfaces.NavigationInterface::addTextLink()
      */
     public function addTextLink($text, $url, Group $restriction=NULL)
     {
@@ -215,7 +198,7 @@ class Nav implements NavigationInterface
                                         "url"=>$link->url?RequestManager::getWebBasePath()."/".$link->url:"",
                                         "position"=>$link->position,
                                         "description"=>$link->description,
-                                        "type"=>$request->getRoute()->getCaller(),
+                                        "type"=>$request->getRoute()->getCallerName(),
                                     );
 
             if ($linklistid > 0) {
@@ -301,11 +284,19 @@ class Nav implements NavigationInterface
     }
 
     /**
-     * Return Linklist
+     * @see Ruins\Common\Interfaces.NavigationInterface::getLinkList()
      */
     public function getLinkList()
     {
         return $this->_linkList;
+    }
+
+    /**
+     * @see Ruins\Common\Interfaces.NavigationInterface::setLinkList()
+     */
+    public function setLinkList(array $linkList)
+    {
+        $this->_linkList = $linkList;
     }
 
     /**

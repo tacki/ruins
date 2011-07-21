@@ -21,14 +21,14 @@ class InventoryChooserPage extends AbstractPageObject
 
     public function createContent($page, $parameters)
     {
-        $page->nav->addHead("Navigation");
+        $page->getNavigation()->addHead("Navigation");
         if (isset($parameters['return'])) {
-            $page->nav->addLink("Zurück", $parameters['return']);
+            $page->getNavigation()->addLink("Zurück", $parameters['return']);
         } else {
             $page->output("`b`g`#25This Page needs a return-Parameter! Please fix this!");
         }
 
-        $page->nav->addHead("Inventar");
+        $page->getNavigation()->addHead("Inventar");
 
         switch ($parameters['op']) {
 
@@ -45,9 +45,9 @@ class InventoryChooserPage extends AbstractPageObject
                     $itemlist 	= ItemManager::getInventoryList($user->character, "all");
                 }
 
-                $newURL = clone $page->url;
+                $newURL = clone $page->getUrl();
                 $newURL->setParameter("op", "backpack");
-                $page->nav->addLink("Rucksack", $newURL);
+                $page->getNavigation()->addLink("Rucksack", $newURL);
                 break;
 
             case "backpack":
@@ -62,9 +62,9 @@ class InventoryChooserPage extends AbstractPageObject
                     $itemlist 	= ItemManager::getInventoryList($user->character, "backpack");
                 }
 
-                $newURL = clone $page->url;
+                $newURL = clone $page->getUrl();
                 $newURL->setParameter("op", "all");
-                $page->nav->addLink("Alle zeigen", $newURL);
+                $page->getNavigation()->addLink("Alle zeigen", $newURL);
                 break;
 
         }
@@ -78,7 +78,7 @@ class InventoryChooserPage extends AbstractPageObject
             $callbackpage = $parameters['return']."/".$parameters['callop'];
             $page->addForm("chooser");
             $page->getForm("chooser")->head("chooser", $callbackpage);
-            $page->nav->addHiddenLink($callbackpage);
+            $page->getNavigation()->addHiddenLink($callbackpage);
         }
 
         if (is_array($itemlist)) {
@@ -130,7 +130,7 @@ class InventoryChooserPage extends AbstractPageObject
 
         // Add Navlinks for the clickable Headers
         foreach ($headers as $link=>$linkname) {
-            $newURL = clone $page->url;
+            $newURL = clone $page->getUrl();
             $newURL->setParameter("order", $link);
             if (isset($parameters['order']) && isset($parameters['orderDesc'])
                 && $parameters['order'] == $link && $parameters['orderDesc'] == 0) {
@@ -138,7 +138,7 @@ class InventoryChooserPage extends AbstractPageObject
             } else {
                 $newURL->setParameter("orderDesc", 0);
             }
-            $page->nav->addHiddenLink($newURL);
+            $page->getNavigation()->addHiddenLink($newURL);
         }
 
         // Make Tableheaders clickable

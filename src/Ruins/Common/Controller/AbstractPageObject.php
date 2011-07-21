@@ -12,10 +12,11 @@
  * Namespaces
  */
 namespace Ruins\Common\Controller;
-use Ruins\Main\Controller\Nav;
 use Doctrine\ORM\EntityManager;
+use Ruins\Common\Manager\RequestManager;
 use Ruins\Common\Controller\Registry;
 use Ruins\Common\Controller\Request;
+use Ruins\Common\Controller\Firewall;
 use Ruins\Common\Controller\SessionStore;
 use Ruins\Common\Interfaces\PageObjectInterface;
 use Ruins\Common\Interfaces\OutputObjectInterface;
@@ -42,7 +43,12 @@ abstract class AbstractPageObject implements PageObjectInterface
      * No Caching flag
      * @var bool
      */
-     protected $dontCache = false;
+    protected $dontCache = false;
+
+    /**
+     * @var string
+     */
+    protected $template = "index.tpl";
 
     /**
      * System Registry
@@ -54,19 +60,24 @@ abstract class AbstractPageObject implements PageObjectInterface
      * Entity Manager
      * @var EntityManager
      */
-    protected $_em;
+    protected $em;
+
+    /**
+     * @var Firewall
+     */
+    protected $firewall;
 
     /**
      * Request Object
      * @var Request
      */
-    protected $_request;
+    protected $request;
 
     /**
      * Enter description here ...
      * @var OutputObjectInterface
      */
-    protected $_outputObject;
+    protected $outputObject;
 
     /**
      * Initialize Object
@@ -75,12 +86,11 @@ abstract class AbstractPageObject implements PageObjectInterface
     public function __construct(Request $request)
     {
         // Init Registry Object
-        $this->_registry = new Registry;
-        $this->_request  = $request;
-        $this->_em       = $this->getEntityManager();
+        $this->registry = new Registry;
+        $this->request  = $request;
+        $this->em       = $this->getEntityManager();
+        $this->security = new Firewall;
 
-        // Initialize User
-        $this->initUser();
         // Initialize Visibility ($public and $dontCache)
         $this->initVisibility();
         // Inititalize OutputObject
@@ -107,11 +117,11 @@ abstract class AbstractPageObject implements PageObjectInterface
 
     /**
      * Get Output Object
-     * @var OutputObjectInterface
+     * @return Ruins\Common\Interfaces\OutputObjectInterface
      */
     public function getOutputObject()
     {
-        return $this->_outputObject;
+        return $this->outputObject;
     }
 
     /**
@@ -120,7 +130,16 @@ abstract class AbstractPageObject implements PageObjectInterface
      */
     public function getRegistry()
     {
-        return $this->_registry;
+        return $this->registry;
+    }
+
+    /**
+     * Get Request Object
+     * @return Ruins\Common\Controller\Firewall
+     */
+    public function getFirewall()
+    {
+        return $this->security;
     }
 
     /**
@@ -129,12 +148,12 @@ abstract class AbstractPageObject implements PageObjectInterface
      */
     public function getRequest()
     {
-        return $this->_request;
+        return $this->request;
     }
 
     /**
      * Get loggedin User
-     * @return Ruins\Common\Controller\User
+     * @return Ruins\Common\Interfaces\UserInterface
      */
     public function getUser()
     {
@@ -151,7 +170,15 @@ abstract class AbstractPageObject implements PageObjectInterface
     }
 
     /**
-     * (non-PHPdoc)
+     * Check if a Page Object is Private
+     * @return boolean
+     */
+    public function isPrivate()
+    {
+        return !$this->public;
+    }
+
+    /**
      * @see Ruins\Common\Interfaces.PageObjectInterface::setTitle()
      */
     public function setTitle($title=false)
@@ -174,10 +201,62 @@ abstract class AbstractPageObject implements PageObjectInterface
     }
 
     /**
+     * Set Template Filename
+     * Has to be inside a Templatedirectory known to our Template Engine
+     * @param string $template
+     */
+    public function setTemplate($template)
+    {
+        $this->template = $template;
+    }
+
+    /**
+     * Get Template Filename
+     * @return string
+     */
+    public function getTemplate()
+    {
+        return $this->template;
+    }
+
+    /**
+     * Redirect to another Page
+     * @param string $url Target of the redirect
+     */
+    public function redirect($url)
+    {
+        // Add Url to Navigation
+        if ($this->isPrivate()) {
+            $this->getOutputObject()->getNavigation()->addHiddenLink($url);
+        }
+
+        // Flush EntityManager
+        $this->getEntityManager()->flush();
+
+        // Redirect
+        $redirect = RequestManager::getWebBasePath() . "/" . $url;
+
+        if ($this->getConfig()->get("useManualRedirect", 0)) {
+            echo "Redirecting to $url <br />";
+            echo "<a href='". $redirect ."'>Continue</a>";
+            exit;
+        } else {
+            $header = "Location: ".$redirect;
+            header($header);
+            exit;
+        }
+    }
+
+    /**
      * Render the Page Object
      */
     public function render()
     {
+        if ($this->isPrivate()) {
+            // Bootstrap User
+            $this->bootstrapUser();
+        }
+
         // Set Title of PageObject
         $this->setTitle();
 
@@ -189,29 +268,36 @@ abstract class AbstractPageObject implements PageObjectInterface
         $this->createContent($this->getOutputObject(), $query);
 
         // Call Show-Method of PageObject
-        $this->getOutputObject()->show("index.tpl");
+        $this->getOutputObject()->show($this->getTemplate());
 
-        // FIXME: this has nothing to do here
-        if ($nav = $this->getOutputObject()->getNavigation()) $nav->save();
+        if ($this->isPrivate()) {
+            // Filter Pages that are not accessable due to Restrictions
+            $allowedNavigation = $this->getFirewall()
+                                      ->filterNavigationRestriction($this->getUser(), $this->getOutputObject()->getNavigation());
 
-        // FIXME: find better place for this
-        $this->getEntityManager()->flush();
-    }
-
-    protected function initUser()
-    {
-        // Load User if in Session
-        if ($userid = SessionStore::get('userid')) {
-            $user = $this->getEntityManager()->find("Main:User",$userid);
-            if ($user->settings->default_character) {
-                $user->character = $user->settings->default_character;
-            }
-
-            Registry::setUser($user);
+            // Update User Navigation
+            $this->getUser()->getCharacter()->setAllowedNavigation($allowedNavigation);
         }
     }
 
-    protected function initVisibility()
+    /**
+     * Get Page Object from Cache and show it
+     * @return bool
+     */
+    public function renderFromCache()
+    {
+        if ($this->getOutputObject()->cacheExists($this->getTemplate())) {
+            $this->getOutputObject()->showLatestGenerated($this->getTemplate());
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Initialize visibility of this Page Object
+     */
+    private function initVisibility()
     {
         $config = $this->getConfig();
         $routeRequest = $this->getRequest()->getRouteAsString();
@@ -229,38 +315,66 @@ abstract class AbstractPageObject implements PageObjectInterface
         }
     }
 
-    protected function initOutputObject()
+    /**
+     * Initialize matching Output Object
+     */
+    private function initOutputObject()
     {
-        $caller = $this->getRequest()->getRoute()->getCaller();
-
+        $caller = $this->getRequest()->getRoute()->getCallerName();
         $classname = 'Ruins\\Common\\Controller\\OutputObjects\\'.$caller;
 
-        $this->_outputObject = new $classname;
+        $this->outputObject = new $classname;
 
-        $this->getOutputObject()->setNavigation(new Nav());
+        // Create OutputObject
+        $this->getOutputObject()->create($this->getRequest());
 
-        if ($this->dontCache) {
+        // Dont cache if we say so
+        if ($this->isPublic() || $this->dontCache) {
             $this->getOutputObject()->disableCaching();
         }
 
-        $this->getOutputObject()->create($this->getRequest());
-
-        if ($this->getUser() && !$this->isPublic()) {
-            $user = $this->getUser();
-
-            // Set current_nav if this is not the portal
-            if (strlen($this->getOutputObject()->getUrl()) && strpos($this->getOutputObject()->getUrl(), "Page/Common/Portal") === false) {
-                $user->character->current_nav = (string)$this->getOutputObject()->getUrl();
-            } elseif (!$user->character->current_nav || !$this->getOutputObject()->getUrl()) {
-                $user->character->current_nav = "Page/Ironlance/Citysquare";
-            }
-        } elseif (!$this->isPublic()) {
-            // this is a private page, but no user is loaded. Force to logout
-            SessionStore::set("logoutreason", "Automatischer Logout: Nicht eingeloggt!");
-            $this->getOutputObject()->getNavigation()->redirect("Page/Common/Logout");
+        if ($this->isPrivate() && $this->getUser()) {
+            // This PageObject is private, set the underlying OutputObject to private too
+            $this->getOutputObject()->setPrivate($this->getUser());
+        } elseif ($this->isPrivate() && !$this->getUser()) {
+            // This Page Object is private, but there is no User loaded. Force to login
+            SessionStore::set("logoutreason", "Nicht eingeloggt!");
+            $this->redirect("Page/Common/Login");
         }
 
         // Add Page to Registry
-        Registry::set('main.output', $page);
+        Registry::set('main.output', $this->getOutputObject());
+    }
+
+    /**
+     * Bootstrap User
+     */
+    private function bootstrapUser()
+    {
+        $user = $this->getUser();
+
+        if ($user && $this->isPrivate()) {
+            // Page is private and we have an loggedin User
+
+            // Check if this Request is allowed to the User
+            if (!$this->dontCache && !$this->getFirewall()->checkRequestAllowed($user, $this->getRequest())) {
+                if ($this->renderFromCache()) {
+                    echo "~~~ From Cache (Firewall Rule) ~~~";
+                    exit;
+                } else {
+                    $this->redirect("Page/Common/Error404");
+                }
+            } else {
+                $this->getOutputObject()->clearCache($this->getTemplate());
+            }
+
+            // Set current_nav if this is not the portal
+            if (strpos($this->getOutputObject()->getUrl(), "Page/Common/Portal") === false) {
+                $user->getCharacter()->current_nav = (string)$this->getOutputObject()->getUrl();
+            } elseif (!strlen($user->getCharacter()->current_nav)) {
+                // Set default Navigation (should not happen)
+                $user->getCharacter()->current_nav = "Page/Ironlance/Citysquare";
+            }
+        }
     }
 }

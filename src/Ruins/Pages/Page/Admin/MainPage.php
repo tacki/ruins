@@ -21,10 +21,10 @@ class MainPage extends AbstractPageObject
     public function createContent($page, $parameters)
     {
         foreach (SystemManager::getAdminCategories() as $category) {
-            $page->nav->addHead($category);
+            $page->getNavigation()->addHead($category);
 
             foreach (SystemManager::getAdminCategoryPages($category) as $entry) {
-                $page->nav->addLink($entry->name, $entry->page);
+                $page->getNavigation()->addLink($entry->name, $entry->page);
             }
         }
 

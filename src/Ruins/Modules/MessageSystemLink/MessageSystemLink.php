@@ -45,11 +45,10 @@ class MessageSystemLink extends ModuleBase implements ModuleInterface
     {
         $user = Registry::getUser();
 
-        if ($user->character && $user->character->loggedin) {
+        if ($user->character && $user->getCharacter()->loggedin) {
             // add the Supportlink to the toplist
-            $page->getNavigation()
-                 ->addLink("Messenger","Popup/Messenger","shared")
-                 ->setDescription("Ruins Messenger zum Senden und Empfangen von Nachrichten");
+            $page->getNavigation("shared")
+                 ->addLink("Messenger","Popup/Messenger","Ruins Messenger zum Senden und Empfangen von Nachrichten");
 
 
             $page->addJavaScriptFile("jquery.plugin.timers.js");
@@ -57,7 +56,7 @@ class MessageSystemLink extends ModuleBase implements ModuleInterface
                  $(document).ready(function() {
                     var timerCycle     = '60s';
                     var result         = 0;
-                    var jsonURL        = '".SystemManager::getOverloadedFilePath("/Helpers/ajax/messenger_newMessageAlert.ajax.php", true)."?userid=".$user->character->id."';
+                    var jsonURL        = '".SystemManager::getOverloadedFilePath("/Helpers/ajax/messenger_newMessageAlert.ajax.php", true)."?userid=".$user->getCharacter()->id."';
 
                     $.getJSON(jsonURL, function(json) {
                         if (json > 0) {

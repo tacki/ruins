@@ -3,13 +3,14 @@
  * Namespaces
  */
 namespace Ruins\Main\Entities;
+use Ruins\Common\Interfaces\GroupInterface;
 use Ruins\Main\Entities\EntityBase;
 
 /**
  * @Entity
  * @Table(name="groups")
  */
-class Group extends EntityBase
+class Group extends EntityBase implements GroupInterface
 {
     /**
      * @Id @Column(type="integer")

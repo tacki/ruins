@@ -22,8 +22,8 @@ class ArenaPage extends AbstractPageObject
 
     public function createContent($page, $parameters)
     {
-        $page->nav->addHead("Navigation")
-                  ->addLink("Aktualisieren", $page->url);
+        $page->getNavigation()->addHead("Navigation")
+                  ->addLink("Aktualisieren", $page->getUrl());
 
         $battle = new BattleController;
         $em = Registry::getEntityManager();
@@ -31,10 +31,10 @@ class ArenaPage extends AbstractPageObject
         if ($em->getRepository("Main:Character")->getBattle($user->character)) {
             include (DIR_MAIN."Helpers/battle.running.php");
         } elseif ($em->getRepository("Main:Battle")->getList()) {
-            $page->nav->addLink("Zurück", "Page/Derashok/Tribalcenter");
+            $page->getNavigation()->addLink("Zurück", "Page/Derashok/Tribalcenter");
             include (DIR_MAIN."Helpers/battle.list.php");
         } else {
-            $page->nav->addLink("Zurück", "Page/Derashok/Tribalcenter");
+            $page->getNavigation()->addLink("Zurück", "Page/Derashok/Tribalcenter");
 
             $page->output("Zur Zeit läuft kein Kampf! Willst du einen provozieren?");
             $battle->addCreateBattleNav();

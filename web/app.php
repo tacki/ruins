@@ -17,7 +17,6 @@ use Ruins\Main\Controller\Nav;
 use Ruins\Main\Manager\SystemManager;
 use Ruins\Main\Manager\ModuleManager;
 use Ruins\Main\Controller\Link;
-use Ruins\Main\Controller\Page;
 use Ruins\Common\Controller\Registry;
 use Ruins\Common\Manager\RequestManager;
 
@@ -28,28 +27,61 @@ require_once("../app/config/dirconf.cfg.php");
 require_once(DIR_BASE."app/main.inc.php");
 
 try {
-    // Handle Request
+    $opmode = "normal";
+
+    // Create default Request
     $request = RequestManager::createRequest();
 
-    if (!$request->getRoute()->getCaller()) {
-        // set loginpage to default
-        $page = new Page();
-        $page->nav->redirect("Page/Common/Login");
+    // Check if there is a Requeststring
+    if (strlen($request->getRouteAsString()) == 0) {
+        // We are at our web-basedir, create new Request
+        // for the Login-Page (which is default)
+        $request = RequestManager::createRequest("Page/Common/Login");
     }
 
-    // Check if the page-value is valid
+    // Try to load User
+    if ($userid = SessionStore::get('userid')) {
+        $user = Registry::getEntityManager()->find("Main:User", $userid);
+        $user->prepare();
+
+        Registry::setUser($user);
+    }
+
+    // Check if the Request is valid
+    if (!$request->isValid()) {
+        if (Registry::getUser()) {
+            // load from cache
+            $opmode = "cache";
+            $request = RequestManager::createRequest("Page/Common/Empty");
+        } else {
+            // Create Request for 404-Page
+            $request = RequestManager::createRequest("Page/Common/Error404");
+        }
+    }
+
+    // Check if the requested Path is valid
     SystemManager::validatePHPFilePath($request);
 
-    switch ($request->getRoute()->getCaller()) {
-        default:
-
-            $classname = $request->getRoute()->getClassname();
-
-            $page = new $classname($request);
+    switch ($opmode) {
+        case "normal":
+            $page = $request->createPageObject();
 
             $page->render();
             break;
+
+        case "cache":
+            $page = $request->createPageObject();
+
+            if ($page->renderFromCache()) {
+                echo "~~~ From Cache (Validation Rule) ~~~";
+                exit;
+            } else {
+                $page->redirect("Page/Common/Error404");
+            }
+            break;
     }
+
+    Registry::getEntityManager()->flush();
 
 } catch (Exception $e) {
     $systemConfig = Registry::getMainConfig();
@@ -66,5 +98,3 @@ var_dump($e);
         echo "</fieldset>";
     }
 }
-
-?>

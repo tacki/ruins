@@ -99,7 +99,7 @@ class ItemManager
             // Return instance of this Object
             return $result;
         } else {
-            return false;
+            return null;
         }
     }
 

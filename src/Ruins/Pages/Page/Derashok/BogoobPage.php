@@ -22,17 +22,17 @@ class BogoobPage extends AbstractPageObject
 
     public function createContent($page, $parameters)
     {
-        $page->nav->addHead("Navigation")
+        $page->getNavigation()->addHead("Navigation")
                   ->addLink("Zum Zentrum", "Page/Derashok/Tribalcenter");
 
-        $page->nav->addHead("Bogoob");
+        $page->getNavigation()->addHead("Bogoob");
 
         $em = Registry::getEntityManager();
 
         switch ($parameters['op']) {
 
             default:
-                $page->nav->addLink("Ihm etwas zeigen", "Page/Common/InventoryChooser?return={$page->url->short}&callop=sellask");
+                $page->getNavigation()->addLink("Ihm etwas zeigen", "Page/Common/InventoryChooser?return={$page->getUrl()->short}&callop=sellask");
 
                 $page->output("Vor dir steht ein riesiger Ork mit Pranken, die locker Bäume ausreissen könnten. Und doch
                                     wirken seine Augen neugierig und keinesfalls aggressiv`n`n
@@ -59,7 +59,7 @@ class BogoobPage extends AbstractPageObject
                     foreach($parameters['chooser'] as $itemid) {
                         $item = ItemManager::getItem($itemid, "all");
 
-                        if ($item->owner == $user->character->id
+                        if ($item->owner == $user->getCharacter()->id
                             && $item->class == "fish") {
                             $wanttobuy[] 	= $item;
                             $fishnames[]	= $item->name;
@@ -69,7 +69,7 @@ class BogoobPage extends AbstractPageObject
                 }
 
                 if (empty($wanttobuy)) {
-                    $page->nav->addLink("Etwas anderes zeigen", "page/common/inventorychooser&return={$page->url->short}&callop=sellask");
+                    $page->getNavigation()->addLink("Etwas anderes zeigen", "page/common/inventorychooser&return={$page->getUrl()->short}&callop=sellask");
 
                     $page->output("`#52Neee, du nix haben was ich wolle... du verschwinden mit deine Krimskrams!`#00`n`n
                                     Unhöflich dreht sich der Ork von dir weg... scheinbar will er wirklich etwas anderes
@@ -90,7 +90,7 @@ class BogoobPage extends AbstractPageObject
 
                     $page->addForm("sell");
                     $page->getForm("sell")->head("deleteform", "page/derashok/bogoob/sell");
-                    $page->nav->addHiddenLink("page/derashok/bogoob/sell");
+                    $page->getNavigation()->addHiddenLink("page/derashok/bogoob/sell");
                     $page->getForm("sell")->hidden("ids", implode(",", $parameters['chooser']));
                     $page->getForm("sell")->hidden("price", $price);
                     $page->getForm("sell")->setCSS("button");
@@ -110,9 +110,9 @@ class BogoobPage extends AbstractPageObject
                     $em->flush();
                 }
 
-                $user->character->money->receive($price);
+                $user->getCharacter()->money->receive($price);
 
-                $page->nav->addLink("Ihm etwas zeigen", "page/common/inventorychooser&return={$page->url->short}&callop=sellask");
+                $page->getNavigation()->addLink("Ihm etwas zeigen", "page/common/inventorychooser&return={$page->getUrl()->short}&callop=sellask");
 
                 $page->output("`#52Ohhooo, heute isse schöne Tag!`#00`n`n
                                 Mit diesen Worten widmet er sich ganz seiner neu erstandenen Ware und lässt dich einfach

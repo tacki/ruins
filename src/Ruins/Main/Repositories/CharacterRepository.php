@@ -103,11 +103,11 @@ class CharacterRepository extends Repository
                         ->getQuery()
                         ->getResult();
 
-        $characterlist = array($user->character->displayname);
+        $characterlist = array($user->getCharacter()->displayname);
 
         if ($result) {
             foreach ($result as $entry) {
-                if ($entry['displayname'] !== $user->character->displayname) {
+                if ($entry['displayname'] !== $user->getCharacter()->displayname) {
                     $characterlist[] = $entry['displayname'];
                 }
             }

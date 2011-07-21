@@ -29,13 +29,14 @@
 
         <div id="stats">
             <!-- Stat Content Start -->
-            {$stats}
+            {block name=statsContent}{/block}
+            {block name=charactersNear}{/block}
             <!-- Stat Content End -->
         </div>
 
         <div id="characterlist">
             <!-- CharacterList Content Start -->
-            {$characterlist}
+            {block name=characterList}{/block}
             <!-- CharacterList Content End -->
         </div>
 
@@ -45,10 +46,13 @@
         <!-- Footer Content Start -->
         <div id="footer-inner">
             <div class="time">
-                Servertime: <span id='serverTime'>{$smarty.now|date_format:'%H:%M:%S'}</span> Uhr
+                Servertime: <span id='serverTime'>{$smarty.now|date_format:'%H:%M:%S' nocache}</span> Uhr
             </div>
             <div class="info">
-                {$version} {$copyright}
+                {if isset($user)}
+                    [User: {$user->login}]
+                {/if}
+                {$copyright}
             </div>
             <div id="toolbox">
                 {block name=toolBox}{/block}

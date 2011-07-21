@@ -23,7 +23,7 @@ class TravelPage extends AbstractPageObject
 
     public function createContent($page, $parameters)
     {
-        $page->nav->addHead("Ruins");
+        $page->getNavigation()->addHead("Ruins");
 
         $timer = $this->getEntityManager()->getRepository("Main:Timer")
                       ->create("travelTimer", $user->character);
@@ -38,20 +38,20 @@ class TravelPage extends AbstractPageObject
 
             default:
                 if (isset($parameters['return'])) {
-                    $page->nav->addLink("Zurück", $parameters['return']);
+                    $page->getNavigation()->addLink("Zurück", $parameters['return']);
                 } else {
                     $page->output("`b`g`#25This Page needs a return-Parameter! Please fix this!`n");
-                    $page->nav->addLink("Zurück", "Page/Ironlance/Citysquare");
+                    $page->getNavigation()->addLink("Zurück", "Page/Ironlance/Citysquare");
                 }
 
                 $page->output("Wohin willst du denn reisen?`n`n");
 
                 $page->addForm("travel");
-                $newURL = clone $page->url;
+                $newURL = clone $page->getUrl();
                 $newURL->setParameter("op", "travel");
                 $newURL->setParameter("return", $parameters['return']);
                 $page->getForm("travel")->head("travelform", $newURL. "");
-                $page->nav->addHiddenLink($newURL);
+                $page->getNavigation()->addHiddenLink($newURL);
 
                 $connections = $travel->getConnectedSites($curSite);
 
@@ -71,14 +71,14 @@ class TravelPage extends AbstractPageObject
                     $page->output("Ankunft in: " . $showtimer, true);
                 } elseif (!$timer->get() && isset($parameters['redirect'])) {
                     // Redirect to the new Page
-                    $newURL = clone $page->url;
+                    $newURL = clone $page->getUrl();
                     $newURL->unsetParameter("redirect");
                     $newURL->unsetParameter("travelto");
                     $newURL->unsetParameter("op");
                     $newURL->unsetParameter("return");
                     $newURL->setParameter("page", $parameters['redirect']);
-                    $page->nav->addHiddenLink($newURL);
-                    $page->nav->redirect($newURL);
+                    $page->getNavigation()->addHiddenLink($newURL);
+                    $this->redirect($newURL);
                 } elseif (!$timer->get() && isset($_POST['travelto'])) {
                     // First Contact to the Travelpage and every Reload
                     $trgtSite = $this->getEntityManager()->getRepository("Main:Site")
@@ -87,20 +87,20 @@ class TravelPage extends AbstractPageObject
 
                     $time = $travel->calcDistance($curSite->waypoint, $trgtSite->waypoint);
                     $timer->set($time);
-                    $newURL = clone $page->url;
+                    $newURL = clone $page->getUrl();
                     $newURL->setParameter("return", $parameters['return']);
                     $newURL->setParameter("redirect", $_POST['travelto']);
-                    $page->nav->addHiddenLink($newURL);
-                    $page->nav->redirect($newURL);
+                    $page->getNavigation()->addHiddenLink($newURL);
+                    $this->redirect($newURL);
                 } elseif (!$timer->get() && !isset($_POST['travelto'])) {
                     // No target chosen, return to select-screen
-                    $page->url->unsetParameter("op");
-                    $page->nav->redirect($page->url);
+                    $page->getUrl()->unsetParameter("op");
+                    $this->redirect($page->getUrl());
                 }
                 break;
 
         }
 
-        $page->nav->addLink("Aktualisieren", $page->url);
+        $page->getNavigation()->addLink("Aktualisieren", $page->getUrl());
     }
 }

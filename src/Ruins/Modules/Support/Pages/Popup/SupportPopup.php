@@ -64,7 +64,7 @@ class SupportPopup extends AbstractPageObject
                 $page->output("Character: ");
                 $page->getSimpleTable("supportformtable")->startData();
                 if ($loggedin) {
-                    $page->getForm("support")->inputText("charname", $user->character->name, 20, 50, true);
+                    $page->getForm("support")->inputText("charname", $user->getCharacter()->name, 20, 50, true);
                 } else {
                     $page->getForm("support")->inputText("charname");
                 }
@@ -107,7 +107,7 @@ class SupportPopup extends AbstractPageObject
                 // Captcha Check
                 if ($parameters['captcha'] !== SessionStore::get("support_captcha")) {
                     $page->output("Falscher Botschutz-Code eingegeben!`n`n");
-                    $page->nav->addTextLink("Zurück", "Popup/Support");
+                    $page->getNavigation()->addTextLink("Zurück", "Popup/Support");
                     break;
                 }
                 //SessionStore::remove("support_captcha");
@@ -116,7 +116,7 @@ class SupportPopup extends AbstractPageObject
                 if (!$loggedin) {
                     if (!$parameters['userlogin'] || !$parameters['email'] || !$parameters['text']) {
                         $page->output("Bitte alle Felder ausfüllen!`n`n");
-                        $page->nav->addTextLink("Zurück", "Popup/Support");
+                        $page->getNavigation()->addTextLink("Zurück", "Popup/Support");
                         break;
                     }
                 }

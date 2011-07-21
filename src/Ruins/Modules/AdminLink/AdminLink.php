@@ -59,11 +59,10 @@ class AdminLink extends ModuleBase implements ModuleInterface
     {
         $user = Registry::getUser();
 
-        if ($user->character && $user->character->loggedin) {
+        if ($user->character && $user->getCharacter()->loggedin) {
             // Link restricted to Group "Administrator"
-            $page->getNavigation()
-                 ->addLink("Administration", "Page/Admin/Main", "shared", RightsManager::getGroup("Administrator"))
-                 ->setDescription("Administrative Einstellungen");
+            $page->getNavigation("shared")
+                 ->addLink("Administration", "Page/Admin/Main", "Administrative Einstellungen", RightsManager::getGroup("Administrator"));
         }
     }
 }

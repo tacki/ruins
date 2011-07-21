@@ -345,7 +345,7 @@ class Page implements OutputObjectInterface
         return $this->url;
     }
 
-    public function getNavigation()
+    public function getNavigation($container="main")
     {
         return $this->nav;
     }
@@ -674,7 +674,7 @@ class Page implements OutputObjectInterface
      * Get the Latest Generated HTML-Source
      * @return string HTML-Source
      */
-    public function getLatestGenerated()
+    public function getLatestGenerated($template="")
     {
         if ($this->_char->id) {
             // Prepare Template Information
@@ -688,7 +688,7 @@ class Page implements OutputObjectInterface
         }
     }
 
-    public function cacheExists()
+    public function cacheExists($template="")
     {
         if ($this->_char->id) {
             // Prepare Template Information
@@ -701,6 +701,22 @@ class Page implements OutputObjectInterface
                 return false;
             }
         }
+    }
+
+    /**
+    * @see Ruins\Common\Interfaces.OutputObjectInterface::clearCache()
+    */
+    public function clearCache($template)
+    {
+
+    }
+
+    /**
+    * @see Ruins\Common\Interfaces.OutputObjectInterface::showLatestGenerated()
+    */
+    public function showLatestGenerated($template)
+    {
+        // dont use
     }
 
     /**

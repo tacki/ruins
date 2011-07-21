@@ -44,11 +44,10 @@ class SettingsLink extends ModuleBase implements ModuleInterface
     {
         $user = Registry::getUser();
 
-        if ($user->character && $user->character->loggedin) {
+        if ($user->character && $user->getCharacter()->loggedin) {
             // add the Supportlink to the toplist
-            $page->getNavigation()
-                 ->addLink("Settings", "Popup/Settings", "shared")
-                 ->setDescription("Hier findest du alle Einstellungen zum Spiel");
+            $page->getNavigation("shared")
+                 ->addLink("Settings", "Popup/Settings", "Hier findest du alle Einstellungen zum Spiel");
         }
     }
 }

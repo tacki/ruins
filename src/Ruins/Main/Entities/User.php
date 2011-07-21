@@ -64,8 +64,41 @@ class User extends EntityBase implements UserInterface
      */
     protected $uniqueidlist;
 
+    /**
+     * @see Ruins\Common\Interfaces.UserInterface::getCharacter()
+     */
+    public function getCharacter()
+    {
+        return $this->character;
+    }
 
-   /**
+    /**
+     * @see Ruins\Common\Interfaces.UserInterface::setCharacter()
+     */
+    public function setCharacter($character)
+    {
+        $this->character = $character;
+    }
+
+    /**
+     * @see Ruins\Common\Interfaces.UserInterface::getSettings()
+     */
+    public function getSettings()
+    {
+        return $this->settings;
+    }
+
+    /**
+     * @see Ruins\Common\Interfaces.UserInterface::prepare()
+     */
+    public function prepare()
+    {
+        if ($this->getSettings()->default_character) {
+            $this->setCharacter($this->getSettings()->default_character);
+        }
+    }
+
+    /**
      * Care about everything needed for login
      */
     public function login()

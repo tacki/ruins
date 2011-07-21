@@ -14,12 +14,15 @@
 namespace Ruins\Common\Controller\OutputObjects;
 use Smarty;
 use Ruins\Common\Controller\BtCode;
+use Ruins\Common\Controller\Navigation;
 use Ruins\Common\Controller\Registry;
 use Ruins\Common\Controller\Request;
 use Ruins\Common\Controller\Url;
 use Ruins\Common\Interfaces\OutputObjectInterface;
 use Ruins\Common\Interfaces\UserInterface;
 use Ruins\Common\Interfaces\NavigationInterface;
+use Ruins\Common\Manager\HtmlElementManager;
+use Ruins\Main\Manager\ItemManager;
 use Ruins\Main\Manager\SystemManager;
 use Ruins\Main\Manager\ModuleManager;
 
@@ -45,7 +48,7 @@ class Page implements OutputObjectInterface
     protected $templateEngine;
 
     /**
-     * @var NavigationInterface
+     * @var Ruins\Common\Interfaces\NavigationInterface
      */
     protected $navigation=null;
 
@@ -71,12 +74,14 @@ class Page implements OutputObjectInterface
     public function create(Request $request)
     {
         $this->url = new Url($request);
+        $this->navigation = new Navigation($request);
 
         $this->templateEngine = Registry::get('smarty');
-        $templatedir          = reset($this->templateEngine->template_dir);
-        $this->templateEngine->assign("mytemplatedir", SystemManager::htmlpath($templatedir));
 
-        $this->disableCaching();
+        $this->getTemplateEngine()->addTemplateDir(reset($this->getTemplateEngine()->template_dir). "/".$request->getRoute()->getCallerName());
+
+        $templatedir          = reset($this->getTemplateEngine()->template_dir);
+        $this->getTemplateEngine()->assign("mytemplatedir", SystemManager::htmlpath($templatedir));
 
         $this->addCSS("btcode.css");
         $this->addJavaScriptFile("jquery-1.5.1.min.js");
@@ -92,7 +97,7 @@ class Page implements OutputObjectInterface
      */
     public function assign($placeholder, $value)
     {
-        $this->templateEngine->assign($placeholder, $value);
+        $this->getTemplateEngine()->assign($placeholder, $value);
     }
 
     /**
@@ -110,7 +115,7 @@ class Page implements OutputObjectInterface
      */
     public function addJavaScriptFile($script)
     {
-        $this->templateEngine->append(
+        $this->getTemplateEngine()->append(
             'jsHeadIncludes',
             SystemManager::getWebRessourcePath('javascript/'.$script, true)
         );
@@ -122,7 +127,7 @@ class Page implements OutputObjectInterface
      */
     public function addCSS($script)
     {
-        $this->templateEngine->append(
+        $this->getTemplateEngine()->append(
             'cssHeadIncludes',
             SystemManager::getWebRessourcePath('styles/'.$script, true)
         );
@@ -166,7 +171,7 @@ class Page implements OutputObjectInterface
      */
     public function isPrivate()
     {
-        if ($this->user) {
+        if (isset($this->user)) {
             return true;
         } else {
             return false;
@@ -201,8 +206,10 @@ class Page implements OutputObjectInterface
     /**
      * @see Ruins\Common\Interfaces.OutputObjectInterface::getNavigation()
      */
-    public function getNavigation()
+    public function getNavigation($container="main")
     {
+        $this->navigation->setContainerName($container);
+
         return $this->navigation;
     }
 
@@ -222,33 +229,154 @@ class Page implements OutputObjectInterface
     {
         if (!$showhtml) $text=htmlspecialchars($text, ENT_QUOTES, "UTF-8");
 
-        $this->templateEngine->append(
+        $this->getTemplateEngine()->append(
             'main',
             BtCode::decode($text)
         );
     }
 
     /**
-    * Get the Latest Generated HTML-Source
-    * @return string HTML-Source
-    */
-    public function getLatestGenerated($template)
+     * @see Ruins\Common\Interfaces.OutputObjectInterface::cacheExists()
+     */
+    public function cacheExists($template)
     {
         if ($this->isPrivate()) {
-            if ($this->templateEngine->isCached($template, $this->user->character->id)) {
-                return $this->templateEngine->fetch($template, $this->user->character->id);
+            if ($this->getTemplateEngine()->isCached($template, $this->user->character->id)) {
+                return true;
             } else {
                 return false;
             }
         }
+
+        return false;
     }
 
     /**
-     * Disable Caching for this page
+     * @see Ruins\Common\Interfaces.OutputObjectInterface::getLatestGenerated()
+     */
+    public function getLatestGenerated($template)
+    {
+        if ($this->isPrivate()) {
+            if ($this->getTemplateEngine()->isCached($template, $this->user->character->id)) {
+                return $this->getTemplateEngine()->fetch($template, $this->user->character->id);
+            } else {
+                return false;
+            }
+        }
+
+        return "";
+    }
+
+    /**
+     * @see Ruins\Common\Interfaces.OutputObjectInterface::disableCaching()
      */
     public function disableCaching()
     {
-        $this->templateEngine->caching = 0;
+        $this->getTemplateEngine()->caching = 0;
+    }
+
+    /**
+     * @see Ruins\Common\Interfaces.OutputObjectInterface::clearCache()
+     */
+    public function clearCache($template)
+    {
+        $this->getTemplateEngine()->clearCache($template, $this->user->getCharacter()->id);
+    }
+
+    /**
+     * @see Ruins\Common\Manager.HtmlElementManager::addForm()
+     */
+    public function addForm($name, $overwrite=false)
+    {
+        return HtmlElementManager::addForm($name, $this, $overwrite);
+    }
+
+    /**
+     * @see Ruins\Common\Manager.HtmlElementManager::getForm()
+     */
+    public function getForm($name)
+    {
+        return HtmlElementManager::getForm($name);
+    }
+
+    /**
+     * @see Ruins\Common\Manager.HtmlElementManager::closeForm()
+     */
+    public function closeForm($name)
+    {
+        return HtmlElementManager::closeForm($name);
+    }
+
+    /**
+     * @see Ruins\Common\Manager.HtmlElementManager::addTable()
+     */
+    public function addTable($name, $overwrite=false)
+    {
+        return HtmlElementManager::addTable($name, $this, $overwrite);
+    }
+
+    /**
+     * @see Ruins\Common\Manager.HtmlElementManager::getTable()
+     */
+    public function getTable($name)
+    {
+        return HtmlElementManager::getTable($name);
+    }
+
+    /**
+     * @see Ruins\Common\Manager.HtmlElementManager::closeTable()
+     */
+    public function closeTable($name)
+    {
+        return HtmlElementManager::closeTable($name);
+    }
+
+    /**
+     * @see Ruins\Common\Manager.HtmlElementManager::addChat()
+     */
+    public function addChat($name)
+    {
+        return HtmlElementManager::addChat($name, $this);
+    }
+
+    /**
+     * @see Ruins\Common\Manager.HtmlElementManager::getChat()
+     */
+    public function getChat($name)
+    {
+        return HtmlElementManager::getChat($name);
+    }
+
+    /**
+     * @see Ruins\Common\Manager.HtmlElementManager::closeChat()
+     */
+    public function closeChat($name)
+    {
+        return HtmlElementManager::closeChat($name);
+    }
+
+    /**
+     * @see Ruins\Common\Manager.HtmlElementManager::addSimpleTable()
+     */
+    public function addSimpleTable($name, $overwrite=false)
+    {
+        return HtmlElementManager::addSimpleTable($name, $this, $overwrite);
+    }
+
+    /**
+     * @see Ruins\Common\Manager.HtmlElementManager::getSimpleTable()
+     */
+    public function getSimpleTable($name)
+    {
+        return HtmlElementManager::getSimpleTable($name);
+    }
+
+    /**
+     * @see \Ruins\Common\Manager.HtmlElementManager::closeSimpleTable()
+     */
+    public function closeSimpleTable($name)
+    {
+        return HtmlElementManager::closeSimpleTable($name);
     }
 
     /**
@@ -262,54 +390,127 @@ class Page implements OutputObjectInterface
         $this->generateNavigation();
         // Generate ToolBox
         $this->generateToolBox();
+        // Generate Character Stats (if private)
+        $this->generateStats();
+        // Generate Characters Near List (if private)
+        $this->generateCharactersNear();
+        // Generate Character List (if not private)
+        $this->generateCharacterList();
 
         // Page generation Time
         $this->assign("pagegen", round(microtime(true) - $this->pagegenerationstarttime,3) * 1000);
 
         ModuleManager::callModule(ModuleManager::EVENT_POST_PAGEGENERATION, $this);
 
-        if ($this->isPrivate) {
-            $this->templateEngine->display($template, $this->user->character->id);
+        if ($this->isPrivate()) {
+            $this->getTemplateEngine()->display($template, $this->user->character->id);
         } else {
-            $this->templateEngine->display($template);
+            $this->getTemplateEngine()->display($template);
         }
     }
 
     /**
-    * Does some health-checks on the navigation and includes them into the template
-    */
+     * @see Ruins\Common\Interfaces.OutputObjectInterface::showLatestGenerated()
+     */
+    public function showLatestGenerated($template)
+    {
+        if ($this->isPrivate()) {
+            if ($this->getTemplateEngine()->isCached($template, $this->user->character->id)) {
+                $this->getTemplateEngine()->display($template, $this->user->character->id);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get User
+     * @return Ruins\Common\Interfaces\UserInterface
+     */
+    protected function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * Generate Navigation
+     */
     protected function generateNavigation()
     {
-        $navMain = "";
-        $navShared = "";;
-        $boxOpen = false;
-
         foreach ($this->getNavigation()->getLinkList() as $linklist) {
 
             if ($linklist['displayname']) {
 
                 if ($linklist['position'] == "main") {
-                    $this->templateEngine->append('navMain',
-                                                  array('url' => $linklist['url'],
-                                                        'title' => htmlspecialchars($linklist['description'], ENT_QUOTES),
-                                                        'display' => $linklist['displayname'])
-                                                 );
+                    $this->getTemplateEngine()->append('navMain',
+                                                       array('url' => $linklist['url'],
+                                                             'title' => htmlspecialchars($linklist['description'], ENT_QUOTES),
+                                                             'display' => BtCode::decode($linklist['displayname']))
+                                                      );
                 } elseif ($linklist['position'] == "shared") {
-                    $this->templateEngine->append('navShared',
-                                                  array('url' => $linklist['url'],
-                                                        'title' => htmlspecialchars($linklist['description'], ENT_QUOTES),
-                                                        'display' => $linklist['displayname']
-                                                 ));
+                    $this->getTemplateEngine()->append('navShared',
+                                                       array('url' => $linklist['url'],
+                                                             'title' => htmlspecialchars($linklist['description'], ENT_QUOTES),
+                                                             'display' => BtCode::decode($linklist['displayname']))
+                                                      );
                 }
             }
         }
     }
 
     /**
-    * Generate the ToolBox (small tools)
-    */
+     * Generate the ToolBox (small tools)
+     */
     protected function generateToolBox()
     {
         $this->assign("toolBox", $this->toolBoxItems);
+    }
+
+    /**
+     * Generate Stats
+     */
+    protected function generateStats()
+    {
+        if (!$this->isPrivate()) {
+            return false;
+        }
+        $this->assign("user", $this->getUser());
+        $this->assign("weapon", ItemManager::getEquippedItem($this->getUser()->getCharacter(), "weapon"));
+        $this->assign("money", $this->getUser()->getCharacter()->money);
+    }
+
+    /**
+     * Generate List of Characters near the active one
+     */
+    protected function generateCharactersNear()
+    {
+        if (!$this->isPrivate()) {
+            return false;
+        }
+
+        $characterlist = Registry::getEntityManager()->getRepository("Main:Character")
+                                                     ->getListAtPlace($this->getUrl()->base);
+
+        foreach ($characterlist as &$charactername) {
+            $charactername = BtCode::decode($charactername);
+        }
+
+        $this->assign("charactersNear", $characterlist);
+    }
+
+    /**
+     * Generate Character list for the Frontpage
+     */
+    protected function generateCharacterList()
+    {
+        if ($this->isPrivate()) {
+            return false;
+        }
+
+        $characterlist = Registry::getEntityManager()->getRepository("Main:Character")
+                                                     ->getList(array('displayname'), 'id', 'ASC', true);
+
+        $this->assign("charactersOnline", $characterlist);
     }
 }

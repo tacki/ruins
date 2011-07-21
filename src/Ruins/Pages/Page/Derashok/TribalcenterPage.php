@@ -20,13 +20,13 @@ class TribalcenterPage extends AbstractPageObject
 
     public function createContent($page, $parameters)
     {
-        $page->nav->addHead("Navigation")
-                  ->addLink("Reisen", "Page/Common/Travel?return={$page->url->short}")
+        $page->getNavigation()->addHead("Navigation")
+                  ->addLink("Reisen", "Page/Common/Travel?return={$page->getUrl()->short}")
                   ->addLink("Thagigdash Bogoob", "Page/Derashok/Bogoob")
-                  ->addLink("Spielerliste", "Page/Common/Charlist?return={$page->url->short}")
+                  ->addLink("Spielerliste", "Page/Common/Charlist?return={$page->getUrl()->short}")
                   ->addLink("Kampfarena", "Page/Derashok/Arena");
 
-        $page->nav->addHead("Allgemein")
+        $page->getNavigation()->addHead("Allgemein")
                   ->addLink("Logout", "Page/Common/Logout");
 
         $page->output("Willkommen auf dem Stammeszentrum in Derashok, einem wichtigen Treffpunkt aller orkischen Clans.`n");

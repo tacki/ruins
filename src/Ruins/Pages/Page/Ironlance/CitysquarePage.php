@@ -17,16 +17,21 @@ class CitysquarePage extends AbstractPageObject
 {
     public $title  = "Ironlance Stadtzentrum";
 
+    /**
+     * @see Ruins\Common\Interfaces.PageObjectInterface::createContent()
+     */
     public function createContent($page, $parameters)
     {
-        $page->nav->addHead("Navigation")
-                  ->addLink("Reisen", "Page/Common/Travel?return={$page->url->base}")
-                  ->addLink("Stadtbank", "Page/Ironlance/Citybank")
-                  ->addLink("Spielerliste", "Page/Common/Charlist?return={$page->url->base}")
-                  ->addLink("Ausrüstung", "Page/Common/Equipment?return={$page->url->base}");
+        $page->getNavigation()
+             ->addHead("Navigation")
+             ->addLink("Reisen", "Page/Common/Travel?return={$page->getUrl()->base}")
+             ->addLink("Stadtbank", "Page/Ironlance/Citybank")
+             ->addLink("Spielerliste", "Page/Common/Charlist?return={$page->getUrl()->base}")
+             ->addLink("Ausrüstung", "Page/Common/Equipment?return={$page->getUrl()->base}");
 
-        $page->nav->addHead("Allgemein")
-                  ->addLink("Logout", "Page/Common/Logout");
+        $page->getNavigation()
+             ->addHead("Allgemein")
+             ->addLink("Logout", "Page/Common/Logout");
 
         $page->output("Willkommen im Stadtzentrum von Ironlance, dem aus Stein gebauten Stolz der menschlichen Rasse.`n");
 

@@ -14,21 +14,17 @@ namespace Ruins\Pages\Page\Common;
 use Ruins\Main\Entities\User;
 use Ruins\Common\Controller\Registry;
 use Ruins\Common\Controller\AbstractPageObject;
+use Ruins\Common\Interfaces\PageObjectInterface;
 
-class LogoutPage extends AbstractPageObject
+class EmptyPage extends AbstractPageObject
 {
-    public $title  = "Logout Page";
-
+    /**
+     * @see \Ruins\Common\Interfaces.PageObjectInterface::createContent()
+     */
     public function createContent($page, $parameters)
     {
-        $user = $this->getUser();
-
-        if ($user instanceof User) {
-            $user->addDebugLog("Logout");
-            if ($user->character) $user->getCharacter()->logout();
-            $user->logout();
-        }
-
-        $this->redirect("Page/Common/Login");
+        // Dummy Page
+        // Needed for Caching
+        // Do not delete
     }
 }

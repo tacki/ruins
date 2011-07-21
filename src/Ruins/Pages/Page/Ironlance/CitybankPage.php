@@ -25,7 +25,7 @@ class CitybankPage extends AbstractPageObject
     {
         $user = $this->getUser();
 
-        $page->nav->addHead("Navigation");
+        $page->getNavigation()->addHead("Navigation");
 
         $timer = $this->getEntityManager()->getRepository("Main:Timer")
                       ->create("ironlance/citybank_interest", $user->character);
@@ -39,8 +39,8 @@ class CitybankPage extends AbstractPageObject
             case "":
             default:
                 $page->output("Ein kleiner Mann in einem makellosen Anzug mit Lesebrille grüßt dich.`n`n");
-                $page->output("\"Hallo guter Mann, mein Name ist ". $user->character->displayname .".\" grüßt du zurück, \"Kann ich meinen Kontostand an diesem wunderschönen Tag einsehen?\"`n`n");
-                $page->output("Der Bankier murmelt \"Hmm, ".$user->character->displayname.", mal sehen.....\" während er die Seiten in seinem Buch ");
+                $page->output("\"Hallo guter Mann, mein Name ist ". $user->getCharacter()->displayname .".\" grüßt du zurück, \"Kann ich meinen Kontostand an diesem wunderschönen Tag einsehen?\"`n`n");
+                $page->output("Der Bankier murmelt \"Hmm, ".$user->getCharacter()->displayname.", mal sehen.....\" während er die Seiten in seinem Buch ");
                 $page->output("sorgfältig überfliegt.`n");
 
                 if ($bankAccount) {
@@ -54,30 +54,30 @@ class CitybankPage extends AbstractPageObject
                         $page->output("Du schuldest der Citybank `b".$bankAccount->balance->getAllCurrenciesWithPic()."`b", true);
                     }
 
-                    $page->nav->addLink("Einzahlen", "Page/Ironlance/Citybank/deposit")
+                    $page->getNavigation()->addLink("Einzahlen", "Page/Ironlance/Citybank/deposit")
                               ->addLink("Abheben", "Page/Ironlance/Citybank/withdraw");
 
-                    $page->nav->addHead("Zinsen");
+                    $page->getNavigation()->addHead("Zinsen");
                     if ($resttime = $timer->get()) {
-                        $page->nav->addLink("Verfügbar in " . $resttime, $page->url);
+                        $page->getNavigation()->addLink("Verfügbar in " . $resttime, $page->getUrl());
                     } else {
-                        $page->nav->addLink("Zinsen abholen", "Page/Ironlance/Citybank/get_interest");
+                        $page->getNavigation()->addLink("Zinsen abholen", "Page/Ironlance/Citybank/get_interest");
                     }
                 } else {
                     $page->output("\"Tut mir sehr leid, aber Ihren Namen kann ich hier nicht finden.\" Er sieht zu dir herauf \"Wollen sie vielleicht ein Konto eröffnen?\"");
-                    $page->nav->addLink("Konto eröffnen", "Page/Ironlance/Citybank/openaccount");
+                    $page->getNavigation()->addLink("Konto eröffnen", "Page/Ironlance/Citybank/openaccount");
                 }
                 break;
 
             case "openaccount":
                 $page->output("Das Eröffnen kostet dich 10 Kupferstücke! Doch keine Angst, diese werden gleich auf das Konto eingezahlt.");
-                $page->nav->addLink("Ja, das will ich!", "Page/Ironlance/Citybank/openaccount2")
+                $page->getNavigation()->addLink("Ja, das will ich!", "Page/Ironlance/Citybank/openaccount2")
                           ->addLink("Nein, lieber doch nicht", "Page/Ironlance/Citybank");
                 break;
 
             case "openaccount2":
-                if ($user->character->money->getPlain() >= 10) {
-                    $user->character->money->pay(10, "copper");
+                if ($user->getCharacter()->money->getPlain() >= 10) {
+                    $user->getCharacter()->money->pay(10, "copper");
                     $bankRepos->createAccount($user->character, "ironlance/citybank");
                     $bankRepos->deposit($user->character, "ironlance/citybank", 10);
                     // Set initial Interest Cycle
@@ -87,13 +87,13 @@ class CitybankPage extends AbstractPageObject
                     $page->output("Oh, so viel Geld scheinst du garnicht zu haben?");
                 }
 
-                $page->nav->addLink("Zurück", "Page/Ironlance/Citybank");
+                $page->getNavigation()->addLink("Zurück", "Page/Ironlance/Citybank");
                 break;
 
             case "deposit":
                 $page->output("Wieviel willst du denn einzahlen?");
                 $page->addForm("deposit");
-                $page->nav->addHiddenLink("Page/Ironlance/Citybank/deposit2");
+                $page->getNavigation()->addHiddenLink("Page/Ironlance/Citybank/deposit2");
                 $page->getForm("deposit")->head("depositform", "Page/Ironlance/Citybank/deposit2");
 
                 $page->getForm("deposit")->setCSS("moneyform_gold");
@@ -109,7 +109,7 @@ class CitybankPage extends AbstractPageObject
                 $page->getForm("deposit")->submitButton("Einzahlen");
 
                 $page->getForm("deposit")->close();
-                $page->nav->addLink("Zurück", "Page/Ironlance/Citybank");
+                $page->getNavigation()->addLink("Zurück", "Page/Ironlance/Citybank");
                 break;
 
             case "deposit2":
@@ -119,23 +119,23 @@ class CitybankPage extends AbstractPageObject
                 $temp_wallet->receive(abs($_POST['silver']), "silver");
                 $temp_wallet->receive(abs($_POST['copper']), "copper");
 
-                if ($user->character->money->getPlain() >= $temp_wallet->getPlain()) {
-                    $user->character->money->pay($temp_wallet);
+                if ($user->getCharacter()->money->getPlain() >= $temp_wallet->getPlain()) {
+                    $user->getCharacter()->money->pay($temp_wallet);
                     $bankRepos->deposit($user->character, "ironlance/citybank", $temp_wallet);
                     $page->output("`b".$temp_wallet->getAllCurrenciesWithPic()."`b eingezahlt", true);
                 } else {
                     $page->output("So viel Geld hast du nicht");
-                    $page->nav->addLink("Zurück", "Page/Ironlance/Citybank/deposit");
+                    $page->getNavigation()->addLink("Zurück", "Page/Ironlance/Citybank/deposit");
                     break;
                 }
                 unset($temp_wallet);
-                $page->nav->addLink("Zurück", "Page/Ironlance/Citybank");
+                $page->getNavigation()->addLink("Zurück", "Page/Ironlance/Citybank");
                 break;
 
             case "withdraw":
                 $page->output("Wieviel willst du denn abheben?");
                 $page->addForm("withdraw");
-                $page->nav->addHiddenLink("Page/Ironlance/Citybank/withdraw2");
+                $page->getNavigation()->addHiddenLink("Page/Ironlance/Citybank/withdraw2");
                 $page->getForm("withdraw")->head("withdrawform", "Page/Ironlance/Citybank/withdraw2");
 
                 $page->getForm("withdraw")->setCSS("moneyform_gold");
@@ -151,7 +151,7 @@ class CitybankPage extends AbstractPageObject
                 $page->getForm("withdraw")->submitButton("Abheben");
 
                 $page->getForm("withdraw")->close();
-                $page->nav->addLink("Zurück", "Page/Ironlance/Citybank");
+                $page->getNavigation()->addLink("Zurück", "Page/Ironlance/Citybank");
                 break;
 
             case "withdraw2":
@@ -162,15 +162,15 @@ class CitybankPage extends AbstractPageObject
                 $temp_wallet->receive(abs($_POST['copper']), "copper");
 
                 if ($bankAccount->balance->getPlain() >= $temp_wallet->getPlain()) {
-                    $user->character->money->receive($temp_wallet);
+                    $user->getCharacter()->money->receive($temp_wallet);
                     $bankRepos->withdraw($user->character, "ironlance/citybank", $temp_wallet);
                     $page->output("`b".$temp_wallet->getAllCurrenciesWithPic()."`b abgehoben", true);
                 } else {
                     $page->output("So viel Geld hast du nicht auf deinem Konto");
-                    $page->nav->addLink("Zurück", "Page/Ironlance/Citybank/withdraw");
+                    $page->getNavigation()->addLink("Zurück", "Page/Ironlance/Citybank/withdraw");
                     break;
                 }
-                $page->nav->addLink("Zurück", "Page/Ironlance/Citybank");
+                $page->getNavigation()->addLink("Zurück", "Page/Ironlance/Citybank");
                 break;
 
             case "get_interest":
@@ -179,11 +179,11 @@ class CitybankPage extends AbstractPageObject
                 $timer->set($systemConfig->get("ironlance/citybank_interestcycle", 86400));
 
                 $page->output($interest->getAllCurrenciesWithPic() . " an Zinsen erhalten", true);
-                $page->nav->addLink("Zurück", "Page/Ironlance/Citybank");
+                $page->getNavigation()->addLink("Zurück", "Page/Ironlance/Citybank");
                 break;
             }
 
-        $page->nav->addHead("Allgemein")
+        $page->getNavigation()->addHead("Allgemein")
                   ->addLink("Zurück zum Zentrum", "Page/Ironlance/Citysquare");
     }
 }

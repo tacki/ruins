@@ -12,6 +12,7 @@
  * Namespaces
  */
 namespace Ruins\Common\Controller;
+use Ruins\Common\Interfaces\OutputObjectInterface;
 use Ruins\Common\Exceptions\Error;
 use Ruins\Main\Manager\SystemManager;
 
@@ -21,6 +22,9 @@ use Ruins\Main\Manager\SystemManager;
  */
 class Route
 {
+    const STATUS_VALID   = "1";
+    const STATUS_INVALID = "2";
+
     /**
      * @var string
      */
@@ -52,6 +56,11 @@ class Route
     protected $queryExtra = array();
 
     /**
+     * @var int
+     */
+    protected $status = self::STATUS_INVALID;
+
+    /**
      * Create and Initialize
      * @param string $route
      */
@@ -66,6 +75,9 @@ class Route
         // Try to guess corresponding Route Filename
         if (strlen($route)) {
             $this->filename = $this->getRouteFile($route);
+            if ($this->filename) {
+                $this->status = self::STATUS_VALID;
+            }
         }
     }
 
@@ -73,9 +85,20 @@ class Route
      * Get Caller Name
      * @return string
      */
-    public function getCaller()
+    public function getCallerName()
     {
         return $this->caller;
+    }
+
+    /**
+     * Get Caller Output Object
+     * @return OutputObjectInterface
+     */
+    public function getCallerObject()
+    {
+        $classname = 'Ruins\\Common\\Controller\\OutputObjects\\'.$this->caller;
+
+        return new $classname;
     }
 
     /**
@@ -134,6 +157,19 @@ class Route
     public function getRouteBase()
     {
         return $this->routeBase;
+    }
+
+    /**
+     * Get Status of this Route
+     * @return bool
+     */
+    public function isValid()
+    {
+        if ($this->status === self::STATUS_VALID) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -199,6 +235,7 @@ class Route
             }
         }
 
-        throw new Error("Cannot find RouteFile for Route-Request '$this->routeString'");
+        return false;
+        //throw new Error("Cannot find RouteFile for Route-Request '$this->routeString'");
     }
 }

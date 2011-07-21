@@ -444,7 +444,7 @@ class BattleController extends Controller
                 // Refresh the Page if a new Round is created by the Token Owner
                 $outputobject->addJavaScript("$(function(){
                                 checkBattleActionDone(".$this->id.");
-                                refreshOnNewRound(".$user->character->id.");
+                                refreshOnNewRound(".$user->getCharacter()->id.");
                 });");
             }
 

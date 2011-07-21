@@ -6,13 +6,16 @@ namespace Ruins\Main\Entities;
 use DateTime;
 use Ruins\Main\Entities\EntityBase;
 use Ruins\Main\Layers\Money;
+use Ruins\Common\Controller\BtCode;
+use Ruins\Common\Interfaces\CharacterInterface;
+use Ruins\Common\Interfaces\NavigationInterface;
 
 /**
  * @Entity(repositoryClass="Ruins\Main\Repositories\CharacterRepository")
  * @HasLifecycleCallbacks
  * @Table(name="characters")
  */
-class Character extends EntityBase
+class Character extends EntityBase implements CharacterInterface
 {
     /**
      * @Id @Column(type="integer")
@@ -117,8 +120,8 @@ class Character extends EntityBase
     protected $current_nav;
 
     /**
-     * @Column(type="array")
-     * @var array
+     * @Column(type="object")
+     * @var NavigationInterface
      */
     protected $allowednavs;
 
@@ -229,6 +232,31 @@ class Character extends EntityBase
     {
         if ($this->money instanceof Money)
             $this->money = $this->money->endLayer();
+    }
+
+    /**
+     * @see Ruins\Common\Interfaces.CharacterInterface::getAllowedNavigation()
+     */
+    public function getAllowedNavigation()
+    {
+        return $this->allowednavs;
+    }
+
+    /**
+     * @see Ruins\Common\Interfaces.CharacterInterface::setAllowedNavigation()
+     */
+    public function setAllowedNavigation(NavigationInterface $navigation)
+    {
+        $this->allowednavs = $navigation;
+    }
+
+    public function getDisplayname($decoded=false)
+    {
+        if ($decoded) {
+            return BtCode::decode($this->displayname);
+        } else {
+            return $this->displayname;
+        }
     }
 
     public function getSpeed()

@@ -53,9 +53,8 @@ class Support extends ModuleBase implements ModuleInterface
      */
     public function prePageGeneration(OutputObjectInterface $page)
     {
-        $page->getNavigation()
-             ->addLink("Support", "Popup/Support", "shared")
-             ->setDescription("Wenn ein Fehler oder Bug auftritt, bitte hier melden");
+        $page->getNavigation("shared")
+             ->addLink("Support", "Popup/Support", "Wenn ein Fehler oder Bug auftritt, bitte hier melden");
     }
 }
 ?>

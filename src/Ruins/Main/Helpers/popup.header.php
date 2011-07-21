@@ -69,7 +69,7 @@ if ($isPublic) {
         $popup->close();
     } else {
         // Update lastpagehit
-        $user->character->lastpagehit = new DateTime();
+        $user->getCharacter()->lastpagehit = new DateTime();
     }
 } else {
     // this is a private page, but no user is loaded. Could be a normal BadNav too

@@ -16,7 +16,9 @@ $config = Registry::getMainConfig();
 // Create Config-Settings
 $config->addPublicPage(array(	"Page/Common/Login",
                                 "Page/Common/Logout",
-                                "Page/Developer/Test",)
+                                "Page/Developer/Test",
+                                "Page/Common/Error404",
+                            )
 );
 $config->addNoCachePage(array(	"Page/Common/Portal" )
 );

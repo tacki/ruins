@@ -14,21 +14,22 @@ namespace Ruins\Pages\Page\Common;
 use Ruins\Main\Entities\User;
 use Ruins\Common\Controller\Registry;
 use Ruins\Common\Controller\AbstractPageObject;
+use Ruins\Common\Interfaces\PageObjectInterface;
 
-class LogoutPage extends AbstractPageObject
+class Error404Page extends AbstractPageObject
 {
-    public $title  = "Logout Page";
+    public $title  = "Page not found";
 
+    /**
+     * @see \Ruins\Common\Interfaces.PageObjectInterface::createContent()
+     */
     public function createContent($page, $parameters)
     {
-        $user = $this->getUser();
+        $page->output("`c`b`g :( `g`b`c`n");
+        $page->output("`c404 - Requested Page not found!`c");
 
-        if ($user instanceof User) {
-            $user->addDebugLog("Logout");
-            if ($user->character) $user->getCharacter()->logout();
-            $user->logout();
-        }
-
-        $this->redirect("Page/Common/Login");
+        $page->getNavigation()
+             ->addHead("Aktionen")
+             ->addLink("Login Page", "Page/Common/Login");
     }
 }

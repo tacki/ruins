@@ -11,8 +11,6 @@
  * Namespaces
  */
 namespace Ruins\Pages\Page\Common;
-use Ruins\Common\Manager\HtmlElementManager;
-
 use Ruins\Common\Controller\SessionStore;
 use Ruins\Main\Entities\DebugLogEntity;
 use Ruins\Main\Controller\Link;
@@ -52,10 +50,10 @@ class LoginPage extends AbstractPageObject
             $page->output("`c Gib deinen Namen und dein Passwort ein, um diese Welt zu betreten.`c`n");
 
             // Normal Login
-            $loginform = HtmlElementManager::addForm("login", $this->getOutputObject())->head("login", "Page/Common/Login/checkpw");
+            $loginform = $page->addForm("login")->head("login", "Page/Common/Login/checkpw");
             //$loginform = $page->addForm("login")->head("login", "Page/Common/Login/checkpw");
 
-            $logintable = HtmlElementManager::addSimpleTable("logintable", $this->getOutputObject())->setCSS("login");
+            $logintable = $page->addSimpleTable("logintable")->setCSS("login");
             //$logintable = $page->addSimpleTable("logintable")->setCSS("login");
 
             $logintable ->startRow()
@@ -82,11 +80,11 @@ class LoginPage extends AbstractPageObject
 
 
             // OpenID Login
-            $openidform = HtmlElementManager::addForm("openid", $this->getOutputObject())->head("openid_login", "Page/Common/Login/checkopenid");
+            $openidform = $page->addForm("openid")->head("openid_login", "Page/Common/Login/checkopenid");
             //$openidform = $page->addForm("openid")->head("openid_login", "Page/Common/Login/checkopenid");
             $openidform->setCSS("openid");
 
-            $openidtable = HtmlElementManager::addSimpleTable("openidtable", $this->getOutputObject());
+            $openidtable = $page->addSimpleTable("openidtable");
             //$openidtable = $page->addSimpleTable("openidtable");
             $openidtable->setCSS("login");
 
@@ -108,10 +106,10 @@ class LoginPage extends AbstractPageObject
                     $user->login();
 
                     $user->addDebugLog("Login via User/Pass");
-                    $page->nav->redirect("Page/Common/Portal");
+                    $this->redirect("Page/Common/Portal");
                 } else {
                     SessionStore::set("logoutreason", "Username oder Passwort falsch!");
-                    $page->nav->redirect("Page/Common/Login");
+                    $this->redirect("Page/Common/Login");
                 }
                 break;
 
@@ -121,7 +119,7 @@ class LoginPage extends AbstractPageObject
                 OpenIDManager::checkOpenID($_POST['openid_url'], "Page/Common/Login/checkopenid2");
 
                 if (SessionStore::get("openiderror")) {
-                    $page->nav->redirect("Page/Common/Login");
+                    $this->redirect("Page/Common/Login");
                 }
                 break;
 
@@ -144,18 +142,18 @@ class LoginPage extends AbstractPageObject
                         $user->login();
 
                         $user->addDebugLog("Login via OpenID (".$result->urlID.")");
-                        $page->nav->redirect("Page/Common/Portal");
+                        $this->redirect("Page/Common/Portal");
                     } else {
                         // OpenID is valid, but noone entered this url to his account
                         SessionStore::set("openiderror", "OpenID ". $result->urlID ." valid, but not mapped to any User");
-                        $page->nav->redirect("Page/Common/Login");
+                        $this->redirect("Page/Common/Login");
                     }
                 } else {
                     if (!(SessionStore::get("openiderror"))) {
                         SessionStore::set("openiderror", "Unknown OpenID Error");
                     }
 
-                    $page->nav->redirect("Page/Common/Login");
+                    $this->redirect("Page/Common/Login");
                 }
                 break;
         }

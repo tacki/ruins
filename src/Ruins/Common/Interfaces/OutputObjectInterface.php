@@ -40,9 +40,10 @@ interface OutputObjectInterface
 
     /**
      * Get Navigation
-     * @return \Ruins\Main\Controller\Nav
+     * @param string $container Navigation Container Name
+     * @return NavigationInterface
      */
-    public function getNavigation();
+    public function getNavigation($container="main");
 
     /**
      * Assign a Navigation Object
@@ -76,9 +77,39 @@ interface OutputObjectInterface
     public function isPrivate();
 
     /**
+     * Disable Caching for this Output Object
+     */
+    public function disableCaching();
+
+    /**
+     * Check if a Cache exists for a given Template
+     * @param string $template
+     * @return bool
+     */
+    public function cacheExists($template);
+
+    /**
+     * Clear the Cache for a given Template
+     * @param string $template
+     */
+    public function clearCache($template);
+
+    /**
+     * Get the Latest Generated HTML-Source
+     * @param string $template
+     * @return string HTML-Source
+     */
+    public function getLatestGenerated($template);
+
+    /**
      * Create all Output and send it to the User
      * @var string $template Template Name
      */
     public function show($template);
+
+    /**
+     * Show the latest generated Source
+     */
+    public function showLatestGenerated($template);
 }
 ?>

@@ -140,7 +140,7 @@ class TestPage extends AbstractPageObject
 
         $tempform = new Form($page);
         if ($parameters['op'] == "stoptimer") {
-            $tempform->head("", $page->url->base."/starttimer");
+            $tempform->head("", $page->getUrl()->base."/starttimer");
             $tempform->submitButton("Start");
         } else {
             $tempform->head("", $page->getUrl()->base."/stoptimer");
@@ -410,15 +410,15 @@ class TestPage extends AbstractPageObject
         // Adding User to Group
         RightsManager::addToGroup("TempGroup", $user->character);
 
-        $page->output("Is Character {$user->character->name} in Group TempGroup?`n");
+        $page->output("Is Character {$user->getCharacter()->name} in Group TempGroup?`n");
         if (RightsManager::isInGroup("TempGroup", $user->character)) {
             $page->output("Yes!`n");
         } else {
             $page->output("No!`n");
         }
 
-        foreach($user->character->groups as $group) {
-            $page->output("Character ".$user->character->name." is in Group:" . $group->name . "`n");
+        foreach($user->getCharacter()->groups as $group) {
+            $page->output("Character ".$user->getCharacter()->name." is in Group:" . $group->name . "`n");
         }
 
         // Removing User from Group
@@ -443,19 +443,13 @@ class TestPage extends AbstractPageObject
         $page->output("see left side ;)");
 
         $page->getNavigation()
-             ->disableValidation();
-        $page->getNavigation()
              ->addHead("Home")
-             ->addLink("Login Page", "Page/Common/Login","main")
-             ->addLink("Testpage", "Page/Developer/Test","main");
+             ->addLink("Login Page", "Page/Common/Login")
+             ->addLink("Testpage", "Page/Developer/Test");
 
-        $page->getNavigation()
-             ->addHead("Dorf")
-             ->addLink("Ausgang", "Page/Common/Logout","main")
-             ->addLink("Home", "Page/Developer/Test","shared")
-             ->addLink("Logout", "Page/Common/Logout","shared");
-
-        $page->getNavigation()->save();
+        $page->getNavigation("shared")
+             ->addLink("Home", "Page/Developer/Test")
+             ->addLink("Logout", "Page/Common/Logout");
 
         // Navigation Test end
 
@@ -472,40 +466,40 @@ class TestPage extends AbstractPageObject
 
         $user = $em->find("Main:User",1);
 
-        $page->output("`nStarting Money from {$user->character->displayname}:`n");
+        $page->output("`nStarting Money from {$user->getCharacter()->displayname}:`n");
 
-        $page->output("Gold: ". $user->character->money->getCurrency("gold") ."`n");
-        $page->output("Silver: ". $user->character->money->getCurrency("silver") ."`n");
-        $page->output("Copper: ". $user->character->money->getCurrency("copper") ."`n");
+        $page->output("Gold: ". $user->getCharacter()->money->getCurrency("gold") ."`n");
+        $page->output("Silver: ". $user->getCharacter()->money->getCurrency("silver") ."`n");
+        $page->output("Copper: ". $user->getCharacter()->money->getCurrency("copper") ."`n");
 
         $page->output("`nReceive 5 Gold from dead uncle:`n");
-        if (!$user->character->money->receive(5, "gold")) {
+        if (!$user->getCharacter()->money->receive(5, "gold")) {
             $page->output("Transaction failed!`n");
         }
 
-        $page->output("Gold: ". $user->character->money->getCurrency("gold") ."`n");
-        $page->output("Silver: ". $user->character->money->getCurrency("silver") ."`n");
-        $page->output("Copper: ". $user->character->money->getCurrency("copper") ."`n");
+        $page->output("Gold: ". $user->getCharacter()->money->getCurrency("gold") ."`n");
+        $page->output("Silver: ". $user->getCharacter()->money->getCurrency("silver") ."`n");
+        $page->output("Copper: ". $user->getCharacter()->money->getCurrency("copper") ."`n");
 
         $page->output("`nPay 20 Silver for Ale:`n");
-        if (!$user->character->money->pay(20, "silver")) {
+        if (!$user->getCharacter()->money->pay(20, "silver")) {
             $page->output("Transaction failed!`n");
         }
 
-        $page->output("Gold: ". $user->character->money->getCurrency("gold") ."`n");
-        $page->output("Silver: ". $user->character->money->getCurrency("silver") ."`n");
-        $page->output("Copper: ". $user->character->money->getCurrency("copper") ."`n");
+        $page->output("Gold: ". $user->getCharacter()->money->getCurrency("gold") ."`n");
+        $page->output("Silver: ". $user->getCharacter()->money->getCurrency("silver") ."`n");
+        $page->output("Copper: ". $user->getCharacter()->money->getCurrency("copper") ."`n");
 
         $page->output("`nTry to pay 100 Gold to Mafia via Check:`n");
-        if (!$user->character->money->pay(100, "gold")) {
+        if (!$user->getCharacter()->money->pay(100, "gold")) {
             $page->output("Transaction failed! Oh Oh, Mafia is coming!`n");
         } else {
             $page->output("Transaction OK! The Mafia is pleased!`n");
         }
 
-        $page->output("Gold: ". $user->character->money->getCurrency("gold") ."`n");
-        $page->output("Silver: ". $user->character->money->getCurrency("silver") ."`n");
-        $page->output("Copper: ". $user->character->money->getCurrency("copper") ."`n");
+        $page->output("Gold: ". $user->getCharacter()->money->getCurrency("gold") ."`n");
+        $page->output("Silver: ". $user->getCharacter()->money->getCurrency("silver") ."`n");
+        $page->output("Copper: ". $user->getCharacter()->money->getCurrency("copper") ."`n");
 
         // Money Test end
 
@@ -580,10 +574,10 @@ class TestPage extends AbstractPageObject
 
         $user = $em->find("Main:User",1);
 
-        $page->output("Sending Message from {$user->character->displayname} to {$user->character->displayname}`n");
+        $page->output("Sending Message from {$user->getCharacter()->displayname} to {$user->getCharacter()->displayname}`n");
         MessageManager::write($user->character, $user->character, "du...", "...idiota!");
 
-        $page->output("`bInbox of {$user->character->displayname}:`b`n");
+        $page->output("`bInbox of {$user->getCharacter()->displayname}:`b`n");
         $messagelist = MessageManager::getInbox($user->character);
         $showlist = array();
         foreach ($messagelist as $message) {
@@ -608,7 +602,7 @@ class TestPage extends AbstractPageObject
         $lastMessage = MessageManager::getInbox($user->character, 1, false);
         MessageManager::delete($lastMessage);
 
-        $page->output("`bInbox of {$user->character->displayname}:`b`n");
+        $page->output("`bInbox of {$user->getCharacter()->displayname}:`b`n");
         $messagelist = MessageManager::getInbox($user->character);
         $messagelist = MessageManager::getInbox($user->character);
         $showlist = array();
@@ -957,5 +951,7 @@ class TestPage extends AbstractPageObject
         $mt = microtime(true);
         // *************************************
 
+        // Remove any traces of a loggedin User
+        SessionStore::remove('userid');
     }
 }

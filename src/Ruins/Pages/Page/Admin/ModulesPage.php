@@ -20,7 +20,7 @@ class ModulesPage extends AbstractPageObject
 
     public function createContent($page, $parameters)
     {
-        $page->nav->addHead("Navigation")
+        $page->getNavigation()->addHead("Navigation")
                   ->addLink("Zurück", "Page/Admin/Main");
 
         $moduleListFromDB = ModuleManager::getModuleListFromDatabase();
@@ -36,8 +36,8 @@ class ModulesPage extends AbstractPageObject
         }
 
         $chooserForm = $page->addForm("chooser", false);
-        $page->output($chooserForm->head("modulelist", $page->url)->getHTML(), true);
-        $page->nav->addHiddenLink($page->url);
+        $page->output($chooserForm->head("modulelist", $page->getUrl())->getHTML(), true);
+        $page->getNavigation()->addHiddenLink($page->getUrl());
 
         $moduleList = array();
         foreach ($moduleListFromDB as $module) {

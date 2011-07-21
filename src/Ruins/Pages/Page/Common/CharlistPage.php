@@ -23,15 +23,15 @@ class CharlistPage extends AbstractPageObject
     {
         $em = $this->getEntityManager();
 
-        $page->nav->addHead("Navigation");
+        $page->getNavigation()->addHead("Navigation");
         if (isset($parameters['return'])) {
-            $page->nav->addLink("Zurück", $parameters['return']);
+            $page->getNavigation()->addLink("Zurück", $parameters['return']);
         } else {
             $page->output("`b`g`#25This Page needs a return-Parameter! Please fix this!");
         }
 
-        $page->nav->addHead("Spielerliste")
-                  ->addLink("Aktualisieren", $page->url);
+        $page->getNavigation()->addHead("Spielerliste")
+                  ->addLink("Aktualisieren", $page->getUrl());
 
 
         // Database Fields to get
@@ -56,9 +56,9 @@ class CharlistPage extends AbstractPageObject
                     $charlist = $em->getRepository("Main:Character")
                                    ->getList($fields, "name", "ASC", true);
                 }
-                $newURL = clone $page->url;
+                $newURL = clone $page->getUrl();
                 $newURL->setParameter("op", "all");
-                $page->nav->addLink("Alle zeigen", $newURL);
+                $page->getNavigation()->addLink("Alle zeigen", $newURL);
                 break;
 
             case "all":
@@ -70,9 +70,9 @@ class CharlistPage extends AbstractPageObject
                     $charlist = $em->getRepository("Main:Character")
                                    ->getList($fields, "name");
                 }
-                $newURL = clone $page->url;
+                $newURL = clone $page->getUrl();
                 $newURL->setParameter("op", "online");
-                $page->nav->addLink("Spieler Online zeigen", $newURL);
+                $page->getNavigation()->addLink("Spieler Online zeigen", $newURL);
                 break;
         }
 
@@ -103,7 +103,7 @@ class CharlistPage extends AbstractPageObject
 
         // Add Navlinks for the clickable Headers
         foreach ($headers as $link=>$linkname) {
-            $newURL = clone $page->url;
+            $newURL = clone $page->getUrl();
             $newURL->setParameter("order", $link);
             if (isset($parameters['order']) && isset($parameters['orderDir'])
                 && $parameters['order'] == $link && $parameters['orderDir'] == "ASC") {
@@ -111,7 +111,7 @@ class CharlistPage extends AbstractPageObject
             } else {
                 $newURL->setParameter("orderDir", "ASC");
             }
-            $page->nav->addHiddenLink($newURL);
+            $page->getNavigation()->addHiddenLink($newURL);
         }
 
         // Make Tableheaders clickable

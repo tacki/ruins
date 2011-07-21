@@ -21,7 +21,7 @@ class MessengerPopup extends AbstractPageObject
 
     public function createContent($page, $parameters)
     {
-        $page->nav->addLink("Verfassen", "Popup/Messenger/create")
+        $page->getNavigation()->addLink("Verfassen", "Popup/Messenger/create")
                   ->addLink("Posteingang", "Popup/Messenger/inbox")
                   ->addLink("Postausgang", "Popup/Messenger/outbox");
 

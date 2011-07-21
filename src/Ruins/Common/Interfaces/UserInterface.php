@@ -18,6 +18,27 @@ namespace Ruins\Common\Interfaces;
  */
 interface UserInterface
 {
+    /**
+     * Get Character
+     * @return \Ruins\Main\Entities\Character
+     */
+    public function getCharacter();
 
+    /**
+     * Set Character
+     * @param \Ruins\Main\Entities\Character $character
+     */
+    public function setCharacter($character);
+
+    /**
+     * Get User Settings
+     * @return \Ruins\Main\Entities\UserSetting
+     */
+    public function getSettings();
+
+    /**
+     * Prepare User for normal usage
+     */
+    public function prepare();
 }
 ?>

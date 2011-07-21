@@ -24,7 +24,7 @@ class PondPage extends AbstractPageObject
 
     public function createContent($page, $parameters)
     {
-        $page->nav->addHead("Navigation");
+        $page->getNavigation()->addHead("Navigation");
 
         $em = Registry::getEntityManager();
 
@@ -33,7 +33,7 @@ class PondPage extends AbstractPageObject
             default:
                 $page->output("Tief im Dunsplee Wald hast du diesen Weiher hier gefunden. Als du dich dem Gewässer näherst,
                                 erkennst du einige kleine und große Fische munter umher schwimmen. Willst du es wagen?`n");
-                $page->nav->addLink("Fischen", "Page/Dunsplee/Pond/fishask")
+                $page->getNavigation()->addLink("Fischen", "Page/Dunsplee/Pond/fishask")
                           ->addLink("Zurück", "Page/Dunsplee/Trail");
                 break;
 
@@ -41,7 +41,7 @@ class PondPage extends AbstractPageObject
                 $page->output("Hastig siehst du dich um, doch scheinbar ist niemand in der Nähe. Schnell wird ein Wurm
                                 vom Boden aufgelesen, ein Stück Faden an einer Schnur befestigt und ein gebogenes Eisenteil
                                 am anderen Ende des Fadens. Wie lange willst du es wagen, hier zu sitzen und zu angeln?`n");
-                $page->nav->addLink("Lieber doch nicht", "Page/Dunsplee/Pond")
+                $page->getNavigation()->addLink("Lieber doch nicht", "Page/Dunsplee/Pond")
                           ->addLink("1 Minute", "Page/Dunsplee/Pond/fish?time=1")
                           ->addLink("3 Minuten", "Page/Dunsplee/Pond/fish?time=3")
                           ->addLink("6 Minuten", "Page/Dunsplee/Pond/fish?time=6")
@@ -52,7 +52,7 @@ class PondPage extends AbstractPageObject
                 $timer = $em->getRepository("Main:Timer")
                             ->create("dunsplee_pond_fishing", $user->character);
                 // Don't refresh the Page, show this Button instead
-                $timer->useReplacementButton("Weiter...", $page->url);
+                $timer->useReplacementButton("Weiter...", $page->getUrl());
 
                 if (isset($parameters['wait']) && $showtimer = $timer->get()) {
                     $page->output("Du sitzt da und versuchst dich nicht zu rühren... irgendwann wird sicher was anbeissen.`n");
@@ -60,7 +60,7 @@ class PondPage extends AbstractPageObject
                     break;
                 } elseif (!isset($parameters['wait'])) {
                     $timer->set(0, $parameters['time']);
-                    $page->nav->redirect("Page/Dunsplee/Pond/fish?time=".$parameters['time']."&wait=1");
+                    $this->redirect("Page/Dunsplee/Pond/fish?time=".$parameters['time']."&wait=1");
                 }
 
                 $luckbonus = 0;
@@ -154,17 +154,17 @@ class PondPage extends AbstractPageObject
 
                     $em->persist($fish);
 
-                    $page->nav->addLink("Ui, gleich nochmal!", "Page/Dunsplee/Pond/fishask");
+                    $page->getNavigation()->addLink("Ui, gleich nochmal!", "Page/Dunsplee/Pond/fishask");
                 } else {
                     $page->output("Da bist du nun so lange hier herumgesessen und du hast nichts, aber auch garnichts
                                     gefangen! Was für eine Zeitverschwendung!");
-                    $page->nav->addLink("Egal, nochmal!", "Page/Dunsplee/Pond/fishask");
+                    $page->getNavigation()->addLink("Egal, nochmal!", "Page/Dunsplee/Pond/fishask");
                 }
 
-                $page->nav->addLink("Zurück", "Page/Dunsplee/Pond");
+                $page->getNavigation()->addLink("Zurück", "Page/Dunsplee/Pond");
 
-                $page->url->unsetParameter("time");
-                $page->url->setParameter("op", "fishask");
+                $page->getUrl()->unsetParameter("time");
+                $page->getUrl()->setParameter("op", "fishask");
 
                 break;
         }

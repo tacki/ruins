@@ -48,7 +48,7 @@ class ToolBox extends ModuleBase implements ModuleInterface
         // Tools
 
         // Prune Cache Tool
-        if ($user->character && $user->character->loggedin) {
+        if ($user->character && $user->getCharacter()->loggedin) {
 
             $page->addToolBoxItem("pruneCache",
                                   SystemManager::getOverloadedFilePath("Helpers/ajax/prune_cache.ajax.php", true),
