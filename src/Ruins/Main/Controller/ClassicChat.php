@@ -61,7 +61,7 @@ class ClassicChat
 
     /**
      * constructor - load the default values and initialize the attributes
-     * @param Page $page Page-Object for direct Output
+     * @param OutputObjectInterface $page Output-Object for direct Output
      * @param string $section Section to use
      */
     function __construct(OutputObjectInterface $page, $section)
@@ -71,15 +71,143 @@ class ClassicChat
     }
 
     /**
+     * Return Output Object
+     * @return Ruins\Common\Interfaces\OutputObjectInterface
+     */
+    protected function getPage()
+    {
+        return $this->_page;
+    }
+
+    /**
+     * Return Section Name
+     * @return string
+     */
+    protected function getSection()
+    {
+        return $this->_section;
+    }
+
+    /**
+     * Compile the visible Chat
+     * @param integer $pagenr Pagenumber to show
+     */
+    public function show()
+    {
+        $user = Registry::getUser();
+
+        $output        = "";
+
+        $chatform = $this->_getChatFormName();
+
+        $this->_addHelper();
+
+        switch ($this->_mode) {
+            case self::MODE_NORMAL:
+                // Chatlines
+                $chatsnippet = $this->getPage()->getTemplateEngine()->createTemplate("snippet_classicchat.tpl");
+
+                $chatsnippet->assign("chatname", $this->getSection());
+                $chatsnippet->assign("chatform", $chatform);
+                $chatsnippet->assign("chatpreviewurl", RequestManager::getWebBasePath()."/"."Json/Common/BtcodeConvert");
+                $chatsnippet->assign("target", (string)$this->getPage()->getUrl()->getFull());
+
+                // Nav for all Buttons (important)
+                $this->getPage()->getNavigation()->addHiddenLink($this->getPage()->getUrl());
+
+                // Get Chatpage
+                $resultpage = $this->_pageDisplayWrapper($this->_getPage(20, $this->_pagenr));
+                $chatsnippet->assign("chat_rows", $resultpage);
+
+                // Previous Pages
+                $pagesoutput    = "";
+                $numberOfPages     = $this->_getNumberOfPages(20);
+                for ($i=1; $i<=$numberOfPages; $i++) {
+                    // Replace previous GET-Query
+                    $newurl = clone $this->getPage()->getUrl();
+                    $newurl->setParameter($this->getSection()."_page", $i);
+                    $this->getPage()->getNavigation()->addHiddenLink($newurl);
+                    $pagesoutput .= "<a href='".$newurl->getFull()."'>". $i . "</a> ";
+                }
+
+
+                $chatsnippet->assign("chat_pages", $pagesoutput);
+
+
+                // visibility
+                if ($user->settings->chat_hide) {
+                    if (array_search($this->getSection(), $user->settings->chat_hide) !== false)
+                    {
+                        // Chat is hidden
+                        $chatsnippet->assign("visibility", "none");
+                        $chatsnippet->assign("visibility_inv", "inline");
+                    } else {
+                        $chatsnippet->assign("visibility", "inline");
+                        $chatsnippet->assign("visibility_inv", "none");
+                    }
+
+                } else {
+                    $chatsnippet->assign("visibility", "inline");
+                    $chatsnippet->assign("visibility_inv", "none");
+                }
+
+                $this->getPage()->output($chatsnippet->fetch(), true);
+
+                break;
+
+            case self::MODE_EDIT:
+
+                if ($row = $this->_getLastLine($user->character)) {
+                    $chattable = new SimpleTable;
+
+                    // Editfield
+                    $output .= $chattable->startData();
+                    $this->getPage()->addForm($chatform);
+                    $this->getPage()->getForm($chatform)->head($chatform, $this->getPage()->getUrl());
+                    $this->getPage()->getForm($chatform)->hidden($chatform."_op", "editLine");
+                    $this->getPage()->getForm($chatform)->hidden($chatform."_section", $this->getSection());
+                    $this->getPage()->getForm($chatform)->hidden($chatform."_editLineID", $row->id);
+                    $this->getPage()->getForm($chatform)->setCSS("floatleft textarea");
+                    $this->getPage()->getForm($chatform)->textArea($chatform."_chatline", BtCode::exclude($row->chatline), 60, 10);
+
+                    $this->getPage()->getForm($chatform)->setCSS("floatleft button");
+                    $this->getPage()->getForm($chatform)->submitButton("Ändern");
+                    $this->getPage()->getForm($chatform)->close();
+
+                    $this->getPage()->output("`n`n");
+
+                    // BackButton
+                    $this->getPage()->getNavigation()->addHiddenLink($this->getPage()->getUrl());
+                    $this->getPage()->addForm("refreshbutton");
+                    $this->getPage()->getForm("refreshbutton")->head("refreshbutton", $this->getPage()->getUrl());
+                    $this->getPage()->getForm("refreshbutton")->setCSS("button");
+                    $this->getPage()->getForm("refreshbutton")->submitButton("Zurück");
+                    $this->getPage()->getForm("refreshbutton")->close();
+                } else {
+                    $this->getPage()->output("Editieren des letzten Eintrages nicht möglich!`n`n");
+
+                    // BackButton
+                    $this->getPage()->getNavigation()->addHiddenLink($this->getPage()->getUrl());
+                    $this->getPage()->addForm("refreshbutton");
+                    $this->getPage()->getForm("refreshbutton")->head("refreshbutton", $this->getPage()->getUrl());
+                    $this->getPage()->getForm("refreshbutton")->setCSS("button");
+                    $this->getPage()->getForm("refreshbutton")->submitButton("Zurück");
+                    $this->getPage()->getForm("refreshbutton")->close();
+                }
+                break;
+        }
+    }
+
+    /**
      * Add Helper to handle Add's, Del's, etc
      */
     private function _addHelper()
     {
         $chatform = $this->_getChatFormName();
 
-        //$this->_page->addJavaScriptFile("btcode.js");
-        $this->_page->addJavaScriptFile("colorpreview.func.js");
-        $this->_page->addJavaScriptFile("settings.func.js");
+        //$this->getPage()->addJavaScriptFile("btcode.js");
+        $this->getPage()->addJavaScriptFile("colorpreview.func.js");
+        $this->getPage()->addJavaScriptFile("settings.func.js");
 
         if (!isset($_POST[$chatform.'_op'])) {
             $_POST[$chatform.'_op'] = "";
@@ -102,8 +230,8 @@ class ClassicChat
 
         }
 
-        if (isset($_GET[$this->_section.'_page'])) {
-            $this->_setPage($_GET[$this->_section.'_page']);
+        if (isset($_GET[$this->getSection().'_page'])) {
+            $this->_setPage($_GET[$this->getSection().'_page']);
         }
     }
 
@@ -130,7 +258,7 @@ class ClassicChat
 
         $result = $qb   ->select("chat")
                         ->from("Main:Chat", "chat")
-                        ->where("chat.section = ?1")->setParameter(1, $this->_section)
+                        ->where("chat.section = ?1")->setParameter(1, $this->getSection())
                         ->andWhere("chat.status = ?2")->setParameter(2, self::MESSAGE_STATUS_NORMAL)
                         ->orderBy("chat.date", "DESC")
                         ->setFirstResult( $pagenr*$linesperpage )
@@ -158,7 +286,7 @@ class ClassicChat
 
         $result = $qb   ->select("chat")
                         ->from("Main:Chat", "chat")
-                        ->where("chat.section = ?1")->setParameter(1, $this->_section)
+                        ->where("chat.section = ?1")->setParameter(1, $this->getSection())
                         ->andWhere("chat.status = ?2")->setParameter(2, self::MESSAGE_STATUS_NORMAL)
                         ->andWhere("chat.author = ?3")->setParameter(3, $character)
                         ->orderBy("chat.date", "DESC")
@@ -186,7 +314,7 @@ class ClassicChat
 
         $chatlines = $qb->select('COUNT(chat.id)')
                         ->from("Main:Chat", "chat")
-                        ->where('chat.section = ?1')->setParameter(1, $this->_section)
+                        ->where('chat.section = ?1')->setParameter(1, $this->getSection())
                         ->andWhere("chat.status = ?2")->setParameter(2, self::MESSAGE_STATUS_NORMAL)
                         ->getQuery()
                         ->getSingleScalarResult();
@@ -217,7 +345,7 @@ class ClassicChat
         if ($user->character instanceof Character) {
             // Add new line
             $newline = new Chat;
-            $newline->section  = $this->_section;
+            $newline->section  = $this->getSection();
             $newline->author   = $user->character;
             $newline->chatline = $text;
             $newline->date     = new DateTime();
@@ -225,7 +353,7 @@ class ClassicChat
             $em->flush();
 
             // Add DebugLogEntry
-            $user->addDebuglog("Wrote at Chat $this->_section", "veryverbose");
+            $user->addDebuglog("Wrote at Chat $this->getSection()", "veryverbose");
 
             return true;
         } else  {
@@ -285,7 +413,7 @@ class ClassicChat
      */
     private function _chatlineCensorship($text)
     {
-        $systemConfig = Registry::getMainConfig();
+        $systemCache = Registry::get('main.cache');
         $em = Registry::getEntityManager();
 
         // We check each word separately
@@ -386,147 +514,10 @@ class ClassicChat
      */
     private function _getChatFormName()
     {
-        if (strlen($this->_section)) {
-            return $this->_section . "_form";
+        if (strlen($this->getSection())) {
+            return $this->getSection() . "_form";
         } else {
             throw new Error("Section not set! A Chat has no Sectionname set!");
-        }
-    }
-
-    /**
-     * Compile the visible Chat
-     * @param integer $pagenr Pagenumber to show
-     */
-    public function show()
-    {
-        $user = Registry::getUser();
-
-        $output        = "";
-
-        $chatform = $this->_getChatFormName();
-
-        $this->_addHelper();
-
-        switch ($this->_mode) {
-            case self::MODE_NORMAL:
-                // Chatlines
-                $chatsnippet = $this->_page->getTemplateEngine()->createTemplate("snippet_classicchat.tpl", new \Smarty);
-
-                $chatsnippet->assign("chatname", $this->_section);
-                $chatsnippet->assign("chatform", $chatform);
-                $chatsnippet->assign("chatpreviewurl", RequestManager::getWebBasePath()."/"."Json/Common/BtcodeConvert");
-                $chatsnippet->assign("target", (string)$this->_page->getUrl());
-                // Nav for all Buttons (important)
-                $this->_page->getNavigation()->addHiddenLink($this->_page->getUrl());
-
-                // Get Chatpage
-                $resultpage = $this->_pageDisplayWrapper($this->_getPage(20, $this->_pagenr));
-
-                if (count($resultpage)) {
-
-                    foreach ($resultpage as $resultline) {
-
-                        $output .= "<tr>";
-
-                        if (isset($resultline['specialline'])) {
-                            $output .= "<td class='chatdate'>";
-                            $output .= $resultline['date'];
-                            $output .= "</td>";
-                            $output .= "<td class='chattext' colspan=2>";
-                            $output .= $resultline['specialline'];
-                            $output .= "</td>";
-                        } else {
-                            $output .= "<td class='chatdate'>";
-                            $output .= $resultline['date'];
-                            $output .= "</td>";
-                            $output .= "<td class='chattext'>";
-                            $output .= "<"  . $resultline['displayname'] . "> " . $resultline['chatline'];
-                            $output .= "</td>";
-                        }
-
-                        $output .= "</tr>";
-                    }
-                }
-
-                $chatsnippet->assign("chat_rows", $output);
-
-
-                // Previous Pages
-                $pagesoutput    = "";
-                $numberOfPages     = $this->_getNumberOfPages(20);
-                for ($i=1; $i<=$numberOfPages; $i++) {
-                    // Replace previous GET-Query
-                    $newurl = clone $this->_page->url;
-                    $newurl->setParameter($this->_section."_page", $i);
-                    $this->_page->nav->addHiddenLink($newurl);
-                    $pagesoutput .= "<a href='?".$newurl."'>". $i . "</a> ";
-                }
-
-
-                $chatsnippet->assign("chat_pages", $pagesoutput);
-
-
-                // visibility
-                if ($user->settings->chat_hide) {
-                    if (array_search($this->_section, $user->settings->chat_hide) !== false)
-                    {
-                        // Chat is hidden
-                        $chatsnippet->assign("visibility", "none");
-                        $chatsnippet->assign("visibility_inv", "inline");
-                    } else {
-                        $chatsnippet->assign("visibility", "inline");
-                        $chatsnippet->assign("visibility_inv", "none");
-                    }
-
-                } else {
-                    $chatsnippet->assign("visibility", "inline");
-                    $chatsnippet->assign("visibility_inv", "none");
-                }
-
-                $this->_page->output($chatsnippet->fetch(), true);
-
-                break;
-
-            case self::MODE_EDIT:
-
-                if ($row = $this->_getLastLine($user->character)) {
-                    $chattable = new SimpleTable;
-
-                    // Editfield
-                    $output .= $chattable->startData();
-                    $this->_page->addForm($chatform);
-                    $this->_page->getForm($chatform)->head($chatform, $this->_page->url);
-                    $this->_page->getForm($chatform)->hidden($chatform."_op", "editLine");
-                    $this->_page->getForm($chatform)->hidden($chatform."_section", $this->_section);
-                    $this->_page->getForm($chatform)->hidden($chatform."_editLineID", $row->id);
-                    $this->_page->getForm($chatform)->setCSS("floatleft textarea");
-                    $this->_page->getForm($chatform)->textArea($chatform."_chatline", BtCode::exclude($row->chatline), 60, 10);
-
-                    $this->_page->getForm($chatform)->setCSS("floatleft button");
-                    $this->_page->getForm($chatform)->submitButton("Ändern");
-                    $this->_page->getForm($chatform)->close();
-
-                    $this->_page->output("`n`n");
-
-                    // BackButton
-                    $this->_page->nav->addHiddenLink($this->_page->url);
-                    $this->_page->addForm("refreshbutton");
-                    $this->_page->getForm("refreshbutton")->head("refreshbutton", $this->_page->url);
-                    $this->_page->getForm("refreshbutton")->setCSS("button");
-                    $this->_page->getForm("refreshbutton")->submitButton("Zurück");
-                    $this->_page->getForm("refreshbutton")->close();
-                } else {
-                    $this->_page->output("Editieren des letzten Eintrages nicht möglich!`n`n");
-
-                    // BackButton
-                    $this->_page->nav->addHiddenLink($this->_page->url);
-                    $this->_page->addForm("refreshbutton");
-                    $this->_page->getForm("refreshbutton")->head("refreshbutton", $this->_page->url);
-                    $this->_page->getForm("refreshbutton")->setCSS("button");
-                    $this->_page->getForm("refreshbutton")->submitButton("Zurück");
-                    $this->_page->getForm("refreshbutton")->close();
-                }
-                break;
         }
     }
 }

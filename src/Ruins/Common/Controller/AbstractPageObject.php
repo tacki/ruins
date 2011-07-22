@@ -266,10 +266,6 @@ abstract class AbstractPageObject implements PageObjectInterface
                              $this->getRequest()->getPostAsArray(),
                              $this->getRequest()->getRoute()->getQueryExtra());
 
-        foreach ($query as &$entry) {
-            $entry = rawurldecode($entry);
-        }
-
         $this->createContent($this->getOutputObject(), $query);
 
         // Call Show-Method of PageObject
@@ -367,10 +363,8 @@ abstract class AbstractPageObject implements PageObjectInterface
                     echo "~~~ From Cache (Firewall Rule) ~~~";
                     exit;
                 } else {
-                    $this->redirect("Page/Common/Error404");
+                  //  $this->redirect("Page/Common/Error404");
                 }
-            } else {
-                $this->getOutputObject()->clearCache($this->getTemplate());
             }
 
             // Set current_nav if this is not the portal

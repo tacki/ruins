@@ -70,11 +70,10 @@ class Popup implements OutputObjectInterface
 
         $this->getTemplateEngine()->caching = 0;
 
-        $baseTemplateDir       = reset($this->getTemplateEngine()->template_dir);
+        $baseTemplateDir       = $this->getTemplateEngine()->getTemplateDir("default");
         $pageObjectTemplateDir = $baseTemplateDir . "/" . $request->getRoute()->getCallerName();
 
-        $this->getTemplateEngine()
-             ->addTemplateDir($pageObjectTemplateDir);
+        $this->getTemplateEngine()->addTemplateDir($pageObjectTemplateDir, "mytemplatedir");
 
         $this->getTemplateEngine()->assign("basetemplatedir", SystemManager::htmlpath($baseTemplateDir));
         $this->getTemplateEngine()->assign("mytemplatedir", SystemManager::htmlpath($pageObjectTemplateDir));

@@ -44,7 +44,7 @@ class ItemManager
      * Get all defined Armor Classes
      * @return array
      */
-    public function getArmorClasses()
+    public static function getArmorClasses()
     {
         return array (
                         self::CLASS_ARMOR_HEAD,
@@ -59,7 +59,7 @@ class ItemManager
      * Get all defined Weapon Classes
      * @return array
      */
-    public function getWeaponClasses()
+    public static function getWeaponClasses()
     {
         return array (
                         self::CLASS_WEAPON_BLADE,
@@ -74,7 +74,7 @@ class ItemManager
      * @param int $itemid ID of the item to retrieve
      * @return Item|Itemoverload The Item Object (Item or child of Itemoverload)
      */
-    public function getItem($itemid)
+    public static function getItem($itemid)
     {
         $em = Registry::getEntityManager();
 
@@ -89,7 +89,7 @@ class ItemManager
      * @param string $itemclass Itemclass to get
      * @return Item The equipped Item as an object
      */
-    public function getEquippedItem($character, $itemclass)
+    public static function getEquippedItem($character, $itemclass)
     {
         if ($tempresult	= self::getInventoryList($character, self::LOCATION_EQUIPMENT, $itemclass)) {
 
@@ -112,7 +112,7 @@ class ItemManager
      * @param string $orderDir
      * @return array 2-dimensional Array
      */
-    public function getInventoryList($character, $location, $itemclass=false, $order="id", $orderDir="ASC")
+    public static function getInventoryList($character, $location, $itemclass=false, $order="id", $orderDir="ASC")
     {
         $em = Registry::getEntityManager();
 

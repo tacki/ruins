@@ -27,8 +27,8 @@ class SurveyPage extends Page
     public function createMenu()
     {
         $this->nav->addHead("Umfragen")
-                  ->addLink("Übersicht", $this->url->base)
-                  ->addLink("Erstellen", $this->url->base."/create")
+                  ->addLink("Übersicht", $this->getUrl()->getBase())
+                  ->addLink("Erstellen", $this->getUrl()->getBase()."/create")
                   ->addHead("Navigation")
                   ->addLink("Zurück zur Administration", "Page/Admin/Main");
     }
@@ -84,13 +84,13 @@ class SurveyPage extends Page
 
                 // Action
                 $this->getSimpleTable("surveylist")->startData(50);
-                $this->nav->addTextLink("Details", $this->url->base."/details/?pollId=$poll->id");
+                $this->nav->addTextLink("Details", $this->getUrl()->getBase()."/details/?pollId=$poll->id");
                 if ($poll->active) {
-                    $this->nav->addTextLink("Deaktivieren", $this->url->base."/deactivate/?pollId=$poll->id");
+                    $this->nav->addTextLink("Deaktivieren", $this->getUrl()->getBase()."/deactivate/?pollId=$poll->id");
                 } else {
-                    $this->nav->addTextLink("Aktivieren", $this->url->base."/activate/?pollId=$poll->id");
+                    $this->nav->addTextLink("Aktivieren", $this->getUrl()->getBase()."/activate/?pollId=$poll->id");
                 }
-                $this->nav->addTextLink("Löschen", $this->url->base."/delete/?pollId=$poll->id");
+                $this->nav->addTextLink("Löschen", $this->getUrl()->getBase()."/delete/?pollId=$poll->id");
 
                 $this->getSimpleTable("surveylist")->closeRow();
             }
@@ -266,7 +266,7 @@ class SurveyPage extends Page
                 } else {
                     $this->output("Umfrage wirklich löschen?");
 
-                    $this->nav->addTextLink("Ja, löschen", $this->url->base."/delete/?pollId=".$_GET['pollId']."&force=1");
+                    $this->nav->addTextLink("Ja, löschen", $this->getUrl()->getBase()."/delete/?pollId=".$_GET['pollId']."&force=1");
                 }
                 break;
         }

@@ -140,10 +140,10 @@ class TestPage extends AbstractPageObject
 
         $tempform = new Form($page);
         if ($parameters['op'] == "stoptimer") {
-            $tempform->head("", $page->getUrl()->base."/starttimer");
+            $tempform->head("", $page->getUrl()->getBase()."/starttimer");
             $tempform->submitButton("Start");
         } else {
-            $tempform->head("", $page->getUrl()->base."/stoptimer");
+            $tempform->head("", $page->getUrl()->getBase()."/stoptimer");
             $tempform->submitButton("Stop");
         }
         $tempform->close();

@@ -57,16 +57,16 @@ class BattleManager
         }
 
         if (!$battle->isActive()) {
-            $target = SystemManager::getOutputObject()->url->base."&battle_op=join&side=".BattleMember::SIDE_ATTACKERS."&battleid=".$battle->id;
+            $target = SystemManager::getOutputObject()->getUrl()->getBase()."&battle_op=join&side=".BattleMember::SIDE_ATTACKERS."&battleid=".$battle->id;
             $output .= "<a href='?".$target."'>Angreifen</a>";
             SystemManager::getOutputObject()->nav->addHiddenLink($target);
             $output .= " || ";
-            $target = SystemManager::getOutputObject()->url->base."&battle_op=join&side=".BattleMember::SIDE_DEFENDERS."&battleid=".$battle->id;
+            $target = SystemManager::getOutputObject()->getUrl()->getBase()."&battle_op=join&side=".BattleMember::SIDE_DEFENDERS."&battleid=".$battle->id;
             $output .= "<a href='?".$target."'>Verteidigen</a>";
             SystemManager::getOutputObject()->nav->addHiddenLink($target);
             $output .= " || ";
         }
-        $target = SystemManager::getOutputObject()->url->base."&battle_op=join&side=".BattleMember::SIDE_NEUTRALS."&battleid=".$battle->id;
+        $target = SystemManager::getOutputObject()->getUrl()->getBase()."&battle_op=join&side=".BattleMember::SIDE_NEUTRALS."&battleid=".$battle->id;
         $output .= "<a href='?".$target."'>Zuschauen</a>";
         SystemManager::getOutputObject()->nav->addHiddenLink($target);
         $output .= "</div>";
@@ -142,10 +142,10 @@ class BattleManager
             // Show the Skillchooser
             $skillForm = SystemManager::getOutputObject()->addForm("skillchooser");
 
-            $skillForm->head("skillchooser", SystemManager::getOutputObject()->url->base."&battle_op=use_skill");
+            $skillForm->head("skillchooser", SystemManager::getOutputObject()->getUrl()->getBase()."&battle_op=use_skill");
 
             // Add Nav
-            SystemManager::getOutputObject()->nav->addHiddenLink(SystemManager::getOutputObject()->url->base."&battle_op=use_skill");
+            SystemManager::getOutputObject()->nav->addHiddenLink(SystemManager::getOutputObject()->getUrl()->getBase()."&battle_op=use_skill");
 
             // TODO: Get Available Skills for this Character
             $skills = array ( "Heilen" );

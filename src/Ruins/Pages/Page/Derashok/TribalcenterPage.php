@@ -21,9 +21,9 @@ class TribalcenterPage extends AbstractPageObject
     public function createContent($page, $parameters)
     {
         $page->getNavigation()->addHead("Navigation")
-                  ->addLink("Reisen", "Page/Common/Travel?return={$page->getUrl()->short}")
+                  ->addLink("Reisen", "Page/Common/Travel?return={$page->getUrl()->getBase()}")
                   ->addLink("Thagigdash Bogoob", "Page/Derashok/Bogoob")
-                  ->addLink("Spielerliste", "Page/Common/Charlist?return={$page->getUrl()->short}")
+                  ->addLink("Spielerliste", "Page/Common/Charlist?return={$page->getUrl()->getBase()}")
                   ->addLink("Kampfarena", "Page/Derashok/Arena");
 
         $page->getNavigation()->addHead("Allgemein")

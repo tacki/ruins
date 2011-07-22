@@ -7,7 +7,7 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @package Ruins
  */
-$oldlevel = error_reporting(0);
+$oldlevel = error_reporting();
 $path_extra = DIR_VENDOR . "php-openid";
 $path = ini_get('include_path');
 $path = $path_extra . PATH_SEPARATOR . $path;

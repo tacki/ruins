@@ -20,13 +20,10 @@ class TrailPage extends AbstractPageObject
 
     public function createContent($page, $parameters)
     {
-        $page->set("pagetitle", "Dunsplee Waldweg");
-        $page->set("headtitle", "Dunsplee Waldweg");
-
         $page->getNavigation()->addHead("Navigation")
-                  ->addLink("Reisen", "Page/Common/Travel?return={$page->getUrl()->short}")
+                  ->addLink("Reisen", "Page/Common/Travel?return={$page->getUrl()}")
                   ->addLink("Weiher", "Page/Dunsplee/Pond")
-                  ->addLink("Spielerliste", "Page/Common/Charlist?return={$page->getUrl()->short}");
+                  ->addLink("Spielerliste", "Page/Common/Charlist?return={$page->getUrl()->getBase()}");
 
         $page->getNavigation()->addHead("Allgemein")
                   ->addLink("Logout", "Page/Common/Logout");

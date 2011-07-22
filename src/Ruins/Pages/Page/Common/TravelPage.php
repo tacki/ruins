@@ -71,28 +71,22 @@ class TravelPage extends AbstractPageObject
                     $page->output("Ankunft in: " . $showtimer, true);
                 } elseif (!$timer->get() && isset($parameters['redirect'])) {
                     // Redirect to the new Page
-                    $newURL = clone $page->getUrl();
-                    $newURL->unsetParameter("redirect");
-                    $newURL->unsetParameter("travelto");
-                    $newURL->unsetParameter("op");
-                    $newURL->unsetParameter("return");
-                    $newURL->setParameter("page", $parameters['redirect']);
-                    $page->getNavigation()->addHiddenLink($newURL);
-                    $this->redirect($newURL);
-                } elseif (!$timer->get() && isset($_POST['travelto'])) {
+                    $page->getNavigation()->addHiddenLink($parameters['redirect']);
+                    $this->redirect($parameters['redirect']);
+                } elseif (!$timer->get() && isset($parameters['travelto'])) {
                     // First Contact to the Travelpage and every Reload
                     $trgtSite = $this->getEntityManager()->getRepository("Main:Site")
-                                     ->findOneByName($_POST['travelto']);
-                    if (!$trgtSite) throw new Error("Target Site " . $_POST['travelto'] . " not found!");
+                                     ->findOneByName($parameters['travelto']);
+                    if (!$trgtSite) throw new Error("Target Site " . $parameters['travelto'] . " not found!");
 
                     $time = $travel->calcDistance($curSite->waypoint, $trgtSite->waypoint);
                     $timer->set($time);
                     $newURL = clone $page->getUrl();
                     $newURL->setParameter("return", $parameters['return']);
-                    $newURL->setParameter("redirect", $_POST['travelto']);
+                    $newURL->setParameter("redirect", $parameters['travelto']);
                     $page->getNavigation()->addHiddenLink($newURL);
                     $this->redirect($newURL);
-                } elseif (!$timer->get() && !isset($_POST['travelto'])) {
+                } elseif (!$timer->get() && !isset($parameters['travelto'])) {
                     // No target chosen, return to select-screen
                     $page->getUrl()->unsetParameter("op");
                     $this->redirect($page->getUrl());

@@ -77,11 +77,10 @@ class Page implements OutputObjectInterface
         $this->navigation = new Navigation($request);
 
         $this->templateEngine  = Registry::get('smarty');
-        $baseTemplateDir       = reset($this->getTemplateEngine()->template_dir);
+        $baseTemplateDir       = $this->getTemplateEngine()->getTemplateDir("default");
         $pageObjectTemplateDir = $baseTemplateDir . "/" . $request->getRoute()->getCallerName();
 
-        $this->getTemplateEngine()
-             ->addTemplateDir($pageObjectTemplateDir);
+        $this->getTemplateEngine()->addTemplateDir($pageObjectTemplateDir, "mytemplatedir");
 
         $this->getTemplateEngine()->assign("basetemplatedir", SystemManager::htmlpath($baseTemplateDir));
         $this->getTemplateEngine()->assign("mytemplatedir", SystemManager::htmlpath($pageObjectTemplateDir));
@@ -283,7 +282,11 @@ class Page implements OutputObjectInterface
      */
     public function clearCache($template)
     {
-        $this->getTemplateEngine()->clearCache($template, $this->user->getCharacter()->id);
+        if ($this->isPrivate()) {
+            $this->getTemplateEngine()->clearCache($template, $this->user->getCharacter()->id);
+        } else {
+            $this->getTemplateEngine()->clearCache($template);
+        }
     }
 
     /**
@@ -406,7 +409,8 @@ class Page implements OutputObjectInterface
         ModuleManager::callModule(ModuleManager::EVENT_POST_PAGEGENERATION, $this);
 
         if ($this->isPrivate()) {
-            $this->getTemplateEngine()->display($template, $this->user->character->id);
+            $this->clearCache($template);
+            $this->getTemplateEngine()->display($template, $this->getUser()->getCharacter()->id);
         } else {
             $this->getTemplateEngine()->display($template);
         }
@@ -418,8 +422,8 @@ class Page implements OutputObjectInterface
     public function showLatestGenerated($template)
     {
         if ($this->isPrivate()) {
-            if ($this->getTemplateEngine()->isCached($template, $this->user->character->id)) {
-                $this->getTemplateEngine()->display($template, $this->user->character->id);
+            if ($this->getTemplateEngine()->isCached($template, $this->getUser()->getCharacter()->id)) {
+                $this->getTemplateEngine()->display($template, $this->getUser()->getCharacter()->id);
                 return true;
             }
         }
@@ -495,7 +499,7 @@ class Page implements OutputObjectInterface
         }
 
         $characterlist = Registry::getEntityManager()->getRepository("Main:Character")
-                                                     ->getListAtPlace($this->getUrl()->base);
+                                                     ->getListAtPlace($this->getUrl()->getBase());
 
         foreach ($characterlist as &$charactername) {
             $charactername = BtCode::decode($charactername);

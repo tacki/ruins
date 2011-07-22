@@ -42,7 +42,9 @@ class ModuleManager
     {
        foreach(self::getModuleListFromDatabase(true) as $module) {
             $classname = $module->classname;
-            $classname::$eventname($object);
+
+            $module = new $classname;
+            $module->$eventname($object);
         }
     }
 

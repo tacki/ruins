@@ -257,8 +257,8 @@ class BattleController extends Controller
         $outputobject 	= Registry::get('main.output');
         $battleopstr 	= $this->_getBattleOpString();
 
-        $outputobject->nav->addHead("Kampf")
-                          ->addLink("Fliehen", $outputobject->url->base."&{$battleopstr}=flee");
+        $outputobject->getNavigation()->addHead("Kampf")
+                          ->addLink("Fliehen", $outputobject->getUrl()->getBase()."?{$battleopstr}=flee");
     }
 
     /**
@@ -269,8 +269,8 @@ class BattleController extends Controller
         $outputobject 	= Registry::get('main.output');
         $battleopstr 	= $this->_getBattleOpString();
 
-        $outputobject->nav->addHead("Kampf")
-                          ->addLink("Anfangen", $outputobject->url->base."&{$battleopstr}=create");
+        $outputobject->getNavigation()->addHead("Kampf")
+                          ->addLink("Anfangen", $outputobject->getUrl()->getBase()."?{$battleopstr}=create");
     }
 
     /**
@@ -281,9 +281,9 @@ class BattleController extends Controller
         $outputobject 	= Registry::get('main.output');
         $battleopstr 	= $this->_getBattleOpString();
 
-        $outputobject->nav->addHead("Admin")
-                          ->addLink("Kampf Beenden", $outputobject->url->base."&{$battleopstr}=admin_remove")
-                          ->addLink("Nachrichten Löschen", $outputobject->url->base."&{$battleopstr}=admin_removemessages");
+        $outputobject->getNavigation()->addHead("Admin")
+                          ->addLink("Kampf Beenden", $outputobject->getUrl()->getBase()."?{$battleopstr}=admin_remove")
+                          ->addLink("Nachrichten Löschen", $outputobject->getUrl()->getBase()."?{$battleopstr}=admin_removemessages");
     }
 
     /**

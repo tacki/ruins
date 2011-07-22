@@ -24,10 +24,10 @@ class CitysquarePage extends AbstractPageObject
     {
         $page->getNavigation()
              ->addHead("Navigation")
-             ->addLink("Reisen", "Page/Common/Travel?return={$page->getUrl()->base}")
+             ->addLink("Reisen", "Page/Common/Travel?return={$page->getUrl()->getBase()}")
              ->addLink("Stadtbank", "Page/Ironlance/Citybank")
-             ->addLink("Spielerliste", "Page/Common/Charlist?return={$page->getUrl()->base}")
-             ->addLink("Ausrüstung", "Page/Common/Equipment?return={$page->getUrl()->base}");
+             ->addLink("Spielerliste", "Page/Common/Charlist?return={$page->getUrl()->getBase()}")
+             ->addLink("Ausrüstung", "Page/Common/Equipment?return={$page->getUrl()->getBase()}");
 
         $page->getNavigation()
              ->addHead("Allgemein")

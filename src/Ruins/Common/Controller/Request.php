@@ -173,7 +173,7 @@ class Request
         foreach ($explodedQuery as $query) {
             $queryParams = explode("=", $query);
 
-            $queryArray[$queryParams[0]] = $queryParams[1];
+            $queryArray[$queryParams[0]] = urldecode($queryParams[1]);
         }
 
         return $queryArray;

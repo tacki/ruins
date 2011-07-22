@@ -38,6 +38,7 @@ class TablePrefix
      */
     public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
     {
+        $mappedTableName = "";
         $classMetadata = $eventArgs->getClassMetadata();
         $classMetadata->setTableName($this->prefix . $classMetadata->getTableName());
 

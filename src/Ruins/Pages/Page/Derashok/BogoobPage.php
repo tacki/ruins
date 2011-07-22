@@ -32,7 +32,7 @@ class BogoobPage extends AbstractPageObject
         switch ($parameters['op']) {
 
             default:
-                $page->getNavigation()->addLink("Ihm etwas zeigen", "Page/Common/InventoryChooser?return={$page->getUrl()->short}&callop=sellask");
+                $page->getNavigation()->addLink("Ihm etwas zeigen", "Page/Common/InventoryChooser?return={$page->getUrl()->getBase()}&callop=sellask");
 
                 $page->output("Vor dir steht ein riesiger Ork mit Pranken, die locker Bäume ausreissen könnten. Und doch
                                     wirken seine Augen neugierig und keinesfalls aggressiv`n`n
@@ -69,7 +69,7 @@ class BogoobPage extends AbstractPageObject
                 }
 
                 if (empty($wanttobuy)) {
-                    $page->getNavigation()->addLink("Etwas anderes zeigen", "page/common/inventorychooser&return={$page->getUrl()->short}&callop=sellask");
+                    $page->getNavigation()->addLink("Etwas anderes zeigen", "page/common/inventorychooser&return={$page->getUrl()->getBase()}&callop=sellask");
 
                     $page->output("`#52Neee, du nix haben was ich wolle... du verschwinden mit deine Krimskrams!`#00`n`n
                                     Unhöflich dreht sich der Ork von dir weg... scheinbar will er wirklich etwas anderes
@@ -112,7 +112,7 @@ class BogoobPage extends AbstractPageObject
 
                 $user->getCharacter()->money->receive($price);
 
-                $page->getNavigation()->addLink("Ihm etwas zeigen", "page/common/inventorychooser&return={$page->getUrl()->short}&callop=sellask");
+                $page->getNavigation()->addLink("Ihm etwas zeigen", "page/common/inventorychooser&return={$page->getUrl()->getBase()}&callop=sellask");
 
                 $page->output("`#52Ohhooo, heute isse schöne Tag!`#00`n`n
                                 Mit diesen Worten widmet er sich ganz seiner neu erstandenen Ware und lässt dich einfach

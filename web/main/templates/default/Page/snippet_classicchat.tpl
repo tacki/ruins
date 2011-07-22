@@ -31,11 +31,24 @@
 
 <div class="floatleft" id="chatid_{$chatname}" style='display: {$visibility}'>
     <table class='chat'>
-        {$chat_rows}
+        {foreach $chat_rows as $row nocache}
+        <tr>
+        <td class='chatdate'>
+        {$row.date}
+        </td>
+        <td class='chattext' colspan=2>
+        {if isset($row.specialline)}
+        {$row.specialline}
+        {else}
+        &lt;{$row.displayname}&gt; {$row.chatline}
+        {/if}
+        </td>
+        </tr>
+    {/foreach}
     </table>
     <div id='{$chatform}_chatpreview'></div>
 
-    <form name='{$chatform}' action='?{$target}' method='post' >
+    <form name='{$chatform}' action='{$target}' method='post' >
         <input type='hidden' name='{$chatform}_op' value='addLine'/>
         <input type='hidden' name='{$chatform}_section' value='{$chatname}'/>
         <textarea class='floatleft textarea' name='{$chatform}_chatline' id='{$chatform}_chatline' cols='60' rows='5'></textarea>
@@ -43,19 +56,19 @@
         <input type='submit' value='Hinzufügen' class='button' style='margin: 2px'/>
     </form>
 
-    <form action='?{$target}' method='post' >
+    <form action='{$target}' method='post' >
         <input type='hidden' name='{$chatform}_op' value='editLine'/>
         <input type='hidden' name='{$chatform}_section' value='{$chatname}'/>
         <input type='submit' value='Edit' class='button' style='margin: 2px' />
     </form>
 
-    <form action='?{$target}' method='post' >
+    <form action='{$target}' method='post' >
         <input type='submit' value='Aktualisieren' class=' button' style='margin: 2px'/>
     </form>
 
 
     <span class='chat_pages' style='margin: 2px'>
-        Seiten: {$chat_pages}
+        Seiten: {$chat_pages nocache}
     </span>
 </div>
 <div class="floatclear"></div>

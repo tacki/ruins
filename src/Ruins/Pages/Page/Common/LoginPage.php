@@ -125,7 +125,7 @@ class LoginPage extends AbstractPageObject
 
             case "checkopenid2":
                 $page->output("`cChecking OpenID!`c`n");
-                $oldlevel = error_reporting(0);
+                $oldlevel = error_reporting();
                 $result = OpenIDManager::evalTrustResult("Page/Common/Login/checkopenid2");
                 error_reporting($oldlevel);
                 if (is_array($result) && $result['result'] == "ok") {

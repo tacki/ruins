@@ -13,6 +13,8 @@
  * Namespaces
  */
 namespace Ruins\Common\Controller;
+use Ruins\Common\Manager\RequestManager;
+
 use Ruins\Common\Controller\Request;
 
 /**
@@ -24,15 +26,16 @@ use Ruins\Common\Controller\Request;
 class Url
 {
     /**
-     * @var string
-     */
-    private $_url;
+    * Holds the Base of the current URL
+    * @var string
+    */
+    private $base;
 
     /**
-     * Holds the Base of the current URL
-     * @var string
+     * Holds an array of
+     * @var array
      */
-    public $base;
+    private $query = array();
 
     /**
      * Constructor - Loads the default values and initializes the attributes
@@ -41,8 +44,8 @@ class Url
     function __construct(Request $request)
     {
         // Initialize
-        $this->_url = html_entity_decode($request->getCompleteRequest());
-        $this->base = $request->getRoute()->getRouteBase();
+        $this->base = $request->getRouteAsString();
+        $this->query = $request->getQueryAsArray();
     }
 
     /**
@@ -51,7 +54,37 @@ class Url
      */
     function __toString()
     {
-        return $this->_url;
+        $path = $this->getBase();
+
+        if (count($this->query)) {
+            $path .= "?" . http_build_query($this->query);
+        }
+
+        return $path;
+    }
+
+    /**
+     * Get Base Path
+     * Enter description here ...
+     */
+    public function getBase()
+    {
+        return $this->base;
+    }
+
+    /**
+     * Get Full Path inclusive all Parameters
+     * @return string
+     */
+    public function getFull()
+    {
+        $path = RequestManager::getWebBasePath() . "/" . $this->getBase();
+
+        if (count($this->query)) {
+            $path .= "?" . http_build_query($this->query);
+        }
+
+        return $path;
     }
 
     /**
@@ -61,10 +94,8 @@ class Url
      */
     public function getParameter($parameter)
     {
-        parse_str($this->_url, $parameters);
-
-        if (isset($parameters[$parameter])) {
-            return $parameters[$parameter];
+        if (isset($this->query[$parameter])) {
+            return $this->query[$parameter];
         } else {
             return false;
         }
@@ -78,14 +109,13 @@ class Url
     public function unsetParameter($parameter=false)
     {
         if ($parameter) {
-            $oldvalue = $this->getParameter($parameter);
-            if ($oldvalue !== false) {
+            if (isset($this->query[$parameter])) {
                 // Remove the Parameter
-                $this->_url = str_replace("?".$parameter."=".$oldvalue, "", $this->_url);
-                $this->_url = str_replace("&".$parameter."=".$oldvalue, "", $this->_url);
+                unset ($this->query[$parameter]);
             }
         } else {
-            $this->_url = $this->base;
+            // Remove all parameters
+            $this->query = array();;
         }
 
         return $this;
@@ -99,18 +129,7 @@ class Url
      */
     public function setParameter($parameter, $value)
     {
-        $oldvalue = $this->getParameter($parameter);
-        if ($oldvalue !== false) {
-            // Change the Parameter
-            $this->_url = str_replace($parameter."=".$oldvalue, $parameter."=".$value, $this->_url);
-        } else {
-            // Add the Parameter
-            if (strstr($this->_url, "?") === false) {
-                $this->_url = $this->_url."?".$parameter."=".$value;
-            } else {
-                $this->_url = $this->_url."&".$parameter."=".$value;
-            }
-        }
+        $this->query[$parameter] = $value;
 
         return $this;
     }

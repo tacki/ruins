@@ -159,7 +159,7 @@ class Page implements OutputObjectInterface
 
         // Set own URL
         $this->url = new Url(RequestManager::createRequest());
-        $this->shortname = $this->url->getParameter("page");
+        $this->shortname = $this->getUrl()->getParameter("page");
 
         // Initialize the Smarty-Class
         $this->_smarty = $smarty;
@@ -195,7 +195,7 @@ class Page implements OutputObjectInterface
     public function refresh($base=false)
     {
         if ($base) {
-            $this->nav->redirect($this->url->base);
+            $this->nav->redirect($this->getUrl()->getBase());
         } else {
             $this->nav->redirect($this->url);
         }
