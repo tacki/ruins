@@ -13,6 +13,8 @@
  * Namespaces
  */
 namespace Ruins\Main\Manager;
+use Ruins\Common\Manager\RequestManager;
+
 use Ruins\Main\Manager\SystemManager;
 use Ruins\Main\Entities\Battle;
 use Ruins\Main\Entities\BattleMember;
@@ -172,7 +174,7 @@ class BattleManager
             // The third Parameter is the name of the select-Form where we choose the skill
             // The fourth Parameter is the name of the select-Form where the targets appear
             SystemManager::getOutputObject()->addJavaScript("$(function(){
-                                            getTargetList(".$battle->id.", ".$character->id.", 'skill', 'target');
+                                            getTargetList(".$battle->id.", ".$character->id.", 'skill', 'target', '".RequestManager::getWebBasePath("Json/Battle/GetTargetsForSkill")."');
                 });");
         }
 

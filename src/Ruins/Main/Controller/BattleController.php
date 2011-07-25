@@ -430,7 +430,7 @@ class BattleController extends Controller
 
             // Battle JavaScript
             $outputobject->addJavaScriptFile("jquery.plugin.timers.js");
-            $outputobject->addJavaScriptFile("battle.func.js");
+            $outputobject->addJavaScriptTemplate("battle.func.js");
 
             // Add Autorefresher + Statuschecker
             if ($this->getRepository()->getTokenOwner() == $this->getRepository()->getBattleMember($user->character)) {

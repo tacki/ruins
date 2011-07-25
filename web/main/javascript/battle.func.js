@@ -4,9 +4,9 @@
  * Runs every 12s
  * @param getBattleround_url URL to get the current battleround
  */
-function refreshOnNewRound(charid)
+function refreshOnNewRound()
 {
-    var callURL			= "Json/Battle/CheckNewRound";
+    var callURL			= {{basepath call='Json/Battle/CheckNewRound'}};
     var parameters		= "";
     var timerCycle		= '12s';
     var curbattleround 		= 1;
@@ -14,13 +14,13 @@ function refreshOnNewRound(charid)
 
 
     $(document).ready(function() {
-        $.getJSON(callURL+"?"+parameters, {}, function(json) {
+        $.getJSON(callURL, {}, function(json) {
             curbattleround = json;
         });
     });
 
     $(document).everyTime(timerCycle, function() {
-        $.getJSON(callURL+"?"+parameters, {}, function(json) {
+        $.getJSON(callURL, {}, function(json) {
             if (json != curbattleround) {
                 window.location.replace( pageURL );
             }
@@ -37,7 +37,7 @@ function refreshOnNewRound(charid)
  */
 function checkBattleActionDone(battleid, tokenowner)
 {
-    var callURL			= "Json/Battle/CheckActionDone";
+    var callURL			= {{basepath call='Json/Battle/CheckActionDone'}};
     var parameters		= "battleid="+battleid;
     var timerCycle		= '5s';
     var pageURL 		= unescape(window.location.href);
@@ -71,7 +71,7 @@ function checkBattleActionDone(battleid, tokenowner)
 function getTargetList(battleid, charid, skillselectform, targetselectform)
 {
     $(document).ready(function() {
-        var callURL 		= "Json/Battle/GetTargetsForSkill";
+        var callURL 		= {{basepath call='Json/Battle/GetTargetsForSkill'}};
         var parameters		= "battleid="+battleid+"&charid="+charid;
         var selectedskill 	= $("select[name="+skillselectform+"] option:selected").val();
         var url 		= callURL+"?"+parameters+"&skillname="+selectedskill;

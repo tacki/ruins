@@ -29,8 +29,14 @@ $smarty->cache_lifetime = -1;
 $smarty->setTemplateDir(
                         array( "default" => DIR_WEB."main/templates/default")
                        );
+$smarty->addPluginsDir(
+                        array( "default" => DIR_VENDOR."SmartyExtensions/plugins")
+                       );
 $smarty->compile_dir 	= DIR_TEMP."smarty/templates_c";
 $smarty->cache_dir 		= DIR_TEMP."smarty/cache";
+
+
+$smarty->loadPlugin('smarty_function_basepath');
 
 // Add to Registry
 Registry::set('smarty', $smarty);

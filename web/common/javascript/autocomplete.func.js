@@ -20,12 +20,12 @@ var acResultsId	  = null;
 var acSearchField = null;
 var acResultsDiv  = null;
 
-function setAutoComplete(field_id, results_id, get_url){
+function setAutoComplete(field_id, results_id){
 
     // initialize vars
     acSearchId  = "#" + field_id;
     acResultsId = "#" + results_id;
-    acURL 		= get_url;
+    acURL 		= "{{basepath call='Json/Common/AutocompleteCharname?part='}}";
 
     // create the results div
     $("body").append('<div id="' + results_id + '"></div>');

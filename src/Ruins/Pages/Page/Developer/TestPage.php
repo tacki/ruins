@@ -222,22 +222,22 @@ class TestPage extends AbstractPageObject
         $page->output("<label for='chat'>Chatpreview: </label>", true);
         $page->output("<input type='text' id='chat' />", true);
         $page->output("<div id='chatpreview'></div>", true);
-        $page->addJavaScriptFile("colorpreview.func.js");
+        $page->addJavaScriptTemplate("colorpreview.func.js");
 
         $page->addJavaScript("
             $(function() {
-                setColorPreview('chat', 'chatpreview', '".RequestManager::getWebBasePath()."/"."Json/Common/BtcodeConvert');
+                setColorPreview('chat', 'chatpreview');
             });
          ");
 
         $page->output("<label for='searchField'>Charnames: </label>", true);
         $page->output("<input type='text' id='searchField' name='searchField'>", true);
         $page->addCSS("autocomplete.css");
-        $page->addJavaScriptFile("autocomplete.func.js");
+        $page->addJavaScriptTemplate("autocomplete.func.js");
 
         $page->addJavaScript("
             $(function() {
-                setAutoComplete('searchField', 'results', '".RequestManager::getWebBasePath()."/"."Json/Common/AutocompleteCharname?part=');
+                setAutoComplete('searchField', 'results');
             });
         ");
         // btcode Test END

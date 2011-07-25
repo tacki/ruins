@@ -1,6 +1,6 @@
-function setColorPreview(input_id, preview_id, url)
+function setColorPreview(input_id, preview_id)
 {
-    var callURL			= url;
+    var callURL			= "{{basepath call='Json/Common/BtcodeConvert'}}";
 
     var cpInputId 		= "#" + input_id;
     var cpPreviewId 		= "#" + preview_id;

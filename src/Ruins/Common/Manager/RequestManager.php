@@ -41,9 +41,10 @@ class RequestManager
 
     /**
      * Retrieve WebBasePath (example: /ruins/web or /ruins/web/app.php)
+     * @var string $append Append call
      * @return string
      */
-    public static function getWebBasePath()
+    public static function getWebBasePath($append=false)
     {
         $frontCntrl = $_SERVER['SCRIPT_NAME'];
 
@@ -53,6 +54,15 @@ class RequestManager
             $result = pathinfo($frontCntrl, PATHINFO_DIRNAME);
         } else {
             $result = $frontCntrl;
+        }
+
+        if ($append) {
+            // strip leading slashes
+            while (substr($append,0,1) == "/") {
+                $append = substr($append,1);
+            }
+
+            $result .= "/" . $append;
         }
 
         return $result;

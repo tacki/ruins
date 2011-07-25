@@ -124,6 +124,21 @@ class Page implements OutputObjectInterface
     }
 
     /**
+     * Adds a JavaScript-file Template
+     * WARNING: JavaScript Templates use {{ and }} as delimiters!
+     * @param string $script Script Template Filename
+     */
+    public function addJavaScriptTemplate($script)
+    {
+        $path = SystemManager::getWebRessourcePath('javascript/'.$script);
+
+        $jstpl = $this->getTemplateEngine()->createTemplate($path);
+        $jstpl->left_delimiter = "{{";
+        $jstpl->right_delimiter = "}}";
+        $this->addJavaScript($jstpl->fetch());
+    }
+
+    /**
      * Adds a CSS-file as an include to the Header
      * @param string $script Script Filename (has to be inside of templates/common/styles)
      */

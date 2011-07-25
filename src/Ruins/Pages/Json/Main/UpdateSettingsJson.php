@@ -12,7 +12,7 @@
 /**
  * Namespaces
  */
-namespace Ruins\Pages\Json\Common;
+namespace Ruins\Pages\Json\Main;
 use Ruins\Main\Manager\SystemManager;
 use Ruins\Common\Controller\AbstractPageObject;
 use Ruins\Common\Controller\SessionStore;
@@ -33,13 +33,14 @@ class UpdateSettingsJson extends AbstractPageObject
 
             $userconfig = $qb   ->select("settings")
                                 ->from("Main:UserSetting", "settings")
-                                ->where("settings.user = ?1")->setParameter(1, $userid)
+                                ->where("settings.user = ?1")->setParameter(1, $user)
                                 ->getQuery()
                                 ->getOneOrNullResult();
         }
 
-        if (!$user || !$userconfig || !$parameters['settingsobject']) {
+        if (!$user || is_null($userconfig) || !$parameters['settingsobject']) {
             $page->output(false);
+            return;
         }
 
         if ($parameters['settingsobject'] === 'user') {

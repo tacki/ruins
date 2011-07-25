@@ -206,8 +206,9 @@ class ClassicChat
         $chatform = $this->_getChatFormName();
 
         //$this->getPage()->addJavaScriptFile("btcode.js");
-        $this->getPage()->addJavaScriptFile("colorpreview.func.js");
-        $this->getPage()->addJavaScriptFile("settings.func.js");
+        $this->getPage()->addJavaScriptTemplate("colorpreview.func.js");
+        $this->getPage()->addJavaScriptTemplate("settings.func.js");
+
 
         if (!isset($_POST[$chatform.'_op'])) {
             $_POST[$chatform.'_op'] = "";

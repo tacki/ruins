@@ -27,6 +27,7 @@ class ArenaPage extends AbstractPageObject
 
         $battle = new BattleController;
         $em = Registry::getEntityManager();
+        $user = Registry::getUser();
 
         if ($em->getRepository("Main:Character")->getBattle($user->character)) {
             include (DIR_MAIN."Helpers/battle.running.php");
